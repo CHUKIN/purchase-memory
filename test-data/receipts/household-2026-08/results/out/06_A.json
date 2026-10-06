@@ -1,0 +1,33 @@
+{
+  "receipt": "06",
+  "approach": "A",
+  "seconds": 9.2,
+  "error": null,
+  "parsed": {
+    "merchant": "Massive Food sp. z o.o.",
+    "date": "2025-10-11",
+    "currency": "PLN",
+    "total": 25.85,
+    "items": [
+      {
+        "name": "Golabek niesny",
+        "quantity": 1,
+        "unit_price": 12.01,
+        "line_total": 12.01
+      },
+      {
+        "name": "Sos ponidorowy",
+        "quantity": 1,
+        "unit_price": 6.76,
+        "line_total": 6.76
+      },
+      {
+        "name": "Zacierkowa",
+        "quantity": 1,
+        "unit_price": 7.08,
+        "line_total": 7.08
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"Massive Food sp. z o.o.\",\n  \"date\": \"2025-10-11\",\n  \"currency\": \"PLN\",\n  \"total\": 25.85,\n  \"items\": [\n    {\n      \"name\": \"Golabek niesny\",\n      \"quantity\": 1,\n      \"unit_price\": 12.01,\n      \"line_total\": 12.01\n    },\n    {\n      \"name\": \"Sos ponidorowy\",\n      \"quantity\": 1,\n      \"unit_price\": 6.76,\n      \"line_total\": 6.76\n    },\n    {\n      \"name\": \"Zacierkowa\",\n      \"quantity\": 1,\n      \"unit_price\": 7.08,\n      \"line_total\": 7.08\n    }\n  ]\n}"
+}

@@ -1,0 +1,39 @@
+{
+  "receipt": "19",
+  "approach": "B",
+  "seconds": 9.3,
+  "error": null,
+  "parsed": {
+    "merchant": "LVIV CROISSANTS",
+    "date": "2023-06-21",
+    "currency": "PLN",
+    "total": 71.6,
+    "items": [
+      {
+        "name": "Z Krenen HaniLiowyn",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 24.9
+      },
+      {
+        "name": "Smietankouo-Truskawkowy",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 16.9
+      },
+      {
+        "name": "Włoski",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 5.3
+      },
+      {
+        "name": "Cezar z Kurczakien",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 24.9
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"LVIV CROISSANTS\",\n  \"date\": \"2023-06-21\",\n  \"currency\": \"PLN\",\n  \"total\": 71.6,\n  \"items\": [\n    {\n      \"name\": \"Z Krenen HaniLiowyn\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 24.90\n    },\n    {\n      \"name\": \"Smietankouo-Truskawkowy\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 16.90\n    },\n    {\n      \"name\": \"Włoski\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 5.30\n    },\n    {\n      \"name\": \"Cezar z Kurczakien\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 24.90\n    }\n  ]\n}"
+}

@@ -1,0 +1,177 @@
+{
+  "receipt": "03",
+  "approach": "A",
+  "seconds": 37.1,
+  "error": null,
+  "parsed": {
+    "merchant": "E.Leclerc URSYNÓW",
+    "date": "2026-07-18",
+    "currency": "PLN",
+    "total": 217.26,
+    "items": [
+      {
+        "name": "KERRYGOLD MASŁO 200 C",
+        "quantity": null,
+        "unit_price": 9.99,
+        "line_total": 9.99
+      },
+      {
+        "name": "CZACHO JAJA 10 C",
+        "quantity": null,
+        "unit_price": 12.99,
+        "line_total": 12.99
+      },
+      {
+        "name": "PIĄT MLEKO 2X 1 C",
+        "quantity": null,
+        "unit_price": 5.69,
+        "line_total": 5.69
+      },
+      {
+        "name": "GULASZ CIELECZY KG.MC",
+        "quantity": null,
+        "unit_price": 0.65,
+        "line_total": 0.65
+      },
+      {
+        "name": "KABACZEK",
+        "quantity": null,
+        "unit_price": 0.96,
+        "line_total": 0.96
+      },
+      {
+        "name": "LEER SER ORIGI 100 C",
+        "quantity": null,
+        "unit_price": 5.99,
+        "line_total": 5.99
+      },
+      {
+        "name": "MOWI LOSOS INT 100 C",
+        "quantity": null,
+        "unit_price": 22.49,
+        "line_total": 22.49
+      },
+      {
+        "name": "JANA SEREK CZE 120 C",
+        "quantity": null,
+        "unit_price": 2.65,
+        "line_total": 2.65
+      },
+      {
+        "name": "LEER SER ORIGI 100 C",
+        "quantity": null,
+        "unit_price": 5.99,
+        "line_total": 5.99
+      },
+      {
+        "name": "LEER SER LIGHT 100 C",
+        "quantity": null,
+        "unit_price": 6.99,
+        "line_total": 6.99
+      },
+      {
+        "name": "BAK JOGURT DRA 135 C",
+        "quantity": null,
+        "unit_price": 3.29,
+        "line_total": 3.29
+      },
+      {
+        "name": "GOSH DESER 125 C",
+        "quantity": null,
+        "unit_price": 4.62,
+        "line_total": 4.62
+      },
+      {
+        "name": "POL MŁ MAK TORT 1 C",
+        "quantity": null,
+        "unit_price": 12.99,
+        "line_total": 12.99
+      },
+      {
+        "name": "ŁACIATE ŚMIETA 500 C",
+        "quantity": null,
+        "unit_price": 7.55,
+        "line_total": 7.55
+      },
+      {
+        "name": "NEST CHEER PLA 250 C",
+        "quantity": null,
+        "unit_price": 7.78,
+        "line_total": 7.78
+      },
+      {
+        "name": "NEST CHOC PŁAT 250 C",
+        "quantity": null,
+        "unit_price": 7.78,
+        "line_total": 7.78
+      },
+      {
+        "name": "JOGO JOG B/CUK 150 C",
+        "quantity": null,
+        "unit_price": 2.99,
+        "line_total": 2.99
+      },
+      {
+        "name": "MEL SKROB ZIEM 500 C",
+        "quantity": null,
+        "unit_price": 5.42,
+        "line_total": 5.42
+      },
+      {
+        "name": "ROLN OCET 10X 500 A",
+        "quantity": null,
+        "unit_price": 4.27,
+        "line_total": 4.27
+      },
+      {
+        "name": "WEDE CHŁK ORZE 50 A",
+        "quantity": null,
+        "unit_price": 2.99,
+        "line_total": 2.99
+      },
+      {
+        "name": "PROT BATON TWA 40 A",
+        "quantity": null,
+        "unit_price": 2.58,
+        "line_total": 2.58
+      },
+      {
+        "name": "PRES ŚMIETANKA 100 C",
+        "quantity": null,
+        "unit_price": 4.49,
+        "line_total": 4.49
+      },
+      {
+        "name": "PAPRYKA BIAŁ CORNO C",
+        "quantity": null,
+        "unit_price": 1.64,
+        "line_total": 1.64
+      },
+      {
+        "name": "PRES ŚMIETANKA 100 C",
+        "quantity": null,
+        "unit_price": 4.49,
+        "line_total": 4.49
+      },
+      {
+        "name": "OETK EKST WAR 30 A",
+        "quantity": null,
+        "unit_price": 6.99,
+        "line_total": 6.99
+      },
+      {
+        "name": "OETK PROSZ PIEC 30 A",
+        "quantity": null,
+        "unit_price": 0.89,
+        "line_total": 0.89
+      },
+      {
+        "name": "WEDE CHŁK ORZE 50 A",
+        "quantity": null,
+        "unit_price": 2.99,
+        "line_total": 2.99
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"E.Leclerc URSYNÓW\",\n  \"date\": \"2026-07-18\",\n  \"currency\": \"PLN\",\n  \"total\": 217.26,\n  \"items\": [\n    {\n      \"name\": \"KERRYGOLD MASŁO 200 C\",\n      \"quantity\": null,\n      \"unit_price\": 9.99,\n      \"line_total\": 9.99\n    },\n    {\n      \"name\": \"CZACHO JAJA 10 C\",\n      \"quantity\": null,\n      \"unit_price\": 12.99,\n      \"line_total\": 12.99\n    },\n    {\n      \"name\": \"PIĄT MLEKO 2X 1 C\",\n      \"quantity\": null,\n      \"unit_price\": 5.69,\n      \"line_total\": 5.69\n    },\n    {\n      \"name\": \"GULASZ CIELECZY KG.MC\",\n      \"quantity\": null,\n      \"unit_price\": 0.65,\n      \"line_total\": 0.65\n    },\n    {\n      \"name\": \"KABACZEK\",\n      \"quantity\": null,\n      \"unit_price\": 0.96,\n      \"line_total\": 0.96\n    },\n    {\n      \"name\": \"LEER SER ORIGI 100 C\",\n      \"quantity\": null,\n      \"unit_price\": 5.99,\n      \"line_total\": 5.99\n    },\n    {\n      \"name\": \"MOWI LOSOS INT 100 C\",\n      \"quantity\": null,\n      \"unit_price\": 22.49,\n      \"line_total\": 22.49\n    },\n    {\n      \"name\": \"JANA SEREK CZE 120 C\",\n      \"quantity\": null,\n      \"unit_price\": 2.65,\n      \"line_total\": 2.65\n    },\n    {\n      \"name\": \"LEER SER ORIGI 100 C\",\n      \"quantity\": null,\n      \"unit_price\": 5.99,\n      \"line_total\": 5.99\n    },\n    {\n      \"name\": \"LEER SER LIGHT 100 C\",\n      \"quantity\": null,\n      \"unit_price\": 6.99,\n      \"line_total\": 6.99\n    },\n    {\n      \"name\": \"BAK JOGURT DRA 135 C\",\n      \"quantity\": null,\n      \"unit_price\": 3.29,\n      \"line_total\": 3.29\n    },\n    {\n      \"name\": \"GOSH DESER 125 C\",\n      \"quantity\": null,\n      \"unit_price\": 4.62,\n      \"line_total\": 4.62\n    },\n    {\n      \"name\": \"POL MŁ MAK TORT 1 C\",\n      \"quantity\": null,\n      \"unit_price\": 12.99,\n      \"line_total\": 12.99\n    },\n    {\n      \"name\": \"ŁACIATE ŚMIETA 500 C\",\n      \"quantity\": null,\n      \"unit_price\": 7.55,\n      \"line_total\": 7.55\n    },\n    {\n      \"name\": \"NEST CHEER PLA 250 C\",\n      \"quantity\": null,\n      \"unit_price\": 7.78,\n      \"line_total\": 7.78\n    },\n    {\n      \"name\": \"NEST CHOC PŁAT 250 C\",\n      \"quantity\": null,\n      \"unit_price\": 7.78,\n      \"line_total\": 7.78\n    },\n    {\n      \"name\": \"JOGO JOG B/CUK 150 C\",\n      \"quantity\": null,\n      \"unit_price\": 2.99,\n      \"line_total\": 2.99\n    },\n    {\n      \"name\": \"MEL SKROB ZIEM 500 C\",\n      \"quantity\": null,\n      \"unit_price\": 5.42,\n      \"line_total\": 5.42\n    },\n    {\n      \"name\": \"ROLN OCET 10X 500 A\",\n      \"quantity\": null,\n      \"unit_price\": 4.27,\n      \"line_total\": 4.27\n    },\n    {\n      \"name\": \"WEDE CHŁK ORZE 50 A\",\n      \"quantity\": null,\n      \"unit_price\": 2.99,\n      \"line_total\": 2.99\n    },\n    {\n      \"name\": \"PROT BATON TWA 40 A\",\n      \"quantity\": null,\n      \"unit_price\": 2.58,\n      \"line_total\": 2.58\n    },\n    {\n      \"name\": \"PRES ŚMIETANKA 100 C\",\n      \"quantity\": null,\n      \"unit_price\": 4.49,\n      \"line_total\": 4.49\n    },\n    {\n      \"name\": \"PAPRYKA BIAŁ CORNO C\",\n      \"quantity\": null,\n      \"unit_price\": 1.64,\n      \"line_total\": 1.64\n    },\n    {\n      \"name\": \"PRES ŚMIETANKA 100 C\",\n      \"quantity\": null,\n      \"unit_price\": 4.49,\n      \"line_total\": 4.49\n    },\n    {\n      \"name\": \"OETK EKST WAR 30 A\",\n      \"quantity\": null,\n      \"unit_price\": 6.99,\n      \"line_total\": 6.99\n    },\n    {\n      \"name\": \"OETK PROSZ PIEC 30 A\",\n      \"quantity\": null,\n      \"unit_price\": 0.89,\n      \"line_total\": 0.89\n    },\n    {\n      \"name\": \"WEDE CHŁK ORZE 50 A\",\n      \"quantity\": null,\n      \"unit_price\": 2.99,\n      \"line_total\": 2.99\n    }\n  ]\n}"
+}

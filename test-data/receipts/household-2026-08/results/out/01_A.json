@@ -1,0 +1,39 @@
+{
+  "receipt": "01",
+  "approach": "A",
+  "seconds": 10.8,
+  "error": null,
+  "parsed": {
+    "merchant": "Dodo Pizza Poland Sp. z o.o.",
+    "date": "2026-03-21",
+    "currency": "PLN",
+    "total": 56.38,
+    "items": [
+      {
+        "name": "dostawy 1 szt",
+        "quantity": 1,
+        "unit_price": 5.98,
+        "line_total": 5.98
+      },
+      {
+        "name": "placki ziemniaczane 8 szt.",
+        "quantity": 1,
+        "unit_price": 17.99,
+        "line_total": 17.99
+      },
+      {
+        "name": "4 pory roku Srednia",
+        "quantity": 1,
+        "unit_price": 53.99,
+        "line_total": 53.99
+      },
+      {
+        "name": "Pudetko na pizza 30 1 szt",
+        "quantity": 1,
+        "unit_price": 2.01,
+        "line_total": 2.01
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"Dodo Pizza Poland Sp. z o.o.\",\n  \"date\": \"2026-03-21\",\n  \"currency\": \"PLN\",\n  \"total\": 56.38,\n  \"items\": [\n    {\n      \"name\": \"dostawy 1 szt\",\n      \"quantity\": 1,\n      \"unit_price\": 5.98,\n      \"line_total\": 5.98\n    },\n    {\n      \"name\": \"placki ziemniaczane 8 szt.\",\n      \"quantity\": 1,\n      \"unit_price\": 17.99,\n      \"line_total\": 17.99\n    },\n    {\n      \"name\": \"4 pory roku Srednia\",\n      \"quantity\": 1,\n      \"unit_price\": 53.99,\n      \"line_total\": 53.99\n    },\n    {\n      \"name\": \"Pudetko na pizza 30 1 szt\",\n      \"quantity\": 1,\n      \"unit_price\": 2.01,\n      \"line_total\": 2.01\n    }\n  ]\n}"
+}

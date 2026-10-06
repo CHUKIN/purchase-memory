@@ -1,0 +1,33 @@
+{
+  "receipt": "07",
+  "approach": "A",
+  "seconds": 9.6,
+  "error": null,
+  "parsed": {
+    "merchant": "Global Parks Poland Sp. z o.o.",
+    "date": "2025-08-18",
+    "currency": "PLN",
+    "total": 108.09,
+    "items": [
+      {
+        "name": "DANIE BUFET GR",
+        "quantity": 0.288,
+        "unit_price": 95.0,
+        "line_total": 27.36
+      },
+      {
+        "name": "DANIE BUFET GR",
+        "quantity": 0.534,
+        "unit_price": 95.0,
+        "line_total": 50.73
+      },
+      {
+        "name": "WYPOZYCZENIE RECZNIAKA",
+        "quantity": 2,
+        "unit_price": 15.0,
+        "line_total": 30.0
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"Global Parks Poland Sp. z o.o.\",\n  \"date\": \"2025-08-18\",\n  \"currency\": \"PLN\",\n  \"total\": 108.09,\n  \"items\": [\n    {\n      \"name\": \"DANIE BUFET GR\",\n      \"quantity\": 0.288,\n      \"unit_price\": 95.0,\n      \"line_total\": 27.36\n    },\n    {\n      \"name\": \"DANIE BUFET GR\",\n      \"quantity\": 0.534,\n      \"unit_price\": 95.0,\n      \"line_total\": 50.73\n    },\n    {\n      \"name\": \"WYPOZYCZENIE RECZNIAKA\",\n      \"quantity\": 2,\n      \"unit_price\": 15.0,\n      \"line_total\": 30.0\n    }\n  ]\n}"
+}

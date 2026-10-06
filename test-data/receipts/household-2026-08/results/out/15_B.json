@@ -1,0 +1,39 @@
+{
+  "receipt": "15",
+  "approach": "B",
+  "seconds": 9.8,
+  "error": null,
+  "parsed": {
+    "merchant": "BILLY'S AMERICAN RESTAURANTS",
+    "date": "2025-05-20",
+    "currency": "PLN",
+    "total": 219.0,
+    "items": [
+      {
+        "name": "AMERICAN SALAD",
+        "quantity": 1,
+        "unit_price": 49.0,
+        "line_total": 49.0
+      },
+      {
+        "name": ". AMERYKANSKIE ZEBERKA",
+        "quantity": 1,
+        "unit_price": 79.0,
+        "line_total": 79.0
+      },
+      {
+        "name": "GRILLOWANY PSTRAG",
+        "quantity": 1,
+        "unit_price": null,
+        "line_total": null
+      },
+      {
+        "name": "DOMOWA MROZONA HERBATA",
+        "quantity": 1,
+        "unit_price": 22.0,
+        "line_total": 22.0
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"BILLY'S AMERICAN RESTAURANTS\",\n  \"date\": \"2025-05-20\",\n  \"currency\": \"PLN\",\n  \"total\": 219.0,\n  \"items\": [\n    {\n      \"name\": \"AMERICAN SALAD\",\n      \"quantity\": 1,\n      \"unit_price\": 49.0,\n      \"line_total\": 49.0\n    },\n    {\n      \"name\": \". AMERYKANSKIE ZEBERKA\",\n      \"quantity\": 1,\n      \"unit_price\": 79.0,\n      \"line_total\": 79.0\n    },\n    {\n      \"name\": \"GRILLOWANY PSTRAG\",\n      \"quantity\": 1,\n      \"unit_price\": null,\n      \"line_total\": null\n    },\n    {\n      \"name\": \"DOMOWA MROZONA HERBATA\",\n      \"quantity\": 1,\n      \"unit_price\": 22.0,\n      \"line_total\": 22.0\n    }\n  ]\n}"
+}

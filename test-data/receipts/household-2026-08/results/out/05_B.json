@@ -1,0 +1,27 @@
+{
+  "receipt": "05",
+  "approach": "B",
+  "seconds": 6.8,
+  "error": null,
+  "parsed": {
+    "merchant": "Restauracja McDonald's",
+    "date": "2026-03-26",
+    "currency": "PLN",
+    "total": 70.8,
+    "items": [
+      {
+        "name": "Klasa",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 33.0
+      },
+      {
+        "name": "Chrup Klas",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 13.2
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"Restauracja McDonald's\",\n  \"date\": \"2026-03-26\",\n  \"currency\": \"PLN\",\n  \"total\": 70.8,\n  \"items\": [\n    {\n      \"name\": \"Klasa\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 33.0\n    },\n    {\n      \"name\": \"Chrup Klas\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 13.2\n    }\n  ]\n}"
+}

@@ -1,0 +1,123 @@
+{
+  "receipt": "18",
+  "approach": "A",
+  "seconds": 27.7,
+  "error": null,
+  "parsed": {
+    "merchant": "CARREFOUR MARKET CH Sadyba",
+    "date": "2024-10-29",
+    "currency": "PLN",
+    "total": 166.69,
+    "items": [
+      {
+        "name": "A_PAKOWANIE",
+        "quantity": 1,
+        "unit_price": 2.0,
+        "line_total": 2.0
+      },
+      {
+        "name": "C_PODUDZIE Z KURCZ.",
+        "quantity": 0.5,
+        "unit_price": 26.0,
+        "line_total": 13.0
+      },
+      {
+        "name": "C_SMietana 18% 200G",
+        "quantity": 1,
+        "unit_price": 2.59,
+        "line_total": 2.59
+      },
+      {
+        "name": "C_MC POMARANCKE LUZ",
+        "quantity": 1,
+        "unit_price": 7.0,
+        "line_total": 7.0
+      },
+      {
+        "name": "C_MC SOCZEWNICA 500G",
+        "quantity": 1,
+        "unit_price": 6.65,
+        "line_total": 6.65
+      },
+      {
+        "name": "C_SER KROLEWSKI SIE",
+        "quantity": 2,
+        "unit_price": 7.15,
+        "line_total": 14.3
+      },
+      {
+        "name": "A_MYDLO W PŁ DOVE 5",
+        "quantity": 1,
+        "unit_price": 10.99,
+        "line_total": 10.99
+      },
+      {
+        "name": "C_MC JAJA ZIELONZK",
+        "quantity": 1,
+        "unit_price": 11.79,
+        "line_total": 11.79
+      },
+      {
+        "name": "C_MOWI ŁOSOS WĘDZ.",
+        "quantity": 1,
+        "unit_price": 30.89,
+        "line_total": 30.89
+      },
+      {
+        "name": "C_SZYNKA KRAKUS 100",
+        "quantity": 2,
+        "unit_price": 7.25,
+        "line_total": 14.5
+      },
+      {
+        "name": "C_KAPUSTA BIAŁA LUZ",
+        "quantity": 2.5,
+        "unit_price": 3.49,
+        "line_total": 8.73
+      },
+      {
+        "name": "C_MC MIX SAŁAT Z SA",
+        "quantity": 1,
+        "unit_price": 4.45,
+        "line_total": 4.45
+      },
+      {
+        "name": "C_JZN ZIEMNIAK JADA",
+        "quantity": 1,
+        "unit_price": 6.99,
+        "line_total": 6.99
+      },
+      {
+        "name": "C_NAPOJ ALPRO 1L MI",
+        "quantity": 1,
+        "unit_price": 11.99,
+        "line_total": 11.99
+      },
+      {
+        "name": "C_MARCHEW LUZ",
+        "quantity": 0.25,
+        "unit_price": 3.76,
+        "line_total": 0.94
+      },
+      {
+        "name": "C_ZUPA VIFON 70G KU",
+        "quantity": 2,
+        "unit_price": 1.95,
+        "line_total": 3.9
+      },
+      {
+        "name": "C_CHLEB TOSTOWY PEŁ",
+        "quantity": 1,
+        "unit_price": 6.49,
+        "line_total": 6.49
+      },
+      {
+        "name": "C_MASLO EKSTRA MAZU",
+        "quantity": 1,
+        "unit_price": 9.49,
+        "line_total": 9.49
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"CARREFOUR MARKET CH Sadyba\",\n  \"date\": \"2024-10-29\",\n  \"currency\": \"PLN\",\n  \"total\": 166.69,\n  \"items\": [\n    {\n      \"name\": \"A_PAKOWANIE\",\n      \"quantity\": 1,\n      \"unit_price\": 2.0,\n      \"line_total\": 2.0\n    },\n    {\n      \"name\": \"C_PODUDZIE Z KURCZ.\",\n      \"quantity\": 0.5,\n      \"unit_price\": 26.0,\n      \"line_total\": 13.0\n    },\n    {\n      \"name\": \"C_SMietana 18% 200G\",\n      \"quantity\": 1,\n      \"unit_price\": 2.59,\n      \"line_total\": 2.59\n    },\n    {\n      \"name\": \"C_MC POMARANCKE LUZ\",\n      \"quantity\": 1,\n      \"unit_price\": 7.0,\n      \"line_total\": 7.0\n    },\n    {\n      \"name\": \"C_MC SOCZEWNICA 500G\",\n      \"quantity\": 1,\n      \"unit_price\": 6.65,\n      \"line_total\": 6.65\n    },\n    {\n      \"name\": \"C_SER KROLEWSKI SIE\",\n      \"quantity\": 2,\n      \"unit_price\": 7.15,\n      \"line_total\": 14.3\n    },\n    {\n      \"name\": \"A_MYDLO W PŁ DOVE 5\",\n      \"quantity\": 1,\n      \"unit_price\": 10.99,\n      \"line_total\": 10.99\n    },\n    {\n      \"name\": \"C_MC JAJA ZIELONZK\",\n      \"quantity\": 1,\n      \"unit_price\": 11.79,\n      \"line_total\": 11.79\n    },\n    {\n      \"name\": \"C_MOWI ŁOSOS WĘDZ.\",\n      \"quantity\": 1,\n      \"unit_price\": 30.89,\n      \"line_total\": 30.89\n    },\n    {\n      \"name\": \"C_SZYNKA KRAKUS 100\",\n      \"quantity\": 2,\n      \"unit_price\": 7.25,\n      \"line_total\": 14.5\n    },\n    {\n      \"name\": \"C_KAPUSTA BIAŁA LUZ\",\n      \"quantity\": 2.5,\n      \"unit_price\": 3.49,\n      \"line_total\": 8.73\n    },\n    {\n      \"name\": \"C_MC MIX SAŁAT Z SA\",\n      \"quantity\": 1,\n      \"unit_price\": 4.45,\n      \"line_total\": 4.45\n    },\n    {\n      \"name\": \"C_JZN ZIEMNIAK JADA\",\n      \"quantity\": 1,\n      \"unit_price\": 6.99,\n      \"line_total\": 6.99\n    },\n    {\n      \"name\": \"C_NAPOJ ALPRO 1L MI\",\n      \"quantity\": 1,\n      \"unit_price\": 11.99,\n      \"line_total\": 11.99\n    },\n    {\n      \"name\": \"C_MARCHEW LUZ\",\n      \"quantity\": 0.25,\n      \"unit_price\": 3.76,\n      \"line_total\": 0.94\n    },\n    {\n      \"name\": \"C_ZUPA VIFON 70G KU\",\n      \"quantity\": 2,\n      \"unit_price\": 1.95,\n      \"line_total\": 3.9\n    },\n    {\n      \"name\": \"C_CHLEB TOSTOWY PEŁ\",\n      \"quantity\": 1,\n      \"unit_price\": 6.49,\n      \"line_total\": 6.49\n    },\n    {\n      \"name\": \"C_MASLO EKSTRA MAZU\",\n      \"quantity\": 1,\n      \"unit_price\": 9.49,\n      \"line_total\": 9.49\n    }\n  ]\n}"
+}

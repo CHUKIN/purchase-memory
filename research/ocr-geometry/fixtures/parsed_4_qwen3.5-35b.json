@@ -1,0 +1,321 @@
+```json
+{
+  "merchant": "E.Leclerc L ÜRSYNOW",
+  "date": "2026-09-18 18:57",
+  "total": 423.46,
+  "items": [
+    {
+      "name": "POLĘDWICA WOŁOWA KGO",
+      "qty": 0.446,
+      "unitPrice": 157.49,
+      "lineTotal": 70.24
+    },
+    {
+      "name": "HOR BROKUŁ ROZ 450 C",
+      "qty": 1,
+      "unitPrice": 8.99,
+      "lineTotal": 8.99
+    },
+    {
+      "name": "WM WARZ N/PATE 450 C",
+      "qty": 1,
+      "unitPrice": 5.99,
+      "lineTotal": 5.99
+    },
+    {
+      "name": "HOR BROKUŁ RÓZ 450 C",
+      "qty": 1,
+      "unitPrice": 8.99,
+      "lineTotal": 8.95
+    },
+    {
+      "name": "PIELMIENI 450G KURCC",
+      "qty": 1,
+      "unitPrice": 8.99,
+      "lineTotal": 8.99
+    },
+    {
+      "name": "PH WARZ PATE 450",
+      "qty": 1,
+      "unitPrice": 5.99,
+      "lineTotal": 5.99
+    },
+    {
+      "name": "HOR WARZ N/PAT 450 C",
+      "qty": 1,
+      "unitPrice": 9.02,
+      "lineTotal": 9.02
+    },
+    {
+      "name": "MIĘSO KRÓ N/GULASZ C",
+      "qty": 0.27,
+      "unitPrice": 63.99,
+      "lineTotal": 17.28
+    },
+    {
+      "name": "ZAG FILET Z KURCZ C",
+      "qty": 0.499,
+      "unitPrice": 39.99,
+      "lineTotal": 19.96
+    },
+    {
+      "name": "ZAG MIESO MIEL 380 C",
+      "qty": 1,
+      "unitPrice": 16.99,
+      "lineTotal": 16.99
+    },
+    {
+      "name": "MOWI ŁOSOS SW 250",
+      "qty": 1,
+      "unitPrice": 21.0,
+      "lineTotal": 21.0
+    },
+    {
+      "name": "BR KORAL LODY 900 C",
+      "qty": 1,
+      "unitPrice": 23.99,
+      "lineTotal": 23.99
+    },
+    {
+      "name": "RIB HUMMUS SHI1 80 C",
+      "qty": 1,
+      "unitPrice": 2.13,
+      "lineTotal": 2.13
+    },
+    {
+      "name": "RIB HUMMUS NATU 80 C",
+      "qty": 1,
+      "unitPrice": 2.13,
+      "lineTotal": 2.13
+    },
+    {
+      "name": "HOCH SER TYLZY 135 0",
+      "qty": 1,
+      "unitPrice": 6.99,
+      "lineTotal": 6.99
+    },
+    {
+      "name": "OLE KIEŁB KRAK 80 C",
+      "qty": 1,
+      "unitPrice": 5.49,
+      "lineTotal": 5.49
+    },
+    {
+      "name": "PIĄT MLEKO 2% 1",
+      "qty": 1,
+      "unitPrice": 5.69,
+      "lineTotal": 5.69
+    },
+    {
+      "name": "PIAT MLEKO 2% 1",
+      "qty": 1,
+      "unitPrice": 5.69,
+      "lineTotal": 5.69
+    },
+    {
+      "name": "PIAT SEREK MAL 150 C",
+      "qty": 1,
+      "unitPrice": 3.59,
+      "lineTotal": 3.59
+    },
+    {
+      "name": "PIẬT SEREK LEK 150 C",
+      "qty": 1,
+      "unitPrice": 2.99,
+      "lineTotal": 2.99
+    },
+    {
+      "name": "CZACHO JAJA 10",
+      "qty": 1,
+      "unitPrice": 12.99,
+      "lineTotal": 12.99
+    },
+    {
+      "name": "FINUU KLASYCZN 350 C",
+      "qty": 1,
+      "unitPrice": 12.49,
+      "lineTotal": 12.49
+    },
+    {
+      "name": "ZOTT SMIET 10X10",
+      "qty": 1,
+      "unitPrice": 3.32,
+      "lineTotal": 3.32
+    },
+    {
+      "name": "PRES SMIETANKA 100 C",
+      "qty": 1,
+      "unitPrice": 4.49,
+      "lineTotal": 4.49
+    },
+    {
+      "name": "LEER SER LIGHT 100 C",
+      "qty": 1,
+      "unitPrice": 6.99,
+      "lineTotal": 6.99
+    },
+    {
+      "name": "CZACHO JAJA 10",
+      "qty": 1,
+      "unitPrice": 12.99,
+      "lineTotal": 12.99
+    },
+    {
+      "name": "ACTIV KEFI BOR 280 C",
+      "qty": 1,
+      "unitPrice": 3.99,
+      "lineTotal": 3.99
+    },
+    {
+      "name": "ACTIV KEFI NAT 280 C",
+      "qty": 1,
+      "unitPrice": 3.99,
+      "lineTotal": 3.99
+    },
+    {
+      "name": "MAGIJ BATON TWA 40 A",
+      "qty": 1,
+      "unitPrice": 2.29,
+      "lineTotal": 2.29
+    },
+    {
+      "name": "MAGIJ BATON TWA 40 A",
+      "qty": 1,
+      "unitPrice": 2.29,
+      "lineTotal": 2.29
+    },
+    {
+      "name": "MAGIJ BATON TWA 40 А",
+      "qty": 1,
+      "unitPrice": 2.29,
+      "lineTotal": 2.29
+    },
+    {
+      "name": "MAGIJ BATON TWA 40 A",
+      "qty": 1,
+      "unitPrice": 2.29,
+      "lineTotal": 2.29
+    },
+    {
+      "name": "PIECZARKI TAC 500",
+      "qty": 1,
+      "unitPrice": 7.99,
+      "lineTotal": 7.99
+    },
+    {
+      "name": "FE SAK FAMILL200G C",
+      "qty": 1,
+      "unitPrice": 4.99,
+      "lineTotal": 4.99
+    },
+    {
+      "name": "LUBE MAKA UNIWE 1 C",
+      "qty": 1,
+      "unitPrice": 4.79,
+      "lineTotal": 4.79
+    },
+    {
+      "name": "BIFIX POWID SL 340 C",
+      "qty": 1,
+      "unitPrice": 9.19,
+      "lineTotal": 9.19
+    },
+    {
+      "name": "WEDEL BATON PAW 45 A",
+      "qty": 1,
+      "unitPrice": 3.49,
+      "lineTotal": 3.49
+    },
+    {
+      "name": "WEDEL BATON PAW 45 A",
+      "qty": 1,
+      "unitPrice": 3.49,
+      "lineTotal": 3.49
+    },
+    {
+      "name": "HERB KONFI WIS 240 C",
+      "qty": 1,
+      "unitPrice": 6.99,
+      "lineTotal": 6.99
+    },
+    {
+      "name": "BIFIX OWO LES 200 C",
+      "qty": 1,
+      "unitPrice": 6.5,
+      "lineTotal": 6.5
+    },
+    {
+      "name": "HERB.EARL GREY 50TBA",
+      "qty": 1,
+      "unitPrice": 31.96,
+      "lineTotal": 31.96
+    },
+    {
+      "name": "OGÖRKI GRUNTOWE",
+      "qty": 0.212,
+      "unitPrice": 5.99,
+      "lineTotal": 1.27
+    },
+    {
+      "name": "HERB Z10Ł RUMIA 60 C",
+      "qty": 1,
+      "unitPrice": 6.98,
+      "lineTotal": 6.98
+    },
+    {
+      "name": "JABŁKA GALA",
+      "qty": 0.74,
+      "unitPrice": 4.49,
+      "lineTotal": 3.32
+    },
+    {
+      "name": "NOZE OBIERAKI 3SZT A",
+      "qty": 1,
+      "unitPrice": 3.99,
+      "lineTotal": 3.99
+    },
+    {
+      "name": "KUKURYDZA SZT",
+      "qty": 3,
+      "unitPrice": 2.99,
+      "lineTotal": 8.97
+    },
+    {
+      "name": "PAPRYKA CZERWONA",
+      "qty": 0.486,
+      "unitPrice": 6.99,
+      "lineTotal": 3.4
+    },
+    {
+      "name": "PAPRYK CORNO",
+      "qty": 0.234,
+      "unitPrice": 5.99,
+      "lineTotal": 1.4
+    },
+    {
+      "name": "OPUST C/O/CASH/SPALANIE-11.02",
+      "qty": 1,
+      "unitPrice": 4.38,
+      "lineTotal": -4.38
+    },
+    {
+      "name": "OPUST C/0/2026/T38/DANONE/ACTIV",
+      "qty": 1,
+      "unitPrice": 0.8,
+      "lineTotal": -0.8
+    },
+    {
+      "name": "OPUST C/0/2026/T37/HERBAPOL/KON",
+      "qty": 1,
+      "unitPrice": 1.0,
+      "lineTotal": -1.0
+    },
+    {
+      "name": "OPUST C/0/2026/T38/IGLOTEX/WARZ",
+      "qty": 1,
+      "unitPrice": 1.0,
+      "lineTotal": -1.0
+    }
+  ]
+}
+```

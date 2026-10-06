@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "pm-web-storybook",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "src/PurchaseMemory.Web", "run", "storybook"],
+      "port": 6006
+    },
+    {
+      "name": "pm-web-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "src/PurchaseMemory.Web", "run", "dev"],
+      "port": 5173
+    }
+  ]
+}

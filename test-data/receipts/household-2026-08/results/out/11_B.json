@@ -1,0 +1,51 @@
+{
+  "receipt": "11",
+  "approach": "B",
+  "seconds": 14.1,
+  "error": null,
+  "parsed": {
+    "merchant": "CARREFOUR MARKET",
+    "date": "2025-07-18",
+    "currency": "PLN",
+    "total": 75.55,
+    "items": [
+      {
+        "name": "CHSER RAJSKI WLOSZC",
+        "quantity": 1,
+        "unit_price": 7.99,
+        "line_total": 7.99
+      },
+      {
+        "name": "CHSER TWARD.DZIUGAS",
+        "quantity": 2,
+        "unit_price": 3.95,
+        "line_total": 4.61
+      },
+      {
+        "name": "C#FILET Z KURCZAKA",
+        "quantity": 0.609,
+        "unit_price": 27.99,
+        "line_total": 17.05
+      },
+      {
+        "name": "#POLEDWICA Z DORSZ",
+        "quantity": 0.253,
+        "unit_price": 89.9,
+        "line_total": 22.74
+      },
+      {
+        "name": "#JOGURT MOVENPICK",
+        "quantity": 2,
+        "unit_price": 5.75,
+        "line_total": 11.5
+      },
+      {
+        "name": "C#DESER SATINO BAKO",
+        "quantity": 1,
+        "unit_price": 3.35,
+        "line_total": 3.35
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"CARREFOUR MARKET\",\n  \"date\": \"2025-07-18\",\n  \"currency\": \"PLN\",\n  \"total\": 75.55,\n  \"items\": [\n    {\n      \"name\": \"CHSER RAJSKI WLOSZC\",\n      \"quantity\": 1,\n      \"unit_price\": 7.99,\n      \"line_total\": 7.99\n    },\n    {\n      \"name\": \"CHSER TWARD.DZIUGAS\",\n      \"quantity\": 2,\n      \"unit_price\": 3.95,\n      \"line_total\": 4.61\n    },\n    {\n      \"name\": \"C#FILET Z KURCZAKA\",\n      \"quantity\": 0.609,\n      \"unit_price\": 27.99,\n      \"line_total\": 17.05\n    },\n    {\n      \"name\": \"#POLEDWICA Z DORSZ\",\n      \"quantity\": 0.253,\n      \"unit_price\": 89.9,\n      \"line_total\": 22.74\n    },\n    {\n      \"name\": \"#JOGURT MOVENPICK\",\n      \"quantity\": 2,\n      \"unit_price\": 5.75,\n      \"line_total\": 11.5\n    },\n    {\n      \"name\": \"C#DESER SATINO BAKO\",\n      \"quantity\": 1,\n      \"unit_price\": 3.35,\n      \"line_total\": 3.35\n    }\n  ]\n}"
+}

@@ -1,0 +1,63 @@
+{
+  "receipt": "04",
+  "approach": "A",
+  "seconds": 14.6,
+  "error": null,
+  "parsed": {
+    "merchant": "Lidl",
+    "date": "2026-07-17",
+    "currency": "PLN",
+    "total": 136.99,
+    "items": [
+      {
+        "name": "Fairy Kapsułki Lemon",
+        "quantity": 1,
+        "unit_price": 84.99,
+        "line_total": 84.99
+      },
+      {
+        "name": "Ogórki grunt. PL luz",
+        "quantity": 1,
+        "unit_price": 0.2,
+        "line_total": 0.2
+      },
+      {
+        "name": "Pure Parówki z ind.",
+        "quantity": 1,
+        "unit_price": 49.6,
+        "line_total": 49.6
+      },
+      {
+        "name": "Persil Kapsułki 60pr",
+        "quantity": 1,
+        "unit_price": 51.99,
+        "line_total": 51.99
+      },
+      {
+        "name": "Sal. batauska korzen",
+        "quantity": 1,
+        "unit_price": 29.8,
+        "line_total": 29.8
+      },
+      {
+        "name": "Lay's Chipsy",
+        "quantity": 1,
+        "unit_price": 6.99,
+        "line_total": 6.99
+      },
+      {
+        "name": "Przysnacki Chipsy w.",
+        "quantity": 1,
+        "unit_price": 8.99,
+        "line_total": 8.99
+      },
+      {
+        "name": "Reklamowa 50g",
+        "quantity": 1,
+        "unit_price": 6.65,
+        "line_total": 6.65
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"Lidl\",\n  \"date\": \"2026-07-17\",\n  \"currency\": \"PLN\",\n  \"total\": 136.99,\n  \"items\": [\n    {\n      \"name\": \"Fairy Kapsułki Lemon\",\n      \"quantity\": 1,\n      \"unit_price\": 84.99,\n      \"line_total\": 84.99\n    },\n    {\n      \"name\": \"Ogórki grunt. PL luz\",\n      \"quantity\": 1,\n      \"unit_price\": 0.2,\n      \"line_total\": 0.2\n    },\n    {\n      \"name\": \"Pure Parówki z ind.\",\n      \"quantity\": 1,\n      \"unit_price\": 49.6,\n      \"line_total\": 49.6\n    },\n    {\n      \"name\": \"Persil Kapsułki 60pr\",\n      \"quantity\": 1,\n      \"unit_price\": 51.99,\n      \"line_total\": 51.99\n    },\n    {\n      \"name\": \"Sal. batauska korzen\",\n      \"quantity\": 1,\n      \"unit_price\": 29.8,\n      \"line_total\": 29.8\n    },\n    {\n      \"name\": \"Lay's Chipsy\",\n      \"quantity\": 1,\n      \"unit_price\": 6.99,\n      \"line_total\": 6.99\n    },\n    {\n      \"name\": \"Przysnacki Chipsy w.\",\n      \"quantity\": 1,\n      \"unit_price\": 8.99,\n      \"line_total\": 8.99\n    },\n    {\n      \"name\": \"Reklamowa 50g\",\n      \"quantity\": 1,\n      \"unit_price\": 6.65,\n      \"line_total\": 6.65\n    }\n  ]\n}"
+}

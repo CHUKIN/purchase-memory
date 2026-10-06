@@ -1,0 +1,93 @@
+{
+  "receipt": "16",
+  "approach": "B",
+  "seconds": 20.9,
+  "error": null,
+  "parsed": {
+    "merchant": "AUCHAN",
+    "date": "2025-03-14",
+    "currency": "PLN",
+    "total": 165.36,
+    "items": [
+      {
+        "name": "UDO Z KURC",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 0.49
+      },
+      {
+        "name": "POMIDOR KO",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 11.26
+      },
+      {
+        "name": "OGOREK DŁU",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 7.42
+      },
+      {
+        "name": "SER KROLEW",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 14.98
+      },
+      {
+        "name": "PIECZARKI",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 37.9
+      },
+      {
+        "name": "LEMNIAKI W",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 14.38
+      },
+      {
+        "name": "P#CZEK FAN",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 7.58
+      },
+      {
+        "name": "PASTA PRZ",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 12.96
+      },
+      {
+        "name": "LOSOS PORCJ",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 37.9
+      },
+      {
+        "name": ") TOREBKI",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 14.38
+      },
+      {
+        "name": "PTU A",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 2.09
+      },
+      {
+        "name": "PTU C",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 1.58
+      },
+      {
+        "name": "BANAN",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 34.04
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"AUCHAN\",\n  \"date\": \"2025-03-14\",\n  \"currency\": \"PLN\",\n  \"total\": 165.36,\n  \"items\": [\n    {\n      \"name\": \"UDO Z KURC\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 0.49\n    },\n    {\n      \"name\": \"POMIDOR KO\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 11.26\n    },\n    {\n      \"name\": \"OGOREK DŁU\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 7.42\n    },\n    {\n      \"name\": \"SER KROLEW\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 14.98\n    },\n    {\n      \"name\": \"PIECZARKI\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 37.90\n    },\n    {\n      \"name\": \"LEMNIAKI W\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 14.38\n    },\n    {\n      \"name\": \"P#CZEK FAN\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 7.58\n    },\n    {\n      \"name\": \"PASTA PRZ\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 12.96\n    },\n    {\n      \"name\": \"LOSOS PORCJ\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 37.90\n    },\n    {\n      \"name\": \") TOREBKI\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 14.38\n    },\n    {\n      \"name\": \"PTU A\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 2.09\n    },\n    {\n      \"name\": \"PTU C\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 1.58\n    },\n    {\n      \"name\": \"BANAN\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 34.04\n    }\n  ]\n}"
+}

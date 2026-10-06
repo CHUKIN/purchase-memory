@@ -1,0 +1,69 @@
+{
+  "receipt": "09",
+  "approach": "B",
+  "seconds": 18.0,
+  "error": null,
+  "parsed": {
+    "merchant": "Carrefour MARKET Warszawa",
+    "date": "2025-08-06",
+    "currency": "PLN",
+    "total": 177.48,
+    "items": [
+      {
+        "name": "_SZPINAK BABY 125G",
+        "quantity": 1,
+        "unit_price": 5.99,
+        "line_total": 5.99
+      },
+      {
+        "name": "A_NODA MINER BORJOM",
+        "quantity": 1,
+        "unit_price": 7.49,
+        "line_total": 7.49
+      },
+      {
+        "name": "_MAŚLANKA 420G BUT",
+        "quantity": 1,
+        "unit_price": 2.89,
+        "line_total": 2.89
+      },
+      {
+        "name": "B_WILKIN RASPBERRY",
+        "quantity": 1,
+        "unit_price": 35.99,
+        "line_total": 35.99
+      },
+      {
+        "name": "C_KEDYMEX-RZODKIEWE",
+        "quantity": 0.392,
+        "unit_price": 38.99,
+        "line_total": 15.28
+      },
+      {
+        "name": "_MIÓD PSZCZ. WIELO",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": null
+      },
+      {
+        "name": "A_CHUST DO HIG INT",
+        "quantity": 1,
+        "unit_price": 9.99,
+        "line_total": 9.99
+      },
+      {
+        "name": "_KANA O SMAKU ORZE",
+        "quantity": 1,
+        "unit_price": 35.99,
+        "line_total": 35.99
+      },
+      {
+        "name": "C_MOWI ŁOSOŚ WEDZ,",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": null
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"Carrefour MARKET Warszawa\",\n  \"date\": \"2025-08-06\",\n  \"currency\": \"PLN\",\n  \"total\": 177.48,\n  \"items\": [\n    {\n      \"name\": \"_SZPINAK BABY 125G\",\n      \"quantity\": 1,\n      \"unit_price\": 5.99,\n      \"line_total\": 5.99\n    },\n    {\n      \"name\": \"A_NODA MINER BORJOM\",\n      \"quantity\": 1,\n      \"unit_price\": 7.49,\n      \"line_total\": 7.49\n    },\n    {\n      \"name\": \"_MAŚLANKA 420G BUT\",\n      \"quantity\": 1,\n      \"unit_price\": 2.89,\n      \"line_total\": 2.89\n    },\n    {\n      \"name\": \"B_WILKIN RASPBERRY\",\n      \"quantity\": 1,\n      \"unit_price\": 35.99,\n      \"line_total\": 35.99\n    },\n    {\n      \"name\": \"C_KEDYMEX-RZODKIEWE\",\n      \"quantity\": 0.392,\n      \"unit_price\": 38.99,\n      \"line_total\": 15.28\n    },\n    {\n      \"name\": \"_MIÓD PSZCZ. WIELO\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": null\n    },\n    {\n      \"name\": \"A_CHUST DO HIG INT\",\n      \"quantity\": 1,\n      \"unit_price\": 9.99,\n      \"line_total\": 9.99\n    },\n    {\n      \"name\": \"_KANA O SMAKU ORZE\",\n      \"quantity\": 1,\n      \"unit_price\": 35.99,\n      \"line_total\": 35.99\n    },\n    {\n      \"name\": \"C_MOWI ŁOSOŚ WEDZ,\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": null\n    }\n  ]\n}"
+}

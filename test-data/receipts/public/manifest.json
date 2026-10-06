@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "retrievedAt": "2026-07-15",
+  "purpose": "Private local evaluation of Polish receipt OCR and vision extraction. This is not a training dataset.",
+  "downloaded": [
+    {
+      "id": "biedronka-2020-01-09-cc-by-sa",
+      "store": "Biedronka",
+      "kind": "real_physical_receipt_photo",
+      "file": "biedronka-2020-01-09-cc-by-sa.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Polish_supermarket_receipt.jpg",
+      "directMediaUrl": "https://upload.wikimedia.org/wikipedia/commons/8/86/Polish_supermarket_receipt.jpg",
+      "publicationDate": "2020-01-09",
+      "receiptDate": "2020-01-09",
+      "dimensions": {
+        "width": 2856,
+        "height": 3879
+      },
+      "sha256": "4c5c125e64b24967761bce0aea76090f3cdf99c20dc329e0431fe8f63d3b2ac6",
+      "license": "CC BY-SA 4.0",
+      "attribution": "Hippietrail, Wikimedia Commons",
+      "quality": "High-resolution handheld photo; slight perspective and thermal-paper noise; fully useful as a realistic baseline.",
+      "privacy": "No customer name, phone number or loyalty-card identifier is visible. Store address and fiscal identifiers are business data.",
+      "notes": "Older than the preferred 2023-2026 window, retained because it is the only verified real Polish chain receipt found with an explicit reusable license."
+    },
+    {
+      "id": "biedronka-eparagon-2024-07-official",
+      "store": "Biedronka",
+      "kind": "real_e_receipt_visualization",
+      "file": "biedronka-eparagon-2024-07-official.jpg",
+      "sourcePageUrl": "https://media.biedronka.pl/336828-biedronka-cyfryzuje-paragony-fiskalne",
+      "directMediaUrl": "https://prowly-prod.s3.eu-west-1.amazonaws.com/uploads/landing_page_image/image/570212/3cf0c7a796b7f99c3a8c4a56004505f7.jpg",
+      "publicationDate": "2024-07-23",
+      "receiptDate": "2024-07-22",
+      "dimensions": {
+        "width": 359,
+        "height": 538
+      },
+      "sha256": "d1d678bd8c7622478f47eec5f6a775d197612c457bc7e7ac47352c3f5de5b7e8",
+      "license": "Official press attachment offered with a download action; no open-content license stated. Keep for private local QA and do not redistribute independently.",
+      "attribution": "Biuro Prasowe Biedronka / Jeronimo Martins Polska S.A.",
+      "quality": "Clean, straight electronic visualization; small but readable; two item lines.",
+      "privacy": "Payment-card number is masked in the official image; a few trailing digits remain visible. No customer name is shown.",
+      "notes": "Useful for validating e-receipt parsing, but easier than a phone photo."
+    },
+    {
+      "id": "lidl-2025-official-sample",
+      "store": "Lidl",
+      "kind": "illustrative_physical_receipt_sample",
+      "file": "lidl-2025-official-sample.png",
+      "sourcePageUrl": "https://www.lidl.pl/static/assets/Regulamin-Lidloteria2025_FINAL-1430486.pdf",
+      "directMediaUrl": null,
+      "publicationDate": "2025-03-05",
+      "receiptDate": "2025-03-10",
+      "dimensions": {
+        "width": 230,
+        "height": 371
+      },
+      "sha256": "6e5e3f2448898da215f603a2891a6ab812013cd040c81dcc596ce86eebfd4324",
+      "license": "Derived crop from page 23 of Lidl's public promotional-lottery rules; no open-content license stated. Keep for private local QA and do not redistribute independently.",
+      "attribution": "Lidl / Smolar, 'Lidloteria 2025' rules, Annex 1, page 23",
+      "quality": "Small, clean receipt visualization with readable products, VAT, total, payment and barcode; colored annotations mark date, receipt number and total.",
+      "privacy": "The regulation calls this an example visualization; identifiers are sample data rather than a customer's personal data.",
+      "notes": "Not a real shopper photo. Do not count it as evidence of performance on camera distortion or damaged thermal paper."
+    }
+  ],
+  "remoteOnly": [
+    {
+      "id": "zabka-fakt-2025-11-29",
+      "store": "Żabka",
+      "kind": "real_physical_receipt_photo",
+      "sourcePageUrl": "https://www.fakt.pl/pieniadze/zabka-rozdaje-zdrapki-za-zakupy-to-udalo-mi-sie-wydrapac/vv1g2hg",
+      "publicationDate": "2025-12-03",
+      "receiptDate": "2025-11-29",
+      "quality": "Image search preview exposes a readable receipt with five product lines and discounts.",
+      "reasonNotDownloaded": "Fakt marks the media as copyrighted and its site explicitly reserves automated TDM/AI use. Link only; request permission or use the owner's own receipt instead.",
+      "notes": "Store identity is supported by the receipt header and article context."
+    },
+    {
+      "id": "auchan-reddit-2024-04-23",
+      "store": "Auchan",
+      "kind": "real_physical_receipt_photo",
+      "sourcePageUrl": "https://www.reddit.com/r/Polska/comments/1cb52rg/paragony_cd_auchan_vs_biedronka/",
+      "publicationDate": "2024-04-23",
+      "receiptDate": null,
+      "quality": "Long Auchan receipt photographed beside a Biedronka receipt; useful for long-document and small-text stress testing.",
+      "reasonNotDownloaded": "User-generated content with no reusable license. The post is public, but public visibility is not permission to copy it into a repository.",
+      "notes": "The author explicitly identifies the receipt as Auchan and discussion references the visible 571.68 PLN total."
+    },
+    {
+      "id": "auchan-fakt-2024-03",
+      "store": "Auchan",
+      "kind": "real_physical_receipt_photo",
+      "sourcePageUrl": "https://www.fakt.pl/pieniadze/oszczedzanie/zrobila-ogromne-zakupy-w-auchan-za-1-zl-16-gr-ty-tez-tak-mozesz/1v8x704",
+      "publicationDate": "2024-03-22",
+      "receiptDate": null,
+      "quality": "Article gallery reportedly includes a large discounted basket and its receipt.",
+      "reasonNotDownloaded": "Fakt prohibits automated TDM/AI use and credits third-party Instagram material.",
+      "notes": "Alternative link if permission is obtained; do not use it automatically."
+    },
+    {
+      "id": "carrefour-o2-2024-05-21",
+      "store": "Carrefour",
+      "kind": "real_physical_receipt_photo",
+      "sourcePageUrl": "https://www.o2.pl/biznes/kupil-tylko-chipsy-paragon-mial-pol-metra-7029839433005728a",
+      "publicationDate": "2024-05-21",
+      "receiptDate": null,
+      "quality": "Article includes close photos of a 55 cm receipt/printout set from Carrefour at ul. Dolna in Warsaw; only a few purchased items.",
+      "reasonNotDownloaded": "Images are credited © o2.pl and no reusable license is stated.",
+      "notes": "Store is explicitly confirmed by the article and Carrefour's quoted response."
+    },
+    {
+      "id": "biedronka-lidl-przegladhandlowy-2024-04-12",
+      "store": "Biedronka and Lidl",
+      "kind": "real_physical_receipt_comparison_photo",
+      "sourcePageUrl": "https://www.przegladhandlowy.pl/11938/paragony-w-biedronce-i-lidlu-porownanie/",
+      "publicationDate": "2024-04-12",
+      "receiptDate": null,
+      "quality": "Low-resolution side-by-side photo; two products on the Biedronka receipt and one on the Lidl receipt.",
+      "reasonNotDownloaded": "No reuse license is stated; the accessible preview is only 250x181 and is too small for a fair OCR benchmark.",
+      "notes": "Useful as a human reference for receipt-length differences, not as a model benchmark."
+    },
+    {
+      "id": "eleclerc-2023-illustrative-sample",
+      "store": "E.Leclerc",
+      "kind": "illustrative_receipt_sample_in_pdf",
+      "sourcePageUrl": "https://www.regulaminy.albedomarketing.pl/storage/terms/V8QGfU9wK9odZ7x3GuRfJmAJZ2Pt7w-metaUmVndWxhbWluIGtvbmt1cnN1X0UubGVjcmVyY18xMjA3MjAyM19fZmluYWxfICgwMDIpLnBkZg%3D%3D-.pdf",
+      "publicationDate": "2023",
+      "receiptDate": "2023-10-17",
+      "quality": "Clean synthetic receipt visualization embedded in contest rules; two product lines.",
+      "reasonNotDownloaded": "No open license is stated and the content is synthetic, so it adds little beyond the licensed/official samples already stored.",
+      "notes": "No verifiable modern real E.Leclerc receipt photo with reusable rights was found."
+    }
+  ],
+  "coverageGaps": [
+    "No reusable modern real receipt photo was found for Żabka, Auchan, Carrefour or E.Leclerc.",
+    "The downloaded 2024 Biedronka e-receipt and 2025 Lidl receipt are clean visualizations, not difficult camera photos.",
+    "For a defensible benchmark, collect owner-consented receipts from the target stores and keep the original image plus a manually verified expected JSON file."
+  ]
+}

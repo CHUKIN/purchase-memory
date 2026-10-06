@@ -1,0 +1,27 @@
+{
+  "receipt": "06",
+  "approach": "B",
+  "seconds": 7.0,
+  "error": null,
+  "parsed": {
+    "merchant": "eczny Mleczarnia Pousinska",
+    "date": "2025-10-11",
+    "currency": "PLN",
+    "total": 25.85,
+    "items": [
+      {
+        "name": "Sos ponidor owy",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 12.01
+      },
+      {
+        "name": "Golabek niesny",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 6.76
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"eczny Mleczarnia Pousinska\",\n  \"date\": \"2025-10-11\",\n  \"currency\": \"PLN\",\n  \"total\": 25.85,\n  \"items\": [\n    {\n      \"name\": \"Sos ponidor owy\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 12.01\n    },\n    {\n      \"name\": \"Golabek niesny\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 6.76\n    }\n  ]\n}"
+}

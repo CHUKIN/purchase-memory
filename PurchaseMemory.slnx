@@ -1,0 +1,18 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/PurchaseMemory.Api/PurchaseMemory.Api.csproj" />
+    <Project Path="src/PurchaseMemory.Application/PurchaseMemory.Application.csproj" />
+    <Project Path="src/PurchaseMemory.Domain/PurchaseMemory.Domain.csproj" />
+    <Project Path="src/PurchaseMemory.Infrastructure/PurchaseMemory.Infrastructure.csproj" />
+    <Project Path="src/PurchaseMemory.Infrastructure.Postgres/PurchaseMemory.Infrastructure.Postgres.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/PurchaseMemory.IntegrationTests/PurchaseMemory.IntegrationTests.csproj" />
+  </Folder>
+  <Folder Name="/tools/">
+    <Project Path="tools/PurchaseMemory.OllamaSmoke/PurchaseMemory.OllamaSmoke.csproj" />
+    <Project Path="tools/PurchaseMemory.OpenAiSmoke/PurchaseMemory.OpenAiSmoke.csproj" />
+    <Project Path="tools/PurchaseMemory.ProductBackfill/PurchaseMemory.ProductBackfill.csproj" />
+    <Project Path="tools/PurchaseMemory.ReceiptBenchmarks/PurchaseMemory.ReceiptBenchmarks.csproj" />
+  </Folder>
+</Solution>

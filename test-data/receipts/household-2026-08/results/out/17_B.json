@@ -1,0 +1,105 @@
+{
+  "receipt": "17",
+  "approach": "B",
+  "seconds": 23.3,
+  "error": null,
+  "parsed": {
+    "merchant": "AUCHAN",
+    "date": "2025-03-14",
+    "currency": "PLN",
+    "total": 165.36,
+    "items": [
+      {
+        "name": "PIERNIKI S",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 22.97
+      },
+      {
+        "name": "TOREBKI",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 3.69
+      },
+      {
+        "name": "BANAN",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 11.99
+      },
+      {
+        "name": "SOCZEWICA",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 37.9
+      },
+      {
+        "name": "UDO Z KURC",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 14.98
+      },
+      {
+        "name": "KUKURYDZA",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 7.04
+      },
+      {
+        "name": "SZPINAK",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 5.69
+      },
+      {
+        "name": "LOSOS PORCJ",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 5.99
+      },
+      {
+        "name": "PASTA",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 6.34
+      },
+      {
+        "name": "SZYNKA Z P",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 7.58
+      },
+      {
+        "name": "SER KROLEW",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 14.38
+      },
+      {
+        "name": "POMIDOR KO",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 9.9
+      },
+      {
+        "name": "OGOREK DŁU",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 3.79
+      },
+      {
+        "name": "ZIEMNIAKI W",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 6.48
+      },
+      {
+        "name": "PIECZARKI",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 3.99
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"AUCHAN\",\n  \"date\": \"2025-03-14\",\n  \"currency\": \"PLN\",\n  \"total\": 165.36,\n  \"items\": [\n    {\n      \"name\": \"PIERNIKI S\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 22.97\n    },\n    {\n      \"name\": \"TOREBKI\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 3.69\n    },\n    {\n      \"name\": \"BANAN\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 11.99\n    },\n    {\n      \"name\": \"SOCZEWICA\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 37.90\n    },\n    {\n      \"name\": \"UDO Z KURC\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 14.98\n    },\n    {\n      \"name\": \"KUKURYDZA\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 7.04\n    },\n    {\n      \"name\": \"SZPINAK\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 5.69\n    },\n    {\n      \"name\": \"LOSOS PORCJ\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 5.99\n    },\n    {\n      \"name\": \"PASTA\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 6.34\n    },\n    {\n      \"name\": \"SZYNKA Z P\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 7.58\n    },\n    {\n      \"name\": \"SER KROLEW\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 14.38\n    },\n    {\n      \"name\": \"POMIDOR KO\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 9.90\n    },\n    {\n      \"name\": \"OGOREK DŁU\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 3.79\n    },\n    {\n      \"name\": \"ZIEMNIAKI W\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 6.48\n    },\n    {\n      \"name\": \"PIECZARKI\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 3.99\n    }\n  ]\n}"
+}

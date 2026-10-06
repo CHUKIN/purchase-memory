@@ -1,0 +1,39 @@
+{
+  "receipt": "20",
+  "approach": "A",
+  "seconds": 10.5,
+  "error": null,
+  "parsed": {
+    "merchant": "PARAGON FISKALNY",
+    "date": "2023-03-25",
+    "currency": "PLN",
+    "total": 38.1,
+    "items": [
+      {
+        "name": "*BigMac M+",
+        "quantity": 1,
+        "unit_price": 15.3,
+        "line_total": 15.3
+      },
+      {
+        "name": "Chrup TalarkM+",
+        "quantity": 1,
+        "unit_price": 8,
+        "line_total": 8
+      },
+      {
+        "name": "Woda NieGaz. M+",
+        "quantity": 1,
+        "unit_price": 7.9,
+        "line_total": 7.9
+      },
+      {
+        "name": "*Cheeseburger",
+        "quantity": 1,
+        "unit_price": 6.9,
+        "line_total": 6.9
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"PARAGON FISKALNY\",\n  \"date\": \"2023-03-25\",\n  \"currency\": \"PLN\",\n  \"total\": 38.1,\n  \"items\": [\n    {\n      \"name\": \"*BigMac M+\",\n      \"quantity\": 1,\n      \"unit_price\": 15.3,\n      \"line_total\": 15.3\n    },\n    {\n      \"name\": \"Chrup TalarkM+\",\n      \"quantity\": 1,\n      \"unit_price\": 8,\n      \"line_total\": 8\n    },\n    {\n      \"name\": \"Woda NieGaz. M+\",\n      \"quantity\": 1,\n      \"unit_price\": 7.9,\n      \"line_total\": 7.9\n    },\n    {\n      \"name\": \"*Cheeseburger\",\n      \"quantity\": 1,\n      \"unit_price\": 6.9,\n      \"line_total\": 6.9\n    }\n  ]\n}"
+}

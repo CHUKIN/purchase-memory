@@ -1,0 +1,330 @@
+{
+  "_note": "Ручная разметка позиций по фото (03.10.2026), формат как у household-2026-08/results/ground_truth_items.json. Цены в PLN. discounts.amount < 0; appliesTo — позиция, к которой напечатана скидка, null для скидки на весь чек. Проверка: сумма lineTotal + скидки = total на каждом чеке.",
+  "_excluded": {
+    "07": "Нефискальное подтверждение оплаты картой Netto (Potwierdzenie zapłaty kartą, PLN 9,96, 30.09.2026 14:35) — позиций нет; это оплата чека 06. Формат разметки позиций не умеет выразить «не чек», поэтому 07 не входит в _receipts; ожидаемое поведение — не создавать покупку (или пометить как дубликат 06)."
+  },
+  "_receipts": [
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "08",
+    "09",
+    "10",
+    "11"
+  ],
+  "01": {
+    "total": 31.99,
+    "items": [
+      {
+        "name": "ELMEX ENAMEL PROF\\AX",
+        "quantity": 1,
+        "unitPrice": 31.99,
+        "lineTotal": 31.99
+      }
+    ],
+    "discounts": [],
+    "check": {
+      "itemsPlusDiscounts": 31.99,
+      "matchesTotal": true,
+      "itemCountMatchesGroundTruth": true
+    },
+    "uncertain": []
+  },
+  "02": {
+    "total": 133.92,
+    "items": [
+      {
+        "name": "C_NAPOJ ALPRO 1L MI",
+        "quantity": 1,
+        "unitPrice": 11.99,
+        "lineTotal": 11.99
+      },
+      {
+        "name": "C_NAPOJ ALPRO 1L MI",
+        "quantity": 1,
+        "unitPrice": 11.99,
+        "lineTotal": 11.99
+      },
+      {
+        "name": "C_NAPOJ ALPRO 1L MI",
+        "quantity": 8,
+        "unitPrice": 11.99,
+        "lineTotal": 95.92
+      },
+      {
+        "name": "A_CHALWA WEDEL 250G",
+        "quantity": 1,
+        "unitPrice": 13.69,
+        "lineTotal": 13.69
+      },
+      {
+        "name": "A_CHALWA WEDEL 50G",
+        "quantity": 1,
+        "unitPrice": 4.15,
+        "lineTotal": 4.15
+      },
+      {
+        "name": "A_CHALWA WEDEL 50G",
+        "quantity": 1,
+        "unitPrice": 4.15,
+        "lineTotal": 4.15
+      },
+      {
+        "name": "A_CZEK NUSSBEISSER",
+        "quantity": 1,
+        "unitPrice": 8.99,
+        "lineTotal": 8.99
+      },
+      {
+        "name": "A_CO TALERZ DESEROW",
+        "quantity": 1,
+        "unitPrice": 17.59,
+        "lineTotal": 17.59
+      },
+      {
+        "name": "A_CO TALERZ DESEROW",
+        "quantity": 1,
+        "unitPrice": 17.59,
+        "lineTotal": 17.59
+      },
+      {
+        "name": "A_CO TALERZ DESEROW",
+        "quantity": 1,
+        "unitPrice": 17.59,
+        "lineTotal": 17.59
+      },
+      {
+        "name": "C_FIGA ŚWIEŻA SZT.",
+        "quantity": 4,
+        "unitPrice": 2.49,
+        "lineTotal": 9.96
+      }
+    ],
+    "discounts": [
+      {
+        "label": "RABAT DO C_NAPOJ ALPRO 1L MI",
+        "amount": -11.98,
+        "appliesTo": "C_NAPOJ ALPRO 1L MI"
+      },
+      {
+        "label": "RABAT DO C_NAPOJ ALPRO 1L MI",
+        "amount": -11.98,
+        "appliesTo": "C_NAPOJ ALPRO 1L MI"
+      },
+      {
+        "label": "RABAT DO C_NAPOJ ALPRO 1L MI",
+        "amount": -35.92,
+        "appliesTo": "C_NAPOJ ALPRO 1L MI"
+      },
+      {
+        "label": "RABAT DO C_FIGA ŚWIEŻA SZT.",
+        "amount": -4.96,
+        "appliesTo": "C_FIGA ŚWIEŻA SZT."
+      },
+      {
+        "label": "RABAT DO 9.98% PTU A (podsuma)",
+        "amount": -8.37,
+        "appliesTo": null
+      },
+      {
+        "label": "RABAT DO 9.98% PTU C (podsuma)",
+        "amount": -6.48,
+        "appliesTo": null
+      }
+    ],
+    "check": {
+      "itemsPlusDiscounts": 133.92,
+      "matchesTotal": true,
+      "itemCountMatchesGroundTruth": true
+    },
+    "uncertain": [
+      "Три строки Alpro с одинаковым названием, у каждой своя скидка RABAT DO (−11,98; −11,98; −35,92); appliesTo у всех трёх одно и то же имя — score_items.py связывает скидку с позицией по имени, поэтому вариант «модель вернула Alpro уже по цене после скидки» на этом чеке засчитывается неточно; вариант «скидка отдельной строкой» (как в проде) засчитывается корректно",
+      "Две скидки на весь чек после PODSUMA 148,77: 9,98% от сумм по ставкам A (−8,37) и C (−6,48); итог «Uwzględniono rabat 79,69» = 64,84 + 14,85"
+    ]
+  },
+  "03": {
+    "total": 58.0,
+    "items": [
+      {
+        "name": "V35560 T&Lyle Golden Syr 007935",
+        "quantity": 1,
+        "unitPrice": 16.5,
+        "lineTotal": 16.5
+      },
+      {
+        "name": "N13695 Musztarda miodowa 022527",
+        "quantity": 1,
+        "unitPrice": 12.5,
+        "lineTotal": 12.5
+      },
+      {
+        "name": "V05121 W&S Tiptree Old T 028913",
+        "quantity": 1,
+        "unitPrice": 29.0,
+        "lineTotal": 29.0
+      }
+    ],
+    "discounts": [],
+    "check": {
+      "itemsPlusDiscounts": 58.0,
+      "matchesTotal": true,
+      "itemCountMatchesGroundTruth": true
+    },
+    "uncertain": [
+      "В названиях коды товара в начале (V35560) и в конце (007935); название «Tiptree Old T…» обрезано принтером"
+    ]
+  },
+  "04": {
+    "total": 18.0,
+    "items": [
+      {
+        "name": "Good Lood x1",
+        "quantity": 2,
+        "unitPrice": 9.0,
+        "lineTotal": 18.0
+      }
+    ],
+    "discounts": [],
+    "check": {
+      "itemsPlusDiscounts": 18.0,
+      "matchesTotal": true,
+      "itemCountMatchesGroundTruth": true
+    },
+    "uncertain": [
+      "Над строкой цены напечатана одиночная цифра «8» — вероятно код/PLU, в название не включена",
+      "Ниже фискальной части — нефискальный слип оплаты картой (Razem: PLN 18,00) и блок баллов лояльности (Stan konta 620, +200, Saldo 820) — это не позиции"
+    ]
+  },
+  "05": {
+    "total": 4.89,
+    "items": [
+      {
+        "name": "C_MC TOST PEŁNOZIAR",
+        "quantity": 1,
+        "unitPrice": 4.89,
+        "lineTotal": 4.89
+      }
+    ],
+    "discounts": [],
+    "check": {
+      "itemsPlusDiscounts": 4.89,
+      "matchesTotal": true,
+      "itemCountMatchesGroundTruth": true
+    },
+    "uncertain": []
+  },
+  "06": {
+    "total": 9.96,
+    "items": [
+      {
+        "name": "C_NATKA PIETR 6 G",
+        "quantity": 2,
+        "unitPrice": 2.49,
+        "lineTotal": 4.98
+      },
+      {
+        "name": "C_KOPEREK SUSZ 6 G",
+        "quantity": 2,
+        "unitPrice": 2.49,
+        "lineTotal": 4.98
+      }
+    ],
+    "discounts": [],
+    "check": {
+      "itemsPlusDiscounts": 9.96,
+      "matchesTotal": true,
+      "itemCountMatchesGroundTruth": true
+    },
+    "uncertain": []
+  },
+  "08": {
+    "total": 300.0,
+    "items": [
+      {
+        "name": "USŁUGA MEDYCZNA",
+        "quantity": 1,
+        "unitPrice": 300.0,
+        "lineTotal": 300.0
+      }
+    ],
+    "discounts": [],
+    "check": {
+      "itemsPlusDiscounts": 300.0,
+      "matchesTotal": true,
+      "itemCountMatchesGroundTruth": true
+    },
+    "uncertain": [
+      "Услуга, освобождённая от НДС (ставка E, «Sprzedaż zwolniona E», SUMA PTU 0,00); количество напечатано как «1.000szt.»"
+    ]
+  },
+  "09": {
+    "total": 4.99,
+    "items": [
+      {
+        "name": "CHLEB TOST PELNOZ-C",
+        "quantity": 1,
+        "unitPrice": 4.99,
+        "lineTotal": 4.99
+      }
+    ],
+    "discounts": [],
+    "check": {
+      "itemsPlusDiscounts": 4.99,
+      "matchesTotal": true,
+      "itemCountMatchesGroundTruth": true
+    },
+    "uncertain": [
+      "Чек сильно смят: цена позиции и SUMA читаются плохо («4,99C» блёкло справа), подтверждаются строкой оплаты 4,99 PLN и PTU C 0,24"
+    ]
+  },
+  "10": {
+    "total": 7.98,
+    "items": [
+      {
+        "name": "CYNAMONKA 95g ODPIEK NA C-B",
+        "quantity": 2,
+        "unitPrice": 3.99,
+        "lineTotal": 7.98
+      }
+    ],
+    "discounts": [],
+    "check": {
+      "itemsPlusDiscounts": 7.98,
+      "matchesTotal": true,
+      "itemCountMatchesGroundTruth": true
+    },
+    "uncertain": [
+      "Ниже чека — рекламный купон Żabka «−60 zł na pierwsze zamówienie»: это не скидка этого чека"
+    ]
+  },
+  "11": {
+    "total": 79.75,
+    "items": [
+      {
+        "name": "DORSZ ATLA 809036C J 2241526000000",
+        "quantity": 0.28,
+        "unitPrice": 141.9,
+        "lineTotal": 39.73
+      },
+      {
+        "name": "DORSZ ATLA 809036C J 2241526000000",
+        "quantity": 0.282,
+        "unitPrice": 141.9,
+        "lineTotal": 40.02
+      }
+    ],
+    "discounts": [],
+    "check": {
+      "itemsPlusDiscounts": 79.75,
+      "matchesTotal": true,
+      "itemCountMatchesGroundTruth": true
+    },
+    "uncertain": [
+      "Две весовые строки одного товара (0,280 и 0,282 кг × 141,90)",
+      "Ниже — нефискальный блок карты Skarbonka («RAZEM: 0.4 PLN», «Rabaty zdobyte 0.4 PLN») — это начисленный бонус, не скидка и не позиция"
+    ]
+  }
+}

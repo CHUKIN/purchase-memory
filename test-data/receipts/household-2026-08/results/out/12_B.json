@@ -1,0 +1,63 @@
+{
+  "receipt": "12",
+  "approach": "B",
+  "seconds": 15.6,
+  "error": null,
+  "parsed": {
+    "merchant": "CARREFOUR",
+    "date": "2025-07-18",
+    "currency": "PLN",
+    "total": 69.14,
+    "items": [
+      {
+        "name": "CHSER TWARD. DZIUGAS",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 20.37
+      },
+      {
+        "name": "CASER RAJSKI WLOSZC",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 14.68
+      },
+      {
+        "name": "A#TORBA RECYKLING",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 3.95
+      },
+      {
+        "name": "#POLEDWICA Z DORSZ",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 20.74
+      },
+      {
+        "name": "C#FILET Z KURCZAKA",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 11.5
+      },
+      {
+        "name": "C#DESER SATINO BAKO",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 3.95
+      },
+      {
+        "name": "A#BATONIK TWAROG MA",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 3.25
+      },
+      {
+        "name": "#JOGURT MOVENPICK",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 0.79
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"CARREFOUR\",\n  \"date\": \"2025-07-18\",\n  \"currency\": \"PLN\",\n  \"total\": 69.14,\n  \"items\": [\n    {\n      \"name\": \"CHSER TWARD. DZIUGAS\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 20.37\n    },\n    {\n      \"name\": \"CASER RAJSKI WLOSZC\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 14.68\n    },\n    {\n      \"name\": \"A#TORBA RECYKLING\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 3.95\n    },\n    {\n      \"name\": \"#POLEDWICA Z DORSZ\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 20.74\n    },\n    {\n      \"name\": \"C#FILET Z KURCZAKA\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 11.50\n    },\n    {\n      \"name\": \"C#DESER SATINO BAKO\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 3.95\n    },\n    {\n      \"name\": \"A#BATONIK TWAROG MA\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 3.25\n    },\n    {\n      \"name\": \"#JOGURT MOVENPICK\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 0.79\n    }\n  ]\n}"
+}

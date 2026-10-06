@@ -1,0 +1,45 @@
+{
+  "receipt": "08",
+  "approach": "A",
+  "seconds": 12.0,
+  "error": null,
+  "parsed": {
+    "merchant": "SKLEP ZABKA ZB031",
+    "date": "2025-08-17",
+    "currency": "PLN",
+    "total": 29.96,
+    "items": [
+      {
+        "name": "PIERS PIECZ 75g-C",
+        "quantity": 1,
+        "unit_price": 5.5,
+        "line_total": 5.5
+      },
+      {
+        "name": "SER EDAMSKI PLASTRY 150g-C",
+        "quantity": 1,
+        "unit_price": 6.5,
+        "line_total": 6.5
+      },
+      {
+        "name": "JOGURT SKYR PITNY 330ml-C",
+        "quantity": 1,
+        "unit_price": 5.99,
+        "line_total": 5.99
+      },
+      {
+        "name": "JOG SKYR JAGO 330ml-C",
+        "quantity": 1,
+        "unit_price": 5.99,
+        "line_total": 5.99
+      },
+      {
+        "name": "CROISSANT CZEKOLAD-C",
+        "quantity": 2,
+        "unit_price": 3.99,
+        "line_total": 7.98
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"SKLEP ZABKA ZB031\",\n  \"date\": \"2025-08-17\",\n  \"currency\": \"PLN\",\n  \"total\": 29.96,\n  \"items\": [\n    {\n      \"name\": \"PIERS PIECZ 75g-C\",\n      \"quantity\": 1,\n      \"unit_price\": 5.5,\n      \"line_total\": 5.5\n    },\n    {\n      \"name\": \"SER EDAMSKI PLASTRY 150g-C\",\n      \"quantity\": 1,\n      \"unit_price\": 6.5,\n      \"line_total\": 6.5\n    },\n    {\n      \"name\": \"JOGURT SKYR PITNY 330ml-C\",\n      \"quantity\": 1,\n      \"unit_price\": 5.99,\n      \"line_total\": 5.99\n    },\n    {\n      \"name\": \"JOG SKYR JAGO 330ml-C\",\n      \"quantity\": 1,\n      \"unit_price\": 5.99,\n      \"line_total\": 5.99\n    },\n    {\n      \"name\": \"CROISSANT CZEKOLAD-C\",\n      \"quantity\": 2,\n      \"unit_price\": 3.99,\n      \"line_total\": 7.98\n    }\n  ]\n}"
+}

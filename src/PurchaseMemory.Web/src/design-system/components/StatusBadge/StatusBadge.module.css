@@ -1,0 +1,19 @@
+.badge {
+  height: 1.75rem;
+  padding-inline: 0.625rem;
+  border: 1px solid currentColor;
+  border-color: color-mix(in srgb, currentColor 22%, transparent);
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+
+.neutral { color: #5f6d65; background: #eef0ed; }
+.progress { color: #426b7a; background: #e8f3f6; }
+.success { color: #34704f; background: #e8f3ec; }
+.warning { color: #8a541f; background: #fff1dc; }
+.danger { color: var(--pm-status-danger); background: #fff0ed; }
+
+.spinning { animation: status-spin 1.2s linear infinite; }
+@keyframes status-spin { to { transform: rotate(360deg); } }

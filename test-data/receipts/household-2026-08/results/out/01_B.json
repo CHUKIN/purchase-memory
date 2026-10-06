@@ -1,0 +1,27 @@
+{
+  "receipt": "01",
+  "approach": "B",
+  "seconds": 10.7,
+  "error": null,
+  "parsed": {
+    "merchant": "Restauracja Dodo Pizza",
+    "date": "2026-03-21",
+    "currency": "PLN",
+    "total": 56.38,
+    "items": [
+      {
+        "name": "Pudetko na pizzę",
+        "quantity": 1,
+        "unit_price": 17.99,
+        "line_total": 17.99
+      },
+      {
+        "name": "racki zieniaczane",
+        "quantity": 8,
+        "unit_price": null,
+        "line_total": 53.99
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"Restauracja Dodo Pizza\",\n  \"date\": \"2026-03-21\",\n  \"currency\": \"PLN\",\n  \"total\": 56.38,\n  \"items\": [\n    {\n      \"name\": \"Pudetko na pizzę\",\n      \"quantity\": 1,\n      \"unit_price\": 17.99,\n      \"line_total\": 17.99\n    },\n    {\n      \"name\": \"racki zieniaczane\",\n      \"quantity\": 8,\n      \"unit_price\": null,\n      \"line_total\": 53.99\n    }\n  ]\n}"
+}

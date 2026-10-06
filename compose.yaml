@@ -1,0 +1,31 @@
+services:
+  purchase-memory:
+    build:
+      context: .
+    ports:
+      - "127.0.0.1:5099:5099"
+    environment:
+      ReceiptRecognition__Pipeline: ollama
+      ReceiptRecognition__BaseAddress: http://host.docker.internal:11434
+      ReceiptRecognition__Mode: Hybrid
+      ReceiptRecognition__OcrModel: glm-ocr:latest
+      ReceiptRecognition__ParserModel: qwen3.5:4b
+      # Sign-in (docs/SUPABASE_AUTH_SETUP.md). Empty = the API refuses everyone.
+      Auth__SupabaseUrl: ${SUPABASE_URL:-}
+      Auth__SupabasePublishableKey: ${SUPABASE_PUBLISHABLE_KEY:-}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    # The owner's real database lives in ./data and is used only by
+    # ./scripts/run-local.sh. Compose must never touch it: the container keeps
+    # its own database and logs in named Docker volumes (owned by the image's
+    # uid 1654 automatically). Do not switch these to ./data: on Docker Desktop
+    # for Mac, SQLite breaks on bind-mounted folders ("readonly database") and
+    # a migration could stop half-way. Details: docs/ДЕПЛОЙ_RENDER.md.
+    volumes:
+      - purchase-memory-data:/app/data
+      - purchase-memory-logs:/app/logs
+    restart: unless-stopped
+
+volumes:
+  purchase-memory-data:
+  purchase-memory-logs:

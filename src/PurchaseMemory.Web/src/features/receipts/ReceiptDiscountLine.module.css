@@ -1,0 +1,99 @@
+/*
+ * A discount sits indented under its product with a warm accent rule, so it
+ * reads as "money off the line above" rather than as another product.
+ */
+.discount {
+  display: grid;
+  gap: var(--pm-space-2);
+  margin-inline-start: var(--pm-space-6);
+  padding: var(--pm-space-3) var(--pm-space-4);
+  border: 1px dashed color-mix(in srgb, var(--pm-accent-warm) 45%, var(--pm-border-subtle));
+  border-inline-start: 4px solid var(--pm-accent-warm);
+  border-radius: var(--pm-radius-md);
+  background: color-mix(in srgb, var(--pm-accent-warm) 7%, var(--pm-surface-paper));
+  color: var(--pm-content-primary);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--pm-space-2);
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pm-space-1);
+  min-width: 0;
+  color: var(--pm-accent-text);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.label svg { flex: none; }
+
+.target {
+  overflow: hidden;
+  color: var(--pm-content-muted);
+  font-weight: 650;
+  letter-spacing: 0;
+  text-overflow: ellipsis;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.unlinked { color: var(--pm-status-warning); }
+
+.summary {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--pm-space-3);
+}
+
+.name { margin: 0; overflow-wrap: anywhere; font-weight: 650; }
+
+.amount {
+  flex: none;
+  color: var(--pm-accent-text);
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+}
+
+.after {
+  margin: 0;
+  color: var(--pm-content-muted);
+  font-size: 0.8125rem;
+}
+
+.after strong { color: var(--pm-content-primary); font-variant-numeric: tabular-nums; }
+
+.fields {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(7rem, 1fr);
+  gap: var(--pm-space-2);
+}
+
+.delete {
+  display: inline-grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: -0.5rem -0.5rem -0.5rem 0;
+  border: 0;
+  border-radius: var(--pm-radius-sm);
+  background: transparent;
+  color: var(--pm-status-danger);
+  cursor: pointer;
+}
+
+.delete:hover { background: color-mix(in srgb, var(--pm-status-danger) 8%, transparent); }
+.delete:focus-visible { outline: 3px solid var(--pm-focus-ring); outline-offset: 2px; }
+
+@media (max-width: 480px) {
+  .discount { margin-inline-start: var(--pm-space-3); }
+  .fields { grid-template-columns: 1fr; }
+}

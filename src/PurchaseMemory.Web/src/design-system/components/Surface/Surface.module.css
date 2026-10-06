@@ -1,0 +1,11 @@
+.surface {
+  border: 1px solid var(--pm-border-subtle);
+  border-radius: var(--pm-radius-lg);
+}
+
+.paper { background: var(--pm-surface-paper); }
+.soft { background: var(--pm-surface-soft); }
+.warm { background: #fff4e8; }
+.comfortable { padding: clamp(1rem, 3vw, 1.5rem); }
+.compact { padding: 0.875rem 1rem; border-radius: var(--pm-radius-md); }
+.elevated { border-color: rgba(255, 255, 255, 0.8); box-shadow: var(--pm-shadow-soft); }

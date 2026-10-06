@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Purchase Memory">
+  <rect width="64" height="64" rx="16" fill="#315c4b"/>
+  <path d="M19 13h26v39l-4-3-4 3-5-3-5 3-4-3-4 3V13Z" fill="#fffaf0"/>
+  <path d="M25 23h14M25 30h14M25 37h8" fill="none" stroke="#315c4b" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="40" cy="39" r="5" fill="#e6a15c"/>
+</svg>

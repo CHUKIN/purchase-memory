@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "receipts": [
+    {
+      "id": "biedronka-2020-01-09-cc-by-sa",
+      "file": "biedronka-2020-01-09-cc-by-sa.jpg",
+      "merchantAliases": ["Biedronka", "Jeronimo Martins"],
+      "purchasedOn": "2020-01-09",
+      "receiptTotal": 8.27,
+      "itemCount": 3,
+      "lineTotalSum": 8.27,
+      "itemNameFragments": ["ChlebPszen", "Ser ż.Świat", "Polędw"]
+    },
+    {
+      "id": "biedronka-eparagon-2024-07-official",
+      "file": "biedronka-eparagon-2024-07-official.jpg",
+      "merchantAliases": ["Biedronka", "Jeronimo Martins"],
+      "purchasedOn": "2024-07-22",
+      "receiptTotal": 11.78,
+      "itemCount": 2,
+      "lineTotalSum": 11.78,
+      "itemNameFragments": ["Rozek z Jablk", "SOK POMARAN"]
+    },
+    {
+      "id": "lidl-2025-official-sample",
+      "file": "lidl-2025-official-sample.png",
+      "merchantAliases": ["Lidl"],
+      "purchasedOn": "2025-03-10",
+      "receiptTotal": 102.62,
+      "itemCount": 13,
+      "lineTotalSum": 102.62,
+      "itemNameFragments": [
+        "Kajzerka",
+        "Nuggetsy",
+        "Napój kokosowy",
+        "Płatki ows",
+        "Ziemniaki",
+        "Jogurt",
+        "Jabłka",
+        "Rurki",
+        "Ciastko",
+        "Bor.ameryk",
+        "Tuńczyk"
+      ]
+    }
+  ]
+}

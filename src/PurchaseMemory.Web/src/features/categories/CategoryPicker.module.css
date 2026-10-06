@@ -1,0 +1,31 @@
+.field {
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.label {
+  color: var(--pm-content-muted);
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.select {
+  width: 100%;
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--pm-border-subtle);
+  border-radius: var(--pm-radius-md);
+  color: var(--pm-content-primary);
+  background: var(--pm-surface-paper);
+  font: inherit;
+  font-size: 0.9rem;
+}
+
+.select:focus-visible {
+  outline: 2px solid var(--pm-action-primary);
+  outline-offset: 2px;
+}

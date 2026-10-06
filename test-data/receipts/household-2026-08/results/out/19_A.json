@@ -1,0 +1,39 @@
+{
+  "receipt": "19",
+  "approach": "A",
+  "seconds": 10.7,
+  "error": null,
+  "parsed": {
+    "merchant": "Lviv Croissants",
+    "date": "2023-06-21",
+    "currency": "PLN",
+    "total": 71.6,
+    "items": [
+      {
+        "name": "Cezar z Kurczakiem",
+        "quantity": 1,
+        "unit_price": 16.9,
+        "line_total": 16.9
+      },
+      {
+        "name": "Sniетankowo-Truskawkowy",
+        "quantity": 1,
+        "unit_price": 16.9,
+        "line_total": 16.9
+      },
+      {
+        "name": "Włoski",
+        "quantity": 1,
+        "unit_price": 24.9,
+        "line_total": 24.9
+      },
+      {
+        "name": "Z Krenem Waniliowym",
+        "quantity": 1,
+        "unit_price": 12.9,
+        "line_total": 12.9
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"Lviv Croissants\",\n  \"date\": \"2023-06-21\",\n  \"currency\": \"PLN\",\n  \"total\": 71.6,\n  \"items\": [\n    {\n      \"name\": \"Cezar z Kurczakiem\",\n      \"quantity\": 1,\n      \"unit_price\": 16.9,\n      \"line_total\": 16.9\n    },\n    {\n      \"name\": \"Sniетankowo-Truskawkowy\",\n      \"quantity\": 1,\n      \"unit_price\": 16.9,\n      \"line_total\": 16.9\n    },\n    {\n      \"name\": \"Włoski\",\n      \"quantity\": 1,\n      \"unit_price\": 24.9,\n      \"line_total\": 24.9\n    },\n    {\n      \"name\": \"Z Krenem Waniliowym\",\n      \"quantity\": 1,\n      \"unit_price\": 12.9,\n      \"line_total\": 12.9\n    }\n  ]\n}"
+}

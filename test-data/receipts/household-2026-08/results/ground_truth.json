@@ -1,0 +1,23 @@
+{
+  "_note": "Manual ground truth for Track B. Established by reading each photo visually. 'items' counts real purchased product lines only (discount/OPUST, subtotal, tax and payment rows excluded). 'print_quality' is a subjective judgement of the photo + thermal print legibility.",
+  "01": {"merchant": "Dodo Pizza", "date": "2026-03-21", "currency": "PLN", "total": 56.38, "items": 4, "print_quality": "good", "diacritic_words": ["Pudełko na pizzę", "4 pory roku Średnia"]},
+  "02": {"merchant": "ROSSIA (Berlin)", "date": "2025-07-10", "currency": "EUR", "total": 24.30, "items": 14, "print_quality": "good", "diacritic_words": ["Gebäck mit Minzgeschmack"]},
+  "03": {"merchant": "E.Leclerc Ursynów", "date": "2026-07-18", "currency": "PLN", "total": 217.26, "items": 27, "print_quality": "medium", "diacritic_words": ["KERYGOLD MASŁ", "GULASZ CIELĘCY", "MOWI ŁOSOS", "POL MŁ MĄK", "ŁACIATE ŚMIETA", "NEST CHEER PŁA", "WĘDE CHAŁ ORZE", "PRES ŚMIETANKA", "PAPRYKA BIAŁ", "PIĄT MLEKO"]},
+  "04": {"merchant": "Lidl", "date": "2026-07-17", "currency": "PLN", "total": 136.99, "items": 8, "print_quality": "poor", "diacritic_words": ["Fairy Kapsułki Lemon", "Ogórki grunt. PL luz", "Persil Kapsułki", "Sał. batawska korzeń", "Reklamówka"]},
+  "05": {"merchant": "McDonald's Kraków", "date": "2026-03-26", "currency": "PLN", "total": 70.80, "items": 5, "print_quality": "poor", "diacritic_words": ["Frytki Średnie"]},
+  "06": {"merchant": "Mleczarnia Pousińska", "date": "2025-10-11", "currency": "PLN", "total": 25.85, "items": 3, "print_quality": "medium", "diacritic_words": ["Gołąbek mięsny", "Zacierkowa"]},
+  "07": {"merchant": "Suntago", "date": "2025-08-18", "currency": "PLN", "total": 108.09, "items": 3, "print_quality": "good", "diacritic_words": ["WYPOŻYCZENIE RĘCZNIKA"]},
+  "08": {"merchant": "Żabka", "date": "2025-08-17", "currency": "PLN", "total": 29.96, "items": 5, "print_quality": "good", "diacritic_words": ["ŻABKA", "PIERS PIECZ"]},
+  "09": {"merchant": "Carrefour Market", "date": "2025-08-06", "currency": "PLN", "total": 177.48, "items": 11, "print_quality": "good", "diacritic_words": ["MAŚLANKA", "KEDYMEX-RZODKIEWE", "MIÓD PSZCZ. WIELO", "MOWI ŁOSOŚ WĘDZ.", "KUKURYDZA ŚWIEŻA"]},
+  "10": {"merchant": "Auchan", "date": "2025-08-05", "currency": "PLN", "total": 85.69, "items": 10, "print_quality": "good", "diacritic_words": ["TOST PEŁNO", "SER SZWAJC"]},
+  "11": {"merchant": "Carrefour Market CH Sadyba", "date": "2025-07-18", "currency": "PLN", "total": 75.55, "items": 10, "print_quality": "good", "diacritic_words": ["POLĘDWICA Z DORSZ", "BATONIK TWAROG MA"], "_dup_of": "12"},
+  "12": {"merchant": "Carrefour Market CH Sadyba", "date": "2025-07-18", "currency": "PLN", "total": 75.55, "items": 10, "print_quality": "good", "diacritic_words": ["POLĘDWICA Z DORSZ", "BATONIK TWAROG MA"], "_dup_of": "11"},
+  "13": {"merchant": "Lviv Croissants", "date": "2025-08-20", "currency": "PLN", "total": 54.80, "items": 5, "print_quality": "good", "diacritic_words": ["Pijana Wiśnia", "Pudełko papierowe", "Serek śmietankowy", "Królewski"]},
+  "14": {"merchant": "Carrefour Market CH Sadyba", "date": "2025-06-10", "currency": "PLN", "total": 192.40, "items": 10, "print_quality": "medium", "diacritic_words": ["MC TOST MAŚLANY", "UKŁAD MAXTRA PRO", "MOWI ŁOSOŚ ŚWIEŻY", "MC SZPARAGI ZIELO"]},
+  "15": {"merchant": "Billy's American Restaurants", "date": "2025-05-20", "currency": "PLN", "total": 219.00, "items": 4, "print_quality": "good", "diacritic_words": ["Amerykańskie Żeberka", "Grillowany Pstrąg", "Domowa Mrożona Herbata"]},
+  "16": {"merchant": "Auchan", "date": "2025-03-14", "currency": "PLN", "total": 165.36, "items": 16, "print_quality": "medium", "diacritic_words": ["OGOREK DŁU", "ŁOSOS PORCJ", "PĄCZEK FAN"], "_dup_of": "17"},
+  "17": {"merchant": "Auchan", "date": "2025-03-14", "currency": "PLN", "total": 165.36, "items": 16, "print_quality": "good", "diacritic_words": ["OGOREK DŁU", "ŁOSOS PORCJ", "PĄCZEK FAN"], "_dup_of": "16"},
+  "18": {"merchant": "Carrefour Market CH Sadyba", "date": "2024-10-29", "currency": "PLN", "total": 166.69, "items": 18, "print_quality": "good", "diacritic_words": ["ŚMIETANA 18%", "MC POMARANCZE LUZ", "SER KROLEWSKI SIE", "MYDŁO W PŁ DOVE", "MC JAJA ZIELONÓŻK", "MOWI ŁOSOŚ WĘDZ.", "MC MIX SAŁAT Z SA", "NAPOJ ALPRO", "CHLEB TOSTOWY PEŁ", "MASŁO EKSTRA MAZU"]},
+  "19": {"merchant": "Lviv Croissants", "date": "2023-06-21", "currency": "PLN", "total": 71.60, "items": 4, "print_quality": "good", "diacritic_words": ["Śmietankowo-Truskawkowy", "Włoski", "Z Kremem Waniliowym"]},
+  "20": {"merchant": "McDonald's", "date": "2023-03-25", "currency": "PLN", "total": 38.10, "items": 4, "print_quality": "medium", "diacritic_words": ["Woda NieGaz."]}
+}

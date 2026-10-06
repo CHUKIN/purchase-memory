@@ -1,0 +1,69 @@
+{
+  "receipt": "14",
+  "approach": "B",
+  "seconds": 17.7,
+  "error": null,
+  "parsed": {
+    "merchant": "CARREFOUR MARKET",
+    "date": "2025-06-10",
+    "currency": "PLN",
+    "total": 192.4,
+    "items": [
+      {
+        "name": "A#VODA MINER BORJOMI CHMC TOST MAŚLANY",
+        "quantity": 5,
+        "unit_price": null,
+        "line_total": 10.59
+      },
+      {
+        "name": "AGYA",
+        "quantity": 1,
+        "unit_price": null,
+        "line_total": 3.79
+      },
+      {
+        "name": "ARUKtAD MAXTRA PRO",
+        "quantity": 1,
+        "unit_price": null,
+        "line_total": 74.99
+      },
+      {
+        "name": "C#FILET Z KURCZ.",
+        "quantity": 0.412,
+        "unit_price": 52.99,
+        "line_total": 21.83
+      },
+      {
+        "name": "C#SALAME VILCANI 80",
+        "quantity": 1,
+        "unit_price": null,
+        "line_total": 30.79
+      },
+      {
+        "name": "CAMOWI LOSOS SWIEZY",
+        "quantity": 1,
+        "unit_price": null,
+        "line_total": 19.49
+      },
+      {
+        "name": "#JOGURT MOVENPICK",
+        "quantity": 1,
+        "unit_price": null,
+        "line_total": 5.39
+      },
+      {
+        "name": "C#SMAKIJA KASZKA 13",
+        "quantity": 1,
+        "unit_price": null,
+        "line_total": 3.45
+      },
+      {
+        "name": "CHMC SZPARAGI ZIELO #PAPRYKA CZERUONA",
+        "quantity": 1,
+        "unit_price": null,
+        "line_total": 7.09
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"CARREFOUR MARKET\",\n  \"date\": \"2025-06-10\",\n  \"currency\": \"PLN\",\n  \"total\": 192.4,\n  \"items\": [\n    {\n      \"name\": \"A#VODA MINER BORJOMI CHMC TOST MAŚLANY\",\n      \"quantity\": 5,\n      \"unit_price\": null,\n      \"line_total\": 10.59\n    },\n    {\n      \"name\": \"AGYA\",\n      \"quantity\": 1,\n      \"unit_price\": null,\n      \"line_total\": 3.79\n    },\n    {\n      \"name\": \"ARUKtAD MAXTRA PRO\",\n      \"quantity\": 1,\n      \"unit_price\": null,\n      \"line_total\": 74.99\n    },\n    {\n      \"name\": \"C#FILET Z KURCZ.\",\n      \"quantity\": 0.412,\n      \"unit_price\": 52.99,\n      \"line_total\": 21.83\n    },\n    {\n      \"name\": \"C#SALAME VILCANI 80\",\n      \"quantity\": 1,\n      \"unit_price\": null,\n      \"line_total\": 30.79\n    },\n    {\n      \"name\": \"CAMOWI LOSOS SWIEZY\",\n      \"quantity\": 1,\n      \"unit_price\": null,\n      \"line_total\": 19.49\n    },\n    {\n      \"name\": \"#JOGURT MOVENPICK\",\n      \"quantity\": 1,\n      \"unit_price\": null,\n      \"line_total\": 5.39\n    },\n    {\n      \"name\": \"C#SMAKIJA KASZKA 13\",\n      \"quantity\": 1,\n      \"unit_price\": null,\n      \"line_total\": 3.45\n    },\n    {\n      \"name\": \"CHMC SZPARAGI ZIELO #PAPRYKA CZERUONA\",\n      \"quantity\": 1,\n      \"unit_price\": null,\n      \"line_total\": 7.09\n    }\n  ]\n}"
+}

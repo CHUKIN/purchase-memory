@@ -1,0 +1,45 @@
+{
+  "receipt": "13",
+  "approach": "A",
+  "seconds": 11.0,
+  "error": null,
+  "parsed": {
+    "merchant": "Lviv Croissants",
+    "date": "2025-06-20",
+    "currency": "PLN",
+    "total": 54.8,
+    "items": [
+      {
+        "name": "Pijana Wiśnia (d)",
+        "quantity": 1,
+        "unit_price": 22.9,
+        "line_total": 22.9
+      },
+      {
+        "name": "+Pudetko papierowe (d)",
+        "quantity": 1,
+        "unit_price": 2,
+        "line_total": 2
+      },
+      {
+        "name": "Króleuski (d)",
+        "quantity": 1,
+        "unit_price": 25.9,
+        "line_total": 25.9
+      },
+      {
+        "name": "+Serek śmietankowy (dodatek)",
+        "quantity": 1,
+        "unit_price": 2,
+        "line_total": 2
+      },
+      {
+        "name": "+Pudetko papierowe (d)",
+        "quantity": 1,
+        "unit_price": 2,
+        "line_total": 2
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"Lviv Croissants\",\n  \"date\": \"2025-06-20\",\n  \"currency\": \"PLN\",\n  \"total\": 54.8,\n  \"items\": [\n    {\n      \"name\": \"Pijana Wiśnia (d)\",\n      \"quantity\": 1,\n      \"unit_price\": 22.9,\n      \"line_total\": 22.9\n    },\n    {\n      \"name\": \"+Pudetko papierowe (d)\",\n      \"quantity\": 1,\n      \"unit_price\": 2,\n      \"line_total\": 2\n    },\n    {\n      \"name\": \"Króleuski (d)\",\n      \"quantity\": 1,\n      \"unit_price\": 25.9,\n      \"line_total\": 25.9\n    },\n    {\n      \"name\": \"+Serek śmietankowy (dodatek)\",\n      \"quantity\": 1,\n      \"unit_price\": 2,\n      \"line_total\": 2\n    },\n    {\n      \"name\": \"+Pudetko papierowe (d)\",\n      \"quantity\": 1,\n      \"unit_price\": 2,\n      \"line_total\": 2\n    }\n  ]\n}"
+}

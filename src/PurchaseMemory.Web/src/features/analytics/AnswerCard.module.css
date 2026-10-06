@@ -1,0 +1,162 @@
+.card {
+  display: grid;
+  gap: 1.25rem;
+  min-width: 0;
+  padding: 1.2rem;
+}
+
+.card[aria-busy="true"] {
+  opacity: 0.7;
+}
+
+.conclusion {
+  margin: 0;
+  font: 700 clamp(1.25rem, 4.5vw, 1.6rem)/1.25 var(--pm-font-display);
+  letter-spacing: -0.02em;
+}
+
+.conclusion:focus {
+  outline: none;
+}
+
+.conclusion:focus-visible {
+  outline: 3px solid var(--pm-focus-ring);
+  outline-offset: 4px;
+}
+
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
+  gap: 0.6rem;
+  margin: 0;
+}
+
+.kpi {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: var(--pm-radius-md);
+  background: var(--pm-surface-soft);
+}
+
+.kpi dt {
+  color: var(--pm-content-muted);
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.kpi dd {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.notes {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0.7rem 0.85rem;
+  border-left: 3px solid var(--pm-status-warning);
+  border-radius: var(--pm-radius-sm);
+  background: var(--pm-surface-soft);
+  list-style: none;
+  font-size: 0.86rem;
+}
+
+.notes li {
+  display: flex;
+  gap: 0.4rem;
+  align-items: flex-start;
+}
+
+.notes svg {
+  flex: none;
+  margin-top: 0.15rem;
+}
+
+.coverage h3,
+.evidence h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
+}
+
+.coverage ul {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--pm-content-muted);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.hint {
+  margin: 0.3rem 0 0;
+  color: var(--pm-content-muted);
+  font-size: 0.85rem;
+}
+
+.purchases {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.purchase {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--pm-border-subtle);
+  border-radius: var(--pm-radius-md);
+  min-width: 0;
+}
+
+.purchaseHeader {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 0.75rem;
+  font-weight: 750;
+}
+
+.purchaseLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-width: 0;
+  color: var(--pm-content-primary);
+  overflow-wrap: anywhere;
+}
+
+a.purchaseLink {
+  color: var(--pm-accent-text);
+}
+
+.amount {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.items {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.88rem;
+  overflow-wrap: anywhere;
+}
+
+.items a {
+  color: var(--pm-accent-text);
+}
+
+.discount {
+  margin-left: 0.4rem;
+  color: var(--pm-status-success);
+  font-size: 0.8rem;
+  font-weight: 700;
+}

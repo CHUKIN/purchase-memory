@@ -1,0 +1,62 @@
+.page {
+  display: grid;
+  gap: 1.25rem;
+  padding: 1.4rem 1rem 2rem;
+}
+
+.hero {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.6rem 0.25rem 0;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--pm-accent-text);
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  max-width: 42rem;
+  margin: 0;
+  font: 700 clamp(2rem, 7vw, 3rem)/1.05 var(--pm-font-display);
+  letter-spacing: -0.04em;
+}
+
+.intro {
+  max-width: 42rem;
+  margin: 0;
+  color: var(--pm-content-muted);
+  line-height: 1.55;
+}
+
+@media (min-width: 42rem) {
+  .page {
+    padding: 2.4rem 2rem 3rem;
+  }
+}
+
+.surface {
+  padding: 1.2rem;
+}
+
+.notice {
+  padding: 1rem;
+  color: var(--pm-content-muted);
+}
+
+.homeLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0.7rem 1.2rem;
+  border-radius: 1rem;
+  color: white;
+  background: var(--pm-action-primary);
+  font-weight: 850;
+  text-decoration: none;
+}

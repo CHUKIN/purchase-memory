@@ -1,0 +1,27 @@
+**/bin
+**/obj
+**/node_modules
+src/PurchaseMemory.Api/wwwroot
+.git
+.idea
+.vscode
+.artifacts
+data
+logs
+test-data
+*.user
+*.suo
+tools
+tests
+tmp
+research
+docs
+deploy
+.claude
+**/storybook-static
+**/TestResults
+**/*.log
+# Env/secret files anywhere in the context (the build needs none of them).
+**/.env
+**/*.env
+**/.env.*

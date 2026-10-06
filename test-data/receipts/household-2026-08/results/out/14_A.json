@@ -1,0 +1,75 @@
+{
+  "receipt": "14",
+  "approach": "A",
+  "seconds": 18.2,
+  "error": null,
+  "parsed": {
+    "merchant": "CARREFOUR MARKET",
+    "date": "2025-06-10",
+    "currency": "PLN",
+    "total": 192.4,
+    "items": [
+      {
+        "name": "A#VODA MINER BORJOM",
+        "quantity": 1,
+        "unit_price": 10.59,
+        "line_total": 10.59
+      },
+      {
+        "name": "C#MC TOST MASLANY 5",
+        "quantity": 1,
+        "unit_price": 3.79,
+        "line_total": 3.79
+      },
+      {
+        "name": "A#UKŁAD MAXTRA PRO",
+        "quantity": 1,
+        "unit_price": 74.99,
+        "line_total": 74.99
+      },
+      {
+        "name": "C#FILET Z KURCZ. ZA",
+        "quantity": 0.412,
+        "unit_price": 52.99,
+        "line_total": 21.83
+      },
+      {
+        "name": "C#SALAME VILCANI 80",
+        "quantity": 1,
+        "unit_price": 30.79,
+        "line_total": 30.79
+      },
+      {
+        "name": "C#MOWI ŁOSÓB ŚWIEŻY",
+        "quantity": 1,
+        "unit_price": 19.49,
+        "line_total": 19.49
+      },
+      {
+        "name": "C#JOGURT HOVENPICK",
+        "quantity": 1,
+        "unit_price": 5.39,
+        "line_total": 5.39
+      },
+      {
+        "name": "C#SMAKIJA KASZKA 13",
+        "quantity": 1,
+        "unit_price": 3.45,
+        "line_total": 3.45
+      },
+      {
+        "name": "C#PAPRYKA CZERUONA",
+        "quantity": 0.546,
+        "unit_price": 12.99,
+        "line_total": 7.09
+      },
+      {
+        "name": "C#MC SZPARAGI ZIELO",
+        "quantity": 1,
+        "unit_price": 14.99,
+        "line_total": 14.99
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"CARREFOUR MARKET\",\n  \"date\": \"2025-06-10\",\n  \"currency\": \"PLN\",\n  \"total\": 192.4,\n  \"items\": [\n    {\n      \"name\": \"A#VODA MINER BORJOM\",\n      \"quantity\": 1,\n      \"unit_price\": 10.59,\n      \"line_total\": 10.59\n    },\n    {\n      \"name\": \"C#MC TOST MASLANY 5\",\n      \"quantity\": 1,\n      \"unit_price\": 3.79,\n      \"line_total\": 3.79\n    },\n    {\n      \"name\": \"A#UKŁAD MAXTRA PRO\",\n      \"quantity\": 1,\n      \"unit_price\": 74.99,\n      \"line_total\": 74.99\n    },\n    {\n      \"name\": \"C#FILET Z KURCZ. ZA\",\n      \"quantity\": 0.412,\n      \"unit_price\": 52.99,\n      \"line_total\": 21.83\n    },\n    {\n      \"name\": \"C#SALAME VILCANI 80\",\n      \"quantity\": 1,\n      \"unit_price\": 30.79,\n      \"line_total\": 30.79\n    },\n    {\n      \"name\": \"C#MOWI ŁOSÓB ŚWIEŻY\",\n      \"quantity\": 1,\n      \"unit_price\": 19.49,\n      \"line_total\": 19.49\n    },\n    {\n      \"name\": \"C#JOGURT HOVENPICK\",\n      \"quantity\": 1,\n      \"unit_price\": 5.39,\n      \"line_total\": 5.39\n    },\n    {\n      \"name\": \"C#SMAKIJA KASZKA 13\",\n      \"quantity\": 1,\n      \"unit_price\": 3.45,\n      \"line_total\": 3.45\n    },\n    {\n      \"name\": \"C#PAPRYKA CZERUONA\",\n      \"quantity\": 0.546,\n      \"unit_price\": 12.99,\n      \"line_total\": 7.09\n    },\n    {\n      \"name\": \"C#MC SZPARAGI ZIELO\",\n      \"quantity\": 1,\n      \"unit_price\": 14.99,\n      \"line_total\": 14.99\n    }\n  ]\n}"
+}

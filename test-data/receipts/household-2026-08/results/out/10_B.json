@@ -1,0 +1,75 @@
+{
+  "receipt": "10",
+  "approach": "B",
+  "seconds": 16.7,
+  "error": null,
+  "parsed": {
+    "merchant": "AUCHAN",
+    "date": "2025-08-05",
+    "currency": "PLN",
+    "total": 78.25,
+    "items": [
+      {
+        "name": "GUMA ROZP.",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 0.3
+      },
+      {
+        "name": "PEŁNO",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 16.08
+      },
+      {
+        "name": "FILET Z KU",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 31.68
+      },
+      {
+        "name": "BANAN",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 7.44
+      },
+      {
+        "name": "SZYNKA Z P",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 5.89
+      },
+      {
+        "name": "SER SZWAJC",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 7.64
+      },
+      {
+        "name": "CEBULA",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 1.39
+      },
+      {
+        "name": "DORSZ ATLA",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 5.12
+      },
+      {
+        "name": "JOGURT OWC",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 3.89
+      },
+      {
+        "name": "ZIEMNIAK W",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 6.19
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"AUCHAN\",\n  \"date\": \"2025-08-05\",\n  \"currency\": \"PLN\",\n  \"total\": 78.25,\n  \"items\": [\n    {\n      \"name\": \"GUMA ROZP.\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 0.3\n    },\n    {\n      \"name\": \"PEŁNO\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 16.08\n    },\n    {\n      \"name\": \"FILET Z KU\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 31.68\n    },\n    {\n      \"name\": \"BANAN\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 7.44\n    },\n    {\n      \"name\": \"SZYNKA Z P\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 5.89\n    },\n    {\n      \"name\": \"SER SZWAJC\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 7.64\n    },\n    {\n      \"name\": \"CEBULA\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 1.39\n    },\n    {\n      \"name\": \"DORSZ ATLA\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 5.12\n    },\n    {\n      \"name\": \"JOGURT OWC\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 3.89\n    },\n    {\n      \"name\": \"ZIEMNIAK W\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 6.19\n    }\n  ]\n}"
+}

@@ -1,0 +1,962 @@
+{
+  "generatedAt": "2026-07-16T01:05:25.783691+02:00",
+  "machineName": "MacBook-Pro-Dmitriy",
+  "datasetSchemaVersion": 1,
+  "results": [
+    {
+      "configurationId": "hybrid-glm-qwen4",
+      "receiptId": "biedronka-2020-01-09-cc-by-sa",
+      "status": "success",
+      "elapsedMilliseconds": 14076,
+      "score": {
+        "merchantPoints": 20,
+        "datePoints": 15,
+        "totalPoints": 20,
+        "itemCountPoints": 15,
+        "lineTotalSumPoints": 0,
+        "itemNamePoints": 15,
+        "total": 85
+      },
+      "extraction": {
+        "merchantName": "Biedronka",
+        "purchasedAt": "2020-01-09T13:18:00+01:00",
+        "currency": "PLN",
+        "receiptTotal": 8.27,
+        "items": [
+          {
+            "name": "ChlebPszen-Zyt550g C",
+            "quantity": 1,
+            "unit": null,
+            "unitPrice": 1.99,
+            "lineTotal": 1.99
+          },
+          {
+            "name": "Ser \u017C.\u015Awiat. 150g C",
+            "quantity": 1,
+            "unit": null,
+            "unitPrice": 3.29,
+            "lineTotal": 3.29
+          },
+          {
+            "name": "Pol\u0119dw kos 100g C",
+            "quantity": 1,
+            "unit": null,
+            "unitPrice": 4.99,
+            "lineTotal": 4.99
+          }
+        ],
+        "extractorName": "Ollama hybrid OCR",
+        "modelName": "glm-ocr:latest \u2192 qwen3.5:4b"
+      },
+      "error": null
+    },
+    {
+      "configurationId": "hybrid-glm-qwen4",
+      "receiptId": "biedronka-eparagon-2024-07-official",
+      "status": "success",
+      "elapsedMilliseconds": 10761,
+      "score": {
+        "merchantPoints": 20,
+        "datePoints": 15,
+        "totalPoints": 20,
+        "itemCountPoints": 15,
+        "lineTotalSumPoints": 15,
+        "itemNamePoints": 15,
+        "total": 100
+      },
+      "extraction": {
+        "merchantName": "BIEDRONKA",
+        "purchasedAt": "2024-07-22T12:22:55+02:00",
+        "currency": "PLN",
+        "receiptTotal": 11.78,
+        "items": [
+          {
+            "name": "Rozek z Jablk 95 g C",
+            "quantity": 1,
+            "unit": null,
+            "unitPrice": 2.79,
+            "lineTotal": 2.79
+          },
+          {
+            "name": "SOK POMARAN 500 ml C",
+            "quantity": 1,
+            "unit": null,
+            "unitPrice": 8.99,
+            "lineTotal": 8.99
+          }
+        ],
+        "extractorName": "Ollama hybrid OCR",
+        "modelName": "glm-ocr:latest \u2192 qwen3.5:4b"
+      },
+      "error": null
+    },
+    {
+      "configurationId": "hybrid-glm-qwen4",
+      "receiptId": "lidl-2025-official-sample",
+      "status": "failed",
+      "elapsedMilliseconds": 206251,
+      "score": null,
+      "extraction": null,
+      "error": "The local model returned an invalid receipt structure. Retry or choose another model. (The model response does not contain a JSON object.)"
+    },
+    {
+      "configurationId": "vision-qwen4",
+      "receiptId": "biedronka-2020-01-09-cc-by-sa",
+      "status": "success",
+      "elapsedMilliseconds": 23663,
+      "score": {
+        "merchantPoints": 20,
+        "datePoints": 15,
+        "totalPoints": 20,
+        "itemCountPoints": 15,
+        "lineTotalSumPoints": 0,
+        "itemNamePoints": 15,
+        "total": 85
+      },
+      "extraction": {
+        "merchantName": "Biedronka",
+        "purchasedAt": "2020-01-09T13:18:00+01:00",
+        "currency": "PLN",
+        "receiptTotal": 8.27,
+        "items": [
+          {
+            "name": "ChlebPszen-Zyt550g",
+            "quantity": 1,
+            "unit": null,
+            "unitPrice": 1.99,
+            "lineTotal": 1.99
+          },
+          {
+            "name": "Ser \u017C.Swiat. 150g",
+            "quantity": 1,
+            "unit": null,
+            "unitPrice": 3.29,
+            "lineTotal": 3.29
+          },
+          {
+            "name": "Pol\u0119dw kos 100g",
+            "quantity": 1,
+            "unit": null,
+            "unitPrice": 4.99,
+            "lineTotal": 4.99
+          }
+        ],
+        "extractorName": "Ollama vision",
+        "modelName": "qwen3.5:4b"
+      },
+      "error": null
+    },
+    {
+      "configurationId": "vision-qwen4",
+      "receiptId": "biedronka-eparagon-2024-07-official",
+      "status": "success",
+      "elapsedMilliseconds": 5151,
+      "score": {
+        "merchantPoints": 20,
+        "datePoints": 15,
+        "totalPoints": 20,
+        "itemCountPoints": 15,
+        "lineTotalSumPoints": 15,
+        "itemNamePoints": 8,
+        "total": 93
+      },
+      "extraction": {
+        "merchantName": "BIEDRONKA \u0022CODZIENNIE NISKIE CENY\u0022 4110",
+        "purchasedAt": "2024-07-22T12:55:00+02:00",
+        "currency": "PLN",
+        "receiptTotal": 11.78,
+        "items": [
+          {
+            "name": "Rozek z Jab\u0142ek 95 g",
+            "quantity": 1,
+            "unit": null,
+            "unitPrice": 2.79,
+            "lineTotal": 2.79
+          },
+          {
+            "name": "SOK POMARA\u0143 500 ml",
+            "quantity": 1,
+            "unit": null,
+            "unitPrice": 8.99,
+            "lineTotal": 8.99
+          }
+        ],
+        "extractorName": "Ollama vision",
+        "modelName": "qwen3.5:4b"
+      },
+      "error": null
+    },
+    {
+      "configurationId": "vision-qwen4",
+      "receiptId": "lidl-2025-official-sample",
+      "status": "success",
+      "elapsedMilliseconds": 11440,
+      "score": {
+        "merchantPoints": 0,
+        "datePoints": 0,
+        "totalPoints": 0,
+        "itemCountPoints": 0,
+        "lineTotalSumPoints": 0,
+        "itemNamePoints": 3,
+        "total": 3
+      },
+      "extraction": {
+        "merchantName": "PARAGON FISKALNY",
+        "purchasedAt": "2023-10-05T14:39:00+02:00",
+        "currency": "PLN",
+        "receiptTotal": 62.8,
+        "items": [
+          {
+            "name": "Kupczyk z kurczaka nap\u00F3j kokosowy l.",
+            "quantity": 1,
+            "unit": null,
+            "unitPrice": 4.95,
+            "lineTotal": 4.95
+          },
+          {
+            "name": "P\u0142atki owsiane",
+            "quantity": 2,
+            "unit": null,
+            "unitPrice": 7.86,
+            "lineTotal": 15.73
+          },
+          {
+            "name": "Mleko pasteryzowane l.",
+            "quantity": 4,
+            "unit": null,
+            "unitPrice": 2.09,
+            "lineTotal": 8.36
+          },
+          {
+            "name": "H. Nugget tyg. prec.",
+            "quantity": 1,
+            "unit": null,
+            "unitPrice": 5.47,
+            "lineTotal": 5.47
+          },
+          {
+            "name": "Sole s\u0142ona",
+            "quantity": 2,
+            "unit": null,
+            "unitPrice": 1.09,
+            "lineTotal": 2.18
+          },
+          {
+            "name": "Babka Gr\u00F3jecka",
+            "quantity": 4,
+            "unit": null,
+            "unitPrice": 5.36,
+            "lineTotal": 21.44
+          },
+          {
+            "name": "Runkurkierki Zeb.",
+            "quantity": 1,
+            "unit": null,
+            "unitPrice": 0.98,
+            "lineTotal": 0.98
+          },
+          {
+            "name": "Czekolada",
+            "quantity": 2,
+            "unit": null,
+            "unitPrice": 13.56,
+            "lineTotal": 27.12
+          }
+        ],
+        "extractorName": "Ollama vision",
+        "modelName": "qwen3.5:4b"
+      },
+      "error": null
+    },
+    {
+      "configurationId": "vision-qwen9",
+      "receiptId": "biedronka-2020-01-09-cc-by-sa",
+      "status": "success",
+      "elapsedMilliseconds": 37222,
+      "score": {
+        "merchantPoints": 20,
+        "datePoints": 15,
+        "totalPoints": 20,
+        "itemCountPoints": 15,
+        "lineTotalSumPoints": 0,
+        "itemNamePoints": 10,
+        "total": 80
+      },
+      "extraction": {
+        "merchantName": "Biedronka",
+        "purchasedAt": "2020-01-09T13:18:00+01:00",
+        "currency": "PLN",
+        "receiptTotal": 8.27,
+        "items": [
+          {
+            "name": "Chleb Pszen-Zyt550g",
+            "quantity": 1,
+            "unit": null,
+            "unitPrice": 1.99,
+            "lineTotal": 1.99
+          },
+          {
+            "name": "Ser \u017C.Swiat. 150g",
+            "quantity": 1,
+            "unit": null,
+            "unitPrice": 3.29,
+            "lineTotal": 3.29
+          },
+          {
+            "name": "Po\u0142\u0119dw \u0142os 100g",
+            "quantity": 1,
+            "unit": null,
+            "unitPrice": 4.99,
+            "lineTotal": 4.99
+          }
+        ],
+        "extractorName": "Ollama vision",
+        "modelName": "qwen3.5:9b"
+      },
+      "error": null
+    },
+    {
+      "configurationId": "vision-qwen9",
+      "receiptId": "biedronka-eparagon-2024-07-official",
+      "status": "success",
+      "elapsedMilliseconds": 7493,
+      "score": {
+        "merchantPoints": 20,
+        "datePoints": 0,
+        "totalPoints": 20,
+        "itemCountPoints": 15,
+        "lineTotalSumPoints": 15,
+        "itemNamePoints": 8,
+        "total": 78
+      },
+      "extraction": {
+        "merchantName": "Biedronka",
+        "purchasedAt": "2024-02-27T12:22:55+01:00",
+        "currency": "PLN",
+        "receiptTotal": 11.78,
+        "items": [
+          {
+            "name": "Ro\u017Cek z Jab\u0142ik 95 g",
+            "quantity": 1,
+            "unit": null,
+            "unitPrice": 2.79,
+            "lineTotal": 2.79
+          },
+          {
+            "name": "SOK POMARA\u0143CZANY 500 ml",
+            "quantity": 1,
+            "unit": null,
+            "unitPrice": 8.99,
+            "lineTotal": 8.99
+          }
+        ],
+        "extractorName": "Ollama vision",
+        "modelName": "qwen3.5:9b"
+      },
+      "error": null
+    },
+    {
+      "configurationId": "vision-qwen9",
+      "receiptId": "lidl-2025-official-sample",
+      "status": "success",
+      "elapsedMilliseconds": 14106,
+      "score": {
+        "merchantPoints": 0,
+        "datePoints": 0,
+        "totalPoints": 20,
+        "itemCountPoints": 0,
+        "lineTotalSumPoints": 0,
+        "itemNamePoints": 0,
+        "total": 20
+      },
+      "extraction": {
+        "merchantName": "PARAGON FISKALNY",
+        "purchasedAt": "2023-06-15T18:49:07+02:00",
+        "currency": "PLN",
+        "receiptTotal": 102.62,
+        "items": [
+          {
+            "name": "Kapsle kawy 1 barutka",
+            "quantity": 1,
+            "unit": "szt.",
+            "unitPrice": 39.84,
+            "lineTotal": 39.84
+          },
+          {
+            "name": "Nap\u00F3j kokosony I A",
+            "quantity": 1,
+            "unit": "szt.",
+            "unitPrice": 6.40,
+            "lineTotal": 6.40
+          },
+          {
+            "name": "Ziemniak z\u0105b.",
+            "quantity": 2,
+            "unit": "kg",
+            "unitPrice": 19.85,
+            "lineTotal": 39.70
+          },
+          {
+            "name": "M.punkt tw\u00F3j gr\u0119s.",
+            "quantity": 1,
+            "unit": "szt.",
+            "unitPrice": 6.90,
+            "lineTotal": 6.90
+          },
+          {
+            "name": "Alo wiersz-4g",
+            "quantity": 2,
+            "unit": "kg",
+            "unitPrice": 18.50,
+            "lineTotal": 37.00
+          },
+          {
+            "name": "Ja\u015Bka Gr\u00F3decki.",
+            "quantity": 4,
+            "unit": "szt.",
+            "unitPrice": 29.21,
+            "lineTotal": 116.85
+          }
+        ],
+        "extractorName": "Ollama vision",
+        "modelName": "qwen3.5:9b"
+      },
+      "error": null
+    },
+    {
+      "configurationId": "vision-gemma4-12b",
+      "receiptId": "biedronka-2020-01-09-cc-by-sa",
+      "status": "success",
+      "elapsedMilliseconds": 19527,
+      "score": {
+        "merchantPoints": 0,
+        "datePoints": 0,
+        "totalPoints": 0,
+        "itemCountPoints": 10,
+        "lineTotalSumPoints": 0,
+        "itemNamePoints": 0,
+        "total": 10
+      },
+      "extraction": {
+        "merchantName": "\u017Babka",
+        "purchasedAt": "2024-05-13T16:48:00+02:00",
+        "currency": "PLN",
+        "receiptTotal": 17.99,
+        "items": [
+          {
+            "name": "Woda mineralna 1.5l",
+            "quantity": 1,
+            "unit": "szt.",
+            "unitPrice": 3.49,
+            "lineTotal": 3.49
+          },
+          {
+            "name": "Chleb \u017Cytni 500g",
+            "quantity": 1,
+            "unit": "szt.",
+            "unitPrice": 4.29,
+            "lineTotal": 4.29
+          },
+          {
+            "name": "Jogurt naturalny 150g",
+            "quantity": 3,
+            "unit": "szt.",
+            "unitPrice": 2.89,
+            "lineTotal": 8.67
+          },
+          {
+            "name": "Jab\u0142ko 1kg",
+            "quantity": 1,
+            "unit": "kg",
+            "unitPrice": 1.54,
+            "lineTotal": 1.54
+          }
+        ],
+        "extractorName": "Ollama vision",
+        "modelName": "gemma4:12b-mlx"
+      },
+      "error": null
+    },
+    {
+      "configurationId": "vision-gemma4-12b",
+      "receiptId": "biedronka-eparagon-2024-07-official",
+      "status": "success",
+      "elapsedMilliseconds": 13291,
+      "score": {
+        "merchantPoints": 0,
+        "datePoints": 0,
+        "totalPoints": 0,
+        "itemCountPoints": 5,
+        "lineTotalSumPoints": 0,
+        "itemNamePoints": 0,
+        "total": 5
+      },
+      "extraction": {
+        "merchantName": "\u017Babka",
+        "purchasedAt": "2024-05-13T16:58:00+02:00",
+        "currency": "PLN",
+        "receiptTotal": 17.99,
+        "items": [
+          {
+            "name": "Woda mineralna 1.5l",
+            "quantity": 1,
+            "unit": "szt.",
+            "unitPrice": 3.49,
+            "lineTotal": 3.49
+          },
+          {
+            "name": "Chleb \u017Cytni 500g",
+            "quantity": 1,
+            "unit": "szt.",
+            "unitPrice": 4.29,
+            "lineTotal": 4.29
+          },
+          {
+            "name": "Jogurt naturalny 150g",
+            "quantity": 3,
+            "unit": "szt.",
+            "unitPrice": 2.89,
+            "lineTotal": 8.67
+          },
+          {
+            "name": "Jab\u0142ko 1kg",
+            "quantity": 1,
+            "unit": "kg",
+            "unitPrice": 1.54,
+            "lineTotal": 1.54
+          }
+        ],
+        "extractorName": "Ollama vision",
+        "modelName": "gemma4:12b-mlx"
+      },
+      "error": null
+    },
+    {
+      "configurationId": "vision-gemma4-12b",
+      "receiptId": "lidl-2025-official-sample",
+      "status": "success",
+      "elapsedMilliseconds": 12843,
+      "score": {
+        "merchantPoints": 0,
+        "datePoints": 0,
+        "totalPoints": 0,
+        "itemCountPoints": 0,
+        "lineTotalSumPoints": 0,
+        "itemNamePoints": 1,
+        "total": 1
+      },
+      "extraction": {
+        "merchantName": "\u017Babka",
+        "purchasedAt": "2024-05-13T16:58:00+02:00",
+        "currency": "PLN",
+        "receiptTotal": 17.99,
+        "items": [
+          {
+            "name": "Woda mineralna 1.5l",
+            "quantity": 1,
+            "unit": "szt.",
+            "unitPrice": 3.49,
+            "lineTotal": 3.49
+          },
+          {
+            "name": "Chleb \u017Cytni 500g",
+            "quantity": 1,
+            "unit": "szt.",
+            "unitPrice": 4.29,
+            "lineTotal": 4.29
+          },
+          {
+            "name": "Jogurt naturalny 150g",
+            "quantity": 3,
+            "unit": "szt.",
+            "unitPrice": 2.89,
+            "lineTotal": 8.67
+          },
+          {
+            "name": "Jab\u0142ko 1kg",
+            "quantity": 1,
+            "unit": "kg",
+            "unitPrice": 1.54,
+            "lineTotal": 1.54
+          }
+        ],
+        "extractorName": "Ollama vision",
+        "modelName": "gemma4:12b-mlx"
+      },
+      "error": null
+    },
+    {
+      "configurationId": "vision-minicpm-v4.6",
+      "receiptId": "biedronka-2020-01-09-cc-by-sa",
+      "status": "success",
+      "elapsedMilliseconds": 14920,
+      "score": {
+        "merchantPoints": 20,
+        "datePoints": 15,
+        "totalPoints": 0,
+        "itemCountPoints": 15,
+        "lineTotalSumPoints": 0,
+        "itemNamePoints": 10,
+        "total": 60
+      },
+      "extraction": {
+        "merchantName": "Sklep 5163 ul. Grabarska 2, 50-079 Wroctaw Jeronimo Martins Polska S.A.",
+        "purchasedAt": "2020-01-09T13:18:00+01:00",
+        "currency": "PLN",
+        "receiptTotal": 82700,
+        "items": [
+          {
+            "name": "ChlebPsenz-Zyt550g",
+            "quantity": 1,
+            "unit": "x1",
+            "unitPrice": 1.99,
+            "lineTotal": 1990
+          },
+          {
+            "name": "Ser \u017C.\u015Awiat. 150g",
+            "quantity": 1,
+            "unit": "x3",
+            "unitPrice": 2.99,
+            "lineTotal": 3290
+          },
+          {
+            "name": "Poledw kos 100g",
+            "quantity": 1,
+            "unit": "x4",
+            "unitPrice": 4.99,
+            "lineTotal": 4990
+          }
+        ],
+        "extractorName": "Ollama vision",
+        "modelName": "minicpm-v4.6"
+      },
+      "error": null
+    },
+    {
+      "configurationId": "vision-minicpm-v4.6",
+      "receiptId": "biedronka-eparagon-2024-07-official",
+      "status": "success",
+      "elapsedMilliseconds": 4047,
+      "score": {
+        "merchantPoints": 20,
+        "datePoints": 0,
+        "totalPoints": 20,
+        "itemCountPoints": 0,
+        "lineTotalSumPoints": 0,
+        "itemNamePoints": 15,
+        "total": 55
+      },
+      "extraction": {
+        "merchantName": "BIEDRONKA",
+        "purchasedAt": null,
+        "currency": "PLN",
+        "receiptTotal": 11.78,
+        "items": [
+          {
+            "name": "Rozek z Jablk 95 g",
+            "quantity": 1,
+            "unit": "C",
+            "unitPrice": 2.79,
+            "lineTotal": 2.79
+          },
+          {
+            "name": "SOK POMARAN 500 ml",
+            "quantity": 1,
+            "unit": "x",
+            "unitPrice": 8.99,
+            "lineTotal": 8.99
+          },
+          {
+            "name": "Sprzedazia odpackiwana C",
+            "quantity": 1,
+            "unit": null,
+            "unitPrice": 11.78,
+            "lineTotal": 11.78
+          },
+          {
+            "name": "PTU c 5%",
+            "quantity": 1,
+            "unit": null,
+            "unitPrice": 0.56,
+            "lineTotal": 0.56
+          },
+          {
+            "name": "Suma PLN",
+            "quantity": 1,
+            "unit": null,
+            "unitPrice": 0.56,
+            "lineTotal": 0.56
+          }
+        ],
+        "extractorName": "Ollama vision",
+        "modelName": "minicpm-v4.6"
+      },
+      "error": null
+    },
+    {
+      "configurationId": "vision-minicpm-v4.6",
+      "receiptId": "lidl-2025-official-sample",
+      "status": "success",
+      "elapsedMilliseconds": 4050,
+      "score": {
+        "merchantPoints": 0,
+        "datePoints": 0,
+        "totalPoints": 20,
+        "itemCountPoints": 0,
+        "lineTotalSumPoints": 0,
+        "itemNamePoints": 1,
+        "total": 21
+      },
+      "extraction": {
+        "merchantName": "PARAGON FISKALNY",
+        "purchasedAt": "2024-07-18T09:52:37+02:00",
+        "currency": "PLN",
+        "receiptTotal": 102.62,
+        "items": [
+          {
+            "name": "KFIST pierki.p.r.",
+            "quantity": 1,
+            "unit": "A",
+            "unitPrice": 9.80,
+            "lineTotal": 24
+          },
+          {
+            "name": "Nuggety i kurakanka",
+            "quantity": 2,
+            "unit": "A",
+            "unitPrice": 11.90,
+            "lineTotal": 16
+          },
+          {
+            "name": "Piwerka twaga",
+            "quantity": 1,
+            "unit": "A",
+            "unitPrice": 11.80,
+            "lineTotal": 13
+          },
+          {
+            "name": "M.hogurt typu gr.",
+            "quantity": 1,
+            "unit": "A",
+            "unitPrice": 6.95,
+            "lineTotal": 2
+          },
+          {
+            "name": "Zatka groszkika",
+            "quantity": 1,
+            "unit": "A",
+            "unitPrice": 8.70,
+            "lineTotal": 39
+          },
+          {
+            "name": "Bor.ameryk 125",
+            "quantity": 1,
+            "unit": "A",
+            "unitPrice": 9.95,
+            "lineTotal": 4
+          },
+          {
+            "name": "Zatka w tulus.",
+            "quantity": 1,
+            "unit": "A",
+            "unitPrice": 6.30,
+            "lineTotal": 3
+          }
+        ],
+        "extractorName": "Ollama vision",
+        "modelName": "minicpm-v4.6"
+      },
+      "error": null
+    },
+    {
+      "configurationId": "apple-vision-translation-foundation",
+      "receiptId": "biedronka-2020-01-09-cc-by-sa",
+      "status": "success",
+      "elapsedMilliseconds": 5634,
+      "score": {
+        "merchantPoints": 20,
+        "datePoints": 15,
+        "totalPoints": 20,
+        "itemCountPoints": 15,
+        "lineTotalSumPoints": 15,
+        "itemNamePoints": 10,
+        "total": 95
+      },
+      "extraction": {
+        "merchantName": "Biedronka",
+        "purchasedAt": "2020-01-09T13:18:00+01:00",
+        "currency": "PLN",
+        "receiptTotal": 8.27,
+        "items": [
+          {
+            "name": "ChlebPszen-Zyt550g",
+            "quantity": 1,
+            "unit": "pcs",
+            "unitPrice": 1.99,
+            "lineTotal": 1.99
+          },
+          {
+            "name": "Ser \u017C.Swiat. 150g",
+            "quantity": 1,
+            "unit": "pcs",
+            "unitPrice": 3.29,
+            "lineTotal": 3.29
+          },
+          {
+            "name": "Pol\u0119du kos 100g",
+            "quantity": 1,
+            "unit": "pcs",
+            "unitPrice": 4.99,
+            "lineTotal": 2.99
+          }
+        ],
+        "extractorName": "Apple on-device hybrid",
+        "modelName": "Vision OCR \u2192 Translation PL\u2192EN \u2192 Foundation Models"
+      },
+      "error": null
+    },
+    {
+      "configurationId": "apple-vision-translation-foundation",
+      "receiptId": "biedronka-eparagon-2024-07-official",
+      "status": "success",
+      "elapsedMilliseconds": 4595,
+      "score": {
+        "merchantPoints": 20,
+        "datePoints": 15,
+        "totalPoints": 20,
+        "itemCountPoints": 15,
+        "lineTotalSumPoints": 15,
+        "itemNamePoints": 8,
+        "total": 93
+      },
+      "extraction": {
+        "merchantName": "Biedronka",
+        "purchasedAt": "2024-07-22T12:22:55+02:00",
+        "currency": "PLN",
+        "receiptTotal": 11.78,
+        "items": [
+          {
+            "name": "Rozek z Jabik 95 g",
+            "quantity": 1,
+            "unit": "pcs",
+            "unitPrice": 2.79,
+            "lineTotal": 2.79
+          },
+          {
+            "name": "SOK POMARAN 500 ml",
+            "quantity": 1,
+            "unit": "pcs",
+            "unitPrice": 8.99,
+            "lineTotal": 8.99
+          }
+        ],
+        "extractorName": "Apple on-device hybrid",
+        "modelName": "Vision OCR \u2192 Translation PL\u2192EN \u2192 Foundation Models"
+      },
+      "error": null
+    },
+    {
+      "configurationId": "apple-vision-translation-foundation",
+      "receiptId": "lidl-2025-official-sample",
+      "status": "success",
+      "elapsedMilliseconds": 12280,
+      "score": {
+        "merchantPoints": 20,
+        "datePoints": 0,
+        "totalPoints": 20,
+        "itemCountPoints": 5,
+        "lineTotalSumPoints": 0,
+        "itemNamePoints": 5,
+        "total": 50
+      },
+      "extraction": {
+        "merchantName": "Lidl",
+        "purchasedAt": "2021-03-10T00:00:00+01:00",
+        "currency": "PLN",
+        "receiptTotal": 102.62,
+        "items": [
+          {
+            "name": "eter Bur.o.",
+            "quantity": 1,
+            "unit": "pcs",
+            "unitPrice": 18.46,
+            "lineTotal": 18.46
+          },
+          {
+            "name": "Kajzerka prs.",
+            "quantity": 1,
+            "unit": "pcs",
+            "unitPrice": 12.22,
+            "lineTotal": 12.22
+          },
+          {
+            "name": "Nuggetsy = kurczaka",
+            "quantity": 1,
+            "unit": "pcs",
+            "unitPrice": 11.99,
+            "lineTotal": 11.99
+          },
+          {
+            "name": "Nap\u00F3j kokosowy 1L",
+            "quantity": 1,
+            "unit": "pcs",
+            "unitPrice": 6.49,
+            "lineTotal": 6.49
+          },
+          {
+            "name": "Platki ows-g\u00F6rsk.",
+            "quantity": 1,
+            "unit": "pcs",
+            "unitPrice": 5.7,
+            "lineTotal": 5.7
+          },
+          {
+            "name": "M. Greek yogurt.",
+            "quantity": 1,
+            "unit": "pcs",
+            "unitPrice": 6.99,
+            "lineTotal": 6.99
+          },
+          {
+            "name": "030wiPoir:0).400",
+            "quantity": 1,
+            "unit": "pcs",
+            "unitPrice": 4.12,
+            "lineTotal": 4.12
+          },
+          {
+            "name": "Rurkikremuni1.Zeb.",
+            "quantity": 1,
+            "unit": "pcs",
+            "unitPrice": 3.99,
+            "lineTotal": 3.99
+          },
+          {
+            "name": "Ciostke",
+            "quantity": 1,
+            "unit": "pcs",
+            "unitPrice": 4.33,
+            "lineTotal": 4.33
+          },
+          {
+            "name": "Bor. aneryk 125t",
+            "quantity": 1,
+            "unit": "pcs",
+            "unitPrice": 9.99,
+            "lineTotal": 9.99
+          },
+          {
+            "name": "Tufcz.: o1.2 oliw.",
+            "quantity": 2,
+            "unit": "pcs",
+            "unitPrice": 1.99,
+            "lineTotal": 3.98
+          }
+        ],
+        "extractorName": "Apple on-device hybrid",
+        "modelName": "Vision OCR \u2192 Translation PL\u2192EN \u2192 Foundation Models"
+      },
+      "error": null
+    }
+  ]
+}

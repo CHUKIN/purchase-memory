@@ -1,0 +1,27 @@
+{
+  "receipt": "04",
+  "approach": "B",
+  "seconds": 8.5,
+  "error": null,
+  "parsed": {
+    "merchant": "Lidl",
+    "date": "2026-07-17",
+    "currency": "PLN",
+    "total": 136.99,
+    "items": [
+      {
+        "name": "Fairy Kapsulki Lenon Ogörki grunt.",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 84.99
+      },
+      {
+        "name": "Pure Paróuki",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 51.0
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"Lidl\",\n  \"date\": \"2026-07-17\",\n  \"currency\": \"PLN\",\n  \"total\": 136.99,\n  \"items\": [\n    {\n      \"name\": \"Fairy Kapsulki Lenon Ogörki grunt.\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 84.99\n    },\n    {\n      \"name\": \"Pure Paróuki\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 51.0\n    }\n  ]\n}"
+}

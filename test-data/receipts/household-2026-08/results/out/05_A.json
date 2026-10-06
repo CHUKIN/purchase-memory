@@ -1,0 +1,39 @@
+{
+  "receipt": "05",
+  "approach": "A",
+  "seconds": 10.0,
+  "error": null,
+  "parsed": {
+    "merchant": "Restauracja McDonald's",
+    "date": "2026-03-26",
+    "currency": "PLN",
+    "total": 70.8,
+    "items": [
+      {
+        "name": "Big Arch",
+        "quantity": 1,
+        "unit_price": 33.0,
+        "line_total": 33.0
+      },
+      {
+        "name": "Wrap Chrup Klas",
+        "quantity": 1,
+        "unit_price": 13.2,
+        "line_total": 13.2
+      },
+      {
+        "name": "Wrap Chrup Klas",
+        "quantity": 1,
+        "unit_price": 13.2,
+        "line_total": 13.2
+      },
+      {
+        "name": "Frytki Srednie",
+        "quantity": 1,
+        "unit_price": 5.7,
+        "line_total": 5.7
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"Restauracja McDonald's\",\n  \"date\": \"2026-03-26\",\n  \"currency\": \"PLN\",\n  \"total\": 70.8,\n  \"items\": [\n    {\n      \"name\": \"Big Arch\",\n      \"quantity\": 1,\n      \"unit_price\": 33.0,\n      \"line_total\": 33.0\n    },\n    {\n      \"name\": \"Wrap Chrup Klas\",\n      \"quantity\": 1,\n      \"unit_price\": 13.2,\n      \"line_total\": 13.2\n    },\n    {\n      \"name\": \"Wrap Chrup Klas\",\n      \"quantity\": 1,\n      \"unit_price\": 13.2,\n      \"line_total\": 13.2\n    },\n    {\n      \"name\": \"Frytki Srednie\",\n      \"quantity\": 1,\n      \"unit_price\": 5.7,\n      \"line_total\": 5.7\n    }\n  ]\n}"
+}

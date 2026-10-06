@@ -1,0 +1,282 @@
+.ratingGroup {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.ratingGroup legend {
+  margin-bottom: 0.35rem;
+  padding: 0;
+  color: var(--pm-content-muted);
+  font-size: 0.8rem;
+  font-weight: 750;
+}
+
+.ratingOptions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.ratingOption {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 2.75rem;
+  padding: 0 0.8rem;
+  border: 1px solid var(--pm-border-subtle);
+  border-radius: var(--pm-radius-md);
+  background: var(--pm-surface-paper);
+  color: var(--pm-content-primary);
+  font-size: 0.88rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.ratingOption svg {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+/* The native radio stays in the tab order and in the accessibility tree; only its dot is hidden. */
+.ratingOption input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.ratingOption:has(input:focus-visible) {
+  outline: 2px solid var(--pm-focus-ring);
+  outline-offset: 2px;
+}
+
+.ratingOption:has(input:checked) {
+  border-color: var(--pm-action-primary);
+  background: var(--pm-surface-soft);
+  color: var(--pm-action-primary);
+}
+
+.ratingOption:has(input:disabled) {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.form > label {
+  display: grid;
+  gap: 0.3rem;
+  color: var(--pm-content-muted);
+  font-size: 0.8rem;
+  font-weight: 750;
+}
+
+.form textarea,
+.form select {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--pm-border-subtle);
+  border-radius: var(--pm-radius-sm);
+  background: var(--pm-surface-paper);
+  color: var(--pm-content-primary);
+  font: inherit;
+  font-size: 0.95rem;
+}
+
+.form textarea {
+  min-height: 4.5rem;
+  resize: vertical;
+}
+
+.formActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.error {
+  margin: 0;
+  color: var(--pm-status-danger);
+  font-size: 0.85rem;
+}
+
+.success {
+  margin: 0;
+  color: var(--pm-status-success);
+  font-size: 0.85rem;
+  font-weight: 750;
+}
+
+.muted {
+  margin: 0;
+  color: var(--pm-content-muted);
+  font-size: 0.85rem;
+}
+
+.section {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.section h2 {
+  margin: 0;
+  color: var(--pm-content-muted);
+  font-family: var(--pm-font-body);
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.section h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.people {
+  display: grid;
+  gap: 1rem;
+}
+
+.person {
+  display: grid;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.history {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.entry {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--pm-border-subtle);
+  border-radius: var(--pm-radius-md);
+  background: var(--pm-surface-paper);
+}
+
+.entryHeader {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-weight: 800;
+}
+
+.badge svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.badge[data-rating="like"] {
+  color: var(--pm-status-success);
+}
+
+.badge[data-rating="dislike"] {
+  color: var(--pm-status-danger);
+}
+
+.badge[data-rating="neutral"] {
+  color: var(--pm-content-muted);
+}
+
+.note {
+  margin: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.photo {
+  max-width: min(100%, 14rem);
+  max-height: 14rem;
+  border-radius: var(--pm-radius-sm);
+  object-fit: cover;
+}
+
+.comparison {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.comparison th,
+.comparison td {
+  padding: 0.45rem 0.4rem;
+  border-bottom: 1px solid var(--pm-border-subtle);
+  text-align: left;
+  vertical-align: top;
+}
+
+.comparison thead th {
+  color: var(--pm-content-muted);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.comparison td.count {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.tableScroll {
+  overflow-x: auto;
+}
+
+.lineSummary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.82rem;
+}
+
+.unratedList {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.unratedItem {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--pm-border-subtle);
+  border-radius: var(--pm-radius-md);
+  background: var(--pm-surface-paper);
+}
+
+.unratedItem a {
+  color: var(--pm-content-primary);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.unratedItem a:hover {
+  text-decoration: underline;
+}

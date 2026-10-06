@@ -1,0 +1,33 @@
+{
+  "receipt": "07",
+  "approach": "B",
+  "seconds": 8.1,
+  "error": null,
+  "parsed": {
+    "merchant": "NTAGO",
+    "date": "2025-08-18",
+    "currency": "PLN",
+    "total": 108.09,
+    "items": [
+      {
+        "name": "DANIE BUFET GR ",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 36.24
+      },
+      {
+        "name": "DANIE BUFET GR ",
+        "quantity": null,
+        "unit_price": null,
+        "line_total": 17.3
+      },
+      {
+        "name": "WYPOZYCZENIE RĘCZNIKA",
+        "quantity": 2,
+        "unit_price": 15.0,
+        "line_total": 30.0
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"NTAGO\",\n  \"date\": \"2025-08-18\",\n  \"currency\": \"PLN\",\n  \"total\": 108.09,\n  \"items\": [\n    {\n      \"name\": \"DANIE BUFET GR \",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 36.24\n    },\n    {\n      \"name\": \"DANIE BUFET GR \",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"line_total\": 17.30\n    },\n    {\n      \"name\": \"WYPOZYCZENIE RĘCZNIKA\",\n      \"quantity\": 2,\n      \"unit_price\": 15.00,\n      \"line_total\": 30.00\n    }\n  ]\n}"
+}

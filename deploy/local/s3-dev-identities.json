@@ -1,0 +1,14 @@
+{
+  "identities": [
+    {
+      "name": "purchase-memory-dev",
+      "credentials": [
+        {
+          "accessKey": "pm-dev-access-key",
+          "secretKey": "pm-dev-secret-key-not-a-real-secret"
+        }
+      ],
+      "actions": ["Admin", "Read", "Write", "List", "Tagging"]
+    }
+  ]
+}

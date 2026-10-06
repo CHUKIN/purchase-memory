@@ -1,0 +1,27 @@
+{
+  "receipt": "13",
+  "approach": "B",
+  "seconds": 7.3,
+  "error": null,
+  "parsed": {
+    "merchant": "LVIV CROISSANTS",
+    "date": "2025-06-20",
+    "currency": "PLN",
+    "total": 54.8,
+    "items": [
+      {
+        "name": "Pijana Wiśnia (d)",
+        "quantity": 1,
+        "unit_price": 22.9,
+        "line_total": 22.9
+      },
+      {
+        "name": "+Serek śnietankouy (dodatek)",
+        "quantity": 1,
+        "unit_price": 25.9,
+        "line_total": 25.9
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"LVIV CROISSANTS\",\n  \"date\": \"2025-06-20\",\n  \"currency\": \"PLN\",\n  \"total\": 54.8,\n  \"items\": [\n    {\n      \"name\": \"Pijana Wiśnia (d)\",\n      \"quantity\": 1,\n      \"unit_price\": 22.9,\n      \"line_total\": 22.9\n    },\n    {\n      \"name\": \"+Serek śnietankouy (dodatek)\",\n      \"quantity\": 1,\n      \"unit_price\": 25.9,\n      \"line_total\": 25.9\n    }\n  ]\n}"
+}

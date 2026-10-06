@@ -1,0 +1,75 @@
+{
+  "receipt": "10",
+  "approach": "A",
+  "seconds": 18.3,
+  "error": null,
+  "parsed": {
+    "merchant": "SUPERMARKET AUCHAN",
+    "date": "2025-08-05",
+    "currency": "PLN",
+    "total": 85.69,
+    "items": [
+      {
+        "name": "GUMA ROZP. 356556A",
+        "quantity": 1,
+        "unit_price": 7.44,
+        "line_total": 7.44
+      },
+      {
+        "name": "TOST PEŁNO 303971C",
+        "quantity": 1,
+        "unit_price": 3.18,
+        "line_total": 3.18
+      },
+      {
+        "name": "FILET Z KU 339849C",
+        "quantity": 0.555,
+        "unit_price": 28.98,
+        "line_total": 16.08
+      },
+      {
+        "name": "BANAN 34041C",
+        "quantity": 0.414,
+        "unit_price": 6.99,
+        "line_total": 2.89
+      },
+      {
+        "name": "SZYNKA Z P 695097C",
+        "quantity": 1,
+        "unit_price": 6.19,
+        "line_total": 6.19
+      },
+      {
+        "name": "SER SZWAJC 508926C",
+        "quantity": 1,
+        "unit_price": 5.89,
+        "line_total": 5.89
+      },
+      {
+        "name": "CEBULA 43444C",
+        "quantity": 0.184,
+        "unit_price": 4.39,
+        "line_total": 0.81
+      },
+      {
+        "name": "DORSZ ATLA 809036C",
+        "quantity": 0.302,
+        "unit_price": 104.9,
+        "line_total": 31.68
+      },
+      {
+        "name": "JOGURT OWC 281650C",
+        "quantity": 1,
+        "unit_price": 7.64,
+        "line_total": 7.64
+      },
+      {
+        "name": "ZIEMNIAK W 266537C",
+        "quantity": 1,
+        "unit_price": 3.89,
+        "line_total": 3.89
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"SUPERMARKET AUCHAN\",\n  \"date\": \"2025-08-05\",\n  \"currency\": \"PLN\",\n  \"total\": 85.69,\n  \"items\": [\n    {\n      \"name\": \"GUMA ROZP. 356556A\",\n      \"quantity\": 1,\n      \"unit_price\": 7.44,\n      \"line_total\": 7.44\n    },\n    {\n      \"name\": \"TOST PEŁNO 303971C\",\n      \"quantity\": 1,\n      \"unit_price\": 3.18,\n      \"line_total\": 3.18\n    },\n    {\n      \"name\": \"FILET Z KU 339849C\",\n      \"quantity\": 0.555,\n      \"unit_price\": 28.98,\n      \"line_total\": 16.08\n    },\n    {\n      \"name\": \"BANAN 34041C\",\n      \"quantity\": 0.414,\n      \"unit_price\": 6.99,\n      \"line_total\": 2.89\n    },\n    {\n      \"name\": \"SZYNKA Z P 695097C\",\n      \"quantity\": 1,\n      \"unit_price\": 6.19,\n      \"line_total\": 6.19\n    },\n    {\n      \"name\": \"SER SZWAJC 508926C\",\n      \"quantity\": 1,\n      \"unit_price\": 5.89,\n      \"line_total\": 5.89\n    },\n    {\n      \"name\": \"CEBULA 43444C\",\n      \"quantity\": 0.184,\n      \"unit_price\": 4.39,\n      \"line_total\": 0.81\n    },\n    {\n      \"name\": \"DORSZ ATLA 809036C\",\n      \"quantity\": 0.302,\n      \"unit_price\": 104.9,\n      \"line_total\": 31.68\n    },\n    {\n      \"name\": \"JOGURT OWC 281650C\",\n      \"quantity\": 1,\n      \"unit_price\": 7.64,\n      \"line_total\": 7.64\n    },\n    {\n      \"name\": \"ZIEMNIAK W 266537C\",\n      \"quantity\": 1,\n      \"unit_price\": 3.89,\n      \"line_total\": 3.89\n    }\n  ]\n}"
+}

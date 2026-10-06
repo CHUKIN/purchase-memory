@@ -1,0 +1,27 @@
+{
+  "receipt": "20",
+  "approach": "B",
+  "seconds": 6.7,
+  "error": null,
+  "parsed": {
+    "merchant": "Restauracja Hebona",
+    "date": "2023-03-25",
+    "currency": "PLN",
+    "total": 38.1,
+    "items": [
+      {
+        "name": "*BigMac M+",
+        "quantity": 1,
+        "unit_price": 7.9,
+        "line_total": 7.9
+      },
+      {
+        "name": "*Cheeseburger",
+        "quantity": 1,
+        "unit_price": 8.0,
+        "line_total": 8.0
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"Restauracja Hebona\",\n  \"date\": \"2023-03-25\",\n  \"currency\": \"PLN\",\n  \"total\": 38.1,\n  \"items\": [\n    {\n      \"name\": \"*BigMac M+\",\n      \"quantity\": 1,\n      \"unit_price\": 7.9,\n      \"line_total\": 7.9\n    },\n    {\n      \"name\": \"*Cheeseburger\",\n      \"quantity\": 1,\n      \"unit_price\": 8.0,\n      \"line_total\": 8.0\n    }\n  ]\n}"
+}

@@ -1,0 +1,159 @@
+.section {
+  display: grid;
+  gap: 0.7rem;
+  min-width: 0;
+}
+
+.section h2 {
+  margin: 0;
+  color: var(--pm-content-muted);
+  font-family: var(--pm-font-body);
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.chips,
+.toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chips > li,
+.toggles > li {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.chip,
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  max-width: 100%;
+  min-height: 1.75rem;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid var(--pm-border-subtle);
+  border-radius: 999px;
+  color: var(--pm-content-primary);
+  background: var(--pm-surface-paper);
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.chip svg {
+  flex: none;
+  color: var(--pm-content-muted);
+}
+
+.chipLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.empty {
+  color: var(--pm-content-muted);
+  font-size: 0.9rem;
+}
+
+/* A comfortable touch target: the toggles are the main control on a phone. */
+.toggle {
+  min-height: 2.5rem;
+  padding: 0.35rem 0.85rem;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.toggle[aria-pressed="true"] {
+  border-color: var(--pm-action-primary);
+  color: var(--pm-content-primary);
+  background: var(--pm-surface-soft);
+  box-shadow: inset 0 0 0 1px var(--pm-action-primary);
+}
+
+.toggle[aria-pressed="true"] svg {
+  flex: none;
+  color: var(--pm-action-primary);
+}
+
+.toggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--pm-action-primary);
+  outline-offset: 2px;
+}
+
+.editor,
+.pickGroup {
+  display: grid;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.pickLabel {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 0.75rem;
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.counter {
+  color: var(--pm-content-muted);
+  font-weight: 500;
+}
+
+.create {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.6rem;
+  align-items: end;
+  min-width: 0;
+}
+
+.hint {
+  margin: 0;
+  color: var(--pm-content-muted);
+  font-size: 0.82rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.error {
+  margin: 0;
+  color: var(--pm-status-danger);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+@media (min-width: 40rem) {
+  .create {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  /* Element + class outranks the category manager's three-column `.create`. */
+  form.twoColumns {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+}

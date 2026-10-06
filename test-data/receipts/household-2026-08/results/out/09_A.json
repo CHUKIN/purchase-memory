@@ -1,0 +1,81 @@
+{
+  "receipt": "09",
+  "approach": "A",
+  "seconds": 19.0,
+  "error": null,
+  "parsed": {
+    "merchant": "Carrefour MARKET Warszawa",
+    "date": "2025-08-06",
+    "currency": "PLN",
+    "total": 177.48,
+    "items": [
+      {
+        "name": "C_SZPINAK BABY 125G",
+        "quantity": 1,
+        "unit_price": 5.99,
+        "line_total": 5.99
+      },
+      {
+        "name": "A_WODA MINER BORJOM",
+        "quantity": 1,
+        "unit_price": 7.49,
+        "line_total": 7.49
+      },
+      {
+        "name": "C_MASLANKA 420G BUT",
+        "quantity": 1,
+        "unit_price": 2.89,
+        "line_total": 2.89
+      },
+      {
+        "name": "B_WILKIN RASPERRY",
+        "quantity": 1,
+        "unit_price": 35.99,
+        "line_total": 35.99
+      },
+      {
+        "name": "C_KEDYMEX-RZODKIEWE",
+        "quantity": 0.392,
+        "unit_price": 38.99,
+        "line_total": 15.28
+      },
+      {
+        "name": "C_MIÓD PSZCZ. WIELO",
+        "quantity": 1,
+        "unit_price": 13.99,
+        "line_total": 13.99
+      },
+      {
+        "name": "A_CHUST DO HIG INT",
+        "quantity": 1,
+        "unit_price": 9.99,
+        "line_total": 9.99
+      },
+      {
+        "name": "A_KAWA O SMAKU ORZE",
+        "quantity": 1,
+        "unit_price": 35.99,
+        "line_total": 35.99
+      },
+      {
+        "name": "C_MOWI ŁOSOS WĘDZ.",
+        "quantity": 1,
+        "unit_price": 25.99,
+        "line_total": 25.99
+      },
+      {
+        "name": "C_KUKURYDZA ŚWIEŻA",
+        "quantity": 2,
+        "unit_price": 6.99,
+        "line_total": 13.98
+      },
+      {
+        "name": "C_SER CHEDDAR WHITE",
+        "quantity": 0.132,
+        "unit_price": 74.99,
+        "line_total": 9.9
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"Carrefour MARKET Warszawa\",\n  \"date\": \"2025-08-06\",\n  \"currency\": \"PLN\",\n  \"total\": 177.48,\n  \"items\": [\n    {\n      \"name\": \"C_SZPINAK BABY 125G\",\n      \"quantity\": 1,\n      \"unit_price\": 5.99,\n      \"line_total\": 5.99\n    },\n    {\n      \"name\": \"A_WODA MINER BORJOM\",\n      \"quantity\": 1,\n      \"unit_price\": 7.49,\n      \"line_total\": 7.49\n    },\n    {\n      \"name\": \"C_MASLANKA 420G BUT\",\n      \"quantity\": 1,\n      \"unit_price\": 2.89,\n      \"line_total\": 2.89\n    },\n    {\n      \"name\": \"B_WILKIN RASPERRY\",\n      \"quantity\": 1,\n      \"unit_price\": 35.99,\n      \"line_total\": 35.99\n    },\n    {\n      \"name\": \"C_KEDYMEX-RZODKIEWE\",\n      \"quantity\": 0.392,\n      \"unit_price\": 38.99,\n      \"line_total\": 15.28\n    },\n    {\n      \"name\": \"C_MIÓD PSZCZ. WIELO\",\n      \"quantity\": 1,\n      \"unit_price\": 13.99,\n      \"line_total\": 13.99\n    },\n    {\n      \"name\": \"A_CHUST DO HIG INT\",\n      \"quantity\": 1,\n      \"unit_price\": 9.99,\n      \"line_total\": 9.99\n    },\n    {\n      \"name\": \"A_KAWA O SMAKU ORZE\",\n      \"quantity\": 1,\n      \"unit_price\": 35.99,\n      \"line_total\": 35.99\n    },\n    {\n      \"name\": \"C_MOWI ŁOSOS WĘDZ.\",\n      \"quantity\": 1,\n      \"unit_price\": 25.99,\n      \"line_total\": 25.99\n    },\n    {\n      \"name\": \"C_KUKURYDZA ŚWIEŻA\",\n      \"quantity\": 2,\n      \"unit_price\": 6.99,\n      \"line_total\": 13.98\n    },\n    {\n      \"name\": \"C_SER CHEDDAR WHITE\",\n      \"quantity\": 0.132,\n      \"unit_price\": 74.99,\n      \"line_total\": 9.9\n    }\n  ]\n}"
+}

@@ -1,0 +1,47 @@
+# Local Postgres + S3-compatible storage for development and tests ONLY.
+#
+# Every password and key in this file (and in s3-dev-identities.json) is a
+# throwaway development value that exists only on this machine. Never reuse
+# them anywhere else; real Supabase values live outside the project
+# (see docs/ПЕРЕМЕННЫЕ_И_СЕКРЕТЫ.md).
+#
+#   docker compose -f deploy/local/docker-compose.yml up -d
+#   docker compose -f deploy/local/docker-compose.yml down -v
+#
+# Ports are bound to 127.0.0.1 so nothing is reachable from the network.
+name: pm-local
+
+services:
+  postgres:
+    image: postgres:17.11-alpine
+    environment:
+      POSTGRES_USER: purchase_memory
+      POSTGRES_PASSWORD: dev-only-password # throwaway, dev only
+      POSTGRES_DB: purchase_memory
+    ports:
+      - "127.0.0.1:55432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U purchase_memory -d purchase_memory"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  # SeaweedFS speaks the S3 API like Supabase Storage's S3 endpoint does.
+  # (MinIO no longer publishes Docker images.) Anonymous access is denied:
+  # the only identity is the dev key pair from s3-dev-identities.json.
+  s3:
+    image: chrislusf/seaweedfs:4.47
+    command: >
+      server -dir=/data -ip.bind=0.0.0.0 -s3 -s3.port=8333
+      -s3.config=/etc/seaweedfs/s3.json
+    ports:
+      - "127.0.0.1:58333:8333"
+    volumes:
+      - ./s3-dev-identities.json:/etc/seaweedfs/s3.json:ro
+      - s3-data:/data
+
+volumes:
+  postgres-data:
+  s3-data:

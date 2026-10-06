@@ -1,0 +1,93 @@
+{
+  "receipt": "02",
+  "approach": "B",
+  "seconds": 21.7,
+  "error": null,
+  "parsed": {
+    "merchant": "ROSSIA",
+    "date": "2025-07-10",
+    "currency": "EUR",
+    "total": 24.3,
+    "items": [
+      {
+        "name": "Kekse Uschki",
+        "quantity": null,
+        "unit_price": 3.49,
+        "line_total": 3.49
+      },
+      {
+        "name": "Tulskij prjanik",
+        "quantity": null,
+        "unit_price": 1.49,
+        "line_total": 1.49
+      },
+      {
+        "name": "Tulskij prjanik",
+        "quantity": null,
+        "unit_price": 1.49,
+        "line_total": 1.49
+      },
+      {
+        "name": "Tulskij prjanik",
+        "quantity": null,
+        "unit_price": 1.49,
+        "line_total": 1.49
+      },
+      {
+        "name": "Tulskij prjanik",
+        "quantity": null,
+        "unit_price": 1.49,
+        "line_total": 1.49
+      },
+      {
+        "name": "geback",
+        "quantity": null,
+        "unit_price": 2.49,
+        "line_total": 2.49
+      },
+      {
+        "name": "Gebäck mit Minzgeschack",
+        "quantity": null,
+        "unit_price": 1.99,
+        "line_total": 1.99
+      },
+      {
+        "name": "Lebensmittel 7%",
+        "quantity": null,
+        "unit_price": 0.99,
+        "line_total": 0.99
+      },
+      {
+        "name": "Tafelschokolade",
+        "quantity": null,
+        "unit_price": 1.49,
+        "line_total": 1.49
+      },
+      {
+        "name": "Schokolade",
+        "quantity": null,
+        "unit_price": 1.19,
+        "line_total": 1.19
+      },
+      {
+        "name": "Lebensmittel 7%",
+        "quantity": null,
+        "unit_price": 1.99,
+        "line_total": 1.99
+      },
+      {
+        "name": "Schokolade Babaevski j",
+        "quantity": null,
+        "unit_price": 1.49,
+        "line_total": 1.49
+      },
+      {
+        "name": "Sefir",
+        "quantity": null,
+        "unit_price": 2.99,
+        "line_total": 2.99
+      }
+    ]
+  },
+  "raw": "{\n  \"merchant\": \"ROSSIA\",\n  \"date\": \"2025-07-10\",\n  \"currency\": \"EUR\",\n  \"total\": 24.3,\n  \"items\": [\n    {\n      \"name\": \"Kekse Uschki\",\n      \"quantity\": null,\n      \"unit_price\": 3.49,\n      \"line_total\": 3.49\n    },\n    {\n      \"name\": \"Tulskij prjanik\",\n      \"quantity\": null,\n      \"unit_price\": 1.49,\n      \"line_total\": 1.49\n    },\n    {\n      \"name\": \"Tulskij prjanik\",\n      \"quantity\": null,\n      \"unit_price\": 1.49,\n      \"line_total\": 1.49\n    },\n    {\n      \"name\": \"Tulskij prjanik\",\n      \"quantity\": null,\n      \"unit_price\": 1.49,\n      \"line_total\": 1.49\n    },\n    {\n      \"name\": \"Tulskij prjanik\",\n      \"quantity\": null,\n      \"unit_price\": 1.49,\n      \"line_total\": 1.49\n    },\n    {\n      \"name\": \"geback\",\n      \"quantity\": null,\n      \"unit_price\": 2.49,\n      \"line_total\": 2.49\n    },\n    {\n      \"name\": \"Gebäck mit Minzgeschack\",\n      \"quantity\": null,\n      \"unit_price\": 1.99,\n      \"line_total\": 1.99\n    },\n    {\n      \"name\": \"Lebensmittel 7%\",\n      \"quantity\": null,\n      \"unit_price\": 0.99,\n      \"line_total\": 0.99\n    },\n    {\n      \"name\": \"Tafelschokolade\",\n      \"quantity\": null,\n      \"unit_price\": 1.49,\n      \"line_total\": 1.49\n    },\n    {\n      \"name\": \"Schokolade\",\n      \"quantity\": null,\n      \"unit_price\": 1.19,\n      \"line_total\": 1.19\n    },\n    {\n      \"name\": \"Lebensmittel 7%\",\n      \"quantity\": null,\n      \"unit_price\": 1.99,\n      \"line_total\": 1.99\n    },\n    {\n      \"name\": \"Schokolade Babaevski j\",\n      \"quantity\": null,\n      \"unit_price\": 1.49,\n      \"line_total\": 1.49\n    },\n    {\n      \"name\": \"Sefir\",\n      \"quantity\": null,\n      \"unit_price\": 2.99,\n      \"line_total\": 2.99\n    }\n  ]\n}"
+}

@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://purchase-memory.local/schemas/receipt-extract-result-v2.schema.json",
+  "title": "Purchase Memory receipt.extract result v2",
+  "description": "Provider-neutral structured receipt draft. Unknown values are represented by null.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "merchantName": { "type": ["string", "null"], "minLength": 1, "maxLength": 200 },
+    "purchasedAt": {
+      "type": ["string", "null"],
+      "description": "ISO 8601 timestamp including a numeric UTC offset."
+    },
+    "currency": { "type": ["string", "null"], "pattern": "^[A-Z]{3}$" },
+    "receiptTotal": { "type": ["number", "null"], "minimum": 0 },
+    "receiptTotalBoundingBox": {
+      "type": ["object", "null"],
+      "description": "Where the value is printed, as fractions of the image size. Use null when unsure.",
+      "additionalProperties": false,
+      "properties": {
+        "x": { "type": "number", "minimum": 0, "maximum": 1 },
+        "y": { "type": "number", "minimum": 0, "maximum": 1 },
+        "width": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 },
+        "height": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 }
+      },
+      "required": ["x", "y", "width", "height"]
+    },
+    "items": {
+      "type": "array",
+      "maxItems": 300,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string", "minLength": 1, "maxLength": 500 },
+          "quantity": { "type": ["number", "null"], "exclusiveMinimum": 0 },
+          "unit": { "type": ["string", "null"], "minLength": 1, "maxLength": 30 },
+          "unitPrice": { "type": ["number", "null"], "minimum": 0 },
+          "lineTotal": { "type": ["number", "null"], "minimum": 0 },
+          "boundingBox": {
+            "type": ["object", "null"],
+            "description": "Where the value is printed, as fractions of the image size. Use null when unsure.",
+            "additionalProperties": false,
+            "properties": {
+              "x": { "type": "number", "minimum": 0, "maximum": 1 },
+              "y": { "type": "number", "minimum": 0, "maximum": 1 },
+              "width": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 },
+              "height": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 }
+            },
+            "required": ["x", "y", "width", "height"]
+          }
+        },
+        "required": ["name", "quantity", "unit", "unitPrice", "lineTotal", "boundingBox"]
+      }
+    }
+  },
+  "required": [
+    "merchantName",
+    "purchasedAt",
+    "currency",
+    "receiptTotal",
+    "receiptTotalBoundingBox",
+    "items"
+  ]
+}

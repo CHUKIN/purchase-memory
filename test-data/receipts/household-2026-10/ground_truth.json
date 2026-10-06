@@ -1,0 +1,91 @@
+{
+  "_note": "Receipt-level ground truth (same shape as household-2026-08/results/ground_truth.json). 'items' = purchased product lines only. 07 is a non-fiscal card slip with no items: total = amount charged, items = 0.",
+  "01": {
+    "merchant": "Rossmann",
+    "date": "2026-09-29",
+    "currency": "PLN",
+    "total": 31.99,
+    "items": 1,
+    "print_quality": "good"
+  },
+  "02": {
+    "merchant": "Carrefour CH Wileńska",
+    "date": "2026-10-02",
+    "currency": "PLN",
+    "total": 133.92,
+    "items": 11,
+    "print_quality": "medium"
+  },
+  "03": {
+    "merchant": "Kuchnie Świata (Westfield Arkadia)",
+    "date": "2026-09-29",
+    "currency": "PLN",
+    "total": 58.0,
+    "items": 3,
+    "print_quality": "medium"
+  },
+  "04": {
+    "merchant": "Lood is Good",
+    "date": "2026-09-29",
+    "currency": "PLN",
+    "total": 18.0,
+    "items": 1,
+    "print_quality": "good"
+  },
+  "05": {
+    "merchant": "Carrefour Express",
+    "date": "2026-10-01",
+    "currency": "PLN",
+    "total": 4.89,
+    "items": 1,
+    "print_quality": "medium"
+  },
+  "06": {
+    "merchant": "Netto",
+    "date": "2026-09-30",
+    "currency": "PLN",
+    "total": 9.96,
+    "items": 2,
+    "print_quality": "medium"
+  },
+  "07": {
+    "merchant": "Netto (нефискальный слип)",
+    "date": "2026-09-30",
+    "currency": "PLN",
+    "total": 9.96,
+    "items": 0,
+    "print_quality": "medium"
+  },
+  "08": {
+    "merchant": "Astramed Centrum Medyczne",
+    "date": "2026-09-27",
+    "currency": "PLN",
+    "total": 300.0,
+    "items": 1,
+    "print_quality": "medium"
+  },
+  "09": {
+    "merchant": "Żabka",
+    "date": "2026-09-20",
+    "currency": "PLN",
+    "total": 4.99,
+    "items": 1,
+    "print_quality": "poor"
+  },
+  "10": {
+    "merchant": "Żabka",
+    "date": "2026-09-27",
+    "currency": "PLN",
+    "total": 7.98,
+    "items": 1,
+    "print_quality": "good"
+  },
+  "11": {
+    "merchant": "Auchan",
+    "date": "2026-10-02",
+    "currency": "PLN",
+    "total": 79.75,
+    "items": 2,
+    "print_quality": "good"
+  }
+}

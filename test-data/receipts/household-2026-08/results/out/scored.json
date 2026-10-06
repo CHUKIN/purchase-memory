@@ -1,0 +1,1093 @@
+[
+  {
+    "nn": "01",
+    "merchant": "Dodo Pizza",
+    "quality": "good",
+    "gt_total": 56.38,
+    "gt_items": 4,
+    "A": {
+      "total": 56.38,
+      "ok_total": true,
+      "items": 4,
+      "secs": 10.8,
+      "error": null,
+      "dia_matched": 1,
+      "dia_correct": 0,
+      "dia_losses": [
+        "'4 pory roku Średnia'->'4 pory roku Srednia'"
+      ],
+      "merchant": "Dodo Pizza Poland Sp. z o.o.",
+      "date": "2026-03-21",
+      "names": [
+        "dostawy 1 szt",
+        "placki ziemniaczane 8 szt.",
+        "4 pory roku Srednia",
+        "Pudetko na pizza 30 1 szt"
+      ]
+    },
+    "B": {
+      "total": 56.38,
+      "ok_total": true,
+      "items": 2,
+      "secs": 10.7,
+      "error": null,
+      "dia_matched": 0,
+      "dia_correct": 0,
+      "dia_losses": [],
+      "merchant": "Restauracja Dodo Pizza",
+      "date": "2026-03-21",
+      "names": [
+        "Pudetko na pizzę",
+        "racki zieniaczane"
+      ]
+    }
+  },
+  {
+    "nn": "02",
+    "merchant": "ROSSIA (Berlin)",
+    "quality": "good",
+    "gt_total": 24.3,
+    "gt_items": 14,
+    "A": {
+      "total": 24.3,
+      "ok_total": true,
+      "items": 11,
+      "secs": 13.7,
+      "error": null,
+      "dia_matched": 1,
+      "dia_correct": 1,
+      "dia_losses": [],
+      "merchant": "ROSSIA Betriebsgesellschaft GmbH",
+      "date": "2025-07-10",
+      "names": [
+        "Kekse Uschki",
+        "Tulskij prjanik",
+        "geback",
+        "Gebäck mit Minzgeschmack",
+        "Lebensmittel 7%",
+        "Tafelschokolade",
+        "Schokolade",
+        "Lebensmittel 7%",
+        "Schokolade Babaevskij",
+        "Sefir",
+        "Sonstige 19%"
+      ]
+    },
+    "B": {
+      "total": 24.3,
+      "ok_total": true,
+      "items": 13,
+      "secs": 21.7,
+      "error": null,
+      "dia_matched": 1,
+      "dia_correct": 1,
+      "dia_losses": [],
+      "merchant": "ROSSIA",
+      "date": "2025-07-10",
+      "names": [
+        "Kekse Uschki",
+        "Tulskij prjanik",
+        "Tulskij prjanik",
+        "Tulskij prjanik",
+        "Tulskij prjanik",
+        "geback",
+        "Gebäck mit Minzgeschack",
+        "Lebensmittel 7%",
+        "Tafelschokolade",
+        "Schokolade",
+        "Lebensmittel 7%",
+        "Schokolade Babaevski j",
+        "Sefir"
+      ]
+    }
+  },
+  {
+    "nn": "03",
+    "merchant": "E.Leclerc Ursynów",
+    "quality": "medium",
+    "gt_total": 217.26,
+    "gt_items": 27,
+    "A": {
+      "total": 217.26,
+      "ok_total": true,
+      "items": 27,
+      "secs": 37.1,
+      "error": null,
+      "dia_matched": 7,
+      "dia_correct": 4,
+      "dia_losses": [
+        "'GULASZ CIELĘCY'->'GULASZ CIELECZY KG.MC'",
+        "'POL MŁ MĄK'->'POL MŁ MAK TORT 1 C'",
+        "'NEST CHEER PŁA'->'NEST CHEER PLA 250 C'"
+      ],
+      "merchant": "E.Leclerc URSYNÓW",
+      "date": "2026-07-18",
+      "names": [
+        "KERRYGOLD MASŁO 200 C",
+        "CZACHO JAJA 10 C",
+        "PIĄT MLEKO 2X 1 C",
+        "GULASZ CIELECZY KG.MC",
+        "KABACZEK",
+        "LEER SER ORIGI 100 C",
+        "MOWI LOSOS INT 100 C",
+        "JANA SEREK CZE 120 C",
+        "LEER SER ORIGI 100 C",
+        "LEER SER LIGHT 100 C",
+        "BAK JOGURT DRA 135 C",
+        "GOSH DESER 125 C",
+        "POL MŁ MAK TORT 1 C",
+        "ŁACIATE ŚMIETA 500 C",
+        "NEST CHEER PLA 250 C",
+        "NEST CHOC PŁAT 250 C",
+        "JOGO JOG B/CUK 150 C",
+        "MEL SKROB ZIEM 500 C",
+        "ROLN OCET 10X 500 A",
+        "WEDE CHŁK ORZE 50 A",
+        "PROT BATON TWA 40 A",
+        "PRES ŚMIETANKA 100 C",
+        "PAPRYKA BIAŁ CORNO C",
+        "PRES ŚMIETANKA 100 C",
+        "OETK EKST WAR 30 A",
+        "OETK PROSZ PIEC 30 A",
+        "WEDE CHŁK ORZE 50 A"
+      ]
+    },
+    "B": {
+      "total": 217.26,
+      "ok_total": true,
+      "items": 32,
+      "secs": 87.8,
+      "error": "json parse: no parseable JSON object in response (salvaged by closing truncated JSON)",
+      "dia_matched": 5,
+      "dia_correct": 2,
+      "dia_losses": [
+        "'GULASZ CIELĘCY'->'GULASZ CIELECY KG.NC C 2310823000000'",
+        "'PRES ŚMIETANKA'->'DANA SEREK LEER SER ORIGI NEST CHOC PLAT 250 C 3060 30G B/CUK 150 MOWI LOSOS NEST CHEER PLA LEER SER LIGHT PAPRYKA BIAŁ CORNO C PRES SMIETANKA 100 C LACIATE SMIETA PRES SMIETANKA 100 C LEER SER ORIGI POL ME MAK TORT 1 OETK EKST MAN 30 ROLN OCET 10% BAK JOGURT SPRZEDAZ OPODATKOWANA C OETK PROSZ PIEC 30 A SUMA PTU ROZLICZENIE PLATNOSCI KARTA DEBIT MASTERCARO B HEL SKROB ZIEM 500 PROT BATON THA 40 SUSH DESER - SPRZEDAZ OPOOATKOMANA NIP 5271023642 SUMA PLN PTU A 23% PTU C 5% MEDE CHAL ORZE 50) Nuner karty: NEDE CHAL ORZE 50 A Nr transakcj!: 30103 #Kasa 9 Kasjer nr 22 Stan portfela po transakcji: Stan paska postępu: 1276,21 #Kasa 9 Kasjer nr 22 11A2EB00137C748A4FC1251B731A4B190E02C955 34707F8C48540A393131532A453FOEE31229033A DRA 125 PRZESIĘBIORCO LICZBA PO Nr sys. 500 250 500 A NIEFISKALNY NIEFISKALNY UUUDO wuwu A FE EAZ 1901840717 DEST NR PARAGONU 800 000129451 EAZ 1901840717 Nr sys. 4442 C 5902476000292 C 5900020000590 C 8721800401676 C 5906259710330 A 5901588067049 A 4770299402835 A 5900437010373 C 3428200386439 C 3428200386439 A 5900437082677 A 5901588067649 C 2907907000000 : 8721800400464 :5900197030291 :8413311002977 5900820019440 A 5900020000613 5900766000090 5906040063430 5900919010617 5006827095509'",
+        "'PIĄT MLEKO'->'PIAT MLEKO 2% CZACHO JAJA 10 C 5906190533272'"
+      ],
+      "merchant": "E.Leclerc",
+      "date": "2026-07-18",
+      "names": [
+        "PARAGON C 4001954160266 FISKALNY",
+        "PIAT MLEKO 2% CZACHO JAJA 10 C 5906190533272",
+        "C 5901939002019",
+        "GULASZ CIELECY KG.NC C 2310823000000",
+        "KABACZEK C 2905719000000",
+        "DANA SEREK LEER SER ORIGI NEST CHOC PLAT 250 C 3060 30G B/CUK 150 MOWI LOSOS NEST CHEER PLA LEER SER LIGHT PAPRYKA BIAŁ CORNO C PRES SMIETANKA 100 C LACIATE SMIETA PRES SMIETANKA 100 C LEER SER ORIGI POL ME MAK TORT 1 OETK EKST MAN 30 ROLN OCET 10% BAK JOGURT SPRZEDAZ OPODATKOWANA C OETK PROSZ PIEC 30 A SUMA PTU ROZLICZENIE PLATNOSCI KARTA DEBIT MASTERCARO B HEL SKROB ZIEM 500 PROT BATON THA 40 SUSH DESER - SPRZEDAZ OPOOATKOMANA NIP 5271023642 SUMA PLN PTU A 23% PTU C 5% MEDE CHAL ORZE 50) Nuner karty: NEDE CHAL ORZE 50 A Nr transakcj!: 30103 #Kasa 9 Kasjer nr 22 Stan portfela po transakcji: Stan paska postępu: 1276,21 #Kasa 9 Kasjer nr 22 11A2EB00137C748A4FC1251B731A4B190E02C955 34707F8C48540A393131532A453FOEE31229033A DRA 125 PRZESIĘBIORCO LICZBA PO Nr sys. 500 250 500 A NIEFISKALNY NIEFISKALNY UUUDO wuwu A FE EAZ 1901840717 DEST NR PARAGONU 800 000129451 EAZ 1901840717 Nr sys. 4442 C 5902476000292 C 5900020000590 C 8721800401676 C 5906259710330 A 5901588067049 A 4770299402835 A 5900437010373 C 3428200386439 C 3428200386439 A 5900437082677 A 5901588067649 C 2907907000000 : 8721800400464 :5900197030291 :8413311002977 5900820019440 A 5900020000613 5900766000090 5906040063430 5900919010617 5006827095509",
+        "C 3428200386439 C 3428200386439",
+        "C 5901588067049 A 4770299402835",
+        "C 5901588067649 C 2907907000000",
+        ": 8721800400464 :5900197030291 :8413311002977",
+        "5906040063430 5900919010617 5006827095509",
+        "C 3428200386439 C 3428200386439",
+        "A 5901588067649 C 2907907000000",
+        ": 8721800400464 :5900197030291 :8413311002977",
+        "C 5906259710330 A 5901588067049",
+        "A 4770299402835 A 5900437010373",
+        "C 3428200386439 C 3428200386439",
+        "A 5900437082677 A 5901588067649",
+        "C 2907907000000 : 8721800400464",
+        ":5900197030291 :8413311002977 5900820019440",
+        "A 5900020000613 5900766000090",
+        "5906040063430 5900919010617 5006827095509",
+        "C 3428200386439 C 3428200386439",
+        "A 5901588067649 C 2907907000000",
+        ": 8721800400464 :5900197030291 :8413311002977",
+        "C 5906259710330 A 5901588067049",
+        "A 4770299402835 A 5900437010373",
+        "C 3428200386439 C 3428200386439",
+        "A 5900437082677 A 5901588067649",
+        "C 2907907000000 : 8721800400464",
+        ":5900197030291 :8413311002977 5900820019440",
+        "A 5900020000613 5900766000090"
+      ]
+    }
+  },
+  {
+    "nn": "04",
+    "merchant": "Lidl",
+    "quality": "poor",
+    "gt_total": 136.99,
+    "gt_items": 8,
+    "A": {
+      "total": 136.99,
+      "ok_total": true,
+      "items": 8,
+      "secs": 14.6,
+      "error": null,
+      "dia_matched": 3,
+      "dia_correct": 3,
+      "dia_losses": [],
+      "merchant": "Lidl",
+      "date": "2026-07-17",
+      "names": [
+        "Fairy Kapsułki Lemon",
+        "Ogórki grunt. PL luz",
+        "Pure Parówki z ind.",
+        "Persil Kapsułki 60pr",
+        "Sal. batauska korzen",
+        "Lay's Chipsy",
+        "Przysnacki Chipsy w.",
+        "Reklamowa 50g"
+      ]
+    },
+    "B": {
+      "total": 136.99,
+      "ok_total": true,
+      "items": 2,
+      "secs": 8.5,
+      "error": null,
+      "dia_matched": 1,
+      "dia_correct": 0,
+      "dia_losses": [
+        "'Ogórki grunt. PL luz'->'Fairy Kapsulki Lenon Ogörki grunt.'"
+      ],
+      "merchant": "Lidl",
+      "date": "2026-07-17",
+      "names": [
+        "Fairy Kapsulki Lenon Ogörki grunt.",
+        "Pure Paróuki"
+      ]
+    }
+  },
+  {
+    "nn": "05",
+    "merchant": "McDonald's Kraków",
+    "quality": "poor",
+    "gt_total": 70.8,
+    "gt_items": 5,
+    "A": {
+      "total": 70.8,
+      "ok_total": true,
+      "items": 4,
+      "secs": 10.0,
+      "error": null,
+      "dia_matched": 1,
+      "dia_correct": 0,
+      "dia_losses": [
+        "'Frytki Średnie'->'Frytki Srednie'"
+      ],
+      "merchant": "Restauracja McDonald's",
+      "date": "2026-03-26",
+      "names": [
+        "Big Arch",
+        "Wrap Chrup Klas",
+        "Wrap Chrup Klas",
+        "Frytki Srednie"
+      ]
+    },
+    "B": {
+      "total": 70.8,
+      "ok_total": true,
+      "items": 2,
+      "secs": 6.8,
+      "error": null,
+      "dia_matched": 0,
+      "dia_correct": 0,
+      "dia_losses": [],
+      "merchant": "Restauracja McDonald's",
+      "date": "2026-03-26",
+      "names": [
+        "Klasa",
+        "Chrup Klas"
+      ]
+    }
+  },
+  {
+    "nn": "06",
+    "merchant": "Mleczarnia Pousińska",
+    "quality": "medium",
+    "gt_total": 25.85,
+    "gt_items": 3,
+    "A": {
+      "total": 25.85,
+      "ok_total": true,
+      "items": 3,
+      "secs": 9.2,
+      "error": null,
+      "dia_matched": 1,
+      "dia_correct": 1,
+      "dia_losses": [],
+      "merchant": "Massive Food sp. z o.o.",
+      "date": "2025-10-11",
+      "names": [
+        "Golabek niesny",
+        "Sos ponidorowy",
+        "Zacierkowa"
+      ]
+    },
+    "B": {
+      "total": 25.85,
+      "ok_total": true,
+      "items": 2,
+      "secs": 7.0,
+      "error": null,
+      "dia_matched": 0,
+      "dia_correct": 0,
+      "dia_losses": [],
+      "merchant": "eczny Mleczarnia Pousinska",
+      "date": "2025-10-11",
+      "names": [
+        "Sos ponidor owy",
+        "Golabek niesny"
+      ]
+    }
+  },
+  {
+    "nn": "07",
+    "merchant": "Suntago",
+    "quality": "good",
+    "gt_total": 108.09,
+    "gt_items": 3,
+    "A": {
+      "total": 108.09,
+      "ok_total": true,
+      "items": 3,
+      "secs": 9.6,
+      "error": null,
+      "dia_matched": 1,
+      "dia_correct": 0,
+      "dia_losses": [
+        "'WYPOŻYCZENIE RĘCZNIKA'->'WYPOZYCZENIE RECZNIAKA'"
+      ],
+      "merchant": "Global Parks Poland Sp. z o.o.",
+      "date": "2025-08-18",
+      "names": [
+        "DANIE BUFET GR",
+        "DANIE BUFET GR",
+        "WYPOZYCZENIE RECZNIAKA"
+      ]
+    },
+    "B": {
+      "total": 108.09,
+      "ok_total": true,
+      "items": 3,
+      "secs": 8.1,
+      "error": null,
+      "dia_matched": 1,
+      "dia_correct": 0,
+      "dia_losses": [
+        "'WYPOŻYCZENIE RĘCZNIKA'->'WYPOZYCZENIE RĘCZNIKA'"
+      ],
+      "merchant": "NTAGO",
+      "date": "2025-08-18",
+      "names": [
+        "DANIE BUFET GR ",
+        "DANIE BUFET GR ",
+        "WYPOZYCZENIE RĘCZNIKA"
+      ]
+    }
+  },
+  {
+    "nn": "08",
+    "merchant": "Żabka",
+    "quality": "good",
+    "gt_total": 29.96,
+    "gt_items": 5,
+    "A": {
+      "total": 29.96,
+      "ok_total": true,
+      "items": 5,
+      "secs": 12.0,
+      "error": null,
+      "dia_matched": 1,
+      "dia_correct": 1,
+      "dia_losses": [],
+      "merchant": "SKLEP ZABKA ZB031",
+      "date": "2025-08-17",
+      "names": [
+        "PIERS PIECZ 75g-C",
+        "SER EDAMSKI PLASTRY 150g-C",
+        "JOGURT SKYR PITNY 330ml-C",
+        "JOG SKYR JAGO 330ml-C",
+        "CROISSANT CZEKOLAD-C"
+      ]
+    },
+    "B": {
+      "total": 29.96,
+      "ok_total": true,
+      "items": 4,
+      "secs": 10.8,
+      "error": null,
+      "dia_matched": 0,
+      "dia_correct": 0,
+      "dia_losses": [],
+      "merchant": "SKLEP ZABKA",
+      "date": "2025-08-17",
+      "names": [
+        "PIERS PIELL 739-C ISZ1.",
+        "SER EDAMSKI PLASTRY 150g-L",
+        "JOG SKYR JAGO 330ml-C JOGURT SKYR PITNY 330ml-C",
+        "CROISSANT CZEKOLAD-C"
+      ]
+    }
+  },
+  {
+    "nn": "09",
+    "merchant": "Carrefour Market",
+    "quality": "good",
+    "gt_total": 177.48,
+    "gt_items": 11,
+    "A": {
+      "total": 177.48,
+      "ok_total": true,
+      "items": 11,
+      "secs": 19.0,
+      "error": null,
+      "dia_matched": 5,
+      "dia_correct": 3,
+      "dia_losses": [
+        "'MAŚLANKA'->'C_MASLANKA 420G BUT'",
+        "'MOWI ŁOSOŚ WĘDZ.'->'C_MOWI ŁOSOS WĘDZ.'"
+      ],
+      "merchant": "Carrefour MARKET Warszawa",
+      "date": "2025-08-06",
+      "names": [
+        "C_SZPINAK BABY 125G",
+        "A_WODA MINER BORJOM",
+        "C_MASLANKA 420G BUT",
+        "B_WILKIN RASPERRY",
+        "C_KEDYMEX-RZODKIEWE",
+        "C_MIÓD PSZCZ. WIELO",
+        "A_CHUST DO HIG INT",
+        "A_KAWA O SMAKU ORZE",
+        "C_MOWI ŁOSOS WĘDZ.",
+        "C_KUKURYDZA ŚWIEŻA",
+        "C_SER CHEDDAR WHITE"
+      ]
+    },
+    "B": {
+      "total": 177.48,
+      "ok_total": true,
+      "items": 9,
+      "secs": 18.0,
+      "error": null,
+      "dia_matched": 4,
+      "dia_correct": 3,
+      "dia_losses": [
+        "'MOWI ŁOSOŚ WĘDZ.'->'C_MOWI ŁOSOŚ WEDZ,'"
+      ],
+      "merchant": "Carrefour MARKET Warszawa",
+      "date": "2025-08-06",
+      "names": [
+        "_SZPINAK BABY 125G",
+        "A_NODA MINER BORJOM",
+        "_MAŚLANKA 420G BUT",
+        "B_WILKIN RASPBERRY",
+        "C_KEDYMEX-RZODKIEWE",
+        "_MIÓD PSZCZ. WIELO",
+        "A_CHUST DO HIG INT",
+        "_KANA O SMAKU ORZE",
+        "C_MOWI ŁOSOŚ WEDZ,"
+      ]
+    }
+  },
+  {
+    "nn": "10",
+    "merchant": "Auchan",
+    "quality": "good",
+    "gt_total": 85.69,
+    "gt_items": 10,
+    "A": {
+      "total": 85.69,
+      "ok_total": true,
+      "items": 10,
+      "secs": 18.3,
+      "error": null,
+      "dia_matched": 2,
+      "dia_correct": 2,
+      "dia_losses": [],
+      "merchant": "SUPERMARKET AUCHAN",
+      "date": "2025-08-05",
+      "names": [
+        "GUMA ROZP. 356556A",
+        "TOST PEŁNO 303971C",
+        "FILET Z KU 339849C",
+        "BANAN 34041C",
+        "SZYNKA Z P 695097C",
+        "SER SZWAJC 508926C",
+        "CEBULA 43444C",
+        "DORSZ ATLA 809036C",
+        "JOGURT OWC 281650C",
+        "ZIEMNIAK W 266537C"
+      ]
+    },
+    "B": {
+      "total": 78.25,
+      "ok_total": false,
+      "items": 10,
+      "secs": 16.7,
+      "error": null,
+      "dia_matched": 1,
+      "dia_correct": 1,
+      "dia_losses": [],
+      "merchant": "AUCHAN",
+      "date": "2025-08-05",
+      "names": [
+        "GUMA ROZP.",
+        "PEŁNO",
+        "FILET Z KU",
+        "BANAN",
+        "SZYNKA Z P",
+        "SER SZWAJC",
+        "CEBULA",
+        "DORSZ ATLA",
+        "JOGURT OWC",
+        "ZIEMNIAK W"
+      ]
+    }
+  },
+  {
+    "nn": "11",
+    "merchant": "Carrefour Market CH Sadyba",
+    "quality": "good",
+    "gt_total": 75.55,
+    "gt_items": 10,
+    "A": {
+      "total": 75.55,
+      "ok_total": true,
+      "items": 11,
+      "secs": 18.4,
+      "error": null,
+      "dia_matched": 2,
+      "dia_correct": 1,
+      "dia_losses": [
+        "'POLĘDWICA Z DORSZ'->'C#POLEDWICA Z DORSZ'"
+      ],
+      "merchant": "CARREFOUR MARKET CH Sadyba",
+      "date": "2025-07-18",
+      "names": [
+        "C#SER RAJSKI WŁOSZC",
+        "C#SER TVARD.DZIUGAS",
+        "OPUST C#SER TVARD.DZIUGAS",
+        "C#SER TVARD.DZIUGAS",
+        "C#FILET Z KURCZAKA",
+        "C#POLEDWICA Z DORSZ",
+        "C#JOGURT HOVENPICK",
+        "C#DESER SATINO BAKO",
+        "C#DESER SATINO BAKO",
+        "A#BATONIK TWAROG MA",
+        "A#TORBA RECYKLING"
+      ]
+    },
+    "B": {
+      "total": 75.55,
+      "ok_total": true,
+      "items": 6,
+      "secs": 14.1,
+      "error": null,
+      "dia_matched": 1,
+      "dia_correct": 0,
+      "dia_losses": [
+        "'POLĘDWICA Z DORSZ'->'#POLEDWICA Z DORSZ'"
+      ],
+      "merchant": "CARREFOUR MARKET",
+      "date": "2025-07-18",
+      "names": [
+        "CHSER RAJSKI WLOSZC",
+        "CHSER TWARD.DZIUGAS",
+        "C#FILET Z KURCZAKA",
+        "#POLEDWICA Z DORSZ",
+        "#JOGURT MOVENPICK",
+        "C#DESER SATINO BAKO"
+      ]
+    }
+  },
+  {
+    "nn": "12",
+    "merchant": "Carrefour Market CH Sadyba",
+    "quality": "good",
+    "gt_total": 75.55,
+    "gt_items": 10,
+    "A": {
+      "total": 75.55,
+      "ok_total": true,
+      "items": 11,
+      "secs": 18.6,
+      "error": null,
+      "dia_matched": 2,
+      "dia_correct": 1,
+      "dia_losses": [
+        "'POLĘDWICA Z DORSZ'->'C#POLEDWICA Z DORSZ'"
+      ],
+      "merchant": "CARREFOUR MARKET CH Sadyba",
+      "date": "2025-07-18",
+      "names": [
+        "C#SER RAJSKI WLOSZC",
+        "C#SER TWARD.DZIUGAS",
+        "OPUST C#SER TWARD.DZIUGAS",
+        "C#SER TWARD.DZIUGAS",
+        "C#FILET Z KURCZAKA",
+        "C#POLEDWICA Z DORSZ",
+        "C#JOGURT MOUENPICK",
+        "C#DESER SATINO BAKO",
+        "C#DESER SATINO BAKO",
+        "A#BATONIK TWAROG MA",
+        "A#TORBA RECYKLING"
+      ]
+    },
+    "B": {
+      "total": 69.14,
+      "ok_total": false,
+      "items": 8,
+      "secs": 15.6,
+      "error": null,
+      "dia_matched": 2,
+      "dia_correct": 1,
+      "dia_losses": [
+        "'POLĘDWICA Z DORSZ'->'#POLEDWICA Z DORSZ'"
+      ],
+      "merchant": "CARREFOUR",
+      "date": "2025-07-18",
+      "names": [
+        "CHSER TWARD. DZIUGAS",
+        "CASER RAJSKI WLOSZC",
+        "A#TORBA RECYKLING",
+        "#POLEDWICA Z DORSZ",
+        "C#FILET Z KURCZAKA",
+        "C#DESER SATINO BAKO",
+        "A#BATONIK TWAROG MA",
+        "#JOGURT MOVENPICK"
+      ]
+    }
+  },
+  {
+    "nn": "13",
+    "merchant": "Lviv Croissants",
+    "quality": "good",
+    "gt_total": 54.8,
+    "gt_items": 5,
+    "A": {
+      "total": 54.8,
+      "ok_total": true,
+      "items": 5,
+      "secs": 11.0,
+      "error": null,
+      "dia_matched": 2,
+      "dia_correct": 2,
+      "dia_losses": [],
+      "merchant": "Lviv Croissants",
+      "date": "2025-06-20",
+      "names": [
+        "Pijana Wiśnia (d)",
+        "+Pudetko papierowe (d)",
+        "Króleuski (d)",
+        "+Serek śmietankowy (dodatek)",
+        "+Pudetko papierowe (d)"
+      ]
+    },
+    "B": {
+      "total": 54.8,
+      "ok_total": true,
+      "items": 2,
+      "secs": 7.3,
+      "error": null,
+      "dia_matched": 1,
+      "dia_correct": 1,
+      "dia_losses": [],
+      "merchant": "LVIV CROISSANTS",
+      "date": "2025-06-20",
+      "names": [
+        "Pijana Wiśnia (d)",
+        "+Serek śnietankouy (dodatek)"
+      ]
+    }
+  },
+  {
+    "nn": "14",
+    "merchant": "Carrefour Market CH Sadyba",
+    "quality": "medium",
+    "gt_total": 192.4,
+    "gt_items": 10,
+    "A": {
+      "total": 192.4,
+      "ok_total": true,
+      "items": 10,
+      "secs": 18.2,
+      "error": null,
+      "dia_matched": 3,
+      "dia_correct": 2,
+      "dia_losses": [
+        "'MC TOST MAŚLANY'->'C#MC TOST MASLANY 5'"
+      ],
+      "merchant": "CARREFOUR MARKET",
+      "date": "2025-06-10",
+      "names": [
+        "A#VODA MINER BORJOM",
+        "C#MC TOST MASLANY 5",
+        "A#UKŁAD MAXTRA PRO",
+        "C#FILET Z KURCZ. ZA",
+        "C#SALAME VILCANI 80",
+        "C#MOWI ŁOSÓB ŚWIEŻY",
+        "C#JOGURT HOVENPICK",
+        "C#SMAKIJA KASZKA 13",
+        "C#PAPRYKA CZERUONA",
+        "C#MC SZPARAGI ZIELO"
+      ]
+    },
+    "B": {
+      "total": 192.4,
+      "ok_total": true,
+      "items": 9,
+      "secs": 17.7,
+      "error": null,
+      "dia_matched": 2,
+      "dia_correct": 2,
+      "dia_losses": [],
+      "merchant": "CARREFOUR MARKET",
+      "date": "2025-06-10",
+      "names": [
+        "A#VODA MINER BORJOMI CHMC TOST MAŚLANY",
+        "AGYA",
+        "ARUKtAD MAXTRA PRO",
+        "C#FILET Z KURCZ.",
+        "C#SALAME VILCANI 80",
+        "CAMOWI LOSOS SWIEZY",
+        "#JOGURT MOVENPICK",
+        "C#SMAKIJA KASZKA 13",
+        "CHMC SZPARAGI ZIELO #PAPRYKA CZERUONA"
+      ]
+    }
+  },
+  {
+    "nn": "15",
+    "merchant": "Billy's American Restaurants",
+    "quality": "good",
+    "gt_total": 219.0,
+    "gt_items": 4,
+    "A": {
+      "total": 219.0,
+      "ok_total": true,
+      "items": 4,
+      "secs": 10.3,
+      "error": null,
+      "dia_matched": 3,
+      "dia_correct": 1,
+      "dia_losses": [
+        "'Amerykańskie Żeberka'->'AMERYKAŃSKIE ZEBERKA'",
+        "'Domowa Mrożona Herbata'->'DOMOWA MROZONA HERBATA'"
+      ],
+      "merchant": "Billy's American Restaurants",
+      "date": "2025-05-20",
+      "names": [
+        "AMERICAN SALAD",
+        "AMERYKAŃSKIE ZEBERKA",
+        "GRILLOWANY PSTRĄG",
+        "DOMOWA MROZONA HERBATA"
+      ]
+    },
+    "B": {
+      "total": 219.0,
+      "ok_total": true,
+      "items": 4,
+      "secs": 9.8,
+      "error": null,
+      "dia_matched": 3,
+      "dia_correct": 0,
+      "dia_losses": [
+        "'Amerykańskie Żeberka'->'. AMERYKANSKIE ZEBERKA'",
+        "'Grillowany Pstrąg'->'GRILLOWANY PSTRAG'",
+        "'Domowa Mrożona Herbata'->'DOMOWA MROZONA HERBATA'"
+      ],
+      "merchant": "BILLY'S AMERICAN RESTAURANTS",
+      "date": "2025-05-20",
+      "names": [
+        "AMERICAN SALAD",
+        ". AMERYKANSKIE ZEBERKA",
+        "GRILLOWANY PSTRAG",
+        "DOMOWA MROZONA HERBATA"
+      ]
+    }
+  },
+  {
+    "nn": "16",
+    "merchant": "Auchan",
+    "quality": "medium",
+    "gt_total": 165.36,
+    "gt_items": 16,
+    "A": {
+      "total": 165.36,
+      "ok_total": true,
+      "items": 16,
+      "secs": 26.3,
+      "error": null,
+      "dia_matched": 1,
+      "dia_correct": 1,
+      "dia_losses": [],
+      "merchant": "SUPERMARKET AUCHAN",
+      "date": "2025-03-14",
+      "names": [
+        "UDO Z KURC 339863C",
+        "POMIDOR KO 627810C",
+        "OGOREK DŁU 306053C",
+        "ZIEMNIaki W 33980C",
+        "PIECZARKI 196413C",
+        "SER KROLEW 643509C",
+        "LOSOS PORCJ 962162",
+        "P#CZEK FAN 528249",
+        "BANAN 34041C",
+        "SZPINAK 253865C",
+        "KUKURYDZA 157373C",
+        "SOCZEWICA 979480C",
+        "PASTA PRZ 157845A",
+        "SZYNKA Z P 695097C",
+        ") TOREBKI 507205A",
+        "PIERNIKI S 145954C"
+      ]
+    },
+    "B": {
+      "total": 165.36,
+      "ok_total": true,
+      "items": 13,
+      "secs": 20.9,
+      "error": null,
+      "dia_matched": 1,
+      "dia_correct": 1,
+      "dia_losses": [],
+      "merchant": "AUCHAN",
+      "date": "2025-03-14",
+      "names": [
+        "UDO Z KURC",
+        "POMIDOR KO",
+        "OGOREK DŁU",
+        "SER KROLEW",
+        "PIECZARKI",
+        "LEMNIAKI W",
+        "P#CZEK FAN",
+        "PASTA PRZ",
+        "LOSOS PORCJ",
+        ") TOREBKI",
+        "PTU A",
+        "PTU C",
+        "BANAN"
+      ]
+    }
+  },
+  {
+    "nn": "17",
+    "merchant": "Auchan",
+    "quality": "good",
+    "gt_total": 165.36,
+    "gt_items": 16,
+    "A": {
+      "total": 165.36,
+      "ok_total": true,
+      "items": 15,
+      "secs": 25.3,
+      "error": null,
+      "dia_matched": 1,
+      "dia_correct": 0,
+      "dia_losses": [
+        "'PĄCZEK FAN'->'PACZEK FAN 528249'"
+      ],
+      "merchant": "SUPERMARKET AUCHAN",
+      "date": "2025-03-14",
+      "names": [
+        "UDO Z KURC 339863C",
+        "POMIDOR KO 627810C",
+        "OGOREK DLU 306053C",
+        "ZIEMNIaki W 33980C",
+        "PIECZARKI 196413C",
+        "SER KROLEW 643509C",
+        "LOSOS PORCJ 962162",
+        "PACZEK FAN 528249",
+        "BANAN 34041C",
+        "SZPINAK 253865C",
+        "KUKURYDZA 157373C",
+        "SOCZEWICA 979480C",
+        "PASTA PRZ 157845A",
+        "SZYNKA Z P 695097C",
+        "T OREBKI 507205A"
+      ]
+    },
+    "B": {
+      "total": 165.36,
+      "ok_total": true,
+      "items": 15,
+      "secs": 23.3,
+      "error": null,
+      "dia_matched": 1,
+      "dia_correct": 1,
+      "dia_losses": [],
+      "merchant": "AUCHAN",
+      "date": "2025-03-14",
+      "names": [
+        "PIERNIKI S",
+        "TOREBKI",
+        "BANAN",
+        "SOCZEWICA",
+        "UDO Z KURC",
+        "KUKURYDZA",
+        "SZPINAK",
+        "LOSOS PORCJ",
+        "PASTA",
+        "SZYNKA Z P",
+        "SER KROLEW",
+        "POMIDOR KO",
+        "OGOREK DŁU",
+        "ZIEMNIAKI W",
+        "PIECZARKI"
+      ]
+    }
+  },
+  {
+    "nn": "18",
+    "merchant": "Carrefour Market CH Sadyba",
+    "quality": "good",
+    "gt_total": 166.69,
+    "gt_items": 18,
+    "A": {
+      "total": 166.69,
+      "ok_total": true,
+      "items": 18,
+      "secs": 27.7,
+      "error": null,
+      "dia_matched": 7,
+      "dia_correct": 4,
+      "dia_losses": [
+        "'ŚMIETANA 18%'->'C_SMietana 18% 200G'",
+        "'MC JAJA ZIELONÓŻK'->'C_MC JAJA ZIELONZK'",
+        "'MOWI ŁOSOŚ WĘDZ.'->'C_MOWI ŁOSOS WĘDZ.'"
+      ],
+      "merchant": "CARREFOUR MARKET CH Sadyba",
+      "date": "2024-10-29",
+      "names": [
+        "A_PAKOWANIE",
+        "C_PODUDZIE Z KURCZ.",
+        "C_SMietana 18% 200G",
+        "C_MC POMARANCKE LUZ",
+        "C_MC SOCZEWNICA 500G",
+        "C_SER KROLEWSKI SIE",
+        "A_MYDLO W PŁ DOVE 5",
+        "C_MC JAJA ZIELONZK",
+        "C_MOWI ŁOSOS WĘDZ.",
+        "C_SZYNKA KRAKUS 100",
+        "C_KAPUSTA BIAŁA LUZ",
+        "C_MC MIX SAŁAT Z SA",
+        "C_JZN ZIEMNIAK JADA",
+        "C_NAPOJ ALPRO 1L MI",
+        "C_MARCHEW LUZ",
+        "C_ZUPA VIFON 70G KU",
+        "C_CHLEB TOSTOWY PEŁ",
+        "C_MASLO EKSTRA MAZU"
+      ]
+    },
+    "B": {
+      "total": 166.69,
+      "ok_total": true,
+      "items": 17,
+      "secs": 30.4,
+      "error": null,
+      "dia_matched": 8,
+      "dia_correct": 7,
+      "dia_losses": [
+        "'ŚMIETANA 18%'->'_SMIETANA 18% 200G'"
+      ],
+      "merchant": "CARREFOUR MARKET",
+      "date": "2024-10-29",
+      "names": [
+        "_PAKOWANIE",
+        "C_ PODUDZIE Z KURCZ.",
+        "_SMIETANA 18% 200G",
+        "C_MC POMARANCZE LUZ",
+        "C_MC SOCZEWICA 500G",
+        "C_SER KROLEWSKI SIE",
+        "A_MYDŁO W PŁ DOVE 5",
+        "C_MC JAJA ZIELONÓŻK",
+        "C_MOWI LOSOS WEDZ.",
+        "_SZYNKA KRAKUS 100",
+        "_KAPUSTA BIALA LUZ",
+        "C_MC MIX SAŁAT Z SA",
+        "C_JZN ZIEMNIAK JADA",
+        "C_NAPOJ ALPRO 1L MI",
+        "C MARCHEW LUZ",
+        "_CHLEB TOSTOWY PEŁ",
+        "C_MASLO EKSTRA MAZU"
+      ]
+    }
+  },
+  {
+    "nn": "19",
+    "merchant": "Lviv Croissants",
+    "quality": "good",
+    "gt_total": 71.6,
+    "gt_items": 4,
+    "A": {
+      "total": 71.6,
+      "ok_total": true,
+      "items": 4,
+      "secs": 10.7,
+      "error": null,
+      "dia_matched": 1,
+      "dia_correct": 1,
+      "dia_losses": [],
+      "merchant": "Lviv Croissants",
+      "date": "2023-06-21",
+      "names": [
+        "Cezar z Kurczakiem",
+        "Sniетankowo-Truskawkowy",
+        "Włoski",
+        "Z Krenem Waniliowym"
+      ]
+    },
+    "B": {
+      "total": 71.6,
+      "ok_total": true,
+      "items": 4,
+      "secs": 9.3,
+      "error": null,
+      "dia_matched": 1,
+      "dia_correct": 1,
+      "dia_losses": [],
+      "merchant": "LVIV CROISSANTS",
+      "date": "2023-06-21",
+      "names": [
+        "Z Krenen HaniLiowyn",
+        "Smietankouo-Truskawkowy",
+        "Włoski",
+        "Cezar z Kurczakien"
+      ]
+    }
+  },
+  {
+    "nn": "20",
+    "merchant": "McDonald's",
+    "quality": "medium",
+    "gt_total": 38.1,
+    "gt_items": 4,
+    "A": {
+      "total": 38.1,
+      "ok_total": true,
+      "items": 4,
+      "secs": 10.5,
+      "error": null,
+      "dia_matched": 1,
+      "dia_correct": 1,
+      "dia_losses": [],
+      "merchant": "PARAGON FISKALNY",
+      "date": "2023-03-25",
+      "names": [
+        "*BigMac M+",
+        "Chrup TalarkM+",
+        "Woda NieGaz. M+",
+        "*Cheeseburger"
+      ]
+    },
+    "B": {
+      "total": 38.1,
+      "ok_total": true,
+      "items": 2,
+      "secs": 6.7,
+      "error": null,
+      "dia_matched": 0,
+      "dia_correct": 0,
+      "dia_losses": [],
+      "merchant": "Restauracja Hebona",
+      "date": "2023-03-25",
+      "names": [
+        "*BigMac M+",
+        "*Cheeseburger"
+      ]
+    }
+  }
+]
