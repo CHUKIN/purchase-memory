@@ -1,4 +1,4 @@
-import type { AnalyticsAnswer, AnalyticsCoverage, AnalyticsPlan } from "../../api/types";
+import type { AnalyticsAnswer, AnalyticsCoverage, AnalyticsHistoryItem, AnalyticsPlan } from "../../api/types";
 
 export const basePlan: AnalyticsPlan = {
   metric: "spend",
@@ -226,3 +226,37 @@ export const allByTagAnswer: AnalyticsAnswer = {
     ]
   }
 };
+
+/** «Предыдущие вопросы» of a household: newest answer first, one follow-up, one asked by the other member. */
+export const sampleAnalyticsHistory: AnalyticsHistoryItem[] = [
+  {
+    id: "history-milk",
+    question: "Сколько мы купили молока за год?",
+    isFollowUp: false,
+    conclusion: milkQuantityAnswer.conclusion,
+    askedByEmail: "anna@example.com",
+    askedByMe: true,
+    createdAt: "2026-09-20T08:12:00Z",
+    answeredAt: "2026-09-26T18:40:00Z"
+  },
+  {
+    id: "history-biedronka-shops",
+    question: "а по магазинам?",
+    isFollowUp: true,
+    conclusion: biedronkaSpendAnswer.conclusion,
+    askedByEmail: "boris.with.a.rather.long.address@example.com",
+    askedByMe: false,
+    createdAt: "2026-09-24T19:05:00Z",
+    answeredAt: "2026-09-24T19:05:00Z"
+  },
+  {
+    id: "history-coffee",
+    question: "Сколько в среднем стоил кофе Lavazza в этом году, если считать только большие пачки по килограмму и без акций?",
+    isFollowUp: false,
+    conclusion: coffeePriceAnswer.conclusion,
+    askedByEmail: null,
+    askedByMe: false,
+    createdAt: "2026-09-02T07:30:00Z",
+    answeredAt: "2026-09-10T07:30:00Z"
+  }
+];

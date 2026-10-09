@@ -1,6 +1,6 @@
 import { BadgePercent, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Field } from "../../design-system/components";
+import { Field, IconButton } from "../../design-system/components";
 import styles from "./ReceiptDiscountLine.module.css";
 
 export interface ReceiptDiscountLineProps {
@@ -64,9 +64,14 @@ export function ReceiptDiscountLine({
           )}
         </span>
         {onDelete && (
-          <button type="button" className={styles.delete} aria-label={t("discount.delete", { name: label })} onClick={onDelete}>
-            <Trash2 aria-hidden="true" size={18} />
-          </button>
+          <IconButton
+            className={styles.delete}
+            intent="danger"
+            label={t("discount.delete", { name: label })}
+            tooltip={t("discount.deleteShort")}
+            icon={<Trash2 size={18} />}
+            onClick={onDelete}
+          />
         )}
       </div>
 

@@ -134,7 +134,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  min-height: 2rem;
+  min-height: var(--pm-touch-target);
   margin-left: auto;
   padding: 0.2rem 0.6rem;
   border: 1px solid var(--pm-border-subtle);

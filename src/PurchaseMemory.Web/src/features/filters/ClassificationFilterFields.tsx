@@ -46,31 +46,7 @@ export function ClassificationFilterFields({
 
   return (
     <div className={styles.row} data-with-tags={showTags || undefined}>
-      {categories.length > 0 && (
-        <div className={styles.field}>
-          <label className={styles.label} htmlFor={`${id}-category`}>{t("categories.filterLabel")}</label>
-          <select
-            id={`${id}-category`}
-            className={styles.control}
-            value={category}
-            onChange={(event) => onCategoryChange(event.target.value)}
-          >
-            <option value="">{t("categories.filterAll")}</option>
-            <option value="none">{t("categories.none")}</option>
-            {groupCategories(categories).map(({ group, children }) => {
-              const groupLabel = categoryLabel(t, group);
-              return (
-                <optgroup key={group.id} label={groupLabel}>
-                  <option value={group.id}>{t("filters.wholeGroup", { name: groupLabel })}</option>
-                  {children.map((child) => (
-                    <option key={child.id} value={child.id}>{`${groupLabel} / ${categoryLabel(t, child)}`}</option>
-                  ))}
-                </optgroup>
-              );
-            })}
-          </select>
-        </div>
-      )}
+      {categories.length > 0 && <CategoryFilterField categories={categories} category={category} onCategoryChange={onCategoryChange} />}
       <div className={styles.field}>
         <label className={styles.label} htmlFor={`${id}-brand`}>{t("categories.brandFilterLabel")}</label>
         <input
@@ -99,6 +75,49 @@ export function ClassificationFilterFields({
   );
 }
 
+export interface CategoryFilterFieldProps {
+  categories: ProductCategory[];
+  /** Category id, `"none"` for «Без категории», or `""` for any. */
+  category: string;
+  onCategoryChange: (value: string) => void;
+}
+
+/**
+ * The «Категория» select on its own: part of the classification row in the
+ * feed and catalog, and one of the two filters of the «Нужно проверить» queue.
+ * Callers hide it while the category tree is not loaded.
+ */
+export function CategoryFilterField({ categories, category, onCategoryChange }: CategoryFilterFieldProps) {
+  const { t } = useTranslation();
+  const id = useId();
+
+  return (
+    <div className={styles.field}>
+      <label className={styles.label} htmlFor={`${id}-category`}>{t("categories.filterLabel")}</label>
+      <select
+        id={`${id}-category`}
+        className={styles.control}
+        value={category}
+        onChange={(event) => onCategoryChange(event.target.value)}
+      >
+        <option value="">{t("categories.filterAll")}</option>
+        <option value="none">{t("categories.none")}</option>
+        {groupCategories(categories).map(({ group, children }) => {
+          const groupLabel = categoryLabel(t, group);
+          return (
+            <optgroup key={group.id} label={groupLabel}>
+              <option value={group.id}>{t("filters.wholeGroup", { name: groupLabel })}</option>
+              {children.map((child) => (
+                <option key={child.id} value={child.id}>{`${groupLabel} / ${categoryLabel(t, child)}`}</option>
+              ))}
+            </optgroup>
+          );
+        })}
+      </select>
+    </div>
+  );
+}
+
 export interface TagFilterFieldProps {
   /** Household tags, alphabetical as the API returns them. */
   tags: TagSummary[];
@@ -109,8 +128,8 @@ export interface TagFilterFieldProps {
 
 /**
  * The «Тег» select on its own: part of the classification row in the feed and
- * catalog, and the only filter of the «Нужно проверить» queue. Callers hide it
- * while the household has no tags.
+ * catalog, and one of the two filters of the «Нужно проверить» queue. Callers
+ * hide it while the household has no tags.
  */
 export function TagFilterField({ tags, tag, onTagChange }: TagFilterFieldProps) {
   const { t } = useTranslation();

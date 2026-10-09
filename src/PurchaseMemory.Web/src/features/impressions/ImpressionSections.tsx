@@ -106,7 +106,7 @@ export function PurchaseLineImpressions({ item, impressions, locale }: { item: P
   const latest = groupByAuthor(t, mine).map((group) => ({ group, impression: group.impressions[0] }));
 
   return (
-    <div className={styles.section}>
+    <div className={open ? styles.section : styles.lineRow}>
       {latest.length > 0 && (
         <ul className={styles.lineSummary} aria-label={t("impressions.lineSummary", { name: item.name })}>
           {latest.map(({ group, impression }) => (
@@ -130,11 +130,9 @@ export function PurchaseLineImpressions({ item, impressions, locale }: { item: P
           </>
         )
         : (
-          <div>
-            <Button intent="quiet" onClick={() => setOpen(true)} aria-label={t("impressions.rateLine", { name: item.name })}>
-              {t("impressions.rate")}
-            </Button>
-          </div>
+          <Button className={styles.rateButton} intent="quiet" onClick={() => setOpen(true)} aria-label={t("impressions.rateLine", { name: item.name })}>
+            {t("impressions.rate")}
+          </Button>
         )}
     </div>
   );

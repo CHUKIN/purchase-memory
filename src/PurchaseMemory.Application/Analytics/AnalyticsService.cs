@@ -11,6 +11,9 @@ public sealed record AnalyticsAnswer(
     AnalyticsResult Result,
     DateOnly Today);
 
+/// <summary>A model-planned answer and the period as the model named it (see <see cref="AnalyticsPlanningResult.Period"/>).</summary>
+public sealed record AnalyticsPlannedAnswer(AnalyticsAnswer Answer, AnalyticsPeriodRequest? Period);
+
 public sealed record AnalyticsSettings(TimeZoneInfo TimeZone, int MaximumPurchases = 5_000);
 
 public interface IAnalyticsService
@@ -22,7 +25,7 @@ public interface IAnalyticsService
     Task<AnalyticsVocabulary> GetVocabularyAsync(CancellationToken cancellationToken);
 
     /// <summary>Plans with the model, then runs the plan. Throws <see cref="AnalyticsPlanningException"/>.</summary>
-    Task<AnalyticsAnswer> AskAsync(string question, AnalyticsPlan? previousPlan, string? locale, CancellationToken cancellationToken);
+    Task<AnalyticsPlannedAnswer> AskAsync(string question, AnalyticsPlan? previousPlan, string? locale, CancellationToken cancellationToken);
 
     /// <summary>Runs a plan a person edited (or an MCP client wrote) without any model call.</summary>
     Task<AnalyticsAnswer> RunAsync(AnalyticsPlan plan, string? locale, CancellationToken cancellationToken);
@@ -61,7 +64,7 @@ public sealed partial class AnalyticsService : IAnalyticsService
     public Task<AnalyticsVocabulary> GetVocabularyAsync(CancellationToken cancellationToken) =>
         _repository.GetVocabularyAsync(cancellationToken);
 
-    public async Task<AnalyticsAnswer> AskAsync(
+    public async Task<AnalyticsPlannedAnswer> AskAsync(
         string question,
         AnalyticsPlan? previousPlan,
         string? locale,
@@ -106,7 +109,8 @@ public sealed partial class AnalyticsService : IAnalyticsService
             throw new AnalyticsQuestionNotUnderstoodException();
         }
 
-        return await ExecuteAsync(planning.Plan, planning.Notes, vocabulary, today, locale, cancellationToken);
+        var answer = await ExecuteAsync(planning.Plan, planning.Notes, vocabulary, today, locale, cancellationToken);
+        return new AnalyticsPlannedAnswer(answer, planning.Period);
     }
 
     public async Task<AnalyticsAnswer> RunAsync(AnalyticsPlan plan, string? locale, CancellationToken cancellationToken)

@@ -1,10 +1,11 @@
 import { AlertTriangle, CornerDownRight, MessageSquareText, Search, X } from "lucide-react";
 import { useEffect, useId, useRef, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
-import type { AnalyticsAnswer, AnalyticsPlan, ProductCategory, ProductTag } from "../../api/types";
+import type { AnalyticsAnswer, AnalyticsHistoryItem, AnalyticsPlan, ProductCategory, ProductTag } from "../../api/types";
 import { Button, EmptyState, SkeletonCard, Surface } from "../../design-system/components";
 import { periodLabel } from "./analyticsText";
 import { AnswerCard } from "./AnswerCard";
+import { AnalyticsHistoryList, SavedAnswerBar, type SavedAnswerInfo } from "./AnalyticsHistory";
 import { HelpLink } from "../help/HelpLink";
 import styles from "./AnalyticsView.module.css";
 
@@ -12,7 +13,11 @@ export type AnalyticsProblem =
   | { kind: "rateLimited"; retryAfterSeconds: number | null }
   | { kind: "disabled" }
   | { kind: "notUnderstood" }
-  | { kind: "failed" };
+  | { kind: "failed" }
+  /** Opening, refreshing or deleting a saved question failed. */
+  | { kind: "historyFailed" }
+  /** The saved question was written by an older version and cannot be recounted. */
+  | { kind: "historyOutdated" };
 
 export interface AnalyticsViewProps {
   /** False when the server has questions switched off; chips on an existing answer still work. */
@@ -34,6 +39,24 @@ export interface AnalyticsViewProps {
   /** The household's tags; the tag field appears only when there are some. */
   tags?: ProductTag[];
   locale: string;
+  /** «Предыдущие вопросы»; the section is hidden while empty. */
+  history?: AnalyticsHistoryItem[];
+  historyHasMore?: boolean;
+  historyFailed?: boolean;
+  /** The saved question being opened or deleted. */
+  historyBusyId?: string | null;
+  onOpenHistory?: (id: string) => void;
+  onDeleteHistory?: (id: string) => void;
+  onShowMoreHistory?: () => void;
+  /** Set when the answer on screen is a saved one (opened from the list, or the same question asked again). */
+  saved?: SavedAnswerInfo | null;
+  /** The history entry the current answer belongs to, highlighted in the list. */
+  activeHistoryId?: string | null;
+  /** «Обновить»: recount the saved plan on today's data, without the model. */
+  onRefreshSaved?: () => void;
+  refreshing?: boolean;
+  /** «Спросить заново»: send the saved question to the model again. */
+  onAskAgain?: () => void;
 }
 
 const exampleKeys = ["milkYear", "coffeeBrandPrice", "sweets", "wholegrainPasta", "biedronkaAugust"] as const;
@@ -54,7 +77,19 @@ export function AnalyticsView({
   categories,
   merchants,
   tags = [],
-  locale
+  locale,
+  history = [],
+  historyHasMore = false,
+  historyFailed = false,
+  historyBusyId = null,
+  onOpenHistory,
+  onDeleteHistory,
+  onShowMoreHistory,
+  saved = null,
+  activeHistoryId = null,
+  onRefreshSaved,
+  refreshing = false,
+  onAskAgain
 }: AnalyticsViewProps) {
   const { t } = useTranslation();
   const inputId = useId();
@@ -76,7 +111,9 @@ export function AnalyticsView({
 
   const status = asking
     ? t("analytics.status.asking")
-    : rerunning
+    : refreshing
+      ? t("analytics.status.refreshing")
+      : rerunning
       ? t("analytics.status.rerunning")
       : answer
         ? t("analytics.status.ready")
@@ -155,6 +192,18 @@ export function AnalyticsView({
         <div aria-busy="true"><div aria-hidden="true"><SkeletonCard /></div></div>
       )}
 
+      {answer && saved && (
+        <SavedAnswerBar
+          saved={saved}
+          locale={locale}
+          canAsk={enabled}
+          busy={asking || rerunning || refreshing}
+          refreshing={refreshing}
+          onRefresh={onRefreshSaved}
+          onAskAgain={onAskAgain}
+        />
+      )}
+
       {answer && (
         <AnswerCard
           ref={conclusionRef}
@@ -164,7 +213,7 @@ export function AnalyticsView({
           tags={tags}
           locale={locale}
           onPlanChange={onPlanChange}
-          rerunning={rerunning || asking}
+          rerunning={rerunning || asking || refreshing}
         />
       )}
 
@@ -172,6 +221,20 @@ export function AnalyticsView({
         <Surface className={styles.empty}>
           <EmptyState icon={<MessageSquareText />} title={t("analytics.emptyTitle")} description={t("analytics.emptyDescription")} />
         </Surface>
+      )}
+
+      {onOpenHistory && onDeleteHistory && (
+        <AnalyticsHistoryList
+          items={history}
+          locale={locale}
+          activeId={activeHistoryId}
+          hasMore={historyHasMore}
+          failed={historyFailed}
+          busyId={historyBusyId}
+          onOpen={onOpenHistory}
+          onDelete={onDeleteHistory}
+          onShowMore={onShowMoreHistory}
+        />
       )}
     </div>
   );

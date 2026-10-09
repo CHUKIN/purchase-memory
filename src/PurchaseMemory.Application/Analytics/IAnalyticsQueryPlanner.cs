@@ -27,12 +27,18 @@ public sealed record AnalyticsPlanningRequest(
 
 /// <param name="Plan">Unvalidated: ids and names are what the model returned, mapped back from codes.</param>
 /// <param name="Understood">False when the model said the question is not about purchases.</param>
+/// <param name="Period">
+/// The period as the model named it, already resolved into <see cref="AnalyticsPlan.From"/> /
+/// <see cref="AnalyticsPlan.To"/>; kept so a saved question can be counted from a later «today».
+/// Null when the plan kept the previous answer's dates or named no period.
+/// </param>
 public sealed record AnalyticsPlanningResult(
     AnalyticsPlan Plan,
     bool Understood,
     IReadOnlyList<AnalyticsNote> Notes,
     long? InputTokens,
-    long? OutputTokens);
+    long? OutputTokens,
+    AnalyticsPeriodRequest? Period = null);
 
 /// <summary>The model could not be asked or answered with something unusable.</summary>
 public class AnalyticsPlanningException : Exception

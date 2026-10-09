@@ -18,7 +18,10 @@ namespace PurchaseMemory.IntegrationTests;
 public sealed class ReviewQueueTests
 {
     private static readonly DateTimeOffset July1 = new(2026, 7, 1, 10, 0, 0, TimeSpan.Zero);
+    private static readonly Guid Dairy = ProductCategorySeed.IdFor(1);
     private static readonly Guid Milk = ProductCategorySeed.IdFor(2);
+    private static readonly Guid Cheese = ProductCategorySeed.IdFor(3);
+    private static readonly Guid Juices = ProductCategorySeed.IdFor(36);
 
     private static CancellationToken Cancel => TestContext.Current.CancellationToken;
 
@@ -131,6 +134,58 @@ public sealed class ReviewQueueTests
         Assert.Equal(second.PurchaseId, item.PurchaseId);
         var existing = Assert.Single(Group(queue, ReviewQueueItemKind.MissingCategory).Items);
         Assert.Equal(existing.ProductId, item.ProductId);
+        // The card offers the candidate inline; the best one is the item's product.
+        var candidate = Assert.Single(item.Candidates!);
+        Assert.Equal(existing.ProductId, candidate.ProductId);
+        Assert.Equal("Ser Gouda plastry 150g", candidate.Name);
+    }
+
+    [Fact]
+    public async Task PendingMatchOffersAtMostThreeCandidatesBestFirst()
+    {
+        await using var application = await TestApplication.CreateAsync();
+        var services = application.Services;
+        var purchase = await SaveAsync(services, "Biedronka", null, ("SER ZOLTY", 1, 5m, 5m));
+
+        Guid[] productIds;
+        await using (var scope = services.CreateAsyncScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<PurchaseMemoryDbContext>();
+            string[] names = ["Gouda 150g", "Gouda 250g", "Edam 150g", "Gouda 500g", "Usunięty"];
+            var products = names
+                .Select(name => Product.Create(name, name.ToLowerInvariant(), July1))
+                .ToArray();
+            products[0].ConfirmBrand("Hochland", "hochland", July1);
+            products[0].ConfirmCategory(Cheese, July1);
+            dbContext.Products.AddRange(products);
+            var line = await dbContext.Set<PurchaseMemory.Domain.Purchases.PurchaseItem>()
+                .SingleAsync(item => EF.Property<Guid>(item, "PurchaseDraftId") == purchase.PurchaseId, Cancel);
+            // Scores out of order on purpose; the vanished product must be skipped.
+            dbContext.PendingProductMatches.Add(PendingProductMatch.Create(
+                line.Id,
+                "biedronka",
+                "SER ZOLTY",
+                "ser zolty",
+                [
+                    PendingProductMatchCandidate.Create(2, products[1].Id, 0.70),
+                    PendingProductMatchCandidate.Create(0, products[0].Id, 0.90),
+                    PendingProductMatchCandidate.Create(4, products[3].Id, 0.50),
+                    PendingProductMatchCandidate.Create(1, products[4].Id, 0.85),
+                    PendingProductMatchCandidate.Create(3, products[2].Id, 0.60)
+                ],
+                July1));
+            await dbContext.SaveChangesAsync(Cancel);
+            dbContext.Products.Remove(products[4]);
+            await dbContext.SaveChangesAsync(Cancel);
+            productIds = products.Select(product => product.Id).ToArray();
+        }
+
+        var item = Assert.Single(Group(await GetQueueAsync(services, 20), ReviewQueueItemKind.PendingMatch).Items);
+
+        Assert.Equal([productIds[0], productIds[1], productIds[2]], item.Candidates!.Select(candidate => candidate.ProductId));
+        Assert.Equal(new ReviewQueueCandidate(productIds[0], "Gouda 150g", "Hochland", Cheese), item.Candidates![0]);
+        Assert.Null(item.Candidates[1].Brand);
+        Assert.Null(item.Candidates[1].CategoryId);
     }
 
     [Fact]
@@ -423,6 +478,137 @@ public sealed class ReviewQueueTests
         Assert.Contains($"Tag {unknown} was not found.", failed, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public async Task CategoryFilterKeepsOnlyItemsAboutProductsInTheCategory()
+    {
+        await using var application = await TestApplication.CreateAsync();
+        var services = application.Services;
+        var lidl = await SaveAsync(services, "Lidl", 99m, ("SOK JABLKOWY", 1, 6m, 6m), ("CHLEB", 1, 4m, 4m));
+        var zabka = await SaveAsync(services, "Żabka", 20m, ("KAWA", 1, 15m, 15m));
+        var butter = await SaveAsync(services, "Biedronka", null, ("MASŁO", 1, null, null));
+        await SaveAsync(services, "Biedronka", null, ("Ser Gouda plastry 150g", 1, 5m, 5m));
+        await SaveAsync(services, "Biedronka", null, ("Ser Gouda plastry 250g", 1, 7m, 7m));
+        await AddFailedReceiptAsync(services);
+
+        await using (var scope = services.CreateAsyncScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<PurchaseMemoryDbContext>();
+            async Task<Product> FindProduct(string name) =>
+                await dbContext.Products.SingleAsync(product => product.CanonicalName == name, Cancel);
+            (await FindProduct("SOK JABLKOWY")).ConfirmCategory(Juices, July1);
+            (await FindProduct("MASŁO")).ApplySuggestion(Milk, null, null, July1);
+            // The unmatched 250g line's only candidate is a cheese, yet the line itself has no product.
+            (await FindProduct("Ser Gouda plastry 150g")).ConfirmCategory(Cheese, July1);
+            await dbContext.SaveChangesAsync(Cancel);
+        }
+
+        static List<(ReviewQueueItemKind, Guid?)> Keys(ReviewQueueResult queue) => queue.Groups
+            .SelectMany(group => group.Items)
+            .Select(item => (item.Kind, item.PurchaseId ?? item.ProductId))
+            .OrderBy(pair => pair.Kind)
+            .ThenBy(pair => pair.Item2)
+            .ToList();
+
+        // A group includes its subcategories; an AI-suggested category counts, as in the feed.
+        var dairy = await GetQueueAsync(services, 20, new ReviewQueueFilter(CategoryId: Dairy));
+        Assert.Equal(2, dairy.TotalCount);
+        Assert.Equal(butter.PurchaseId, Assert.Single(Group(dairy, ReviewQueueItemKind.MissingPrice).Items).PurchaseId);
+        Assert.Equal("MASŁO", Assert.Single(Group(dairy, ReviewQueueItemKind.SuggestedCategory).Items).Title);
+        Assert.Equal(Keys(dairy), Keys(await GetQueueAsync(services, 20, new ReviewQueueFilter(CategoryId: Milk))));
+
+        var cheese = await GetQueueAsync(services, 20, new ReviewQueueFilter(CategoryId: Cheese));
+        Assert.Equal(0, cheese.TotalCount);
+
+        var juices = await GetQueueAsync(services, 20, new ReviewQueueFilter(CategoryId: Juices));
+        Assert.Equal(lidl.PurchaseId, Assert.Single(Assert.Single(juices.Groups).Items).PurchaseId);
+
+        // «Без категории»: products nobody classified, and purchases with such a line.
+        var none = await GetQueueAsync(services, 20, new ReviewQueueFilter(Uncategorized: true));
+        Assert.Equal(
+            new[] { lidl.PurchaseId, zabka.PurchaseId }.Order(),
+            Group(none, ReviewQueueItemKind.TotalMismatch).Items.Select(item => item.PurchaseId!.Value).Order());
+        Assert.Equal(
+            ["CHLEB", "KAWA"],
+            Group(none, ReviewQueueItemKind.MissingCategory).Items.Select(item => item.Title).Order(StringComparer.Ordinal));
+        Assert.Equal(4, none.TotalCount);
+        Assert.Null(Find(none, ReviewQueueItemKind.PendingMatch));
+        Assert.Null(Find(none, ReviewQueueItemKind.FailedReceipt));
+
+        // Category and tag combine (AND) on the same product.
+        var kid = await CreateTagAsync(services, "Для ребёнка");
+        await TagAsync(services, kid, "SOK JABLKOWY", "CHLEB");
+        Assert.Equal(1, (await GetQueueAsync(services, 20, new ReviewQueueFilter(Juices, false, [kid]))).TotalCount);
+        Assert.Equal(0, (await GetQueueAsync(services, 20, new ReviewQueueFilter(Dairy, false, [kid]))).TotalCount);
+        Assert.Equal(2, (await GetQueueAsync(services, 20, new ReviewQueueFilter(null, true, [kid]))).TotalCount);
+
+        // The whole queue is unchanged by any of this.
+        Assert.Equal(8, (await GetQueueAsync(services, 20)).TotalCount);
+    }
+
+    [Fact]
+    public async Task CategoryFilterValidatesLikeTheFeed()
+    {
+        await using var application = await TestApplication.CreateAsync();
+        var services = application.Services;
+        await SaveAsync(services, "Lidl", 99m, ("SOK JABLKOWY", 1, 6m, 6m));
+
+        var unknown = Guid.NewGuid();
+        var error = await Assert.ThrowsAsync<ProductCategoryNotFoundException>(
+            () => GetQueueAsync(services, 20, new ReviewQueueFilter(CategoryId: unknown)));
+        Assert.Contains(unknown.ToString(), error.Message, StringComparison.Ordinal);
+        await Assert.ThrowsAsync<ArgumentException>(
+            () => GetQueueAsync(services, 20, new ReviewQueueFilter(Milk, true)));
+
+        // A known category nobody uses is a valid, empty filter.
+        Assert.Equal(0, (await GetQueueAsync(services, 20, new ReviewQueueFilter(CategoryId: Juices))).TotalCount);
+        Assert.Equal(2, (await GetQueueAsync(services, 20, ReviewQueueFilter.None)).TotalCount);
+    }
+
+    [Fact]
+    public async Task HttpFiltersTheListByCategoryButTheBadgeCountStaysWhole()
+    {
+        await using var host = new AuthTestHost();
+        await SaveAsync(host.Services, "Lidl", 99m, ("SOK JABLKOWY", 1, 6m, 6m));
+        await SaveAsync(host.Services, "Żabka", 20m, ("KAWA", 1, 15m, 15m));
+        await SaveAsync(host.Services, "Biedronka", null, ("Ser Gouda plastry 150g", 1, 5m, 5m));
+        await SaveAsync(host.Services, "Biedronka", null, ("Ser Gouda plastry 250g", 1, 7m, 7m));
+        await using (var scope = host.Services.CreateAsyncScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<PurchaseMemoryDbContext>();
+            (await dbContext.Products.SingleAsync(product => product.CanonicalName == "SOK JABLKOWY", Cancel))
+                .ConfirmCategory(Juices, July1);
+            await dbContext.SaveChangesAsync(Cancel);
+        }
+
+        using var client = host.CreateClientFor(AuthTestHost.Token());
+
+        var juices = await client.GetFromJsonAsync<JsonElement>($"/api/review-queue?categoryId={Juices}", Cancel);
+        Assert.Equal(1, juices.GetProperty("totalCount").GetInt32());
+        var drinks = await client.GetFromJsonAsync<JsonElement>($"/api/review-queue?categoryId={ProductCategorySeed.IdFor(33)}", Cancel);
+        Assert.Equal(1, drinks.GetProperty("totalCount").GetInt32());
+        var none = await client.GetFromJsonAsync<JsonElement>("/api/review-queue?uncategorized=true", Cancel);
+        Assert.Equal(3, none.GetProperty("totalCount").GetInt32());
+
+        // The whole list carries the pending line's suggested products.
+        var all = await client.GetFromJsonAsync<JsonElement>("/api/review-queue", Cancel);
+        Assert.Equal(5, all.GetProperty("totalCount").GetInt32());
+        var pending = all.GetProperty("groups").EnumerateArray()
+            .Single(group => group.GetProperty("kind").GetString() == "pendingMatch")
+            .GetProperty("items")[0];
+        var candidate = Assert.Single(pending.GetProperty("candidates").EnumerateArray());
+        Assert.Equal("Ser Gouda plastry 150g", candidate.GetProperty("name").GetString());
+        Assert.Equal(pending.GetProperty("productId").GetGuid(), candidate.GetProperty("productId").GetGuid());
+        Assert.Equal(JsonValueKind.Null, candidate.GetProperty("brand").ValueKind);
+        Assert.Equal(JsonValueKind.Null, candidate.GetProperty("categoryId").ValueKind);
+
+        var count = await client.GetFromJsonAsync<JsonElement>($"/api/review-queue/count?categoryId={Juices}", Cancel);
+        Assert.Equal(5, count.GetProperty("totalCount").GetInt32());
+
+        Assert.Equal(HttpStatusCode.BadRequest, (await client.GetAsync($"/api/review-queue?categoryId={Guid.NewGuid()}", Cancel)).StatusCode);
+        Assert.Equal(HttpStatusCode.BadRequest, (await client.GetAsync("/api/review-queue?categoryId=молоко", Cancel)).StatusCode);
+        Assert.Equal(HttpStatusCode.BadRequest, (await client.GetAsync($"/api/review-queue?categoryId={Juices}&uncategorized=true", Cancel)).StatusCode);
+    }
+
     private static ReviewQueueGroup Group(ReviewQueueResult queue, ReviewQueueItemKind kind) =>
         Find(queue, kind) ?? throw new Xunit.Sdk.XunitException($"No group {kind}.");
 
@@ -439,6 +625,12 @@ public sealed class ReviewQueueTests
     {
         await using var scope = services.CreateAsyncScope();
         return await scope.ServiceProvider.GetRequiredService<IReviewQueueService>().GetAsync(limit, tagIds, Cancel);
+    }
+
+    private static async Task<ReviewQueueResult> GetQueueAsync(IServiceProvider services, int limit, ReviewQueueFilter filter)
+    {
+        await using var scope = services.CreateAsyncScope();
+        return await scope.ServiceProvider.GetRequiredService<IReviewQueueService>().GetAsync(limit, filter, Cancel);
     }
 
     private static async Task<Guid> CreateTagAsync(IServiceProvider services, string name)

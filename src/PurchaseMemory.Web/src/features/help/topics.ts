@@ -13,6 +13,7 @@ export const helpTopicIds = [
   "sign-in",
   "iphone-app",
   "capture",
+  "capture-batch",
   "recognition",
   "review-save",
   "feed",
@@ -24,6 +25,7 @@ export const helpTopicIds = [
   "impressions",
   "review-queue",
   "analytics",
+  "analytics-history",
   "mcp"
 ] as const;
 export type HelpTopicId = (typeof helpTopicIds)[number];
@@ -56,17 +58,19 @@ export const helpTopics: HelpTopic[] = [
   { id: "sign-in", group: "start", links: [link("home", "/")] },
   { id: "iphone-app", group: "start", links: [link("home", "/")] },
   { id: "capture", group: "capture", links: [link("capture", "/purchases/new")] },
+  { id: "capture-batch", group: "capture", links: [link("capture", "/purchases/new"), link("home", "/")] },
   { id: "recognition", group: "capture", links: [link("home", "/"), link("reviewQueue", "/needs-attention")] },
   { id: "review-save", group: "capture", links: [link("capture", "/purchases/new")] },
   { id: "feed", group: "history", links: [link("purchases", "/purchases"), link("needsAttentionFilter", "/purchases?status=needsAttention")] },
   { id: "filters", group: "history", links: [link("purchases", "/purchases"), link("products", "/products")] },
   { id: "purchase-edit", group: "history", links: [link("purchases", "/purchases"), link("reviewQueue", "/needs-attention")] },
   { id: "products", group: "catalog", links: [link("products", "/products")] },
-  { id: "categories", group: "catalog", links: [link("products", "/products"), link("uncategorizedProducts", "/products?category=none")] },
+  { id: "categories", group: "catalog", links: [link("products", "/products"), link("uncategorizedProducts", "/products?category=none"), link("reviewQueue", "/needs-attention")] },
   { id: "tags", group: "catalog", links: [link("products", "/products"), link("purchases", "/purchases"), link("analytics", "/analytics"), link("reviewQueue", "/needs-attention")] },
   { id: "impressions", group: "catalog", links: [link("home", "/"), link("products", "/products")] },
   { id: "review-queue", group: "attention", links: [link("reviewQueue", "/needs-attention")] },
   { id: "analytics", group: "analytics", links: [link("analytics", "/analytics")] },
+  { id: "analytics-history", group: "analytics", links: [link("analytics", "/analytics")] },
   { id: "mcp", group: "advanced", links: [] }
 ];
 

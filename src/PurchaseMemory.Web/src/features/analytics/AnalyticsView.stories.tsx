@@ -9,6 +9,7 @@ import {
   milkQuantityAnswer,
   kidsByTagAnswer,
   pastaNoAnswer,
+  sampleAnalyticsHistory,
   sampleAnalyticsTags,
   sweetsTopAnswer
 } from "./analyticsFixtures";
@@ -37,7 +38,13 @@ const meta = {
     categories: sampleCategories,
     merchants: ["Biedronka", "Lidl", "Żabka", "Auchan"],
     tags: sampleAnalyticsTags,
-    locale: "ru-RU"
+    locale: "ru-RU",
+    history: [],
+    onOpenHistory: fn(),
+    onDeleteHistory: fn(),
+    onShowMoreHistory: fn(),
+    onRefreshSaved: fn(),
+    onAskAgain: fn()
   }
 } satisfies Meta<typeof AnalyticsView>;
 
@@ -72,4 +79,52 @@ export const DisabledWithAnswer: Story = { globals: desktop, args: { enabled: fa
 export const EnglishMobile: Story = {
   globals: { ...phone, locale: "en" },
   args: { locale: "en-GB", answer: { ...coffeePriceAnswer, conclusion: "Average price 54.90 zł per piece over 6 purchases, from 44.99 zł to 62.99 zł." }, followUp: coffeePriceAnswer.plan }
+};
+
+const savedMilk = {
+  entryId: "history-milk",
+  question: "Сколько мы купили молока за год?",
+  answeredAt: "2026-09-26T18:40:00Z",
+  origin: "history" as const,
+  isFollowUp: false
+};
+
+/** «Предыдущие вопросы» under the empty state: a follow-up, another member's question and a long one. */
+export const WithHistory: Story = { globals: desktop, args: { history: sampleAnalyticsHistory, historyHasMore: true } };
+export const WithHistoryMobile: Story = { globals: phone, args: { history: sampleAnalyticsHistory } };
+/** A question opened from the list: the saved answer at once, with «Обновить» and «Спросить заново». */
+export const SavedAnswerMobile: Story = {
+  globals: phone,
+  args: {
+    answer: milkQuantityAnswer, followUp: milkQuantityAnswer.plan, history: sampleAnalyticsHistory,
+    saved: savedMilk, activeHistoryId: "history-milk"
+  }
+};
+export const SavedAnswerRefreshing: Story = {
+  globals: phone,
+  args: {
+    answer: milkQuantityAnswer, followUp: milkQuantityAnswer.plan, history: sampleAnalyticsHistory,
+    saved: savedMilk, activeHistoryId: "history-milk", refreshing: true
+  }
+};
+/** The same words asked again: the saved plan ran without the model. */
+export const ReusedAnswer: Story = {
+  globals: desktop,
+  args: {
+    answer: milkQuantityAnswer, followUp: milkQuantityAnswer.plan, history: sampleAnalyticsHistory,
+    saved: { ...savedMilk, origin: "reused" }, activeHistoryId: "history-milk"
+  }
+};
+export const SavedFollowUpMobile: Story = {
+  globals: phone,
+  args: {
+    answer: biedronkaSpendAnswer, followUp: biedronkaSpendAnswer.plan, history: sampleAnalyticsHistory,
+    saved: { ...savedMilk, entryId: "history-biedronka-shops", question: "а по магазинам?", isFollowUp: true },
+    activeHistoryId: "history-biedronka-shops"
+  }
+};
+export const HistoryFailed: Story = { globals: phone, args: { historyFailed: true } };
+export const WithHistoryEnglish: Story = {
+  globals: { ...phone, locale: "en" },
+  args: { locale: "en-GB", history: sampleAnalyticsHistory, answer: milkQuantityAnswer, saved: savedMilk, activeHistoryId: "history-milk" }
 };

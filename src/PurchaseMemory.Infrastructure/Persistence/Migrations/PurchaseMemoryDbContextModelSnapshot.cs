@@ -17,6 +17,64 @@ namespace PurchaseMemory.Infrastructure.Persistence.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.9");
 
+            modelBuilder.Entity("PurchaseMemory.Domain.Analytics.AnalyticsQuestionEntry", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AnswerJson")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("AnsweredAt")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AskedByEmail")
+                        .HasMaxLength(320)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AskedByUserId")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Conclusion")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("CreatedAt")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsFollowUp")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("NormalizedQuestion")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PeriodJson")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PlanJson")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Question")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AnsweredAt");
+
+                    b.HasIndex("NormalizedQuestion", "IsFollowUp");
+
+                    b.ToTable("analytics_questions", (string)null);
+                });
+
             modelBuilder.Entity("PurchaseMemory.Domain.Impressions.ProductImpression", b =>
                 {
                     b.Property<Guid>("Id")

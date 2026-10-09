@@ -467,6 +467,39 @@ export interface AnalyticsAnswer {
   today: string;
 }
 
+/** An asked question's answer, plus where it was saved in the household's history. */
+export interface AnalyticsAskResponse extends AnalyticsAnswer {
+  /** Null only if saving to the history failed; the answer still stands. */
+  historyId: string | null;
+  /** The same question was asked before: its saved plan ran without the model. */
+  reused: boolean;
+}
+
+/** One line of «Предыдущие вопросы». */
+export interface AnalyticsHistoryItem {
+  id: string;
+  question: string;
+  /** Asked as a refinement of an earlier answer. */
+  isFollowUp: boolean;
+  conclusion: string;
+  askedByEmail: string | null;
+  askedByMe: boolean;
+  createdAt: string;
+  /** When the saved answer was computed; the list is ordered by it, newest first. */
+  answeredAt: string;
+}
+
+export interface AnalyticsHistoryPage {
+  items: AnalyticsHistoryItem[];
+  hasMore: boolean;
+}
+
+export interface AnalyticsHistoryDetail {
+  entry: AnalyticsHistoryItem;
+  /** Null only for an entry saved by an incompatible older version; «Обновить» recalculates it. */
+  answer: AnalyticsAnswer | null;
+}
+
 export interface AnalyticsContext {
   enabled: boolean;
   today: string;
@@ -502,6 +535,16 @@ export interface ReviewQueueItem {
   affectedLineCount: number | null;
   /** Zero-based line to focus in the purchase editor (pending match, first missing price). */
   itemPosition?: number | null;
+  /** Pending match only (empty otherwise): suggested products, best first, at most three. */
+  candidates?: ReviewQueueCandidate[];
+}
+
+/** A catalog product the matcher considered for an unmatched receipt line. */
+export interface ReviewQueueCandidate {
+  productId: string;
+  name: string;
+  brand: string | null;
+  categoryId: string | null;
 }
 
 export interface ReviewQueueGroup {

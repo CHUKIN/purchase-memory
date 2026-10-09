@@ -7,9 +7,10 @@ namespace PurchaseMemory.Api.Endpoints;
 /// «Нужно проверить»: what in the stored data still needs a person. Read-only;
 /// fixes go through the existing receipt and product endpoints. Behind the
 /// approved-user fallback policy like every other data endpoint.
-/// The list takes an optional repeatable <c>tagId</c> (all tags required, as in
-/// the feed and catalog); the count stays the whole queue, because it feeds
-/// the navigation badge, which knows nothing about the screen's filter.
+/// The list takes the feed's classification filters — <c>categoryId</c> (with
+/// its subcategories) or <c>uncategorized=true</c>, and a repeatable
+/// <c>tagId</c> (all tags required); the count stays the whole queue, because
+/// it feeds the navigation badge, which knows nothing about the screen's filter.
 /// </summary>
 public static class ReviewQueueEndpoints
 {
@@ -22,6 +23,8 @@ public static class ReviewQueueEndpoints
 
     private static async Task<IResult> GetAsync(
         int? limitPerKind,
+        Guid? categoryId,
+        bool? uncategorized,
         string[]? tagId,
         IReviewQueueService service,
         CancellationToken cancellationToken)
@@ -41,8 +44,15 @@ public static class ReviewQueueEndpoints
 
         try
         {
-            var queue = await service.GetAsync(limit, tagIds, cancellationToken);
+            var queue = await service.GetAsync(
+                limit,
+                new ReviewQueueFilter(categoryId, uncategorized ?? false, tagIds),
+                cancellationToken);
             return Results.Ok(ReviewQueueResponse.From(queue));
+        }
+        catch (PurchaseMemory.Application.Products.Categories.ProductCategoryNotFoundException exception)
+        {
+            return Results.Problem(detail: exception.Message, statusCode: StatusCodes.Status400BadRequest);
         }
         catch (PurchaseMemory.Application.Products.Tags.ProductTagNotFoundException exception)
         {
@@ -82,7 +92,11 @@ public sealed record ReviewQueueItemResponse(
     decimal? ReceiptTotal,
     decimal? LinesTotal,
     int? AffectedLineCount,
-    int? ItemPosition);
+    int? ItemPosition,
+    // Pending match only (empty otherwise): the suggested products, best first.
+    IReadOnlyList<ReviewQueueCandidateResponse> Candidates);
+
+public sealed record ReviewQueueCandidateResponse(Guid ProductId, string Name, string? Brand, Guid? CategoryId);
 
 public sealed record ReviewQueueGroupResponse(string Kind, int TotalCount, IReadOnlyList<ReviewQueueItemResponse> Items);
 
@@ -109,7 +123,11 @@ public sealed record ReviewQueueResponse(int TotalCount, IReadOnlyList<ReviewQue
                         item.ReceiptTotal,
                         item.LinesTotal,
                         item.AffectedLineCount,
-                        item.ItemPosition))
+                        item.ItemPosition,
+                        (item.Candidates ?? [])
+                            .Select(candidate => new ReviewQueueCandidateResponse(
+                                candidate.ProductId, candidate.Name, candidate.Brand, candidate.CategoryId))
+                            .ToList()))
                     .ToList()))
             .ToList());
 }

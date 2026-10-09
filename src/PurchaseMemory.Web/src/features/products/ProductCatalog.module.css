@@ -50,6 +50,13 @@
   font-size: 0.9rem;
 }
 
+@media (pointer: coarse) {
+  .filters input[type="search"],
+  .filters select {
+    font-size: 1rem;
+  }
+}
+
 .filters input:focus-visible,
 .filters select:focus-visible {
   outline: 2px solid var(--pm-action-primary);
@@ -91,13 +98,18 @@
   border-color: var(--pm-focus-ring);
 }
 
+/* Two lines for long product names; the card opens the full name. */
 .cardBody h3 {
   margin: 0;
+  display: -webkit-box;
   overflow: hidden;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   font-family: var(--pm-font-body);
   font-size: 1rem;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.3;
 }
 
 .meta {

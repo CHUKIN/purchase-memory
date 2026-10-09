@@ -239,7 +239,7 @@ function PurchaseFeedCard({ purchase, locale }: { purchase: PurchaseView; locale
   return (
     <Surface as="article" className={styles.card}>
       <div className={styles.cardMain}>
-        <h3><Link className={styles.cardLink} to={`/purchases/${purchase.id}`}>{purchase.merchantName ?? t("feed.unknownStore")}</Link></h3>
+        <h3 title={purchase.merchantName ?? undefined}><Link className={styles.cardLink} to={`/purchases/${purchase.id}`}>{purchase.merchantName ?? t("feed.unknownStore")}</Link></h3>
         <p className={styles.meta}>
           <span>{date}</span>
           <span aria-hidden="true">·</span>

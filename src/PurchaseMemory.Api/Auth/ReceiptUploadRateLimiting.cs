@@ -136,7 +136,9 @@ public static class ReceiptUploadRateLimiting
 
                 var backfill = context.Request.Path.StartsWithSegments("/api/products/categorization", StringComparison.Ordinal);
                 var analytics = context.Request.Path.StartsWithSegments("/api/analytics", StringComparison.Ordinal);
-                var rerun = context.Request.Path.StartsWithSegments("/api/analytics/run", StringComparison.Ordinal);
+                var rerun = context.Request.Path.StartsWithSegments("/api/analytics/run", StringComparison.Ordinal)
+                    || (context.Request.Path.StartsWithSegments("/api/analytics/history", StringComparison.Ordinal)
+                        && context.Request.Path.Value?.EndsWith("/refresh", StringComparison.Ordinal) == true);
                 var (title, detail) = (backfill, analytics) switch
                 {
                     _ when rerun => ("Too many recalculations", "Too many recalculations in a short time. Try again in a minute."),

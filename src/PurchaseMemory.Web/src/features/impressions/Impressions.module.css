@@ -41,6 +41,28 @@
 }
 
 /* The native radio stays in the tab order and in the accessibility tree; only its dot is hidden. */
+/*
+ * On a phone the three options share one row as equal tiles (icon over
+ * text) instead of wrapping into a lonely third button.
+ */
+@media (max-width: 30rem) {
+  .ratingOptions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .ratingOption {
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.2rem;
+    min-height: 3.5rem;
+    padding: 0.4rem 0.2rem;
+    font-size: 0.75rem;
+    line-height: 1.15;
+    text-align: center;
+  }
+}
+
 .ratingOption input {
   position: absolute;
   inset: 0;
@@ -91,6 +113,13 @@
   font-size: 0.95rem;
 }
 
+@media (pointer: coarse) {
+  .form textarea,
+  .form select {
+    font-size: 1rem;
+  }
+}
+
 .form textarea {
   min-height: 4.5rem;
   resize: vertical;
@@ -101,6 +130,12 @@
   flex-wrap: wrap;
   gap: 0.5rem;
   align-items: center;
+}
+
+/* The delete icon (or its confirmation) sits at the end of an impression card. */
+.entryActions {
+  justify-content: flex-end;
+  margin-inline-end: -0.35rem;
 }
 
 .error {
@@ -279,4 +314,24 @@
 
 .unratedItem a:hover {
   text-decoration: underline;
+}
+
+/* Under a purchase line: who rated it on the left, a compact «Оценить» on the right. */
+.lineRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem 0.75rem;
+  min-width: 0;
+}
+
+.lineRow .lineSummary {
+  flex: 1 1 10rem;
+  min-width: 0;
+}
+
+.rateButton {
+  margin-inline-start: auto;
+  margin-inline-end: -1.125rem;
 }

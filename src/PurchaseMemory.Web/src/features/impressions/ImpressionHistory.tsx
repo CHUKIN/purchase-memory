@@ -1,8 +1,9 @@
+import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { Impression } from "../../api/types";
 import { useAuthorizedImageUrl } from "../../auth/useAuthorizedImageUrl";
-import { Button } from "../../design-system/components";
+import { Button, IconButton } from "../../design-system/components";
 import { formatMoney } from "../purchases/money";
 import { compareByStore, groupByAuthor, ratingLabel, ratings } from "./impressionText";
 import { RatingIcon } from "./RatingControl";
@@ -86,7 +87,7 @@ function ImpressionEntry({ impression, locale, onDelete }: { impression: Impress
       {photo.src && <img className={styles.photo} src={photo.src} alt={t("impressions.photoAlt", { name: impression.itemName })} />}
       {photo.failed && <p className={styles.muted}>{t("impressions.photoFailed")}</p>}
       {onDelete && (
-        <div className={styles.formActions}>
+        <div className={`${styles.formActions} ${styles.entryActions}`}>
           {confirming
             ? (
               <>
@@ -95,7 +96,7 @@ function ImpressionEntry({ impression, locale, onDelete }: { impression: Impress
                 <Button intent="quiet" disabled={busy} onClick={() => setConfirming(false)}>{t("impressions.cancel")}</Button>
               </>
             )
-            : <Button intent="quiet" onClick={() => setConfirming(true)}>{t("impressions.delete")}</Button>}
+            : <IconButton intent="danger" iconOnly="mobile" icon={<Trash2 />} label={t("impressions.delete")} onClick={() => setConfirming(true)} />}
         </div>
       )}
       {failed && <p className={styles.error} role="alert">{t("impressions.deleteFailed")}</p>}

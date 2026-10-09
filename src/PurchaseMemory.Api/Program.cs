@@ -64,6 +64,7 @@ builder.Services.AddSingleton<IAnalyticsQueryPlanner>(serviceProvider =>
 builder.Services.AddSingleton(serviceProvider => new AnalyticsSettings(TimeZoneInfo.FindSystemTimeZoneById(
     serviceProvider.GetRequiredService<Microsoft.Extensions.Options.IOptions<AnalyticsOptions>>().Value.TimeZone)));
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
+builder.Services.AddScoped<IAnalyticsHistoryService, AnalyticsHistoryService>();
 builder.Services.AddScoped<IReviewQueueService, ReviewQueueService>();
 var databaseSettings = StorageSetup.ResolveDatabase(builder.Configuration, runtimePaths);
 builder.Services.AddPurchaseMemoryInfrastructure(databaseSettings);

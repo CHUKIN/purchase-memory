@@ -69,3 +69,6 @@ test-data/receipts/household-*/**
 
 # Local Linux compose data folder (see docs/ДЕПЛОЙ_RENDER.md).
 pm-data/
+
+# Agent worktrees (Claude Code)
+.claude/worktrees/

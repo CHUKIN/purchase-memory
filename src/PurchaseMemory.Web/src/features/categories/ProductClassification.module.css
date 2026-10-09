@@ -3,6 +3,16 @@
   gap: 0.7rem;
 }
 
+/* Section title with its edit action on the right, the usual place on a phone. */
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: var(--pm-touch-target);
+  margin-block: -0.35rem;
+}
+
 .section h2 {
   margin: 0;
   color: var(--pm-content-muted);
@@ -43,6 +53,7 @@
 }
 
 .marker {
+  white-space: nowrap;
   color: var(--pm-content-muted);
   font-size: 0.78rem;
   font-weight: 800;

@@ -1,5 +1,7 @@
+/* `minmax(0, 1fr)` everywhere: a long store or product name must wrap, never widen the page. */
 .page {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.25rem;
   padding: 1.4rem 1rem 2rem;
 }
@@ -12,8 +14,10 @@
 
 .hero h1 {
   margin: 0;
-  font: 700 clamp(1.8rem, 6vw, 2.6rem)/1.05 var(--pm-font-display);
+  font: 700 clamp(1.7rem, 6vw, 2.6rem)/1.08 var(--pm-font-display);
   letter-spacing: -0.03em;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
 }
 
 .eyebrow {
@@ -28,11 +32,34 @@
 .heroLinks {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  align-items: center;
+  gap: 0 1rem;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: var(--pm-touch-target);
+  color: var(--pm-action-primary);
+  font-size: 0.9rem;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.back svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.back:focus-visible {
+  outline: 3px solid var(--pm-focus-ring);
+  outline-offset: 2px;
 }
 
 .layout {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.25rem;
   align-items: start;
 }
@@ -52,6 +79,7 @@
 .card,
 .form {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1rem;
   min-width: 0;
 }
@@ -80,6 +108,9 @@
 }
 
 .link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--pm-touch-target);
   padding: 0;
   border: 0;
   background: none;
@@ -138,7 +169,9 @@
 .total {
   margin: 0.25rem 0 0;
   font-size: 1.6rem;
+  font-variant-numeric: tabular-nums;
   font-weight: 800;
+  white-space: nowrap;
 }
 
 .sectionTitle {
@@ -152,6 +185,7 @@
   margin: 0;
   padding-left: 1.2rem;
   color: var(--pm-content-primary);
+  overflow-wrap: anywhere;
 }
 
 .lines {
@@ -161,23 +195,34 @@
   list-style: none;
 }
 
+/* Name on the left, amount pinned top-right; impressions take the full width below. */
 .lines > li {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.6rem 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 0.25rem 0.75rem;
+  padding: 0.7rem 0;
   border-top: 1px solid var(--pm-border-subtle);
 }
 
-.lines > li > div:not(.lineImpressions) {
+.lineName {
   display: grid;
   gap: 0.15rem;
   min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.lineName strong {
+  line-height: 1.3;
+}
+
+.lineName span {
+  font-size: 0.88rem;
+  line-height: 1.35;
 }
 
 .lineImpressions {
-  flex-basis: 100%;
+  grid-column: 1 / -1;
   min-width: 0;
 }
 
@@ -187,11 +232,12 @@
 }
 
 .amount {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  white-space: nowrap;
+  display: grid;
+  justify-items: end;
+  gap: 0.3rem;
+  font-variant-numeric: tabular-nums;
   font-weight: 750;
+  white-space: nowrap;
 }
 
 .badge {
@@ -210,7 +256,7 @@
 
 .headerFields {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(11rem, 100%), 1fr));
   gap: 0.75rem;
 }
 
@@ -284,6 +330,8 @@
 
 .lineEditor {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
   gap: 0.6rem;
   padding: 0.9rem;
   border: 1px solid var(--pm-border-subtle);
@@ -306,20 +354,16 @@
   flex: 1;
 }
 
+/* Pulls the 44 px target into the card padding so the header stays one line high. */
 .remove {
-  width: 2.75rem;
-  height: 2.75rem;
-  border: 0;
-  border-radius: var(--pm-radius-sm);
-  color: var(--pm-status-danger);
-  background: transparent;
-  font-size: 1.5rem;
-  cursor: pointer;
+  margin: -0.6rem -0.6rem -0.6rem 0;
 }
 
+/* Inputs stay on one line even when a label wraps to two lines. */
 .numbers {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: end;
   gap: 0.5rem;
 }
 
@@ -332,10 +376,13 @@
 .productStatus {
   display: grid;
   gap: 0.15rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .picker {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.5rem;
   width: 100%;
   padding: 0.75rem;
@@ -353,6 +400,7 @@
 
 .options button {
   width: 100%;
+  overflow-wrap: anywhere;
   min-height: 2.75rem;
   padding: 0.5rem 0.75rem;
   border: 1px solid var(--pm-border-subtle);
@@ -375,6 +423,13 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+}
+
+/* On a phone Save and Cancel share the row as two equal, thumb-sized buttons. */
+@media (max-width: 40em) {
+  .actions > * {
+    flex: 1 1 auto;
+  }
 }
 
 .discountEditor {

@@ -60,7 +60,7 @@ export function PriceHistoryChart({ series, locale }: PriceHistoryChartProps) {
         <tbody>
           {[...series.points].reverse().map((point) => (
             <tr key={`${point.purchaseId}-${point.purchasedAt}-${point.unitPrice}`}>
-              <td>{formatDate(locale, point.purchasedAt)}</td>
+              <td className={styles.date}>{formatDate(locale, point.purchasedAt)}</td>
               <td>{point.merchantName ?? t("products.unknownStore")}</td>
               <td className={styles.price}>{formatMoney(locale, currency, point.unitPrice)}</td>
             </tr>

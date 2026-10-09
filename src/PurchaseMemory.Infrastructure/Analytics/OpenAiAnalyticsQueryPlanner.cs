@@ -106,7 +106,7 @@ public sealed class OpenAiAnalyticsQueryPlanner : IAnalyticsQueryPlanner, IDispo
                 $"OpenAI did not complete the plan (status: {response.Status ?? "unknown"}).");
         }
 
-        (AnalyticsPlan Plan, bool Understood, IReadOnlyList<AnalyticsNote> Notes) parsed;
+        (AnalyticsPlan Plan, bool Understood, IReadOnlyList<AnalyticsNote> Notes, AnalyticsPeriodRequest? Period) parsed;
         try
         {
             parsed = Parse(response.Json, codes, request);
@@ -117,8 +117,8 @@ public sealed class OpenAiAnalyticsQueryPlanner : IAnalyticsQueryPlanner, IDispo
             throw new AnalyticsPlanningException("OpenAI returned a plan of an unexpected shape.", exception);
         }
 
-        var (plan, understood, notes) = parsed;
-        return new AnalyticsPlanningResult(plan, understood, notes, response.InputTokens, response.OutputTokens);
+        var (plan, understood, notes, period) = parsed;
+        return new AnalyticsPlanningResult(plan, understood, notes, response.InputTokens, response.OutputTokens, period);
     }
 
     internal static string BuildPrompt(AnalyticsPlanningRequest request, Codebook codes)
@@ -245,7 +245,7 @@ public sealed class OpenAiAnalyticsQueryPlanner : IAnalyticsQueryPlanner, IDispo
     /// Maps the model's codes back to ids and names. Unknown codes are dropped
     /// with a note; a structurally broken answer is an error, not a guess.
     /// </summary>
-    internal static (AnalyticsPlan Plan, bool Understood, IReadOnlyList<AnalyticsNote> Notes) Parse(
+    internal static (AnalyticsPlan Plan, bool Understood, IReadOnlyList<AnalyticsNote> Notes, AnalyticsPeriodRequest? Period) Parse(
         string json,
         Codebook codes,
         AnalyticsPlanningRequest request)
@@ -287,7 +287,7 @@ public sealed class OpenAiAnalyticsQueryPlanner : IAnalyticsQueryPlanner, IDispo
             var previousPeriod = request.PreviousPlan is { } previous
                 ? new ResolvedPeriod(previous.From, previous.To, true)
                 : null;
-            var period = ResolvePeriod(root, request.Today, previousPeriod, notes);
+            var (period, named) = ResolvePeriod(root, request.Today, previousPeriod, notes);
 
             var limit = OptionalInt(root, "limit");
 
@@ -305,11 +305,15 @@ public sealed class OpenAiAnalyticsQueryPlanner : IAnalyticsQueryPlanner, IDispo
                 GroupBy = groupBy,
                 Limit = limit
             };
-            return (plan, understood, notes);
+            return (plan, understood, notes, named);
         }
     }
 
-    private static ResolvedPeriod ResolvePeriod(
+    /// <returns>
+    /// The calendar days, and the named period behind them when it stands on its
+    /// own (not «keep the previous one») and is usable, so a saved question can be recounted later.
+    /// </returns>
+    private static (ResolvedPeriod Period, AnalyticsPeriodRequest? Named) ResolvePeriod(
         JsonElement root,
         DateOnly today,
         ResolvedPeriod? previous,
@@ -317,25 +321,23 @@ public sealed class OpenAiAnalyticsQueryPlanner : IAnalyticsQueryPlanner, IDispo
     {
         if (!root.TryGetProperty("period", out var period) || period.ValueKind != JsonValueKind.Object)
         {
-            return previous ?? new ResolvedPeriod(null, null, true);
+            return (previous ?? new ResolvedPeriod(null, null, true), null);
         }
 
         var preset = ParseEnum(OptionalString(period, "preset"), Presets, AnalyticsPeriodPreset.None);
-        var resolved = AnalyticsPeriodResolver.Resolve(
-            new AnalyticsPeriodRequest(
-                preset,
-                OptionalString(period, "from"),
-                OptionalString(period, "to"),
-                OptionalInt(period, "month"),
-                OptionalInt(period, "year")),
-            today,
-            previous);
+        var named = new AnalyticsPeriodRequest(
+            preset,
+            OptionalString(period, "from"),
+            OptionalString(period, "to"),
+            OptionalInt(period, "month"),
+            OptionalInt(period, "year"));
+        var resolved = AnalyticsPeriodResolver.Resolve(named, today, previous);
         if (!resolved.Valid)
         {
             notes.Add(new AnalyticsNote(AnalyticsNote.PeriodOutOfRange));
         }
 
-        return resolved;
+        return (resolved, resolved.Valid && preset != AnalyticsPeriodPreset.Keep ? named : null);
     }
 
     private static string Required(JsonElement element, string name) =>

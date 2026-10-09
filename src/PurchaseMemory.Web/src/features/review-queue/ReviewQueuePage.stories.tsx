@@ -3,6 +3,7 @@ import { useState } from "react";
 import { MemoryRouter } from "react-router";
 import { fn } from "storybook/test";
 import type { ReviewQueue, ReviewQueueItem, TagSummary } from "../../api/types";
+import { sampleCategories } from "../categories/categoryFixtures";
 import { ReviewQueueView, type ReviewQueueViewProps } from "./ReviewQueuePage";
 
 const householdTags: TagSummary[] = [
@@ -25,9 +26,24 @@ function item(overrides: Partial<ReviewQueueItem> & Pick<ReviewQueueItem, "kind"
     linesTotal: null,
     affectedLineCount: null,
     itemPosition: null,
+    candidates: [],
     ...overrides
   };
 }
+
+const pendingGouda = item({
+  kind: "pendingMatch",
+  id: "pendingMatch:m1",
+  title: "Ser Gouda plastry 250g",
+  purchaseId: "p3",
+  productId: "g1",
+  itemPosition: 2,
+  candidates: [
+    { productId: "g1", name: "Ser Gouda plastry 150g", brand: "Hochland", categoryId: "cheese" },
+    { productId: "g2", name: "Ser Gouda w plastrach Mlekovita 300g — opakowanie rodzinne", brand: "Mlekovita", categoryId: "cheese" },
+    { productId: "g3", name: "Ser Edam plastry", brand: null, categoryId: null }
+  ]
+});
 
 const wholeQueue: ReviewQueue = {
   totalCount: 6,
@@ -41,7 +57,7 @@ const wholeQueue: ReviewQueue = {
         item({ kind: "totalMismatch", id: "totalMismatch:p2", title: "Żabka", purchaseId: "p2", currency: "PLN", receiptTotal: 20, linesTotal: 15 })
       ]
     },
-    { kind: "pendingMatch", totalCount: 1, items: [item({ kind: "pendingMatch", id: "pendingMatch:m1", title: "Ser Gouda plastry 250g", purchaseId: "p3", productId: "g1", itemPosition: 2 })] },
+    { kind: "pendingMatch", totalCount: 1, items: [pendingGouda] },
     { kind: "suggestedCategory", totalCount: 1, items: [item({ kind: "suggestedCategory", id: "suggestedCategory:j1", title: "Sok jabłkowy Kubuś 0,3 l", productId: "j1", categoryId: "juice", categoryName: "Соки" })] },
     { kind: "missingCategory", totalCount: 1, items: [item({ kind: "missingCategory", id: "missingCategory:y1", title: "Jogurt Danio waniliowy", productId: "y1" })] }
   ]
@@ -57,17 +73,42 @@ const kidQueue: ReviewQueue = {
   ]
 };
 
+// What «Без категории» leaves: the product nobody classified and a purchase with such a line.
+const uncategorizedQueue: ReviewQueue = {
+  totalCount: 2,
+  groups: [
+    { kind: "totalMismatch", totalCount: 1, items: [wholeQueue.groups[1].items[1]] },
+    wholeQueue.groups[4]
+  ]
+};
+
 const emptyQueue: ReviewQueue = { totalCount: 0, groups: [] };
 
-/** Stories keep the select working, as on the real page, so Controls only set the starting tag. */
+/** Stories keep the selects working, as on the real page, so Controls only set the starting filters. */
 function Interactive(props: ReviewQueueViewProps) {
+  const [category, setCategory] = useState(props.category);
   const [tag, setTag] = useState(props.tag);
-  const queue = tag === props.tag ? props.queue : tag === "" ? wholeQueue : tag === "kid" ? kidQueue : emptyQueue;
-  return <ReviewQueueView {...props} queue={queue} tag={tag} onTagChange={(value) => { setTag(value); props.onTagChange(value); }} />;
+  const queue = category === props.category && tag === props.tag
+    ? props.queue
+    : category === "" && tag === "" ? wholeQueue
+      : category === "none" && tag === "" ? uncategorizedQueue
+        : category === "" && tag === "kid" ? kidQueue
+          : emptyQueue;
+  return (
+    <ReviewQueueView
+      {...props}
+      queue={queue}
+      category={category}
+      tag={tag}
+      onCategoryChange={(value) => { setCategory(value); props.onCategoryChange(value); }}
+      onTagChange={(value) => { setTag(value); props.onTagChange(value); }}
+      onResetFilters={() => { setCategory(""); setTag(""); props.onResetFilters(); }}
+    />
+  );
 }
 
 const meta = {
-  title: "Purchase Memory/Review queue/Tag filter",
+  title: "Purchase Memory/Review queue/Filters and suggestions",
   component: ReviewQueueView,
   parameters: { layout: "fullscreen" },
   decorators: [(Story) => <MemoryRouter><Story /></MemoryRouter>],
@@ -77,9 +118,13 @@ const meta = {
     loading: false,
     error: false,
     onRetry: fn(),
+    categories: sampleCategories,
+    category: "",
+    onCategoryChange: fn(),
     tags: householdTags,
     tag: "",
-    onTagChange: fn()
+    onTagChange: fn(),
+    onResetFilters: fn()
   }
 } satisfies Meta<typeof ReviewQueueView>;
 
@@ -88,6 +133,17 @@ type Story = StoryObj<typeof meta>;
 
 export const WholeQueueDesktop: Story = {
   globals: { viewport: { value: "desktop", isRotated: false } }
+};
+
+/** «Товар не сопоставлен» with three suggested products, a long name and one without brand or category. */
+export const SuggestionsMobile: Story = {
+  args: { queue: { totalCount: 1, groups: [{ kind: "pendingMatch", totalCount: 1, items: [pendingGouda] }] } },
+  globals: { viewport: { value: "phone", isRotated: false } }
+};
+
+export const SuggestionsDesktopEn: Story = {
+  args: { queue: { totalCount: 1, groups: [{ kind: "pendingMatch", totalCount: 1, items: [pendingGouda] }] } },
+  globals: { viewport: { value: "desktop", isRotated: false }, locale: "en" }
 };
 
 export const KidsMobile: Story = {
@@ -100,12 +156,17 @@ export const KidsDesktopEn: Story = {
   globals: { viewport: { value: "desktop", isRotated: false }, locale: "en" }
 };
 
-export const FilteredEmptyMobile: Story = {
-  args: { queue: emptyQueue, tag: "party" },
+export const UncategorizedMobile: Story = {
+  args: { queue: uncategorizedQueue, category: "none" },
   globals: { viewport: { value: "phone", isRotated: false } }
 };
 
-/** No tags in the household: the queue looks exactly as before the filter existed. */
+export const CategoryAndTagEmptyMobile: Story = {
+  args: { queue: emptyQueue, category: "cheese", tag: "party" },
+  globals: { viewport: { value: "phone", isRotated: false } }
+};
+
+/** No tags in the household: only the category filter is shown. */
 export const NoTagsMobile: Story = {
   args: { tags: [] },
   globals: { viewport: { value: "phone", isRotated: false } }

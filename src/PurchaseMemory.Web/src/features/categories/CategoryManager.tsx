@@ -2,7 +2,7 @@ import { Pencil, Plus, Trash2 } from "lucide-react";
 import { useId, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import type { ProductCategory } from "../../api/types";
-import { Button, Field } from "../../design-system/components";
+import { Button, Field, IconButton } from "../../design-system/components";
 import { categoryLabel, groupCategories } from "./categoryText";
 import styles from "./CategoryManager.module.css";
 
@@ -96,15 +96,11 @@ export function CategoryManager({ categories, onCreate, onRename, onDelete, defa
             )
             : (
               <>
-                <Button intent="quiet" aria-label={`${t("categories.rename")}: ${label}`} leftSection={<Pencil aria-hidden="true" size={15} />}
-                  onClick={() => setRenaming({ id: category.id, name: label })} disabled={busy}>
-                  <span className={styles.actionText}>{t("categories.rename")}</span>
-                </Button>
-                <Button intent="quiet" aria-label={`${t("categories.delete")}: ${label}`} leftSection={<Trash2 aria-hidden="true" size={15} />}
+                <IconButton iconOnly="mobile" icon={<Pencil />} label={`${t("categories.rename")}: ${label}`} text={t("categories.rename")}
+                  onClick={() => setRenaming({ id: category.id, name: label })} disabled={busy} />
+                <IconButton intent="danger" iconOnly="mobile" icon={<Trash2 />} label={`${t("categories.delete")}: ${label}`} text={t("categories.delete")}
                   onClick={() => setConfirmingDelete(category.id)} disabled={busy || hasChildren}
-                  title={hasChildren ? t("categories.deleteHasChildren") : undefined}>
-                  <span className={styles.actionText}>{t("categories.delete")}</span>
-                </Button>
+                  title={hasChildren ? t("categories.deleteHasChildren") : undefined} />
               </>
             )}
         </div>

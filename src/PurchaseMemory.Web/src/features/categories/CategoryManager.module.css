@@ -86,9 +86,10 @@
   padding: 0.2rem 0;
 }
 
+/* The name takes the room; the two icon actions stay on its line. */
 .name {
   display: grid;
-  flex: 1 1 10rem;
+  flex: 1 1 0;
   min-width: 0;
   overflow-wrap: anywhere;
   font-weight: 700;
@@ -104,7 +105,19 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: flex-end;
   gap: 0.25rem;
+}
+
+/* A rename field or a delete confirmation needs the full width of the row. */
+form.row .rowActions,
+.rowActions:has(.confirm) {
+  flex-basis: 100%;
+  justify-content: flex-start;
+}
+
+form.row > :first-child {
+  flex: 1 1 100%;
 }
 
 .confirm {
@@ -119,12 +132,6 @@
   font-weight: 700;
 }
 
-/* Icons alone on a phone; the accessible name stays on the button. */
-@media (max-width: 30rem) {
-  .actionText {
-    display: none;
-  }
-}
 
 @media (min-width: 40rem) {
   .create {

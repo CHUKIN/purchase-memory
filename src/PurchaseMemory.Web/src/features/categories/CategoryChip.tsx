@@ -23,7 +23,7 @@ export function CategoryChip({ label, source = null }: CategoryChipProps) {
     <span
       className={styles.chip}
       data-state={label === null ? "none" : suggested ? "suggested" : "confirmed"}
-      // Long names are cut with an ellipsis; the tooltip keeps the whole path.
+      // Long names are cut after two lines; the tooltip keeps the whole path.
       title={suggested ? `${label} — ${t("categories.suggestedHint")}` : label ?? undefined}
     >
       <Icon aria-hidden="true" size={13} strokeWidth={2.25} />

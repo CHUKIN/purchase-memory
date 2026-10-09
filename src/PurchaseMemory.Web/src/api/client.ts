@@ -1,7 +1,10 @@
 import type {
   BrandSummary,
   AnalyticsAnswer,
+  AnalyticsAskResponse,
   AnalyticsContext,
+  AnalyticsHistoryDetail,
+  AnalyticsHistoryPage,
   AnalyticsPlan,
   CategorizationRunSummary,
   Impression,
@@ -114,10 +117,15 @@ export async function fetchProtectedBlob(url: string, signal?: AbortSignal): Pro
 
 export const getRecognitionStatus = () => request<RecognitionStatus>("/api/recognition/status");
 
-export async function uploadReceipt(files: File[]): Promise<ReceiptUploadResult> {
+/**
+ * `process: true` queues recognition in the same request, so the receipt
+ * spends one upload-limit token instead of two (upload, then `/process`).
+ */
+export async function uploadReceipt(files: File[], options: { process?: boolean } = {}): Promise<ReceiptUploadResult> {
   const form = new FormData();
   files.forEach((file) => form.append("images", file));
-  return request<ReceiptUploadResult>("/api/receipts", { method: "POST", body: form });
+  const url = options.process ? "/api/receipts?process=true" : "/api/receipts";
+  return request<ReceiptUploadResult>(url, { method: "POST", body: form });
 }
 
 export const processReceipt = (receiptId: string) =>
@@ -292,18 +300,51 @@ export const classifyProduct = (productId: string, change: ClassifyProductReques
 
 export const getAnalyticsContext = () => request<AnalyticsContext>("/api/analytics/context");
 
-/** Calls the model (rate limited per user). `previousPlan` makes it a follow-up that keeps those filters. */
-export const askAnalytics = (question: string, previousPlan: AnalyticsPlan | null, locale: string) =>
-  request<AnalyticsAnswer>("/api/analytics/ask", jsonBody("POST", { question, previousPlan, locale }));
+/**
+ * Asks a question (rate limited per user). `previousPlan` makes it a follow-up that keeps those filters.
+ * A question asked before reuses its saved plan without the model, unless `askModel` is set («Спросить заново»).
+ */
+export const askAnalytics = (question: string, previousPlan: AnalyticsPlan | null, locale: string, askModel = false) =>
+  request<AnalyticsAskResponse>(
+    "/api/analytics/ask",
+    jsonBody("POST", askModel ? { question, previousPlan, locale, askModel } : { question, previousPlan, locale })
+  );
+
+/** The household's previous questions, newest answer first. */
+export const listAnalyticsHistory = (limit = 20, offset = 0) =>
+  request<AnalyticsHistoryPage>(`/api/analytics/history?${new URLSearchParams({ limit: String(limit), offset: String(offset) })}`);
+
+export const getAnalyticsHistoryEntry = (entryId: string) =>
+  request<AnalyticsHistoryDetail>(`/api/analytics/history/${encodeURIComponent(entryId)}`);
+
+/** Recalculates a saved question's plan on today's data, without any model call. */
+export const refreshAnalyticsHistoryEntry = (entryId: string, locale: string) =>
+  request<AnalyticsHistoryDetail>(
+    `/api/analytics/history/${encodeURIComponent(entryId)}/refresh?${new URLSearchParams({ locale })}`,
+    { method: "POST" }
+  );
+
+export const deleteAnalyticsHistoryEntry = (entryId: string) =>
+  request<void>(`/api/analytics/history/${encodeURIComponent(entryId)}`, { method: "DELETE" });
 
 /** Runs an edited plan without any model call. */
 export const runAnalyticsPlan = (plan: AnalyticsPlan, locale: string) =>
   request<AnalyticsAnswer>("/api/analytics/run", jsonBody("POST", { plan, locale }));
 
-/** The queue, optionally narrowed to items about products with `tag`; the badge count is always the whole queue. */
-export function getReviewQueue(limitPerKind = 20, tag?: string): Promise<ReviewQueue> {
+export interface ReviewQueueFilter {
+  /** A category id (a group includes its subcategories), or `"none"` for «Без категории». */
+  category?: string;
+  /** A tag id. */
+  tag?: string;
+}
+
+/**
+ * The queue, optionally narrowed to items about products in a category and/or
+ * with a tag (the same wire format as the feed); the badge count is always the whole queue.
+ */
+export function getReviewQueue(limitPerKind = 20, filter: ReviewQueueFilter = {}): Promise<ReviewQueue> {
   const parameters = new URLSearchParams({ limitPerKind: String(limitPerKind) });
-  if (tag) parameters.set("tagId", tag);
+  setClassificationParameters(parameters, filter.category, undefined, filter.tag);
   return request<ReviewQueue>(`/api/review-queue?${parameters}`);
 }
 

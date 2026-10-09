@@ -1,9 +1,9 @@
-import { Check, Plus } from "lucide-react";
+import { Check, Pencil, Plus } from "lucide-react";
 import { useId, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { ApiError } from "../../api/client";
 import type { ProductTag, TagSummary } from "../../api/types";
-import { Button, Field, Surface } from "../../design-system/components";
+import { Button, Field, IconButton, Surface } from "../../design-system/components";
 import { HelpLink } from "../help/HelpLink";
 import { TagChips } from "./TagChips";
 import { tagKey } from "./tagKey";
@@ -104,15 +104,15 @@ export function ProductTags({ tags, allTags, onSave, onCreate, initiallyEditing 
 
   return (
     <Surface as="section" className={styles.section} aria-labelledby={titleId}>
-      <h2 id={titleId}>{t("tags.title")}</h2>
+      <div className={styles.heading}>
+        <h2 id={titleId}>{t("tags.title")}</h2>
+        {!editing && <IconButton intent="secondary" iconOnly="mobile" icon={<Pencil />} label={t("tags.edit")} onClick={startEditing} />}
+      </div>
 
       {!editing && (
         <>
           <TagChips tags={tags} showEmpty />
-          <div className={styles.actions}>
-            <Button intent="secondary" onClick={startEditing}>{t("tags.edit")}</Button>
-            <HelpLink topic="tags" />
-          </div>
+          <HelpLink topic="tags" />
         </>
       )}
 

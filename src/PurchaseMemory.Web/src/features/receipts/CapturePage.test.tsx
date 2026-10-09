@@ -42,6 +42,7 @@ describe("receipt background flow", () => {
     fireEvent.click(screen.getByRole("button", { name: "Загрузить и распознать" }));
     expect(await screen.findByText("Этот чек уже загружен")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Открыть существующий чек" })).toHaveAttribute("href", `/receipts/${fixture("ready").id}`);
+    expect(api.uploadReceipt).toHaveBeenCalledWith([expect.any(File)], { process: true });
     expect(api.processReceipt).not.toHaveBeenCalled();
   });
 
@@ -65,6 +66,30 @@ describe("receipt background flow", () => {
     expect(await screen.findByRole("heading", { name: "Purchase history" })).toBeInTheDocument();
     expect(api.reviewReceipt).toHaveBeenCalledTimes(1);
     expect(api.saveReceipt).toHaveBeenCalledTimes(1);
+  });
+
+  it("returns to «Нужно проверить» with its filters after saving a receipt opened from there", async () => {
+    const ready = { ...fixture("ready"), snapshot: { merchantName: "Lidl", purchasedAt: "2026-08-03T12:00:00Z", currency: "PLN", receiptTotal: 5, items: [{ name: "Mleko", quantity: 1, unit: null, unitPrice: 5, lineTotal: 5 }] } };
+    vi.mocked(api.getReceipt).mockResolvedValue(ready);
+    vi.mocked(api.reviewReceipt).mockResolvedValue(ready);
+    vi.mocked(api.saveReceipt).mockResolvedValue({ id: "purchase-1", merchantName: "Lidl", purchasedAt: ready.snapshot.purchasedAt, currency: "PLN", receiptTotal: 5, createdAt: ready.uploadedAt, updatedAt: ready.updatedAt, items: ready.snapshot.items, issues: [] });
+    function QueueProbe() {
+      const location = useLocation();
+      return <h1>Queue {location.search}</h1>;
+    }
+    render(<AppProviders><MemoryRouter initialEntries={[{ pathname: `/receipts/${ready.id}`, state: { returnTo: "/needs-attention?category=milk&tag=kid" } }]}><Routes><Route path="/receipts/:receiptId" element={<ReceiptDetailPage />} /><Route path="/needs-attention" element={<QueueProbe />} /><Route path="/purchases" element={<h1>Purchase history</h1>} /></Routes></MemoryRouter></AppProviders>);
+    fireEvent.click(await screen.findByRole("button", { name: "Сохранить покупку" }));
+    expect(await screen.findByRole("heading", { name: "Queue ?category=milk&tag=kid" })).toBeInTheDocument();
+  });
+
+  it("ignores a return address that is not the review queue", async () => {
+    const ready = { ...fixture("ready"), snapshot: { merchantName: "Lidl", purchasedAt: "2026-08-03T12:00:00Z", currency: "PLN", receiptTotal: 5, items: [{ name: "Mleko", quantity: 1, unit: null, unitPrice: 5, lineTotal: 5 }] } };
+    vi.mocked(api.getReceipt).mockResolvedValue(ready);
+    vi.mocked(api.reviewReceipt).mockResolvedValue(ready);
+    vi.mocked(api.saveReceipt).mockResolvedValue({ id: "purchase-1", merchantName: "Lidl", purchasedAt: ready.snapshot.purchasedAt, currency: "PLN", receiptTotal: 5, createdAt: ready.uploadedAt, updatedAt: ready.updatedAt, items: ready.snapshot.items, issues: [] });
+    render(<AppProviders><MemoryRouter initialEntries={[{ pathname: `/receipts/${ready.id}`, state: { returnTo: "https://example.com/needs-attention" } }]}><Routes><Route path="/receipts/:receiptId" element={<ReceiptDetailPage />} /><Route path="/purchases" element={<h1>Purchase history</h1>} /></Routes></MemoryRouter></AppProviders>);
+    fireEvent.click(await screen.findByRole("button", { name: "Сохранить покупку" }));
+    expect(await screen.findByRole("heading", { name: "Purchase history" })).toBeInTheDocument();
   });
 
   it("shows a discount as its own line under its product and sends it back on save", async () => {
@@ -116,10 +141,25 @@ describe("receipt background flow", () => {
     expect(screen.queryByRole("heading", { name: "Нужно уточнить" })).not.toBeInTheDocument();
   });
 
-  it("opens the stable URL when initial queueing fails and retries the uploaded capture", async () => {
+  it("uploads and queues in one request, then opens the stable receipt URL", async () => {
+    const queued = fixture("queued");
+    vi.mocked(api.uploadReceipt).mockResolvedValue({ receipt: queued, exactDuplicate: false });
+    vi.mocked(api.getReceipt).mockResolvedValue(queued);
+    render(<AppProviders><MemoryRouter initialEntries={["/purchases/new"]}><LocationProbe /><Routes><Route path="/purchases/new" element={<CapturePage recognition={{ available: true, mode: "test", models: [], message: null }} />} /><Route path="/receipts/:receiptId" element={<ReceiptDetailPage />} /></Routes></MemoryRouter></AppProviders>);
+    fireEvent.change(screen.getByLabelText("Выбрать из галереи"), { target: { files: [new File(["receipt"], "receipt.jpg", { type: "image/jpeg" })] } });
+    fireEvent.click(screen.getByRole("button", { name: "Загрузить и распознать" }));
+
+    expect(await screen.findByText("Чек ждёт распознавания")).toBeInTheDocument();
+    expect(screen.getByTestId("location")).toHaveTextContent(`/receipts/${queued.id}`);
+    expect(api.uploadReceipt).toHaveBeenCalledTimes(1);
+    expect(api.uploadReceipt).toHaveBeenCalledWith([expect.any(File)], { process: true });
+    expect(api.processReceipt).not.toHaveBeenCalled();
+  });
+
+  it("opens the stable URL when the server could not queue the upload and queues it from there", async () => {
     const uploaded = fixture("uploaded");
     vi.mocked(api.uploadReceipt).mockResolvedValue({ receipt: uploaded, exactDuplicate: false });
-    vi.mocked(api.processReceipt).mockRejectedValueOnce(new Error("Queue unavailable")).mockResolvedValue(fixture("queued"));
+    vi.mocked(api.processReceipt).mockResolvedValue(fixture("queued"));
     vi.mocked(api.getReceipt).mockResolvedValue(uploaded);
     render(<AppProviders><MemoryRouter initialEntries={["/purchases/new"]}><LocationProbe /><Routes><Route path="/purchases/new" element={<CapturePage recognition={{ available: true, mode: "test", models: [], message: null }} />} /><Route path="/receipts/:receiptId" element={<ReceiptDetailPage />} /></Routes></MemoryRouter></AppProviders>);
     fireEvent.change(screen.getByLabelText("Выбрать из галереи"), { target: { files: [new File(["receipt"], "receipt.jpg", { type: "image/jpeg" })] } });
@@ -127,22 +167,24 @@ describe("receipt background flow", () => {
 
     const start = await screen.findByRole("button", { name: "Начать распознавание" });
     expect(screen.getByTestId("location")).toHaveTextContent(`/receipts/${uploaded.id}`);
+    expect(api.processReceipt).not.toHaveBeenCalled();
     fireEvent.click(start);
-    await waitFor(() => expect(api.processReceipt).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(api.processReceipt).toHaveBeenCalledTimes(1));
     expect(await screen.findByText("Чек ждёт распознавания")).toBeInTheDocument();
   });
 
   it.each([
-    ["processing", "Обработка идёт в фоне. Этот адрес можно открыть снова после перехода или перезагрузки."],
-    ["ready", "Распознавание завершено. Проверьте черновик перед сохранением покупки."],
-    ["failed", "Обработка остановлена, но фотографии сохранены. Откройте этот адрес снова, чтобы повторить попытку."],
-    ["saved", "Обработка завершена, покупка сохранена в истории."]
-  ] as const)("shows truthful detail copy for %s status", async (status, description) => {
+    ["processing", "Чек загружен", "Обработка идёт в фоне. Этот адрес можно открыть снова после перехода или перезагрузки."],
+    ["ready", "Чек распознан", "Распознавание завершено. Проверьте черновик перед сохранением покупки."],
+    ["failed", "Чек не распознан", "Обработка остановлена, но фотографии сохранены. Откройте этот адрес снова, чтобы повторить попытку."],
+    ["saved", "Чек сохранён", "Обработка завершена, покупка сохранена в истории."]
+  ] as const)("shows truthful detail copy for %s status", async (status, title, description) => {
     const receipt = fixture(status);
     vi.mocked(api.getReceipt).mockResolvedValue(receipt);
     render(<AppProviders><MemoryRouter initialEntries={[`/receipts/${receipt.id}`]}><Routes><Route path="/receipts/:receiptId" element={<ReceiptDetailPage />} /></Routes></MemoryRouter></AppProviders>);
 
     expect(await screen.findByText(description)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: title })).toBeInTheDocument();
   });
 
   it("does not overwrite dirty review fields when server state refetches on focus", async () => {

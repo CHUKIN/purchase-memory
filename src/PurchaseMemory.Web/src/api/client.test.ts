@@ -35,6 +35,16 @@ describe("API client authorization", () => {
     expect(init.method).toBe("POST");
     expect(init.body).toBeInstanceOf(FormData);
     expect(new Headers(init.headers).get("Authorization")).toBe("Bearer jwt-anna");
+    expect(fetchMock.mock.calls[0][0]).toBe("/api/receipts");
+  });
+
+  it("asks the server to queue recognition with the upload when requested", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(jsonResponse(201, { receipt: {}, exactDuplicate: false }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await uploadReceipt([new File(["x"], "receipt.jpg", { type: "image/jpeg" })], { process: true });
+
+    expect(fetchMock.mock.calls[0][0]).toBe("/api/receipts?process=true");
   });
 
   it("sends no header without a session", async () => {

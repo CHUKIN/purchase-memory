@@ -59,7 +59,9 @@
   white-space: nowrap;
 }
 
+/* The × stays small inside the chip; the ::after extends its tap area to 44 px. */
 .remove {
+  position: relative;
   display: inline-grid;
   flex: none;
   place-items: center;
@@ -71,6 +73,12 @@
   color: var(--pm-content-muted);
   background: transparent;
   cursor: pointer;
+}
+
+.remove::after {
+  content: "";
+  position: absolute;
+  inset: -0.5rem;
 }
 
 .remove:hover {

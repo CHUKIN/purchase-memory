@@ -42,6 +42,105 @@
   max-width: 42rem;
 }
 
+.filterFields {
+  display: grid;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+@media (min-width: 40rem) {
+  .filterFields {
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  }
+}
+
+/* «Товар не сопоставлен»: the suggested products take the card's full width. */
+.suggestions {
+  display: grid;
+  gap: 0.5rem;
+  grid-column: 1 / -1;
+  min-width: 0;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--pm-border-subtle);
+}
+
+.suggestionsLabel {
+  margin: 0;
+  color: var(--pm-content-muted);
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.suggestionList {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.suggestion {
+  display: grid;
+  gap: 0.5rem;
+  align-items: center;
+  min-width: 0;
+}
+
+/* Each candidate reads as its own row, so its «Да, это он» is not mistaken for the neighbour's. */
+.suggestion + .suggestion {
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--pm-border-subtle);
+}
+
+.suggestionText {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+/* A full 44px tap target on a phone, without widening it beyond the text. */
+.suggestionName {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  min-height: 2.75rem;
+  max-width: 100%;
+  color: var(--pm-content-primary);
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.suggestionName:focus-visible {
+  outline: 2px solid var(--pm-accent-text);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.suggestionActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+}
+
+/* Brand · category path: two lines at most on a phone, the whole text stays in the title. */
+.details {
+  display: -webkit-box;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+@media (min-width: 30rem) {
+  .suggestion {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+}
+
 .filterNote {
   margin: 0;
   color: var(--pm-content-muted);
@@ -154,6 +253,9 @@
 }
 
 .link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--pm-touch-target);
   color: var(--pm-accent-text);
   font-weight: 750;
 }

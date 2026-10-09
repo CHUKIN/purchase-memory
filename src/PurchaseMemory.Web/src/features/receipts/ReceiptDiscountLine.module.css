@@ -4,7 +4,9 @@
  */
 .discount {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--pm-space-2);
+  min-width: 0;
   margin-inline-start: var(--pm-space-6);
   padding: var(--pm-space-3) var(--pm-space-4);
   border: 1px dashed color-mix(in srgb, var(--pm-accent-warm) 45%, var(--pm-border-subtle));
@@ -23,6 +25,7 @@
 
 .label {
   display: inline-flex;
+  flex: 1 1 auto;
   align-items: center;
   gap: var(--pm-space-1);
   min-width: 0;
@@ -36,6 +39,7 @@
 .label svg { flex: none; }
 
 .target {
+  min-width: 0;
   overflow: hidden;
   color: var(--pm-content-muted);
   font-weight: 650;
@@ -61,6 +65,7 @@
   color: var(--pm-accent-text);
   font-variant-numeric: tabular-nums;
   font-weight: 800;
+  white-space: nowrap;
 }
 
 .after {
@@ -69,7 +74,7 @@
   font-size: 0.8125rem;
 }
 
-.after strong { color: var(--pm-content-primary); font-variant-numeric: tabular-nums; }
+.after strong { color: var(--pm-content-primary); font-variant-numeric: tabular-nums; white-space: nowrap; }
 
 .fields {
   display: grid;
@@ -77,23 +82,12 @@
   gap: var(--pm-space-2);
 }
 
+/* The bin sits in the header's corner; the negative margin keeps the 44 px target from growing the row. */
 .delete {
-  display: inline-grid;
-  place-items: center;
-  width: 2.75rem;
-  height: 2.75rem;
   margin: -0.5rem -0.5rem -0.5rem 0;
-  border: 0;
-  border-radius: var(--pm-radius-sm);
-  background: transparent;
-  color: var(--pm-status-danger);
-  cursor: pointer;
 }
-
-.delete:hover { background: color-mix(in srgb, var(--pm-status-danger) 8%, transparent); }
-.delete:focus-visible { outline: 3px solid var(--pm-focus-ring); outline-offset: 2px; }
 
 @media (max-width: 480px) {
   .discount { margin-inline-start: var(--pm-space-3); }
-  .fields { grid-template-columns: 1fr; }
+  .fields { grid-template-columns: minmax(0, 1fr); }
 }

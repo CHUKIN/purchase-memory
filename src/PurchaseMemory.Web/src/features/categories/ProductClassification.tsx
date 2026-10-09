@@ -1,7 +1,8 @@
+import { Pencil } from "lucide-react";
 import { useId, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import type { AttributeSource, ProductCategory } from "../../api/types";
-import { Button, Field, Surface } from "../../design-system/components";
+import { Button, Field, IconButton, Surface } from "../../design-system/components";
 import { CategoryChip } from "./CategoryChip";
 import { CategoryPicker } from "./CategoryPicker";
 import { categoryPath } from "./categoryText";
@@ -75,7 +76,12 @@ export function ProductClassification({
 
   return (
     <Surface as="section" className={styles.section} aria-labelledby={titleId}>
-      <h2 id={titleId}>{t("categories.title")}</h2>
+      <div className={styles.heading}>
+        <h2 id={titleId}>{t("categories.title")}</h2>
+        {!editing && (
+          <IconButton intent="secondary" iconOnly="mobile" icon={<Pencil />} label={t("categories.edit")} onClick={startEditing} disabled={saving} />
+        )}
+      </div>
 
       {!editing && (
         <>
@@ -92,21 +98,22 @@ export function ProductClassification({
               </dd>
             </div>
           </dl>
-          {suggestedSomething && <p className={styles.hint}>{t("categories.suggestedHint")}</p>}
-          <div className={styles.actions}>
-            {suggestedSomething && (
-              <Button
-                loading={saving}
-                onClick={() => void save({
-                  ...(categorySource === "suggested" ? { categoryId } : {}),
-                  ...(brandSource === "suggested" ? { brand } : {})
-                })}
-              >
-                {t("categories.confirm")}
-              </Button>
-            )}
-            <Button intent="secondary" onClick={startEditing} disabled={saving}>{t("categories.edit")}</Button>
-          </div>
+          {suggestedSomething && (
+            <>
+              <p className={styles.hint}>{t("categories.suggestedHint")}</p>
+              <div className={styles.actions}>
+                <Button
+                  loading={saving}
+                  onClick={() => void save({
+                    ...(categorySource === "suggested" ? { categoryId } : {}),
+                    ...(brandSource === "suggested" ? { brand } : {})
+                  })}
+                >
+                  {t("categories.confirm")}
+                </Button>
+              </div>
+            </>
+          )}
         </>
       )}
 

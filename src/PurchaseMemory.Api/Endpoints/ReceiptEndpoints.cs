@@ -61,11 +61,17 @@ public static class ReceiptEndpoints
         return Results.Ok(await provider.GetStatusAsync(cancellationToken));
     }
 
+    // `process=true` queues recognition in the same request, so one upload
+    // costs one rate-limit token instead of two (upload + /process). The web
+    // capture screen always uses it; batch capture relies on it to fit a whole
+    // burst of separate receipts.
     private static async Task<IResult> UploadAsync(
         HttpRequest request,
         ClaimsPrincipal user,
         IReceiptProcessingService service,
-        CancellationToken cancellationToken)
+        ILoggerFactory loggerFactory,
+        CancellationToken cancellationToken,
+        [FromQuery] bool process = false)
     {
         var images = (await request.ReadFormAsync(cancellationToken)).Files;
         if (images.Count is < 1 or > ReceiptCaptureLimits.MaximumPartCount)
@@ -103,12 +109,30 @@ public static class ReceiptEndpoints
                     AppUser.Actor(user)),
                 cancellationToken);
 
+            var receipt = result.Receipt;
+            if (process && !result.IsExactDuplicate)
+            {
+                try
+                {
+                    receipt = await service.QueueAsync(receipt.ReceiptId, cancellationToken);
+                }
+                catch (Exception exception) when (exception is not OperationCanceledException)
+                {
+                    // The upload is already durable; the receipt page offers an
+                    // explicit queue action for a receipt left in Uploaded.
+                    ReceiptEndpointLogMessages.UploadedButNotQueued(
+                        loggerFactory.CreateLogger(typeof(ReceiptEndpoints)),
+                        exception,
+                        receipt.ReceiptId);
+                }
+            }
+
             var response = new ReceiptUploadResponse(
-                ReceiptResponse.FromView(result.Receipt),
+                ReceiptResponse.FromView(receipt),
                 result.IsExactDuplicate);
             return result.IsExactDuplicate
                 ? Results.Ok(response)
-                : Results.Created($"/api/receipts/{result.Receipt.ReceiptId}", response);
+                : Results.Created($"/api/receipts/{receipt.ReceiptId}", response);
         }
         finally
         {
@@ -259,6 +283,13 @@ public sealed record ReviewReceiptItemRequest(
 /// Line kinds cross the REST wire as the same lowercase strings the PWA types
 /// declare, mapped by hand like the receipt status.
 /// </summary>
+internal static partial class ReceiptEndpointLogMessages
+{
+    [LoggerMessage(EventId = 7101, Level = LogLevel.Warning,
+        Message = "Receipt {ReceiptId} was uploaded but could not be queued for recognition")]
+    public static partial void UploadedButNotQueued(ILogger logger, Exception exception, Guid receiptId);
+}
+
 public static class ReceiptLineKindWire
 {
     public const string Product = "product";

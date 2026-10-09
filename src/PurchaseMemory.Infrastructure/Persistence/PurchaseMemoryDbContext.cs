@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using PurchaseMemory.Domain.Analytics;
 using PurchaseMemory.Domain.Impressions;
 using PurchaseMemory.Domain.Products;
 using PurchaseMemory.Domain.Purchases;
@@ -30,6 +31,8 @@ public sealed class PurchaseMemoryDbContext(DbContextOptions<PurchaseMemoryDbCon
     public DbSet<ProductTagLink> ProductTagLinks => Set<ProductTagLink>();
 
     public DbSet<ProductImpression> ProductImpressions => Set<ProductImpression>();
+
+    public DbSet<AnalyticsQuestionEntry> AnalyticsQuestions => Set<AnalyticsQuestionEntry>();
 
     /// <summary>
     /// Supabase publishes the <c>public</c> schema through its Data API to
@@ -227,6 +230,25 @@ public sealed class PurchaseMemoryDbContext(DbContextOptions<PurchaseMemoryDbCon
             .WithMany()
             .HasForeignKey(entity => entity.ProductId)
             .OnDelete(DeleteBehavior.SetNull);
+
+        // Plan, period and answer are JSON text rather than jsonb: the same
+        // column type on SQLite and Postgres, and nothing queries inside them.
+        var question = modelBuilder.Entity<AnalyticsQuestionEntry>();
+        question.ToTable("analytics_questions");
+        question.HasKey(entity => entity.Id);
+        question.Property(entity => entity.Id).ValueGeneratedNever();
+        question.Property(entity => entity.Question).HasMaxLength(AnalyticsQuestionEntry.MaximumQuestionLength).IsRequired();
+        question.Property(entity => entity.NormalizedQuestion).HasMaxLength(AnalyticsQuestionEntry.MaximumQuestionLength).IsRequired();
+        question.Property(entity => entity.PlanJson).IsRequired();
+        question.Property(entity => entity.AnswerJson).IsRequired();
+        question.Property(entity => entity.Conclusion).HasMaxLength(AnalyticsQuestionEntry.MaximumConclusionLength).IsRequired();
+        question.Property(entity => entity.AskedByUserId).HasMaxLength(AnalyticsQuestionEntry.MaximumUserIdLength).IsRequired();
+        question.Property(entity => entity.AskedByEmail).HasMaxLength(AnalyticsQuestionEntry.MaximumEmailLength);
+        question.Property(entity => entity.CreatedAt).HasConversion(dateTimeOffsetConverter);
+        question.Property(entity => entity.AnsweredAt).HasConversion(dateTimeOffsetConverter);
+        // Not unique: follow-ups with the same words but different plans are separate entries.
+        question.HasIndex(entity => new { entity.NormalizedQuestion, entity.IsFollowUp });
+        question.HasIndex(entity => entity.AnsweredAt);
 
         var alias = modelBuilder.Entity<ProductAlias>();
         alias.ToTable("product_aliases");

@@ -137,7 +137,7 @@ export function ProductCatalog({
               <li key={product.id}>
                 <Link className={styles.card} to={`/products/${product.id}`}>
                   <Surface as="article" className={styles.cardBody}>
-                    <h3>{product.name}</h3>
+                    <h3 title={product.name}>{product.name}</h3>
                     {(categories.length > 0 || product.brand) && (
                       <p className={styles.classification}>
                         {categories.length > 0 && (

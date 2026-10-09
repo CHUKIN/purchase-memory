@@ -36,6 +36,7 @@ public sealed class PostgresSchemaTests
         Assert.Contains("receipt_captures", tables);
         Assert.Contains("product_tags", tables);
         Assert.Contains("product_tag_links", tables);
+        Assert.Contains("analytics_questions", tables);
         Assert.Contains("__EFMigrationsHistory", tables);
 
         // Supabase's Data API roles; created here when the plain test server lacks them.

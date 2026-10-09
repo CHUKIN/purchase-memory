@@ -40,6 +40,7 @@ public static class DependencyInjection
         services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
         services.AddScoped<PurchaseMemory.Application.Products.Tags.IProductTagRepository, ProductTagRepository>();
         services.AddScoped<IAnalyticsRepository, AnalyticsRepository>();
+        services.AddScoped<IAnalyticsHistoryRepository, AnalyticsHistoryRepository>();
         services.AddScoped<IReviewQueueRepository, ReviewQueue.ReviewQueueRepository>();
         services.AddScoped<IProductImpressionRepository, ProductImpressionRepository>();
 

@@ -53,7 +53,15 @@
   border-bottom: 0;
 }
 
+/* Dates and prices never break; the store column takes what is left and wraps between words. */
+.date,
 .price {
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+}
+
+.table td.price,
+.table th:last-child {
+  padding-right: 0;
+  text-align: right;
 }

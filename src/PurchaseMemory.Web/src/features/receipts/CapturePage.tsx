@@ -1,18 +1,23 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Plus, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate, useParams } from "react-router";
+import { Link, useLocation, useNavigate, useParams } from "react-router";
 import { ApiError, getReceipt, processReceipt, reviewReceipt, saveReceipt, uploadReceipt } from "../../api/client";
 import { useAuthorizedImageUrl } from "../../auth/useAuthorizedImageUrl";
+import { IconButton } from "../../design-system/components";
 import type { ReceiptItemSnapshot, ReceiptSnapshot, ReceiptView, RecognitionStatus } from "../../api/types";
 import { discountLinks, isDiscount } from "./discountLines";
 import { IssueReview, type IssueReviewPhoto } from "./IssueReview";
 import { ReceiptDiscountLine } from "./ReceiptDiscountLine";
-import { ReceiptCapture } from "./ReceiptCapture";
+import { ReceiptCapture, type CaptureMode } from "./ReceiptCapture";
 import { ReceiptDuplicateNotice } from "./ReceiptDuplicateNotice";
 import { HelpLink } from "../help/HelpLink";
+import { reviewQueueQueryKey } from "../review-queue/reviewQueueQueries";
+import { reviewQueueReturnPath } from "../review-queue/returnToQueue";
 import { ReceiptProgress } from "./ReceiptProgress";
+import { useReceiptBatchUpload } from "./useReceiptBatchUpload";
 
 export function CapturePage({ recognition }: { recognition: RecognitionStatus | null }) {
   const { t } = useTranslation();
@@ -20,18 +25,17 @@ export function CapturePage({ recognition }: { recognition: RecognitionStatus | 
   const queryClient = useQueryClient();
   const [files, setFiles] = useState<File[]>([]);
   const [duplicate, setDuplicate] = useState<ReceiptView | null>(null);
+  const [mode, setMode] = useState<CaptureMode>("parts");
+  // Each uploaded receipt refreshes the recent list, so App starts polling it
+  // and notifies about every receipt of the batch as it finishes.
+  const batch = useReceiptBatchUpload(() => void queryClient.invalidateQueries({ queryKey: ["receipts", "recent"] }));
+  const separate = mode === "separate" && files.length > 1;
   const upload = useMutation({
-    mutationFn: async () => {
-      const result = await uploadReceipt(files);
-      if (result.exactDuplicate) return result;
-      try {
-        return { ...result, receipt: await processReceipt(result.receipt.id) };
-      } catch {
-        // Upload is already durable. The stable detail URL exposes an explicit
-        // queue action even when this best-effort initial request failed.
-        return result;
-      }
-    },
+    // `process=true` queues recognition in the same request: one rate-limit
+    // token instead of two. An exact duplicate is never re-queued (as before);
+    // if queueing fails on the server, the receipt comes back «uploaded» and
+    // its stable detail URL offers an explicit queue action.
+    mutationFn: () => uploadReceipt(files, { process: true }),
     onSuccess: (result) => {
       queryClient.setQueryData(["receipts", result.receipt.id], result.receipt);
       void queryClient.invalidateQueries({ queryKey: ["receipts", "recent"] });
@@ -43,7 +47,7 @@ export function CapturePage({ recognition }: { recognition: RecognitionStatus | 
   return <section className="page capture-page">
     <div className="hero-copy"><p className="eyebrow">{t("receiptCapture.eyebrow")}</p><h1>{t("receiptCapture.title")}</h1><p>{t("receiptCapture.description")}</p><HelpLink topic="capture" /></div>
     {duplicate ? <ReceiptDuplicateNotice receiptId={duplicate.id} onStartOver={() => { setDuplicate(null); setFiles([]); }} /> :
-      <div className="capture-card"><ReceiptCapture files={files} uploading={upload.isPending} disabled={recognition?.available !== true} error={upload.isError ? messageOf(t, upload.error, t("legacyCapture.unknownError")) : null} onFilesChange={(next) => { setFiles(next); upload.reset(); }} onSubmit={() => upload.mutate()} />
+      <div className="capture-card"><ReceiptCapture files={files} mode={mode} onModeChange={setMode} batch={batch.photos} uploading={upload.isPending || batch.running} disabled={recognition?.available !== true} error={upload.isError ? messageOf(t, upload.error, t("legacyCapture.unknownError")) : null} onFilesChange={(next) => { setFiles(next); upload.reset(); batch.reset(); }} onSubmit={() => separate ? batch.start(files) : upload.mutate()} onRetryPhoto={(index) => batch.retry(files, index)} onStartOver={() => { batch.reset(); setFiles([]); setMode("parts"); }} />
       {recognition && <p className={`model-note ${recognition.available ? "" : "error-text"}`}>{recognition.available ? `${recognition.mode}: ${recognition.models.join(" → ")}` : recognition.message ?? t("legacyCapture.serviceUnavailable")}</p>}</div>}
   </section>;
 }
@@ -52,6 +56,8 @@ export function ReceiptDetailPage() {
   const { receiptId = "" } = useParams();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  // Opened from «Нужно проверить»: saving returns there (filters kept) instead of the history.
+  const afterSavePath = reviewQueueReturnPath(useLocation().state) ?? "/purchases";
   const queryClient = useQueryClient();
   const [snapshot, setSnapshot] = useState<ReceiptSnapshot | null>(null);
   const [warningsConfirmed, setWarningsConfirmed] = useState(false);
@@ -111,7 +117,10 @@ export function ReceiptDetailPage() {
     },
     onSuccess: (saved) => {
       void queryClient.invalidateQueries({ queryKey: ["receipts", "recent"] });
-      if (saved) navigate("/purchases");
+      if (saved) {
+        void queryClient.invalidateQueries({ queryKey: reviewQueueQueryKey });
+        navigate(afterSavePath);
+      }
     }
   });
   const receipt = receiptQuery.data;
@@ -121,6 +130,14 @@ export function ReceiptDetailPage() {
 
   if (receiptQuery.isPending) return <section className="page capture-page"><div className="processing-card" role="status">{t("receiptProgress.loading")}</div></section>;
   if (receiptQuery.isError || !receipt) return <section className="page capture-page"><div className="notice error-notice" role="alert">{messageOf(t, receiptQuery.error, t("receiptProgress.loadFailed"))}</div></section>;
+  // Only a saved receipt is «сохранён»: a recognized draft is not in the history yet.
+  const title = receipt.status === "ready"
+    ? t("receiptProgress.titleReady")
+    : receipt.status === "failed"
+      ? t("receiptProgress.titleFailed")
+      : receipt.status === "saved"
+        ? t("receiptProgress.titleSaved")
+        : t("receiptProgress.titleActive");
   const description = receipt.status === "ready"
     ? t("receiptProgress.descriptionReady")
     : receipt.status === "failed"
@@ -129,7 +146,7 @@ export function ReceiptDetailPage() {
         ? t("receiptProgress.descriptionSaved")
         : t("receiptProgress.descriptionActive");
   return <section className="page capture-page">
-    <div className="hero-copy"><p className="eyebrow">{t("receiptProgress.eyebrow")}</p><h1>{t("receiptProgress.title")}</h1><p>{description}</p>{receipt.status === "ready" ? <HelpLink topic="review-save" /> : <HelpLink topic="recognition" />}</div>
+    <div className="hero-copy"><p className="eyebrow">{t("receiptProgress.eyebrow")}</p><h1>{title}</h1><p>{description}</p>{receipt.status === "ready" ? <HelpLink topic="review-save" /> : <HelpLink topic="recognition" />}</div>
     <ReceiptProgress receipt={receipt} retrying={retry.isPending} onRetry={receipt.status === "failed" || receipt.status === "uploaded" ? () => retry.mutate() : undefined} />
     {retry.isError && <div className="notice error-notice" role="alert">{messageOf(t, retry.error, t("legacyCapture.unknownError"))}</div>}
     {receipt.status === "saved" && <div className="notice"><div><strong>{t("receiptProgress.saved")}</strong><p>{receipt.savedPurchaseId && <><Link to={`/purchases/${receipt.savedPurchaseId}`}>{t("receiptProgress.openPurchase")}</Link>{" · "}</>}<Link to="/purchases">{t("receiptProgress.openPurchases")}</Link></p></div></div>}
@@ -163,8 +180,8 @@ function ReviewForm({ snapshot, setSnapshot, warnings, warningsConfirmed, busy, 
     <div className="section-heading"><div><p className="eyebrow">{t("legacyCapture.draft")}</p><h2>{t("legacyCapture.reviewTitle")}</h2></div><span className="item-count">{t("legacyCapture.positions", { count: productCount })}{discountCount > 0 && ` · ${t("discount.count", { count: discountCount })}`}</span></div>
     <div className="form-grid"><Field label={t("legacyCapture.store")} value={snapshot.merchantName ?? ""} onChange={(value) => setSnapshot({ ...snapshot, merchantName: value || null })} /><Field label={t("legacyCapture.dateTime")} type="datetime-local" value={toLocalInput(snapshot.purchasedAt)} onChange={(value) => setSnapshot({ ...snapshot, purchasedAt: value ? new Date(value).toISOString() : null })} /><Field label={t("legacyCapture.currency")} value={snapshot.currency ?? ""} onChange={(value) => setSnapshot({ ...snapshot, currency: value.toUpperCase() || null })} /><NumberField label={t("legacyCapture.total")} value={snapshot.receiptTotal} onChange={(value) => setSnapshot({ ...snapshot, receiptTotal: value })} /></div>
     {warnings.length > 0 && <div className="review-warnings" role="status"><strong>{t("legacyCapture.needsReview")}</strong><ul>{warnings.map((warning) => <li key={warning}>{warning}</li>)}</ul></div>}
-    <div className="items-list">{snapshot.items.map((item, index) => isDiscount(item) ? <ReceiptDiscountLine key={index} name={item.name} lineTotal={item.lineTotal} currency={snapshot.currency} productName={targetOf(index)?.name || null} productLineTotal={targetOf(index)?.lineTotal ?? null} appliesToReceipt={links[index].appliesToReceipt} onChange={(change) => updateItem(index, change)} onDelete={() => removeItem(index)} /> : <article className="item-editor" key={index}><div className="item-editor-header"><span>{t("legacyCapture.position", { count: index + 1 })}</span><button className="icon-button" aria-label={t("legacyCapture.deletePosition", { count: index + 1 })} onClick={() => removeItem(index)}>×</button></div><Field label={t("legacyCapture.name")} value={item.name} onChange={(value) => updateItem(index, { name: value })} /><div className="item-numbers"><NumberField label={t("legacyCapture.quantity")} value={item.quantity} step="0.001" onChange={(value) => updateItem(index, { quantity: value })} /><NumberField label={t("legacyCapture.price")} value={item.unitPrice} onChange={(value) => updateItem(index, { unitPrice: value })} /><NumberField label={t("legacyCapture.amount")} value={item.lineTotal} onChange={(value) => updateItem(index, { lineTotal: value })} /></div></article>)}</div>
-    <button className="secondary-button add-item-button" onClick={() => setSnapshot({ ...snapshot, items: [...snapshot.items, emptyItem()] })}>＋ {t("legacyCapture.addPosition")}</button><button className="primary-button sticky-save" disabled={!canSave || busy} onClick={onSave}>{busy ? t("legacyCapture.saving") : warningsConfirmed ? t("legacyCapture.saveAnyway") : t("legacyCapture.savePurchase")}</button>
+    <div className="items-list">{snapshot.items.map((item, index) => isDiscount(item) ? <ReceiptDiscountLine key={index} name={item.name} lineTotal={item.lineTotal} currency={snapshot.currency} productName={targetOf(index)?.name || null} productLineTotal={targetOf(index)?.lineTotal ?? null} appliesToReceipt={links[index].appliesToReceipt} onChange={(change) => updateItem(index, change)} onDelete={() => removeItem(index)} /> : <article className="item-editor" key={index}><div className="item-editor-header"><span>{t("legacyCapture.position", { count: index + 1 })}</span><IconButton className="item-delete" intent="danger" label={t("legacyCapture.deletePosition", { count: index + 1 })} icon={<Trash2 size={18} />} onClick={() => removeItem(index)} /></div><Field label={t("legacyCapture.name")} value={item.name} onChange={(value) => updateItem(index, { name: value })} /><div className="item-numbers"><NumberField label={t("legacyCapture.quantity")} value={item.quantity} step="0.001" onChange={(value) => updateItem(index, { quantity: value })} /><NumberField label={t("legacyCapture.price")} value={item.unitPrice} onChange={(value) => updateItem(index, { unitPrice: value })} /><NumberField label={t("legacyCapture.amount")} value={item.lineTotal} onChange={(value) => updateItem(index, { lineTotal: value })} /></div></article>)}</div>
+    <button className="secondary-button add-item-button" onClick={() => setSnapshot({ ...snapshot, items: [...snapshot.items, emptyItem()] })}><Plus aria-hidden="true" size={18} />{t("legacyCapture.addPosition")}</button><button className="primary-button sticky-save" disabled={!canSave || busy} onClick={onSave}>{busy ? t("legacyCapture.saving") : warningsConfirmed ? t("legacyCapture.saveAnyway") : t("legacyCapture.savePurchase")}</button>
   </div>;
 }
 function Field({ label, value, onChange, type = "text" }: { label: string; value: string; onChange: (value: string) => void; type?: string }) { return <label className="field"><span>{label}</span><input type={type} value={value} onChange={(event) => onChange(event.target.value)} /></label>; }

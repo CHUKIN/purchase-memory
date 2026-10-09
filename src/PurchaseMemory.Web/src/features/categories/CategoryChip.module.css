@@ -6,7 +6,8 @@
   min-height: 1.75rem;
   padding: 0.2rem 0.6rem;
   border: 1px solid var(--pm-border-subtle);
-  border-radius: 999px;
+  /* Pill-shaped on one line, softly rounded when the label wraps to two. */
+  border-radius: 0.9rem;
   color: var(--pm-content-primary);
   background: var(--pm-surface-soft);
   font-size: 0.8rem;
@@ -19,10 +20,15 @@
   color: var(--pm-action-primary);
 }
 
+/* Up to two lines (a phone has no hover for the title), then an ellipsis. */
 .label {
+  display: -webkit-box;
+  min-width: 0;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
 }
 
 .chip[data-state="none"] {

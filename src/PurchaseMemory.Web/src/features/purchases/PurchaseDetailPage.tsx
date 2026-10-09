@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { ArrowLeft, Pencil, Plus, Trash2 } from "lucide-react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router";
@@ -12,7 +13,7 @@ import type {
   UpdatePurchaseRequest
 } from "../../api/types";
 import { useAuthorizedImageUrl } from "../../auth/useAuthorizedImageUrl";
-import { Button, SkeletonCard, Surface } from "../../design-system/components";
+import { Button, IconButton, SkeletonCard, Surface } from "../../design-system/components";
 import { issueCopy, issueKey, moneyComparisonTolerance } from "../issues/issueText";
 import { discountLinks, isDiscount } from "../receipts/discountLines";
 import { ReceiptDiscountLine } from "../receipts/ReceiptDiscountLine";
@@ -78,7 +79,7 @@ export function PurchaseDetailPage() {
         <p className={styles.eyebrow}>{t("purchaseEdit.eyebrow")}</p>
         <h1>{editing ? t("purchaseEdit.editTitle") : purchase.merchantName ?? t("purchaseEdit.unknownStore")}</h1>
         <nav className={styles.heroLinks}>
-          <Link className={styles.link} to="/purchases">{t("purchaseEdit.backToPurchases")}</Link>
+          <Link className={styles.back} to="/purchases"><ArrowLeft aria-hidden="true" />{t("purchaseEdit.backToPurchases")}</Link>
           {purchase.sourceReceiptId && <Link className={styles.link} to={`/receipts/${purchase.sourceReceiptId}`}>{t("purchaseEdit.openReceipt")}</Link>}
           <HelpLink topic="purchase-edit" />
         </nav>
@@ -115,7 +116,7 @@ function PurchaseSummary({ purchase, onEdit }: { purchase: PurchaseDetail; onEdi
           <p className={styles.muted}>{purchase.purchasedAt ? formatDateTime(purchase.purchasedAt, locale) : t("purchaseEdit.unknownDate")}</p>
           <p className={styles.total}>{money(purchase.receiptTotal)}</p>
         </div>
-        <Button intent="primary" onClick={onEdit}>{t("purchaseEdit.edit")}</Button>
+        <Button intent="primary" leftSection={<Pencil aria-hidden="true" size={17} />} onClick={onEdit}>{t("purchaseEdit.edit")}</Button>
       </div>
 
       <section aria-labelledby="purchase-issues">
@@ -130,7 +131,7 @@ function PurchaseSummary({ purchase, onEdit }: { purchase: PurchaseDetail; onEdi
         <ul className={styles.lines}>
           {purchase.items.map((item) => (
             <li key={item.position} className={isDiscount(item) ? styles.discount : undefined}>
-              <div>
+              <div className={styles.lineName}>
                 <strong>{item.name}</strong>
                 {!isDiscount(item) && (
                   <span className={item.pendingMatch ? styles.warningText : styles.muted}>
@@ -336,7 +337,7 @@ function PurchaseEditor({ purchase, focus, onDone, onReload }: {
                 <div className={styles.lineHeader}>
                   <span>{t("purchaseEdit.line", { number })}</span>
                   {missingPrice && <span className={styles.badge}>{t("purchaseEdit.missingPrice")}</span>}
-                  <button type="button" className={styles.remove} aria-label={t("purchaseEdit.removeLine", { number })} onClick={() => removeItem(index)}>×</button>
+                  <IconButton className={styles.remove} intent="danger" icon={<Trash2 />} label={t("purchaseEdit.removeLine", { number })} onClick={() => removeItem(index)} />
                 </div>
                 <TextInput id={`${idPrefix}-name-${index}`} label={t("purchaseEdit.name")} value={item.name} required onChange={(name) => updateItem(index, { name })} />
                 <div className={styles.numbers}>
@@ -358,8 +359,8 @@ function PurchaseEditor({ purchase, focus, onDone, onReload }: {
         </fieldset>
 
         <div className={styles.addButtons}>
-          <Button type="button" intent="secondary" onClick={() => addItem("product")}>＋ {t("purchaseEdit.addLine")}</Button>
-          <Button type="button" intent="quiet" onClick={() => addItem("discount")}>＋ {t("purchaseEdit.addDiscount")}</Button>
+          <Button type="button" intent="secondary" leftSection={<Plus aria-hidden="true" size={17} />} onClick={() => addItem("product")}>{t("purchaseEdit.addLine")}</Button>
+          <Button type="button" intent="quiet" leftSection={<Plus aria-hidden="true" size={17} />} onClick={() => addItem("discount")}>{t("purchaseEdit.addDiscount")}</Button>
         </div>
 
         {validation && <p className={styles.error} role="alert">{validation}</p>}

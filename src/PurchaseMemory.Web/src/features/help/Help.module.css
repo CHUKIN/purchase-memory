@@ -245,7 +245,7 @@
   gap: 0.3rem;
   justify-self: start;
   width: fit-content;
-  min-height: 2.25rem;
+  min-height: var(--pm-touch-target);
   color: var(--pm-action-primary);
   font-size: 0.85rem;
   font-weight: 700;

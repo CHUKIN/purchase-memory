@@ -3,7 +3,7 @@ import { useId, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { ApiError } from "../../api/client";
 import type { TagSummary } from "../../api/types";
-import { Button, Field } from "../../design-system/components";
+import { Button, Field, IconButton } from "../../design-system/components";
 // Same look as the category manager right above it on the page.
 import styles from "../categories/CategoryManager.module.css";
 import { maximumTagNameLength } from "./ProductTags";
@@ -97,14 +97,10 @@ export function TagManager({ tags, onCreate, onRename, onDelete, defaultOpen = f
             )
             : (
               <>
-                <Button intent="quiet" aria-label={`${t("tags.rename")}: ${tag.name}`} leftSection={<Pencil aria-hidden="true" size={15} />}
-                  onClick={() => setRenaming({ id: tag.id, name: tag.name })} disabled={busy}>
-                  <span className={styles.actionText}>{t("tags.rename")}</span>
-                </Button>
-                <Button intent="quiet" aria-label={`${t("tags.delete")}: ${tag.name}`} leftSection={<Trash2 aria-hidden="true" size={15} />}
-                  onClick={() => setConfirmingDelete(tag.id)} disabled={busy}>
-                  <span className={styles.actionText}>{t("tags.delete")}</span>
-                </Button>
+                <IconButton iconOnly="mobile" icon={<Pencil />} label={`${t("tags.rename")}: ${tag.name}`} text={t("tags.rename")}
+                  onClick={() => setRenaming({ id: tag.id, name: tag.name })} disabled={busy} />
+                <IconButton intent="danger" iconOnly="mobile" icon={<Trash2 />} label={`${t("tags.delete")}: ${tag.name}`} text={t("tags.delete")}
+                  onClick={() => setConfirmingDelete(tag.id)} disabled={busy} />
               </>
             )}
         </div>

@@ -14,6 +14,8 @@ vi.mock("../../api/client", async (importOriginal) => {
     updatePurchase: vi.fn(),
     getProductCatalog: vi.fn(),
     listPurchaseImpressions: vi.fn(() => Promise.resolve([])),
+    createImpression: vi.fn(),
+    deleteImpression: vi.fn(),
     fetchProtectedBlob: vi.fn(() => new Promise(() => undefined))
   };
 });
@@ -150,7 +152,7 @@ describe("PurchaseDetailPage", () => {
 
     fireEvent.click(await screen.findByRole("button", { name: "Удалить строку 2" }));
     expect(screen.queryByRole("article", { name: "Строка 2" })).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "＋ Добавить строку" }));
+    fireEvent.click(screen.getByRole("button", { name: "Добавить строку" }));
     expect(screen.getByRole("article", { name: "Строка 2" })).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Сохранить исправления" }));

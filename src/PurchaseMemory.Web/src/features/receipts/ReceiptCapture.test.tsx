@@ -1,12 +1,19 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { useState } from "react";
+import { MemoryRouter } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AppProviders } from "../../app/AppProviders";
-import { ReceiptCapture } from "./ReceiptCapture";
+import { ReceiptCapture, type CaptureMode } from "./ReceiptCapture";
 
 function Harness() {
   const [files, setFiles] = useState<File[]>([]);
   return <ReceiptCapture files={files} onFilesChange={setFiles} onSubmit={() => undefined} />;
+}
+
+function ModeHarness() {
+  const [files, setFiles] = useState<File[]>([]);
+  const [mode, setMode] = useState<CaptureMode>("parts");
+  return <MemoryRouter><ReceiptCapture files={files} mode={mode} onModeChange={setMode} onFilesChange={setFiles} onSubmit={() => undefined} /></MemoryRouter>;
 }
 
 describe("production ReceiptCapture", () => {
@@ -49,5 +56,21 @@ describe("production ReceiptCapture", () => {
     expect(screen.getAllByRole("listitem")).toHaveLength(9);
     expect(screen.getByText("Можно добавить не больше 8 частей.")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Загрузить и распознать" })).toBeDisabled();
+  });
+
+  it("asks what several photos are only once there are several", () => {
+    render(<AppProviders locale="en"><ModeHarness /></AppProviders>);
+    const gallery = screen.getByLabelText("Choose from gallery");
+    fireEvent.change(gallery, { target: { files: [new File(["a"], "a.jpg", { type: "image/jpeg" })] } });
+    expect(screen.queryByRole("radio")).not.toBeInTheDocument();
+
+    fireEvent.change(gallery, { target: { files: [new File(["b"], "b.jpg", { type: "image/jpeg" })] } });
+    expect(screen.getByRole("radio", { name: /Parts of one receipt/ })).toBeChecked();
+    expect(screen.getByRole("button", { name: "Upload and recognize" })).toBeEnabled();
+
+    fireEvent.click(screen.getByRole("radio", { name: /Separate receipts/ }));
+    expect(screen.getByText(/2 photos — 2 recognitions/)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Upload 2 receipts" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "Remove receipt 2" })).toBeInTheDocument();
   });
 });
