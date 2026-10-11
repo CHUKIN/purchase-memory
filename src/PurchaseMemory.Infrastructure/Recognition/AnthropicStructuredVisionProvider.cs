@@ -150,32 +150,19 @@ public sealed partial class AnthropicStructuredVisionProvider : IStructuredVisio
 
     private static (string Category, string Message) Classify(Exception exception)
     {
-        var statusCode = exception is AnthropicServiceException service ? service.StatusCode : 0;
-        return statusCode switch
+        var category = AnthropicFailure.Categorize(exception);
+        var message = category switch
         {
-            0 when ContainsInner<OperationCanceledException>(exception) || ContainsInner<TimeoutException>(exception) =>
-                ("timeout", "Claude recognition timed out. Retry or choose another provider."),
-            0 => ("network", "Claude could not be reached. Check the network and retry."),
-            401 or 403 => ("unauthorized", $"Claude rejected the backend credential. Check {ApiKeyEnvironmentVariable}."),
-            429 => ("rate_limited", "Claude rate limit was reached. Retry later or choose another provider."),
-            529 => ("overloaded", "Claude is overloaded right now. Retry later or choose another provider."),
-            >= 500 => ($"http_{statusCode}", "Claude is temporarily unavailable. Retry or choose another provider."),
-            _ => ($"http_{statusCode}", "Claude rejected the recognition request. Retry or choose another provider.")
+            "timeout" => "Claude recognition timed out. Retry or choose another provider.",
+            "network" => "Claude could not be reached. Check the network and retry.",
+            "unauthorized" => $"Claude rejected the backend credential. Check {ApiKeyEnvironmentVariable}.",
+            "rate_limited" => "Claude rate limit was reached. Retry later or choose another provider.",
+            "overloaded" => "Claude is overloaded right now. Retry later or choose another provider.",
+            _ when AnthropicFailure.StatusCode(exception) >= 500 =>
+                "Claude is temporarily unavailable. Retry or choose another provider.",
+            _ => "Claude rejected the recognition request. Retry or choose another provider."
         };
-    }
-
-    private static bool ContainsInner<TException>(Exception exception)
-        where TException : Exception
-    {
-        for (Exception? current = exception; current is not null; current = current.InnerException)
-        {
-            if (current is TException)
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return (category, message);
     }
 
     public void Dispose()

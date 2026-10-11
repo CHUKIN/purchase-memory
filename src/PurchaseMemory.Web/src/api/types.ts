@@ -263,6 +263,21 @@ export interface TagSummary extends ProductTag {
   productCount: number;
 }
 
+/** An AI hint: an existing household tag that may fit the product. Never applied by itself. */
+export interface TagSuggestion {
+  tagId: string;
+  name: string;
+  /** A short phrase in the requested language. */
+  reason: string;
+}
+
+export interface TagSuggestionsResponse {
+  productId: string;
+  suggestions: TagSuggestion[];
+  /** Household tags the product does not have yet; 0 means there was nothing to suggest from. */
+  offeredTagCount: number;
+}
+
 export interface ProductSummary {
   id: string;
   name: string;

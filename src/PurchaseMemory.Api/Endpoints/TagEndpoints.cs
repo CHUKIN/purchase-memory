@@ -18,6 +18,12 @@ public static class TagEndpoints
         endpoints.MapPut("/api/tags/{tagId:guid}", RenameAsync).WithName("RenameTag");
         endpoints.MapDelete("/api/tags/{tagId:guid}", DeleteAsync).WithName("DeleteTag");
         endpoints.MapPut("/api/products/{productId:guid}/tags", SetProductTagsAsync).WithName("SetProductTags");
+        // Calls a paid model, so it has a per-user bucket of its own. It only
+        // suggests: accepting goes through SetProductTags like any manual edit.
+        // No body; «?locale=en» picks the language of the reasons (Russian by default).
+        endpoints.MapPost("/api/products/{productId:guid}/tag-suggestions", SuggestProductTagsAsync)
+            .WithName("SuggestProductTags")
+            .RequireRateLimiting(ReceiptUploadRateLimiting.TagSuggestionsPolicyName);
         return endpoints;
     }
 
@@ -88,6 +94,34 @@ public static class TagEndpoints
         }
     }
 
+    private static async Task<IResult> SuggestProductTagsAsync(
+        Guid productId,
+        IProductTagSuggestionService service,
+        CancellationToken cancellationToken,
+        string? locale = null)
+    {
+        try
+        {
+            var result = await service.SuggestAsync(productId, locale, cancellationToken);
+            return Results.Ok(new TagSuggestionsResponse(
+                result.ProductId,
+                result.Suggestions.Select(suggestion => new TagSuggestionResponse(suggestion.TagId, suggestion.Name, suggestion.Reason)).ToList(),
+                result.OfferedTagCount));
+        }
+        catch (ProductNotFoundException exception)
+        {
+            return Results.Problem(detail: exception.Message, statusCode: StatusCodes.Status404NotFound);
+        }
+        catch (TagSuggestionsUnavailableException)
+        {
+            // The cause (no key, timeout, provider error) is in the log; the person only needs to know it failed.
+            return Results.Problem(
+                detail: "Tag suggestions are unavailable right now. Tags can still be chosen by hand.",
+                statusCode: StatusCodes.Status503ServiceUnavailable,
+                extensions: new Dictionary<string, object?> { ["code"] = "tagSuggestionsUnavailable" });
+        }
+    }
+
     private static async Task<IResult> HandleAsync(Func<Task<IResult>> operation)
     {
         try
@@ -153,5 +187,10 @@ public sealed record TagResponse(Guid Id, string Name);
 public sealed record TagSummaryResponse(Guid Id, string Name, int ProductCount);
 
 public sealed record TagDeletionResponse(Guid TagId, int UnlinkedProductCount);
+
+public sealed record TagSuggestionResponse(Guid TagId, string Name, string Reason);
+
+/// <param name="OfferedTagCount">Household tags not yet on the product; 0 means there was nothing to suggest from.</param>
+public sealed record TagSuggestionsResponse(Guid ProductId, IReadOnlyList<TagSuggestionResponse> Suggestions, int OfferedTagCount);
 
 public sealed record ProductTagsResponse(Guid ProductId, IReadOnlyList<TagResponse> Tags);

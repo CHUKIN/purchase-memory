@@ -1,7 +1,7 @@
 import { ArrowLeft, Receipt } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
-import type { ProductCategory, ProductDetail, ProductPriceSeries, ProductTag, TagSummary } from "../../api/types";
+import type { ProductCategory, ProductDetail, ProductPriceSeries, ProductTag, TagSuggestionsResponse, TagSummary } from "../../api/types";
 import { EmptyState, Surface } from "../../design-system/components";
 import { CategoryChip } from "../categories/CategoryChip";
 import { categoryPath } from "../categories/categoryText";
@@ -24,6 +24,10 @@ export interface ProductCardProps {
   /** Replaces the product's tags with exactly these ids. */
   onSetTags?: (tagIds: string[]) => Promise<unknown>;
   onCreateTag?: (name: string) => Promise<ProductTag>;
+  /** AI hints from the household's existing tags; adds «Предложить теги». */
+  onSuggestTags?: () => Promise<TagSuggestionsResponse>;
+  /** The product's tags as the cache knows them right now; accepting builds on these. */
+  readCurrentTagIds?: () => string[] | undefined;
 }
 
 /**
@@ -41,7 +45,9 @@ export function ProductCard({
   onClassify,
   allTags,
   onSetTags,
-  onCreateTag
+  onCreateTag,
+  onSuggestTags,
+  readCurrentTagIds
 }: ProductCardProps) {
   const { t } = useTranslation();
   const [primarySeries, ...otherSeries] = product.priceSeries;
@@ -88,12 +94,16 @@ export function ProductCard({
 
       {tagsEditable && (
         <ProductTags
-          // Remounting after a save resets the draft to what the server now says.
-          key={tags.map((tag) => tag.id).join("|")}
+          // Keyed by the product, not by its tag list: another product starts
+          // fresh (no stale suggestions or drafts), while accepting a suggestion
+          // keeps the remaining ones. Editing re-reads the tags when it starts.
+          key={product.id}
           tags={tags}
           allTags={allTags}
           onSave={onSetTags}
           onCreate={onCreateTag}
+          onSuggest={onSuggestTags}
+          readCurrentTagIds={readCurrentTagIds}
         />
       )}
 

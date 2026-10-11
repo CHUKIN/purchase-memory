@@ -26,6 +26,7 @@ import type {
   RecognitionStatus,
   ReviewQueue,
   ReviewQueueCount,
+  TagSuggestionsResponse,
   TagSummary,
   UpdatePurchaseRequest
 } from "./types";
@@ -276,6 +277,17 @@ export const setProductTags = (productId: string, tagIds: string[]) =>
   request<{ productId: string; tags: ProductTag[] }>(
     `/api/products/${encodeURIComponent(productId)}/tags`,
     jsonBody("PUT", { tagIds })
+  );
+
+/**
+ * Asks the AI which existing household tags fit the product. Only suggests:
+ * accepting goes through `setProductTags`. 503 (`tagSuggestionsUnavailable`)
+ * and 429 are expected answers, not crashes.
+ */
+export const suggestProductTags = (productId: string, locale: string) =>
+  request<TagSuggestionsResponse>(
+    `/api/products/${encodeURIComponent(productId)}/tag-suggestions?${new URLSearchParams({ locale })}`,
+    { method: "POST" }
   );
 
 export interface ClassifyProductRequest {

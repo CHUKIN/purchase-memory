@@ -45,9 +45,44 @@ internal sealed class AnthropicServiceException : Exception
 }
 
 /// <summary>
+/// Short, log-safe failure categories for a Messages API call, shared by every
+/// Claude feature (receipts, tag suggestions) so their logs read the same.
+/// </summary>
+internal static class AnthropicFailure
+{
+    public static int StatusCode(Exception exception) =>
+        exception is AnthropicServiceException service ? service.StatusCode : 0;
+
+    public static string Categorize(Exception exception) => StatusCode(exception) switch
+    {
+        0 when ContainsInner<OperationCanceledException>(exception) || ContainsInner<TimeoutException>(exception) => "timeout",
+        0 => "network",
+        401 or 403 => "unauthorized",
+        429 => "rate_limited",
+        529 => "overloaded",
+        var status => $"http_{status}"
+    };
+
+    private static bool ContainsInner<TException>(Exception exception)
+        where TException : Exception
+    {
+        for (Exception? current = exception; current is not null; current = current.InnerException)
+        {
+            if (current is TException)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+
+/// <summary>
 /// The only type that knows about the official Anthropic SDK. Keeping it
 /// internal keeps SDK types out of the Application contracts, the same way
-/// <see cref="OpenAiResponsesTransport"/> isolates the OpenAI SDK.
+/// <see cref="OpenAiResponsesTransport"/> isolates the OpenAI SDK. Requests
+/// without images are plain text calls (tag suggestions use that).
 /// </summary>
 internal sealed class AnthropicMessagesTransport : IAnthropicMessagesTransport, IDisposable
 {

@@ -25,6 +25,7 @@ using PurchaseMemory.Infrastructure.Images;
 using PurchaseMemory.Infrastructure.Persistence;
 using PurchaseMemory.Infrastructure.Processing;
 using PurchaseMemory.Infrastructure.Recognition;
+using PurchaseMemory.Infrastructure.Tagging;
 using Serilog;
 using Serilog.Events;
 
@@ -42,6 +43,17 @@ builder.Services.AddScoped<IProductImpressionService, ProductImpressionService>(
 builder.Services.AddScoped<IReceiptProcessingService, ReceiptProcessingService>();
 builder.Services.AddScoped<IProductCategoryService, ProductCategoryService>();
 builder.Services.AddScoped<IProductTagService, ProductTagService>();
+builder.Services
+    .AddOptions<TagSuggestionOptions>()
+    .Bind(builder.Configuration.GetSection(TagSuggestionOptions.SectionName))
+    .ValidateOnStart();
+builder.Services.AddSingleton<
+    Microsoft.Extensions.Options.IValidateOptions<TagSuggestionOptions>,
+    TagSuggestionOptionsValidator>();
+builder.Services.AddSingleton<AnthropicTagSuggester>();
+builder.Services.AddSingleton<ITagSuggester>(serviceProvider =>
+    serviceProvider.GetRequiredService<AnthropicTagSuggester>());
+builder.Services.AddScoped<IProductTagSuggestionService, ProductTagSuggestionService>();
 builder.Services.AddScoped<IProductCategorizationService, ProductCategorizationService>();
 builder.Services
     .AddOptions<ProductCategorizationOptions>()

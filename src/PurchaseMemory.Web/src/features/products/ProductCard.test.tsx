@@ -307,4 +307,65 @@ describe("ProductCard", () => {
     fireEvent.click(screen.getByRole("button", { name: "Сохранить" }));
     await waitFor(() => expect(onSetTags).toHaveBeenCalledWith(["city"]));
   });
+  it("starts fresh on another product: no suggestions carried over and none applied to it", async () => {
+    const allTags = [
+      { id: "kid", name: "для ребёнка", productCount: 2 },
+      { id: "vegan", name: "веган", productCount: 1 }
+    ];
+    const onSetTags = vi.fn().mockResolvedValue(undefined);
+    const onSuggestTags = vi.fn().mockResolvedValue({
+      productId: "a",
+      offeredTagCount: 2,
+      suggestions: [{ tagId: "vegan", name: "веган", reason: "растительный продукт" }]
+    });
+    const card = (product: ProductDetail) => (
+      <AppProviders locale="ru">
+        <MemoryRouter>
+          <ProductCard
+            product={product}
+            locale="ru-RU"
+            allTags={allTags}
+            onSetTags={onSetTags}
+            onCreateTag={vi.fn()}
+            onSuggestTags={onSuggestTags}
+          />
+        </MemoryRouter>
+      </AppProviders>
+    );
+    const { rerender } = render(card(detail({ id: "a", tags: [] })));
+    fireEvent.click(screen.getByRole("button", { name: "Предложить теги" }));
+    expect(await screen.findByRole("button", { name: "Добавить тег «веган»" })).toBeInTheDocument();
+
+    rerender(card(detail({ id: "b", name: "Chleb", tags: [] })));
+
+    expect(screen.queryByRole("button", { name: "Добавить тег «веган»" })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Предложить теги" })).toBeInTheDocument();
+    expect(onSetTags).not.toHaveBeenCalled();
+  });
+
+  it("drops an in-flight suggestion when the product changes before it arrives", async () => {
+    let resolve: (value: unknown) => void = () => undefined;
+    const onSuggestTags = vi.fn().mockReturnValue(new Promise((done) => { resolve = done; }));
+    const card = (product: ProductDetail) => (
+      <AppProviders locale="ru">
+        <MemoryRouter>
+          <ProductCard
+            product={product}
+            locale="ru-RU"
+            allTags={[{ id: "vegan", name: "веган", productCount: 1 }]}
+            onSetTags={vi.fn()}
+            onCreateTag={vi.fn()}
+            onSuggestTags={onSuggestTags}
+          />
+        </MemoryRouter>
+      </AppProviders>
+    );
+    const { rerender } = render(card(detail({ id: "a", tags: [] })));
+    fireEvent.click(screen.getByRole("button", { name: "Предложить теги" }));
+    rerender(card(detail({ id: "b", tags: [] })));
+    resolve({ productId: "a", offeredTagCount: 1, suggestions: [{ tagId: "vegan", name: "веган", reason: "" }] });
+
+    await waitFor(() => expect(screen.getByRole("button", { name: "Предложить теги" })).toBeEnabled());
+    expect(screen.queryByRole("button", { name: "Добавить тег «веган»" })).not.toBeInTheDocument();
+  });
 });

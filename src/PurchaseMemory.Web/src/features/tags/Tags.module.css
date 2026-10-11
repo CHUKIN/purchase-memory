@@ -157,6 +157,75 @@
   font-weight: 700;
 }
 
+/* AI tag suggestions: hints under the chips, each accepted or dismissed by hand. */
+.suggestions {
+  display: grid;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.suggestionStatus:empty {
+  display: none;
+}
+
+.suggestionPanel {
+  display: grid;
+  gap: 0.6rem;
+  min-width: 0;
+  padding: 0.75rem;
+  border: 1px dashed var(--pm-border-subtle);
+  border-radius: var(--pm-radius-md);
+  background: var(--pm-surface-soft);
+}
+
+.suggestionTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0;
+  color: var(--pm-content-muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.suggestionList {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.suggestionItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.suggestionText {
+  display: grid;
+  flex: 1 1 0;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: start;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.suggestionReason {
+  color: var(--pm-content-muted);
+  font-size: 0.82rem;
+  overflow-wrap: anywhere;
+}
+
+.suggestionActions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 0.25rem;
+}
+
 @media (min-width: 40rem) {
   .create {
     grid-template-columns: minmax(0, 1fr) auto;

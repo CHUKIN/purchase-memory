@@ -311,18 +311,23 @@ export const helpRu: HelpText = {
         "Откройте карточку товара и в блоке «Теги» нажмите кнопку с карандашом справа от заголовка («Изменить теги»; на телефоне видна только иконка).",
         "Нажмите на тег, чтобы добавить или убрать его. Нового тега нет в списке — введите его в «Новый тег» и нажмите «Создать тег»: он сразу отметится.",
         "Нажмите «Сохранить».",
+        "Не знаете, какие теги подходят? В блоке «Теги» нажмите «Предложить теги»: ИИ посмотрит на название, бренд, категорию и текст из чеков и предложит теги из ваших. У каждой подсказки есть короткое объяснение. Нажмите «Добавить» у подходящей (на телефоне — кнопка с галочкой), крестик («Скрыть») у лишней или «Добавить все», если подходят все.",
         "Переименовать (карандаш) или удалить (корзина) тег можно в «Управление тегами» внизу страницы «Товары»."
       ],
       see: [
         "Теги видны в списке «Товары» и на карточке товара.",
         "Фильтр «Тег» есть в «Истории покупок», в «Товарах» и в «Нужно проверить»; на карточке товара — ссылка «Покупки с тегом «…»».",
         "В «Аналитике» можно спросить про тег («Сколько потратили на детское?») или выбрать поле «Тег» и разбивку «По тегам».",
-        "Теги придумывает только человек: приложение само теги не создаёт и не расставляет."
+        "Теги придумывает только человек: приложение само теги не создаёт и не расставляет.",
+        "«Предложить теги» только подсказывает: ИИ выбирает лишь из уже созданных вами тегов и ничего не добавляет сам — тег появится у товара, только когда вы нажмёте «Добавить» или «Добавить все». Кнопка видна, когда у вас есть теги, которых у товара ещё нет."
       ],
       trouble: [
         "Одинаковые теги не создаются: регистр, лишние пробелы и польские буквы не учитываются («Акция» и «акция» — один тег).",
         "Длина тега — до 40 символов, у одного товара — не больше 20 тегов.",
-        "Удалённый тег пропадает у всех товаров, а сами товары и покупки остаются."
+        "Удалённый тег пропадает у всех товаров, а сами товары и покупки остаются.",
+        "«Подходящих тегов не нашлось» — ИИ не увидел среди ваших тегов подходящего. Это нормально: выберите теги вручную через карандаш.",
+        "«Подсказки тегов сейчас недоступны» — ИИ не ответил или выключен на сервере. Всё остальное работает, теги можно выбрать вручную.",
+        "«Слишком много подсказок подряд» — у каждого участника не больше примерно 30 подсказок в час. Подождите указанное время."
       ]
     },
     impressions: {
@@ -701,18 +706,23 @@ export const helpEn: HelpText = {
         "Open a product page and press the pencil button next to the “Tags” title (“Edit tags”; on a phone only the icon is shown).",
         "Tap a tag to add or remove it. If the tag isn't there yet, type it into “New tag” and press “Create tag”: it gets selected right away.",
         "Press “Save”.",
+        "Not sure which tags fit? In the “Tags” block press “Suggest tags”: the AI looks at the name, brand, category and receipt text and suggests some of your tags, each with a short reason. Press “Add” on a good one (on a phone, the check-mark button), the cross (“Dismiss”) on a wrong one, or “Add all” if they all fit.",
         "Rename (pencil) or delete (bin) tags in “Manage tags” at the bottom of “Products”."
       ],
       see: [
         "Tags are shown in the “Products” list and on the product page.",
         "The “Tag” filter is in “Purchase history”, “Products” and “Needs attention”; the product page has a “Purchases tagged “…”” link.",
         "In “Insights” you can ask about a tag (“How much did we spend on kids' stuff?”) or pick the “Tag” field and the “By tag” breakdown.",
-        "Only people create tags: the app never makes up or assigns tags by itself."
+        "Only people create tags: the app never makes up or assigns tags by itself.",
+        "“Suggest tags” only suggests: the AI picks only from tags you already created and adds nothing by itself — a tag lands on the product only when you press “Add” or “Add all”. The button is shown when you have tags the product doesn't have yet."
       ],
       trouble: [
         "Duplicate tags aren't created: case, extra spaces and Polish letters are ignored (“Sale” and “sale” are one tag).",
         "A tag is up to 40 characters, and one product can have at most 20 tags.",
-        "A deleted tag disappears from every product; the products and purchases stay."
+        "A deleted tag disappears from every product; the products and purchases stay.",
+        "“No matching tags found” — the AI saw nothing fitting among your tags. That's fine: pick tags by hand with the pencil.",
+        "“Tag suggestions are unavailable right now” — the AI didn't answer or is switched off on the server. Everything else works; pick tags by hand.",
+        "“Too many suggestions in a row” — each member gets about 30 suggestions an hour. Wait the time shown."
       ]
     },
     impressions: {

@@ -35,6 +35,21 @@ public sealed class AnalyticsQuestionRateLimitOptions
     public int ReplenishmentPeriodSeconds { get; set; } = 180;
 }
 
+/// <summary>
+/// Per-user token bucket for AI tag suggestions on the product page: a burst of
+/// 30 and then one more every 2 minutes, about 30 an hour.
+/// </summary>
+public sealed class TagSuggestionRateLimitOptions
+{
+    public const string SectionName = "RateLimiting:TagSuggestions";
+
+    public int TokenLimit { get; set; } = 30;
+
+    public int TokensPerPeriod { get; set; } = 1;
+
+    public int ReplenishmentPeriodSeconds { get; set; } = 120;
+}
+
 public static class ReceiptUploadRateLimiting
 {
     public const string PolicyName = "receipt-uploads";
@@ -53,6 +68,8 @@ public static class ReceiptUploadRateLimiting
     /// </summary>
     public const string AnalyticsRunPolicyName = "analytics-runs";
 
+    public const string TagSuggestionsPolicyName = "tag-suggestions";
+
     public static IServiceCollection AddReceiptUploadRateLimiting(
         this IServiceCollection services,
         IConfiguration configuration)
@@ -69,6 +86,13 @@ public static class ReceiptUploadRateLimiting
         if (questions.TokenLimit < 1 || questions.TokensPerPeriod < 1 || questions.ReplenishmentPeriodSeconds < 1)
         {
             throw new InvalidOperationException($"{AnalyticsQuestionRateLimitOptions.SectionName} values must be positive.");
+        }
+
+        var tagSuggestions = configuration.GetSection(TagSuggestionRateLimitOptions.SectionName).Get<TagSuggestionRateLimitOptions>()
+            ?? new TagSuggestionRateLimitOptions();
+        if (tagSuggestions.TokenLimit < 1 || tagSuggestions.TokensPerPeriod < 1 || tagSuggestions.ReplenishmentPeriodSeconds < 1)
+        {
+            throw new InvalidOperationException($"{TagSuggestionRateLimitOptions.SectionName} values must be positive.");
         }
 
         services.AddRateLimiter(options =>
@@ -122,6 +146,18 @@ public static class ReceiptUploadRateLimiting
                         AutoReplenishment = true
                     }));
 
+            options.AddPolicy(TagSuggestionsPolicyName, context =>
+                RateLimitPartition.GetTokenBucketLimiter(
+                    AppUser.UserId(context.User) ?? "anonymous",
+                    _ => new TokenBucketRateLimiterOptions
+                    {
+                        TokenLimit = tagSuggestions.TokenLimit,
+                        TokensPerPeriod = tagSuggestions.TokensPerPeriod,
+                        ReplenishmentPeriod = TimeSpan.FromSeconds(tagSuggestions.ReplenishmentPeriodSeconds),
+                        QueueLimit = 0,
+                        AutoReplenishment = true
+                    }));
+
             options.OnRejected = async (rejected, cancellationToken) =>
             {
                 var context = rejected.HttpContext;
@@ -139,8 +175,10 @@ public static class ReceiptUploadRateLimiting
                 var rerun = context.Request.Path.StartsWithSegments("/api/analytics/run", StringComparison.Ordinal)
                     || (context.Request.Path.StartsWithSegments("/api/analytics/history", StringComparison.Ordinal)
                         && context.Request.Path.Value?.EndsWith("/refresh", StringComparison.Ordinal) == true);
+                var tagSuggestion = context.Request.Path.Value?.EndsWith("/tag-suggestions", StringComparison.Ordinal) == true;
                 var (title, detail) = (backfill, analytics) switch
                 {
+                    _ when tagSuggestion => ("Too many tag suggestions", "Too many tag suggestions in a short time. Tags can still be chosen by hand."),
                     _ when rerun => ("Too many recalculations", "Too many recalculations in a short time. Try again in a minute."),
                     (true, _) => ("Too many categorization runs", "Too many categorization runs in a short time. Try again later."),
                     (_, true) => ("Too many questions", "Too many questions in a short time. Filters can still be changed by hand."),

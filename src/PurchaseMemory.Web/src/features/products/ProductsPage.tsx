@@ -15,8 +15,10 @@ import {
   renameCategory,
   renameTag,
   setProductTags,
+  suggestProductTags,
   type ClassifyProductRequest
 } from "../../api/client";
+import type { ProductDetail } from "../../api/types";
 import { CategoryManager } from "../categories/CategoryManager";
 import { brandsQueryKey, categoriesQueryKey } from "../categories/categoryQueries";
 import { EmptyState, SkeletonCard, Surface } from "../../design-system/components";
@@ -174,6 +176,9 @@ export function ProductDetailPage() {
           allTags={tagsQuery.data}
           onSetTags={saveTags.mutateAsync}
           onCreateTag={createTagForProduct}
+          onSuggestTags={() => suggestProductTags(productId, i18n.resolvedLanguage === "en" ? "en" : "ru")}
+          readCurrentTagIds={() => queryClient
+            .getQueryData<ProductDetail>(["products", "detail", productId])?.tags?.map((tag) => tag.id)}
         />
       )}
 

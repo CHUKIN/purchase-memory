@@ -2,10 +2,11 @@ import { Check, Pencil, Plus } from "lucide-react";
 import { useId, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { ApiError } from "../../api/client";
-import type { ProductTag, TagSummary } from "../../api/types";
+import type { ProductTag, TagSuggestionsResponse, TagSummary } from "../../api/types";
 import { Button, Field, IconButton, Surface } from "../../design-system/components";
 import { HelpLink } from "../help/HelpLink";
 import { TagChips } from "./TagChips";
+import { TagSuggestions } from "./TagSuggestions";
 import { tagKey } from "./tagKey";
 import styles from "./Tags.module.css";
 
@@ -21,6 +22,13 @@ export interface ProductTagsProps {
   onSave: (tagIds: string[]) => Promise<unknown>;
   /** Creates a household tag and returns it, so it can be picked at once. */
   onCreate: (name: string) => Promise<ProductTag>;
+  /** Asks the AI which existing tags fit; with it the section offers «Предложить теги». */
+  onSuggest?: () => Promise<TagSuggestionsResponse>;
+  /**
+   * The product's tags at the moment of accepting (the query cache), so an
+   * accept never builds on a stale render; the `tags` prop is the fallback.
+   */
+  readCurrentTagIds?: () => string[] | undefined;
   /** Starts in edit mode; for stories and tests. */
   initiallyEditing?: boolean;
 }
@@ -31,7 +39,7 @@ export interface ProductTagsProps {
  * `aria-pressed`, so keyboard and screen readers need nothing custom) and a
  * field to create a new tag, which is picked straight away.
  */
-export function ProductTags({ tags, allTags, onSave, onCreate, initiallyEditing = false }: ProductTagsProps) {
+export function ProductTags({ tags, allTags, onSave, onCreate, onSuggest, readCurrentTagIds, initiallyEditing = false }: ProductTagsProps) {
   const { t } = useTranslation();
   const titleId = useId();
   const pickId = useId();
@@ -49,6 +57,11 @@ export function ProductTags({ tags, allTags, onSave, onCreate, initiallyEditing 
     ...created.filter((tag) => !allTags.some((entry) => entry.id === tag.id))
   ];
   const full = draft.length >= maximumTagsPerProduct;
+  const currentIds = tags.map((tag) => tag.id);
+  // Suggestions only make sense when some household tag is not on the product yet.
+  const canSuggest = onSuggest !== undefined
+    && tags.length < maximumTagsPerProduct
+    && allTags.some((tag) => !currentIds.includes(tag.id));
 
   function startEditing() {
     setDraft(tags.map((tag) => tag.id));
@@ -112,6 +125,17 @@ export function ProductTags({ tags, allTags, onSave, onCreate, initiallyEditing 
       {!editing && (
         <>
           <TagChips tags={tags} showEmpty />
+          {canSuggest && onSuggest && (
+            <TagSuggestions
+              onSuggest={onSuggest}
+              onAccept={(tagIds) => {
+                const latest = readCurrentTagIds?.() ?? currentIds;
+                return onSave([...latest, ...tagIds.filter((id) => !latest.includes(id))]);
+              }}
+              currentTagIds={currentIds}
+              remainingSlots={maximumTagsPerProduct - tags.length}
+            />
+          )}
           <HelpLink topic="tags" />
         </>
       )}

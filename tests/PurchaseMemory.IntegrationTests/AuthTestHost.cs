@@ -49,9 +49,10 @@ internal sealed class AuthTestHost : WebApplicationFactory<Program>
             ["Paths:LogDirectory"] = Path.Combine(_directory, "logs"),
             ["Auth:SupabaseUrl"] = SupabaseUrl,
             ["Auth:SupabasePublishableKey"] = "sb_publishable_test",
-            // Never a paid model call from a test, even if OPENAI_API_KEY is set.
+            // Never a paid model call from a test, even if OPENAI_API_KEY or ANTHROPIC_API_KEY is set.
             ["Categorization:Enabled"] = "false",
-            ["Analytics:Enabled"] = "false"
+            ["Analytics:Enabled"] = "false",
+            ["TagSuggestions:Enabled"] = "false"
         };
         // Opt-in real backends (see ExternalTestServices); explicit settings win.
         _postgres = PostgresTestDatabase.TryCreate();
