@@ -1,0 +1,189 @@
+{
+  "receiptId": "14",
+  "configuration": "haiku-low-r1",
+  "model": "claude-haiku-5-5",
+  "effort": "low",
+  "seconds": 9.12,
+  "stopReason": "end_turn",
+  "requestId": "msg_011CfvGpUT8U8SrreJzRjLmo",
+  "usage": {
+    "inputTokens": 2844,
+    "outputTokens": 2356
+  },
+  "costUsd": 0.001462,
+  "status": "success",
+  "parsed": {
+    "merchant": "CARREFOUR MARKET",
+    "date": "2025-06-10T14:49:00+02:00",
+    "currency": "PLN",
+    "total": 192.4,
+    "items": [
+      {
+        "name": "WODA MINER BORJOM",
+        "quantity": 1,
+        "unitPrice": 10.59,
+        "lineTotal": 10.59
+      },
+      {
+        "name": "MC TOST MAŚLANY 5",
+        "quantity": 1,
+        "unitPrice": 3.79,
+        "lineTotal": 3.79
+      },
+      {
+        "name": "UKŁAD MAXTRA PRO",
+        "quantity": 1,
+        "unitPrice": 74.99,
+        "lineTotal": 74.99
+      },
+      {
+        "name": "FILET Z KURCZ. ZA",
+        "quantity": 0.412,
+        "unitPrice": 52.99,
+        "lineTotal": 21.83
+      },
+      {
+        "name": "SALAME VILCANI 80",
+        "quantity": 1,
+        "unitPrice": 30.79,
+        "lineTotal": 30.79
+      },
+      {
+        "name": "MOVI ŁOSOŚ ŚWIEŻY",
+        "quantity": 1,
+        "unitPrice": 19.49,
+        "lineTotal": 19.49
+      },
+      {
+        "name": "JOGURT MOVENPICK",
+        "quantity": 1,
+        "unitPrice": 5.39,
+        "lineTotal": 5.39
+      },
+      {
+        "name": "SMAKIJA KASZKA 13",
+        "quantity": 1,
+        "unitPrice": 3.45,
+        "lineTotal": 3.45
+      },
+      {
+        "name": "PAPRYKA CZERWONA",
+        "quantity": 0.546,
+        "unitPrice": 12.99,
+        "lineTotal": 7.09
+      },
+      {
+        "name": "MC SZPARAGI ZIELO",
+        "quantity": 1,
+        "unitPrice": 14.99,
+        "lineTotal": 14.99
+      }
+    ]
+  },
+  "raw": {
+    "rawLines": [
+      "A#WODA MINER BORJOM 1szt*10,59= 10,59 A",
+      "C#MC TOST MAŚLANY 5 1szt*3,79= 3,79 C",
+      "A#UKŁAD MAXTRA PRO 1szt*74,99= 74,99 A",
+      "C#FILET Z KURCZ. ZA 0,412kg*52,99= 21,83 C",
+      "C#SALAME VILCANI 80 1szt*30,79= 30,79 C",
+      "C#MOVI ŁOSOŚ ŚWIEŻY 1szt*19,49= 19,49 C",
+      "C#JOGURT MOVENPICK 1szt*5,39= 5,39 C",
+      "C#SMAKIJA KASZKA 13 1szt*3,45= 3,45 C",
+      "C#PAPRYKA CZERWONA 0,546kg*12,99= 7,09 C",
+      "C#MC SZPARAGI ZIELO 1szt*14,99= 14,99 C"
+    ],
+    "merchantName": "CARREFOUR MARKET",
+    "purchasedAt": "2025-06-10T14:49:00+02:00",
+    "currency": "PLN",
+    "receiptTotal": 192.4,
+    "receiptTotalBoundingBox": {
+      "x": 0.32,
+      "y": 0.64,
+      "width": 0.46,
+      "height": 0.03
+    },
+    "items": [
+      {
+        "name": "WODA MINER BORJOM",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 10.59,
+        "lineTotal": 10.59,
+        "boundingBox": null
+      },
+      {
+        "name": "MC TOST MAŚLANY 5",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 3.79,
+        "lineTotal": 3.79,
+        "boundingBox": null
+      },
+      {
+        "name": "UKŁAD MAXTRA PRO",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 74.99,
+        "lineTotal": 74.99,
+        "boundingBox": null
+      },
+      {
+        "name": "FILET Z KURCZ. ZA",
+        "quantity": 0.412,
+        "unit": "kg",
+        "unitPrice": 52.99,
+        "lineTotal": 21.83,
+        "boundingBox": null
+      },
+      {
+        "name": "SALAME VILCANI 80",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 30.79,
+        "lineTotal": 30.79,
+        "boundingBox": null
+      },
+      {
+        "name": "MOVI ŁOSOŚ ŚWIEŻY",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 19.49,
+        "lineTotal": 19.49,
+        "boundingBox": null
+      },
+      {
+        "name": "JOGURT MOVENPICK",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 5.39,
+        "lineTotal": 5.39,
+        "boundingBox": null
+      },
+      {
+        "name": "SMAKIJA KASZKA 13",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 3.45,
+        "lineTotal": 3.45,
+        "boundingBox": null
+      },
+      {
+        "name": "PAPRYKA CZERWONA",
+        "quantity": 0.546,
+        "unit": "kg",
+        "unitPrice": 12.99,
+        "lineTotal": 7.09,
+        "boundingBox": null
+      },
+      {
+        "name": "MC SZPARAGI ZIELO",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 14.99,
+        "lineTotal": 14.99,
+        "boundingBox": null
+      }
+    ]
+  }
+}

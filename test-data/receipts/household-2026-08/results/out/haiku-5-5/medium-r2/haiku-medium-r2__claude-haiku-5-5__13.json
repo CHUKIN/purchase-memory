@@ -1,0 +1,144 @@
+{
+  "receiptId": "13",
+  "configuration": "haiku-medium-r2",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "seconds": 6.76,
+  "stopReason": "end_turn",
+  "requestId": "msg_011CfvHWEw97BiMR2AdjPbMn",
+  "usage": {
+    "inputTokens": 2844,
+    "outputTokens": 1516
+  },
+  "costUsd": 0.001042,
+  "status": "success",
+  "parsed": {
+    "merchant": "Lviv Croissants",
+    "date": "2025-08-20T21:17:00+02:00",
+    "currency": "PLN",
+    "total": 54.8,
+    "items": [
+      {
+        "name": "Pijana Wiśnia (d)",
+        "quantity": 1,
+        "unitPrice": 22.9,
+        "lineTotal": 22.9
+      },
+      {
+        "name": "+Pudełko papierowe (d)",
+        "quantity": 1,
+        "unitPrice": 2.0,
+        "lineTotal": 2.0
+      },
+      {
+        "name": "Królewski (d)",
+        "quantity": 1,
+        "unitPrice": 25.9,
+        "lineTotal": 25.9
+      },
+      {
+        "name": "+Serek śmietankowy (dodatek)",
+        "quantity": 1,
+        "unitPrice": 2.0,
+        "lineTotal": 2.0
+      },
+      {
+        "name": "+Pudełko papierowe (d)",
+        "quantity": 1,
+        "unitPrice": 2.0,
+        "lineTotal": 2.0
+      }
+    ]
+  },
+  "raw": {
+    "rawLines": [
+      "Pijana Wiśnia (d)",
+      "1 x22,90 22,90B",
+      "+Pudełko papierowe (d)",
+      "1 x2,00 2,00A",
+      "Królewski (d)",
+      "1 x25,90 25,90B",
+      "+Serek śmietankowy (dodatek)",
+      "1 x2,00 2,00B",
+      "+Pudełko papierowe (d)",
+      "1 x2,00 2,00A"
+    ],
+    "merchantName": "Lviv Croissants",
+    "purchasedAt": "2025-08-20T21:17:00+02:00",
+    "currency": "PLN",
+    "receiptTotal": 54.8,
+    "receiptTotalBoundingBox": {
+      "x": 0.67,
+      "y": 0.6,
+      "width": 0.11,
+      "height": 0.022
+    },
+    "items": [
+      {
+        "name": "Pijana Wiśnia (d)",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 22.9,
+        "lineTotal": 22.9,
+        "boundingBox": {
+          "x": 0.29,
+          "y": 0.445,
+          "width": 0.5,
+          "height": 0.018
+        }
+      },
+      {
+        "name": "+Pudełko papierowe (d)",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 2.0,
+        "lineTotal": 2.0,
+        "boundingBox": {
+          "x": 0.29,
+          "y": 0.462,
+          "width": 0.5,
+          "height": 0.018
+        }
+      },
+      {
+        "name": "Królewski (d)",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 25.9,
+        "lineTotal": 25.9,
+        "boundingBox": {
+          "x": 0.29,
+          "y": 0.479,
+          "width": 0.5,
+          "height": 0.018
+        }
+      },
+      {
+        "name": "+Serek śmietankowy (dodatek)",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 2.0,
+        "lineTotal": 2.0,
+        "boundingBox": {
+          "x": 0.29,
+          "y": 0.496,
+          "width": 0.5,
+          "height": 0.018
+        }
+      },
+      {
+        "name": "+Pudełko papierowe (d)",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 2.0,
+        "lineTotal": 2.0,
+        "boundingBox": {
+          "x": 0.29,
+          "y": 0.513,
+          "width": 0.5,
+          "height": 0.018
+        }
+      }
+    ]
+  }
+}

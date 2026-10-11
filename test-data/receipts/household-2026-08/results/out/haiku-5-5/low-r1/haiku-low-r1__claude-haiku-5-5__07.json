@@ -1,0 +1,79 @@
+{
+  "receiptId": "07",
+  "configuration": "haiku-low-r1",
+  "model": "claude-haiku-5-5",
+  "effort": "low",
+  "seconds": 5.2,
+  "stopReason": "end_turn",
+  "requestId": "msg_011CfvGmAb16RU7s785yVK1z",
+  "usage": {
+    "inputTokens": 2844,
+    "outputTokens": 1062
+  },
+  "costUsd": 0.000815,
+  "status": "success",
+  "parsed": {
+    "merchant": "Suntago",
+    "date": "2025-08-18T19:59:00+02:00",
+    "currency": "PLN",
+    "total": 108.09,
+    "items": [
+      {
+        "name": "DANIE BUFET GR",
+        "quantity": 0.288,
+        "unitPrice": 95.0,
+        "lineTotal": 27.36
+      },
+      {
+        "name": "DANIE BUFET GR",
+        "quantity": 0.534,
+        "unitPrice": 95.0,
+        "lineTotal": 50.73
+      },
+      {
+        "name": "WYPOZYCZENIE RECZNIKA",
+        "quantity": 2,
+        "unitPrice": 15.0,
+        "lineTotal": 30.0
+      }
+    ]
+  },
+  "raw": {
+    "rawLines": [
+      "DANIE BUFET GR 0,288 x95,00 27,36B",
+      "DANIE BUFET GR 0,534 x95,00 50,73B",
+      "WYPOZYCZENIE RECZNIKA 2 x15,00 30,00A"
+    ],
+    "merchantName": "Suntago",
+    "purchasedAt": "2025-08-18T19:59:00+02:00",
+    "currency": "PLN",
+    "receiptTotal": 108.09,
+    "receiptTotalBoundingBox": null,
+    "items": [
+      {
+        "name": "DANIE BUFET GR",
+        "quantity": 0.288,
+        "unit": "GR",
+        "unitPrice": 95.0,
+        "lineTotal": 27.36,
+        "boundingBox": null
+      },
+      {
+        "name": "DANIE BUFET GR",
+        "quantity": 0.534,
+        "unit": "GR",
+        "unitPrice": 95.0,
+        "lineTotal": 50.73,
+        "boundingBox": null
+      },
+      {
+        "name": "WYPOZYCZENIE RECZNIKA",
+        "quantity": 2,
+        "unit": null,
+        "unitPrice": 15.0,
+        "lineTotal": 30.0,
+        "boundingBox": null
+      }
+    ]
+  }
+}

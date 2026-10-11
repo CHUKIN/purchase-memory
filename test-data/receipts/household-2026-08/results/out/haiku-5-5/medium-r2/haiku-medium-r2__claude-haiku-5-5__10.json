@@ -1,0 +1,199 @@
+{
+  "receiptId": "10",
+  "configuration": "haiku-medium-r2",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "seconds": 7.22,
+  "stopReason": "end_turn",
+  "requestId": "msg_011CfvHUHXrvhtiX3PNZVA9F",
+  "usage": {
+    "inputTokens": 2844,
+    "outputTokens": 1839
+  },
+  "costUsd": 0.001204,
+  "status": "success",
+  "parsed": {
+    "merchant": "SUPERMARKET AUCHAN",
+    "date": "2025-08-05T21:29:00+02:00",
+    "currency": "PLN",
+    "total": 85.69,
+    "items": [
+      {
+        "name": "GUMA ROZP. 356556A",
+        "quantity": 1,
+        "unitPrice": 7.44,
+        "lineTotal": 7.44
+      },
+      {
+        "name": "TOST PEŁNO 303971C",
+        "quantity": 1,
+        "unitPrice": 3.18,
+        "lineTotal": 3.18
+      },
+      {
+        "name": "FILET Z KU 339849C",
+        "quantity": 0.555,
+        "unitPrice": 28.98,
+        "lineTotal": 16.08
+      },
+      {
+        "name": "BANAN 34041C",
+        "quantity": 0.414,
+        "unitPrice": 6.99,
+        "lineTotal": 2.89
+      },
+      {
+        "name": "SZYNKA Z P 695097C",
+        "quantity": 1,
+        "unitPrice": 6.19,
+        "lineTotal": 6.19
+      },
+      {
+        "name": "SER SZWAJC 508926C",
+        "quantity": 1,
+        "unitPrice": 5.89,
+        "lineTotal": 5.89
+      },
+      {
+        "name": "CEBULA 43444C",
+        "quantity": 0.184,
+        "unitPrice": 4.39,
+        "lineTotal": 0.81
+      },
+      {
+        "name": "DORSZ ATLA 809036C",
+        "quantity": 0.302,
+        "unitPrice": 104.9,
+        "lineTotal": 31.68
+      },
+      {
+        "name": "JOGURT OWC 281650C",
+        "quantity": 1,
+        "unitPrice": 7.64,
+        "lineTotal": 7.64
+      },
+      {
+        "name": "ZIEMNIAK W 266537C",
+        "quantity": 1,
+        "unitPrice": 3.89,
+        "lineTotal": 3.89
+      }
+    ]
+  },
+  "raw": {
+    "rawLines": [
+      "GUMA ROZP. 356556A",
+      "1 x7,44 7,44A",
+      "TOST PEŁNO 303971C",
+      "1 x3,18 3,18C",
+      "FILET Z KU 339849C",
+      "0,555 x28,98 16,08C",
+      "BANAN 34041C",
+      "0,414 x6,99 2,89C",
+      "SZYNKA Z P 695097C",
+      "1 x6,19 6,19C",
+      "SER SZWAJC 508926C",
+      "1 x5,89 5,89C",
+      "CEBULA 43444C",
+      "0,184 x4,39 0,81C",
+      "DORSZ ATLA 809036C",
+      "0,302 x104,90 31,68C",
+      "JOGURT OWC 281650C",
+      "1 x7,64 7,64C",
+      "ZIEMNIAK W 266537C",
+      "1 x3,89 3,89C"
+    ],
+    "merchantName": "SUPERMARKET AUCHAN",
+    "purchasedAt": "2025-08-05T21:29:00+02:00",
+    "currency": "PLN",
+    "receiptTotal": 85.69,
+    "receiptTotalBoundingBox": {
+      "x": 0.18,
+      "y": 0.64,
+      "width": 0.66,
+      "height": 0.05
+    },
+    "items": [
+      {
+        "name": "GUMA ROZP. 356556A",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 7.44,
+        "lineTotal": 7.44,
+        "boundingBox": null
+      },
+      {
+        "name": "TOST PEŁNO 303971C",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 3.18,
+        "lineTotal": 3.18,
+        "boundingBox": null
+      },
+      {
+        "name": "FILET Z KU 339849C",
+        "quantity": 0.555,
+        "unit": null,
+        "unitPrice": 28.98,
+        "lineTotal": 16.08,
+        "boundingBox": null
+      },
+      {
+        "name": "BANAN 34041C",
+        "quantity": 0.414,
+        "unit": null,
+        "unitPrice": 6.99,
+        "lineTotal": 2.89,
+        "boundingBox": null
+      },
+      {
+        "name": "SZYNKA Z P 695097C",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 6.19,
+        "lineTotal": 6.19,
+        "boundingBox": null
+      },
+      {
+        "name": "SER SZWAJC 508926C",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 5.89,
+        "lineTotal": 5.89,
+        "boundingBox": null
+      },
+      {
+        "name": "CEBULA 43444C",
+        "quantity": 0.184,
+        "unit": null,
+        "unitPrice": 4.39,
+        "lineTotal": 0.81,
+        "boundingBox": null
+      },
+      {
+        "name": "DORSZ ATLA 809036C",
+        "quantity": 0.302,
+        "unit": null,
+        "unitPrice": 104.9,
+        "lineTotal": 31.68,
+        "boundingBox": null
+      },
+      {
+        "name": "JOGURT OWC 281650C",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 7.64,
+        "lineTotal": 7.64,
+        "boundingBox": null
+      },
+      {
+        "name": "ZIEMNIAK W 266537C",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 3.89,
+        "lineTotal": 3.89,
+        "boundingBox": null
+      }
+    ]
+  }
+}

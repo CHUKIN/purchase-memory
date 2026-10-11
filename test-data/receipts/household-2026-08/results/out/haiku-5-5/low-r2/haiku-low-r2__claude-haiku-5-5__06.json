@@ -1,0 +1,87 @@
+{
+  "receiptId": "06",
+  "configuration": "haiku-low-r2",
+  "model": "claude-haiku-5-5",
+  "effort": "low",
+  "seconds": 5.41,
+  "stopReason": "end_turn",
+  "requestId": "msg_011CfvGx9Y4cbW84iPaNJ883",
+  "usage": {
+    "inputTokens": 2844,
+    "outputTokens": 1099
+  },
+  "costUsd": 0.000834,
+  "status": "success",
+  "parsed": {
+    "merchant": "Mleczarnia Pousińska",
+    "date": "2025-10-11T14:10:00+02:00",
+    "currency": "PLN",
+    "total": 25.85,
+    "items": [
+      {
+        "name": "Gołąbek mięsny",
+        "quantity": 1,
+        "unitPrice": 12.01,
+        "lineTotal": 12.01
+      },
+      {
+        "name": "Sos pomidorowy",
+        "quantity": 1,
+        "unitPrice": 6.76,
+        "lineTotal": 6.76
+      },
+      {
+        "name": "Zacierkowa",
+        "quantity": 1,
+        "unitPrice": 7.08,
+        "lineTotal": 7.08
+      }
+    ]
+  },
+  "raw": {
+    "rawLines": [
+      "B Gołąbek mięsny",
+      "1 x12,01 12,01B",
+      "B Sos pomidorowy",
+      "1 x6,76 6,76B",
+      "B Zacierkowa",
+      "1 x7,08 7,08B"
+    ],
+    "merchantName": "Mleczarnia Pousińska",
+    "purchasedAt": "2025-10-11T14:10:00+02:00",
+    "currency": "PLN",
+    "receiptTotal": 25.85,
+    "receiptTotalBoundingBox": {
+      "x": 0.66,
+      "y": 0.376,
+      "width": 0.08,
+      "height": 0.03
+    },
+    "items": [
+      {
+        "name": "Gołąbek mięsny",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 12.01,
+        "lineTotal": 12.01,
+        "boundingBox": null
+      },
+      {
+        "name": "Sos pomidorowy",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 6.76,
+        "lineTotal": 6.76,
+        "boundingBox": null
+      },
+      {
+        "name": "Zacierkowa",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 7.08,
+        "lineTotal": 7.08,
+        "boundingBox": null
+      }
+    ]
+  }
+}

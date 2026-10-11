@@ -1,0 +1,119 @@
+{
+  "receiptId": "15",
+  "configuration": "haiku-medium-r2",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "seconds": 6.36,
+  "stopReason": "end_turn",
+  "requestId": "msg_011CfvHXd1iggrkaWYBFxCYN",
+  "usage": {
+    "inputTokens": 2844,
+    "outputTokens": 1448
+  },
+  "costUsd": 0.001008,
+  "status": "success",
+  "parsed": {
+    "merchant": "BILLY'S AMERICAN RESTAURANTS SP Z O.O.",
+    "date": "2025-05-20T18:17:00+02:00",
+    "currency": "PLN",
+    "total": 219.0,
+    "items": [
+      {
+        "name": "AMERICAN SALAD",
+        "quantity": 1,
+        "unitPrice": 49.0,
+        "lineTotal": 49.0
+      },
+      {
+        "name": ",AMERYKAŃSKIE ŻEBERKA",
+        "quantity": 1,
+        "unitPrice": 79.0,
+        "lineTotal": 79.0
+      },
+      {
+        "name": "GRILLOWANY PSTRĄG",
+        "quantity": 1,
+        "unitPrice": 69.0,
+        "lineTotal": 69.0
+      },
+      {
+        "name": "DOMOWA MROŻONA HERBATA",
+        "quantity": 1,
+        "unitPrice": 22.0,
+        "lineTotal": 22.0
+      }
+    ]
+  },
+  "raw": {
+    "rawLines": [
+      "AMERICAN SALAD 1 x49,00 49,00B",
+      ",AMERYKAŃSKIE ŻEBERKA 1 x79,00 79,00B",
+      "GRILLOWANY PSTRĄG 1 x69,00 69,00B",
+      "DOMOWA MROŻONA HERBATA 1 x22,00 22,00A"
+    ],
+    "merchantName": "BILLY'S AMERICAN RESTAURANTS SP Z O.O.",
+    "purchasedAt": "2025-05-20T18:17:00+02:00",
+    "currency": "PLN",
+    "receiptTotal": 219.0,
+    "receiptTotalBoundingBox": {
+      "x": 0.57,
+      "y": 0.78,
+      "width": 0.15,
+      "height": 0.04
+    },
+    "items": [
+      {
+        "name": "AMERICAN SALAD",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 49.0,
+        "lineTotal": 49.0,
+        "boundingBox": {
+          "x": 0.22,
+          "y": 0.55,
+          "width": 0.52,
+          "height": 0.022
+        }
+      },
+      {
+        "name": ",AMERYKAŃSKIE ŻEBERKA",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 79.0,
+        "lineTotal": 79.0,
+        "boundingBox": {
+          "x": 0.22,
+          "y": 0.575,
+          "width": 0.52,
+          "height": 0.022
+        }
+      },
+      {
+        "name": "GRILLOWANY PSTRĄG",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 69.0,
+        "lineTotal": 69.0,
+        "boundingBox": {
+          "x": 0.22,
+          "y": 0.6,
+          "width": 0.52,
+          "height": 0.02
+        }
+      },
+      {
+        "name": "DOMOWA MROŻONA HERBATA",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 22.0,
+        "lineTotal": 22.0,
+        "boundingBox": {
+          "x": 0.22,
+          "y": 0.623,
+          "width": 0.52,
+          "height": 0.023
+        }
+      }
+    ]
+  }
+}

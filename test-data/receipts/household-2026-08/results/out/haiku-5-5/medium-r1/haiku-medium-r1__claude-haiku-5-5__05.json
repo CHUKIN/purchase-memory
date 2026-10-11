@@ -1,0 +1,114 @@
+{
+  "receiptId": "05",
+  "configuration": "haiku-medium-r1",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "seconds": 7.97,
+  "stopReason": "end_turn",
+  "requestId": "msg_011CfvHAA8cYxV8WWMP8jVGe",
+  "usage": {
+    "inputTokens": 2844,
+    "outputTokens": 1737
+  },
+  "costUsd": 0.001153,
+  "status": "success",
+  "parsed": {
+    "merchant": "Restauracja McDonald's",
+    "date": "2026-03-26T14:40:00+01:00",
+    "currency": "PLN",
+    "total": 70.8,
+    "items": [
+      {
+        "name": "Big Arch",
+        "quantity": 1,
+        "unitPrice": 33.0,
+        "lineTotal": 33.0
+      },
+      {
+        "name": "Wrap Chrup Klas",
+        "quantity": 1,
+        "unitPrice": 13.2,
+        "lineTotal": 13.2
+      },
+      {
+        "name": "Wrap Chrup Klas",
+        "quantity": 1,
+        "unitPrice": 13.2,
+        "lineTotal": 13.2
+      },
+      {
+        "name": "Frytki Srednie",
+        "quantity": 1,
+        "unitPrice": 5.7,
+        "lineTotal": 5.7
+      },
+      {
+        "name": "Frytki Srednie",
+        "quantity": 1,
+        "unitPrice": 5.7,
+        "lineTotal": 5.7
+      }
+    ]
+  },
+  "raw": {
+    "rawLines": [
+      "Big Arch",
+      "1 x 33,00 33,00",
+      "Wrap Chrup Klas",
+      "1 x 13,20 13,20",
+      "Wrap Chrup Klas",
+      "1 x 13,20 13,20",
+      "Frytki Srednie",
+      "1 x 5,70 5,70",
+      "Frytki Srednie",
+      "1 x 5,70 5,70"
+    ],
+    "merchantName": "Restauracja McDonald's",
+    "purchasedAt": "2026-03-26T14:40:00+01:00",
+    "currency": "PLN",
+    "receiptTotal": 70.8,
+    "receiptTotalBoundingBox": null,
+    "items": [
+      {
+        "name": "Big Arch",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 33.0,
+        "lineTotal": 33.0,
+        "boundingBox": null
+      },
+      {
+        "name": "Wrap Chrup Klas",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 13.2,
+        "lineTotal": 13.2,
+        "boundingBox": null
+      },
+      {
+        "name": "Wrap Chrup Klas",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 13.2,
+        "lineTotal": 13.2,
+        "boundingBox": null
+      },
+      {
+        "name": "Frytki Srednie",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 5.7,
+        "lineTotal": 5.7,
+        "boundingBox": null
+      },
+      {
+        "name": "Frytki Srednie",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 5.7,
+        "lineTotal": 5.7,
+        "boundingBox": null
+      }
+    ]
+  }
+}

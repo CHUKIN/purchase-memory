@@ -1,0 +1,99 @@
+{
+  "receiptId": "19",
+  "configuration": "haiku-medium-r2",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "seconds": 5.04,
+  "stopReason": "end_turn",
+  "requestId": "msg_011CfvHaVAX14YpFHJpXUxhk",
+  "usage": {
+    "inputTokens": 2844,
+    "outputTokens": 1080
+  },
+  "costUsd": 0.000824,
+  "status": "success",
+  "parsed": {
+    "merchant": "Lviv Croissants",
+    "date": "2023-06-21T19:49:00+02:00",
+    "currency": "PLN",
+    "total": 71.6,
+    "items": [
+      {
+        "name": "Cezar z Kurczakiem",
+        "quantity": 1,
+        "unitPrice": 16.9,
+        "lineTotal": 16.9
+      },
+      {
+        "name": "Śmietankowo-Truskaukowy",
+        "quantity": 1,
+        "unitPrice": 16.9,
+        "lineTotal": 16.9
+      },
+      {
+        "name": "Włoski",
+        "quantity": 1,
+        "unitPrice": 24.9,
+        "lineTotal": 24.9
+      },
+      {
+        "name": "Z Kremem Waniliowym",
+        "quantity": 1,
+        "unitPrice": 12.9,
+        "lineTotal": 12.9
+      }
+    ]
+  },
+  "raw": {
+    "rawLines": [
+      "Cezar z Kurczakiem 1 x16,90 16,90B",
+      "Śmietankowo-Truskaukowy 1 x16,90 16,90B",
+      "Włoski 1 x24,90 24,90B",
+      "Z Kremem Waniliowym 1 x12,90 12,90B"
+    ],
+    "merchantName": "Lviv Croissants",
+    "purchasedAt": "2023-06-21T19:49:00+02:00",
+    "currency": "PLN",
+    "receiptTotal": 71.6,
+    "receiptTotalBoundingBox": {
+      "x": 0.69,
+      "y": 0.68,
+      "width": 0.08,
+      "height": 0.02
+    },
+    "items": [
+      {
+        "name": "Cezar z Kurczakiem",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 16.9,
+        "lineTotal": 16.9,
+        "boundingBox": null
+      },
+      {
+        "name": "Śmietankowo-Truskaukowy",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 16.9,
+        "lineTotal": 16.9,
+        "boundingBox": null
+      },
+      {
+        "name": "Włoski",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 24.9,
+        "lineTotal": 24.9,
+        "boundingBox": null
+      },
+      {
+        "name": "Z Kremem Waniliowym",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 12.9,
+        "lineTotal": 12.9,
+        "boundingBox": null
+      }
+    ]
+  }
+}

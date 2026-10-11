@@ -1,0 +1,191 @@
+{
+  "receiptId": "04",
+  "configuration": "haiku-low-r2",
+  "model": "claude-haiku-5-5",
+  "effort": "low",
+  "seconds": 11.56,
+  "stopReason": "end_turn",
+  "requestId": "msg_011CfvGvoAgYHAQsFDowjFWL",
+  "usage": {
+    "inputTokens": 2844,
+    "outputTokens": 2768
+  },
+  "costUsd": 0.001668,
+  "status": "success",
+  "parsed": {
+    "merchant": "Lidl",
+    "date": "2026-07-17T21:45:36+02:00",
+    "currency": "PLN",
+    "total": 136.99,
+    "items": [
+      {
+        "name": "Fairy Kapsuki Lemon",
+        "quantity": 1,
+        "unitPrice": 84.99,
+        "lineTotal": 84.99
+      },
+      {
+        "name": "OPUST Fairy Kapsuki Lemon",
+        "quantity": null,
+        "unitPrice": null,
+        "lineTotal": -30.0
+      },
+      {
+        "name": "Ogórki grunt. PL luz",
+        "quantity": 1,
+        "unitPrice": 1.6,
+        "lineTotal": 1.6
+      },
+      {
+        "name": "OPUST Ogórki grunt. PL luz",
+        "quantity": null,
+        "unitPrice": null,
+        "lineTotal": -0.2
+      },
+      {
+        "name": "Pure Pärduki z Ind.",
+        "quantity": 1,
+        "unitPrice": 6.49,
+        "lineTotal": 6.49
+      },
+      {
+        "name": "Persil Kapsułki 60pr",
+        "quantity": 1,
+        "unitPrice": 51.99,
+        "lineTotal": 51.99
+      },
+      {
+        "name": "Sał. batauska korzeń",
+        "quantity": 1,
+        "unitPrice": 5.99,
+        "lineTotal": 5.99
+      },
+      {
+        "name": "Lay's Chipsy",
+        "quantity": 1,
+        "unitPrice": 8.29,
+        "lineTotal": 8.29
+      },
+      {
+        "name": "Przysnacki (chipsy w...)",
+        "quantity": 1,
+        "unitPrice": 6.99,
+        "lineTotal": 6.99
+      },
+      {
+        "name": "Reklamówka 50μ",
+        "quantity": 1,
+        "unitPrice": 0.85,
+        "lineTotal": 0.85
+      }
+    ]
+  },
+  "raw": {
+    "rawLines": [
+      "Fairy Kapsuki Lemon X 1 x84,99 84,99A",
+      "-30,00",
+      "OPUST Fairy Kapsuki Lemon A",
+      "Ogórki grunt. PL luz F 1,60C",
+      "-0,20",
+      "OPUST Ogórki grunt. PL luz F",
+      "Pure Pärduki z Ind. F 1 x6,49 6,49C",
+      "Persil Kapsułki 60pr X 1 x51,99 51,99A",
+      "Sał. batauska korzeń F 1 x5,99 5,99A",
+      "Lay's Chipsy F 1 x8,29 8,29A",
+      "Przysnacki(chipsy w... F 1 x6,99 6,99A",
+      "Reklamówka 50μ X 1 x0,85 0,85A"
+    ],
+    "merchantName": "Lidl",
+    "purchasedAt": "2026-07-17T21:45:36+02:00",
+    "currency": "PLN",
+    "receiptTotal": 136.99,
+    "receiptTotalBoundingBox": {
+      "x": 0.6,
+      "y": 0.39,
+      "width": 0.18,
+      "height": 0.03
+    },
+    "items": [
+      {
+        "name": "Fairy Kapsuki Lemon",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 84.99,
+        "lineTotal": 84.99,
+        "boundingBox": null
+      },
+      {
+        "name": "OPUST Fairy Kapsuki Lemon",
+        "quantity": null,
+        "unit": null,
+        "unitPrice": null,
+        "lineTotal": -30.0,
+        "boundingBox": null
+      },
+      {
+        "name": "Ogórki grunt. PL luz",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 1.6,
+        "lineTotal": 1.6,
+        "boundingBox": null
+      },
+      {
+        "name": "OPUST Ogórki grunt. PL luz",
+        "quantity": null,
+        "unit": null,
+        "unitPrice": null,
+        "lineTotal": -0.2,
+        "boundingBox": null
+      },
+      {
+        "name": "Pure Pärduki z Ind.",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 6.49,
+        "lineTotal": 6.49,
+        "boundingBox": null
+      },
+      {
+        "name": "Persil Kapsułki 60pr",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 51.99,
+        "lineTotal": 51.99,
+        "boundingBox": null
+      },
+      {
+        "name": "Sał. batauska korzeń",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 5.99,
+        "lineTotal": 5.99,
+        "boundingBox": null
+      },
+      {
+        "name": "Lay's Chipsy",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 8.29,
+        "lineTotal": 8.29,
+        "boundingBox": null
+      },
+      {
+        "name": "Przysnacki (chipsy w...)",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 6.99,
+        "lineTotal": 6.99,
+        "boundingBox": null
+      },
+      {
+        "name": "Reklamówka 50μ",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 0.85,
+        "lineTotal": 0.85,
+        "boundingBox": null
+      }
+    ]
+  }
+}

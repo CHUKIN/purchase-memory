@@ -1,0 +1,123 @@
+{
+  "receiptId": "19",
+  "configuration": "haiku-medium-r1",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "seconds": 5.75,
+  "stopReason": "end_turn",
+  "requestId": "msg_011CfvHKZptQiWH7UFyDq3qE",
+  "usage": {
+    "inputTokens": 2844,
+    "outputTokens": 1198
+  },
+  "costUsd": 0.000883,
+  "status": "success",
+  "parsed": {
+    "merchant": "Lviv Croissants",
+    "date": "2023-06-21T19:49:00+02:00",
+    "currency": "PLN",
+    "total": 71.6,
+    "items": [
+      {
+        "name": "Cezar z Kurczakiem",
+        "quantity": 1,
+        "unitPrice": 16.9,
+        "lineTotal": 16.9
+      },
+      {
+        "name": "Śmietankowo-Truskaukowy",
+        "quantity": 1,
+        "unitPrice": 16.9,
+        "lineTotal": 16.9
+      },
+      {
+        "name": "Włoski",
+        "quantity": 1,
+        "unitPrice": 24.9,
+        "lineTotal": 24.9
+      },
+      {
+        "name": "Z Kremem Waniliowym",
+        "quantity": 1,
+        "unitPrice": 12.9,
+        "lineTotal": 12.9
+      }
+    ]
+  },
+  "raw": {
+    "rawLines": [
+      "Cezar z Kurczakiem",
+      "1 x16,90 16,90B",
+      "Śmietankowo-Truskaukowy",
+      "1 x16,90 16,90B",
+      "Włoski",
+      "1 x24,90 24,90B",
+      "Z Kremem Waniliowym",
+      "1 x12,90 12,90B"
+    ],
+    "merchantName": "Lviv Croissants",
+    "purchasedAt": "2023-06-21T19:49:00+02:00",
+    "currency": "PLN",
+    "receiptTotal": 71.6,
+    "receiptTotalBoundingBox": {
+      "x": 0.228,
+      "y": 0.684,
+      "width": 0.54,
+      "height": 0.024
+    },
+    "items": [
+      {
+        "name": "Cezar z Kurczakiem",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 16.9,
+        "lineTotal": 16.9,
+        "boundingBox": {
+          "x": 0.228,
+          "y": 0.545,
+          "width": 0.54,
+          "height": 0.022
+        }
+      },
+      {
+        "name": "Śmietankowo-Truskaukowy",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 16.9,
+        "lineTotal": 16.9,
+        "boundingBox": {
+          "x": 0.228,
+          "y": 0.567,
+          "width": 0.54,
+          "height": 0.022
+        }
+      },
+      {
+        "name": "Włoski",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 24.9,
+        "lineTotal": 24.9,
+        "boundingBox": {
+          "x": 0.228,
+          "y": 0.589,
+          "width": 0.54,
+          "height": 0.022
+        }
+      },
+      {
+        "name": "Z Kremem Waniliowym",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 12.9,
+        "lineTotal": 12.9,
+        "boundingBox": {
+          "x": 0.228,
+          "y": 0.611,
+          "width": 0.54,
+          "height": 0.022
+        }
+      }
+    ]
+  }
+}

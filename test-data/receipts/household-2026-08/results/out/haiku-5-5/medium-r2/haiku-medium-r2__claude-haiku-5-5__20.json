@@ -1,0 +1,123 @@
+{
+  "receiptId": "20",
+  "configuration": "haiku-medium-r2",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "seconds": 6.78,
+  "stopReason": "end_turn",
+  "requestId": "msg_011CfvHarfpq6P2u4UDZTMqn",
+  "usage": {
+    "inputTokens": 2844,
+    "outputTokens": 1479
+  },
+  "costUsd": 0.001024,
+  "status": "success",
+  "parsed": {
+    "merchant": "Restauracja McDonald's",
+    "date": "2023-03-25T12:09:00+01:00",
+    "currency": "PLN",
+    "total": 38.1,
+    "items": [
+      {
+        "name": "*BigMac M+",
+        "quantity": 1,
+        "unitPrice": 15.3,
+        "lineTotal": 15.3
+      },
+      {
+        "name": "Chrup TalarkM+",
+        "quantity": 1,
+        "unitPrice": 8.0,
+        "lineTotal": 8.0
+      },
+      {
+        "name": "Woda NieGaz. M+",
+        "quantity": 1,
+        "unitPrice": 7.9,
+        "lineTotal": 7.9
+      },
+      {
+        "name": "*Cheeseburger",
+        "quantity": 1,
+        "unitPrice": 6.9,
+        "lineTotal": 6.9
+      }
+    ]
+  },
+  "raw": {
+    "rawLines": [
+      "*BigMac M+",
+      "1 x15,30 15,30B",
+      "Chrup TalarkM+",
+      "1 x8,00 8,00B",
+      "Woda NieGaz. M+",
+      "1 x7,90 7,90A",
+      "*Cheeseburger",
+      "1 x6,90 6,90A"
+    ],
+    "merchantName": "Restauracja McDonald's",
+    "purchasedAt": "2023-03-25T12:09:00+01:00",
+    "currency": "PLN",
+    "receiptTotal": 38.1,
+    "receiptTotalBoundingBox": {
+      "x": 0.56,
+      "y": 0.48,
+      "width": 0.1,
+      "height": 0.05
+    },
+    "items": [
+      {
+        "name": "*BigMac M+",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 15.3,
+        "lineTotal": 15.3,
+        "boundingBox": {
+          "x": 0.22,
+          "y": 0.285,
+          "width": 0.44,
+          "height": 0.025
+        }
+      },
+      {
+        "name": "Chrup TalarkM+",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 8.0,
+        "lineTotal": 8.0,
+        "boundingBox": {
+          "x": 0.22,
+          "y": 0.31,
+          "width": 0.44,
+          "height": 0.025
+        }
+      },
+      {
+        "name": "Woda NieGaz. M+",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 7.9,
+        "lineTotal": 7.9,
+        "boundingBox": {
+          "x": 0.22,
+          "y": 0.335,
+          "width": 0.44,
+          "height": 0.025
+        }
+      },
+      {
+        "name": "*Cheeseburger",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 6.9,
+        "lineTotal": 6.9,
+        "boundingBox": {
+          "x": 0.22,
+          "y": 0.36,
+          "width": 0.44,
+          "height": 0.025
+        }
+      }
+    ]
+  }
+}

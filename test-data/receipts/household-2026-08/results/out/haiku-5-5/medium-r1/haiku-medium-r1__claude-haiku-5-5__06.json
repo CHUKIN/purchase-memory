@@ -1,0 +1,102 @@
+{
+  "receiptId": "06",
+  "configuration": "haiku-medium-r1",
+  "model": "claude-haiku-5-5",
+  "effort": "medium",
+  "seconds": 7.11,
+  "stopReason": "end_turn",
+  "requestId": "msg_011CfvHAkDyAuM1VQxVHa4zn",
+  "usage": {
+    "inputTokens": 2844,
+    "outputTokens": 1449
+  },
+  "costUsd": 0.001009,
+  "status": "success",
+  "parsed": {
+    "merchant": "Mleczarnia Pousińska",
+    "date": "2025-10-11T14:10:00+02:00",
+    "currency": "PLN",
+    "total": 25.85,
+    "items": [
+      {
+        "name": "Gołąbek mięsny",
+        "quantity": 1,
+        "unitPrice": 12.01,
+        "lineTotal": 12.01
+      },
+      {
+        "name": "Sos pomidorowy",
+        "quantity": 1,
+        "unitPrice": 6.76,
+        "lineTotal": 6.76
+      },
+      {
+        "name": "Zacierkowa",
+        "quantity": 1,
+        "unitPrice": 7.08,
+        "lineTotal": 7.08
+      }
+    ]
+  },
+  "raw": {
+    "rawLines": [
+      "B Gołąbek mięsny",
+      "1 x12,01 12,01B",
+      "B Sos pomidorowy",
+      "1 x6,76 6,76B",
+      "B Zacierkowa",
+      "1 x7,08 7,08B"
+    ],
+    "merchantName": "Mleczarnia Pousińska",
+    "purchasedAt": "2025-10-11T14:10:00+02:00",
+    "currency": "PLN",
+    "receiptTotal": 25.85,
+    "receiptTotalBoundingBox": {
+      "x": 0.65,
+      "y": 0.38,
+      "width": 0.12,
+      "height": 0.02
+    },
+    "items": [
+      {
+        "name": "Gołąbek mięsny",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 12.01,
+        "lineTotal": 12.01,
+        "boundingBox": {
+          "x": 0.3,
+          "y": 0.27,
+          "width": 0.47,
+          "height": 0.02
+        }
+      },
+      {
+        "name": "Sos pomidorowy",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 6.76,
+        "lineTotal": 6.76,
+        "boundingBox": {
+          "x": 0.3,
+          "y": 0.285,
+          "width": 0.47,
+          "height": 0.02
+        }
+      },
+      {
+        "name": "Zacierkowa",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 7.08,
+        "lineTotal": 7.08,
+        "boundingBox": {
+          "x": 0.3,
+          "y": 0.3,
+          "width": 0.47,
+          "height": 0.02
+        }
+      }
+    ]
+  }
+}
