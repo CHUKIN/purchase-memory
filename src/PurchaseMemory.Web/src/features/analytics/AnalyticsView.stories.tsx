@@ -124,6 +124,15 @@ export const SavedFollowUpMobile: Story = {
   }
 };
 export const HistoryFailed: Story = { globals: phone, args: { historyFailed: true } };
+/** An entry saved by an older app version whose plan can no longer be recounted: the list stays, the notice offers asking again or deleting. */
+export const HistoryOutdatedMobile: Story = {
+  globals: phone,
+  args: { history: sampleAnalyticsHistory, activeHistoryId: "history-coffee", problem: { kind: "historyOutdated" } }
+};
+export const HistoryOutdatedEnglish: Story = {
+  globals: { ...desktop, locale: "en" },
+  args: { locale: "en-GB", history: sampleAnalyticsHistory, activeHistoryId: "history-coffee", problem: { kind: "historyOutdated" } }
+};
 export const WithHistoryEnglish: Story = {
   globals: { ...phone, locale: "en" },
   args: { locale: "en-GB", history: sampleAnalyticsHistory, answer: milkQuantityAnswer, saved: savedMilk, activeHistoryId: "history-milk" }

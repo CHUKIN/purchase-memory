@@ -265,7 +265,7 @@ export const helpRu: HelpText = {
       ],
       trouble: [
         "Если покупку уже поменяли в другом окне или на другом устройстве, ваша правка не затрёт чужую: приложение предложит загрузить свежую версию.",
-        "Пункты «Сумма не сходится», «Нет цены» и «Товар не сопоставлен» из «Нужно проверить» открывают правку сразу на нужном месте и пропадают после сохранения."
+        "Пункты «Сумма не сходится», «Нет цены» и «Товар не сопоставлен» из «Нужно проверить» открывают правку сразу на нужном месте и пропадают после сохранения. После «Сохранить исправления» вы вернётесь в «Нужно проверить» с теми же фильтрами."
       ]
     },
     products: {
@@ -349,7 +349,7 @@ export const helpRu: HelpText = {
         "Откройте «Нужно проверить» в боковом меню (на телефоне — с главной, блок «Разделы»).",
         "Предложенную категорию подтвердите одной кнопкой «Подтвердить» или выберите другую.",
         "«Товар не сопоставлен»: под строкой чека показаны до трёх похожих товаров из каталога (название, бренд и категория, если они есть). Если это он — нажмите «Да, это он» рядом с ним. Если такого товара ещё нет — «Создать новый товар». Если это другой товар из каталога — «Другой товар» откроет покупку с поиском товара.",
-        "Остальное открывается по кнопке — «Открыть чек», «Исправить», «Выбрать товар» — сразу на нужном месте. Если сохранить чек, открытый отсюда, вы вернётесь в «Нужно проверить» с теми же фильтрами.",
+        "Остальное открывается по кнопке — «Открыть чек», «Исправить», «Выбрать товар» — сразу на нужном месте. Если сохранить чек или покупку, открытые отсюда, вы вернётесь в «Нужно проверить» с теми же фильтрами.",
         "Чтобы разобрать только часть, выберите категорию в поле «Категория» (например, «Молоко» или «Без категории») и/или тег в поле «Тег» (например, «Для ребёнка»). «Все категории», «Все теги» или «Сбросить фильтр» возвращают всю очередь. Поле «Тег» есть, когда у вас есть хотя бы один тег."
       ],
       see: [
@@ -655,7 +655,7 @@ export const helpEn: HelpText = {
       ],
       trouble: [
         "If the purchase was already changed in another window or device, your edit won't overwrite it: the app offers to load the fresh version.",
-        "“Total does not match”, “Missing price” and “Product not matched” items in “Needs attention” open the editor right at the spot and disappear after saving."
+        "“Total does not match”, “Missing price” and “Product not matched” items in “Needs attention” open the editor right at the spot and disappear after saving. After “Save corrections” you come back to “Needs attention” with the same filters."
       ]
     },
     products: {
@@ -739,7 +739,7 @@ export const helpEn: HelpText = {
         "Open “Needs attention” in the side menu (on a phone — from Home, “Sections”).",
         "Confirm a suggested category with one “Confirm” press, or choose another one.",
         "“Product not matched”: up to three similar catalog products are shown under the receipt line (name, brand and category when known). If it's one of them, press “Yes, this one” next to it. If the product isn't in the catalog yet — “Create a new product”. If it's a different catalog product — “Another product” opens the purchase with the product search.",
-        "Everything else opens with a button — “Open receipt”, “Correct”, “Choose product” — right at the spot. When you save a receipt opened from here, you come back to “Needs attention” with the same filters.",
+        "Everything else opens with a button — “Open receipt”, “Correct”, “Choose product” — right at the spot. When you save a receipt or purchase opened from here, you come back to “Needs attention” with the same filters.",
         "To work through just part of it, pick a category in the “Category” field (for example, “Milk” or “No category”) and/or a tag in the “Tag” field (for example, “For the kids”). “All categories”, “All tags” or “Reset filter” bring back the whole queue. The “Tag” field appears once you have at least one tag."
       ],
       see: [

@@ -1582,7 +1582,7 @@ export const resources = {
         add: "Add",
         rename: "Rename",
         delete: "Delete",
-        deleteConfirm: "Delete «{{name}}»?",
+        deleteConfirm: "Delete “{{name}}”?",
         deleteYes: "Yes, delete",
         deleteHasChildren: "Delete its subcategories first.",
         actionError: "That did not work: {{message}}",

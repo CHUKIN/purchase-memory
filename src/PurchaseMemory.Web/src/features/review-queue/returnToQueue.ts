@@ -1,5 +1,5 @@
 /**
- * A receipt opened from «Нужно проверить» goes back there after saving, with
+ * A receipt or purchase opened from «Нужно проверить» goes back there after saving, with
  * the queue's filters as they were. The address travels in router state
  * (`<Link state>`), so the receipt URL stays clean and shareable; anything
  * that is not a queue address is ignored and the caller keeps its default.

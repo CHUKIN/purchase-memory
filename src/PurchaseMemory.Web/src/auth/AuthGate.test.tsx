@@ -1,5 +1,6 @@
 import { AuthApiError, AuthRetryableFetchError } from "@supabase/supabase-js";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { QueryClient } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiError, getAuthConfig, getCurrentUser } from "../api/client";
 import { AppProviders } from "../app/AppProviders";
@@ -190,8 +191,17 @@ describe("AuthGate", () => {
     expect(auth.refreshSession).toHaveBeenCalledOnce();
     expect(auth.signOut).not.toHaveBeenCalled();
 
-    // A request that left before the refresh, with the old token: no new cycle.
-    act(() => reportSessionRejected(401, "old-jwt"));
+    // Requests that left before the refresh, with the old token: no new cycle,
+    // and only one re-ask however many of them come back.
+    await act(async () => { await new Promise((resolve) => setTimeout(resolve, 0)); });
+    const invalidate = vi.spyOn(QueryClient.prototype, "invalidateQueries");
+    act(() => {
+      reportSessionRejected(401, "old-jwt");
+      reportSessionRejected(401, "old-jwt");
+      reportSessionRejected(401, "old-jwt");
+    });
+    expect(invalidate).toHaveBeenCalledOnce();
+    invalidate.mockRestore();
     expect(auth.refreshSession).toHaveBeenCalledOnce();
     expect(auth.signOut).not.toHaveBeenCalled();
 

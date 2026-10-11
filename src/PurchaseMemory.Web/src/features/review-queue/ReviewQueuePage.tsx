@@ -244,7 +244,7 @@ function ItemCard({ item, categories }: { item: ReviewQueueItem; categories: Pro
 function ItemActions({ item, title }: { item: ReviewQueueItem; title: string }) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  // A receipt opened from here comes back here after saving, with the filters as they were.
+  // A receipt or purchase opened from here comes back here after saving, with the filters as they were.
   const returnState = reviewQueueReturnState(useLocation().search);
   const confirm = useMutation({
     mutationFn: () => classifyProduct(item.productId!, { categoryId: item.categoryId }),
@@ -257,11 +257,11 @@ function ItemActions({ item, title }: { item: ReviewQueueItem; title: string }) 
   const receiptLink = item.receiptId
     ? <Link className={styles.link} to={`/receipts/${item.receiptId}`} state={returnState}>{t("reviewQueue.openReceipt")}</Link>
     : item.purchaseId
-      ? <Link className={styles.link} to={`/purchases/${item.purchaseId}`}>{t("reviewQueue.openPurchase")}</Link>
+      ? <Link className={styles.link} to={`/purchases/${item.purchaseId}`} state={returnState}>{t("reviewQueue.openPurchase")}</Link>
       : null;
   // Saved purchases are fixed in the purchase editor, opened on the flagged spot.
   const editLink = (focus: string | undefined, label: string, labelFor: string, primary = true) => item.purchaseId
-    ? <Link className={primary ? styles.primaryLink : styles.link} to={purchaseEditPath(item.purchaseId, focus)} aria-label={t(labelFor, { name: title })}>{t(label)}</Link>
+    ? <Link className={primary ? styles.primaryLink : styles.link} to={purchaseEditPath(item.purchaseId, focus)} state={returnState} aria-label={t(labelFor, { name: title })}>{t(label)}</Link>
     : null;
   const line = item.itemPosition ?? null;
   const productLink = (label: string) => item.productId

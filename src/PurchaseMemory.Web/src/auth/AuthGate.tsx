@@ -50,11 +50,15 @@ export function AuthGate({ children }: PropsWithChildren) {
    * Recovery from a 401 during use: one refresh + reload at a time, and at
    * most one per `recoveryWindowMs`. If the token it produced is rejected
    * again inside that window, the session ends instead of looping.
+   * `staleRetried`: requests that left with an older token are re-asked once
+   * per recovery; further stale 401s in the window are ignored, so the app
+   * does not keep refetching everything for up to `recoveryWindowMs`.
    */
-  const recoveryRef = useRef<{ inFlight: boolean; refreshedAt: number; freshToken: string | null }>({
+  const recoveryRef = useRef<{ inFlight: boolean; refreshedAt: number; freshToken: string | null; staleRetried: boolean }>({
     inFlight: false,
     refreshedAt: Number.NEGATIVE_INFINITY,
-    freshToken: null
+    freshToken: null,
+    staleRetried: false
   });
   const tRef = useRef(t);
   tRef.current = t;
@@ -228,8 +232,12 @@ export function AuthGate({ children }: PropsWithChildren) {
         if (recovery.inFlight) return;
         if (Date.now() - recovery.refreshedAt < recoveryWindowMs) {
           if (token !== null && token !== recovery.freshToken) {
-            // A request that left before the refresh: just ask again with the new token.
-            void queryClient.invalidateQueries();
+            // A request that left before the refresh: ask again with the new token,
+            // once — one refetch already re-sends every active query.
+            if (!recovery.staleRetried) {
+              recovery.staleRetried = true;
+              void queryClient.invalidateQueries();
+            }
           } else {
             // The fresh token was rejected too: refreshing again would loop.
             void endSession(tRef.current("auth.sessionExpired"));
@@ -242,6 +250,7 @@ export function AuthGate({ children }: PropsWithChildren) {
             const outcome = await refreshStoredSession();
             if (outcome === "refreshed") {
               recovery.refreshedAt = Date.now();
+              recovery.staleRetried = false;
               recovery.freshToken = (await clientRef.current?.auth.getSession())?.data.session?.access_token ?? null;
               await loadUser();
               void queryClient.invalidateQueries();

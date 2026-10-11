@@ -460,7 +460,7 @@ public sealed class ReviewQueueTests
         using var client = host.CreateClientFor(AuthTestHost.Token());
 
         var list = await (await PostMcpAsync(client, """{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}""")).Content.ReadAsStringAsync(Cancel);
-        Assert.Contains("Optional tagIds (ids from list_tags", list, StringComparison.Ordinal);
+        Assert.Contains("tagIds (ids from list_tags", list, StringComparison.Ordinal);
 
         var call = await PostMcpAsync(client,
             """{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"list_review_queue","arguments":{"tagIds":["KID"]}}}"""
@@ -607,6 +607,62 @@ public sealed class ReviewQueueTests
         Assert.Equal(HttpStatusCode.BadRequest, (await client.GetAsync($"/api/review-queue?categoryId={Guid.NewGuid()}", Cancel)).StatusCode);
         Assert.Equal(HttpStatusCode.BadRequest, (await client.GetAsync("/api/review-queue?categoryId=молоко", Cancel)).StatusCode);
         Assert.Equal(HttpStatusCode.BadRequest, (await client.GetAsync($"/api/review-queue?categoryId={Juices}&uncategorized=true", Cancel)).StatusCode);
+    }
+
+    [Fact]
+    public async Task McpListsTheQueueByCategory()
+    {
+        await using var host = new AuthTestHost();
+        await SaveAsync(host.Services, "Lidl", 99m, ("SOK JABLKOWY", 1, 6m, 6m));
+        await SaveAsync(host.Services, "Kiosk", 20m, ("KAWA", 1, 15m, 15m));
+        await using (var scope = host.Services.CreateAsyncScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<PurchaseMemoryDbContext>();
+            (await dbContext.Products.SingleAsync(product => product.CanonicalName == "SOK JABLKOWY", Cancel))
+                .ConfirmCategory(Juices, July1);
+            await dbContext.SaveChangesAsync(Cancel);
+        }
+
+        using var client = host.CreateClientFor(AuthTestHost.Token());
+
+        var list = await (await PostMcpAsync(client, """{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}""")).Content.ReadAsStringAsync(Cancel);
+        Assert.Contains("categoryId (from list_product_categories", list, StringComparison.Ordinal);
+
+        async Task<JsonElement> CallAsync(string arguments)
+        {
+            var response = await PostMcpAsync(client,
+                $$$"""{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"list_review_queue","arguments":{{{arguments}}}}}""");
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            // Streamable HTTP answers as server-sent events: the JSON-RPC message is the `data:` line.
+            var body = await response.Content.ReadAsStringAsync(Cancel);
+            var message = body.Split('\n').Select(line => line.Trim()).LastOrDefault(line => line.StartsWith("data:", StringComparison.Ordinal))?[5..] ?? body;
+            return JsonDocument.Parse(message).RootElement.GetProperty("result").Clone();
+        }
+
+        static IReadOnlyList<string> Titles(JsonElement result) => result.GetProperty("structuredContent").GetProperty("groups")
+            .EnumerateArray()
+            .SelectMany(group => group.GetProperty("items").EnumerateArray())
+            .Select(item => item.GetProperty("title").GetString()!)
+            .Order(StringComparer.Ordinal)
+            .ToList();
+
+        // Drinks (the group) includes Juices; the uncategorized KAWA and its purchase drop out.
+        var drinks = await CallAsync($$"""{"categoryId":"{{ProductCategorySeed.IdFor(33)}}"}""");
+        Assert.Equal(["Lidl"], Titles(drinks));
+
+        var uncategorized = await CallAsync("""{"uncategorized":true}""");
+        Assert.Equal(["KAWA", "Kiosk"], Titles(uncategorized));
+
+        Assert.Equal(["KAWA", "Kiosk", "Lidl"], Titles(await CallAsync("{}")));
+
+        var unknown = Guid.NewGuid();
+        var missing = await CallAsync($$"""{"categoryId":"{{unknown}}"}""");
+        Assert.True(missing.GetProperty("isError").GetBoolean());
+        Assert.Contains($"Category {unknown} was not found.", missing.GetRawText(), StringComparison.Ordinal);
+
+        var both = await CallAsync($$"""{"categoryId":"{{Juices}}","uncategorized":true}""");
+        Assert.True(both.GetProperty("isError").GetBoolean());
+        Assert.Contains("Choose either a category", both.GetRawText(), StringComparison.Ordinal);
     }
 
     private static ReviewQueueGroup Group(ReviewQueueResult queue, ReviewQueueItemKind kind) =>

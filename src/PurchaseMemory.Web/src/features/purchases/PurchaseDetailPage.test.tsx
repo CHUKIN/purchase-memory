@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
-import { MemoryRouter, Route, Routes } from "react-router";
+import { MemoryRouter, Route, Routes, useLocation } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiError, getProductCatalog, getPurchase, updatePurchase } from "../../api/client";
 import type { PurchaseDetail } from "../../api/types";
@@ -46,12 +46,19 @@ const purchase: PurchaseDetail = {
   ]
 };
 
-function renderAt(path: string) {
+function QueueProbe() {
+  const location = useLocation();
+  return <h1>Queue {location.search}</h1>;
+}
+
+function renderAt(path: string, state?: unknown) {
+  const [pathname, search] = path.split("?");
   render(
     <AppProviders locale="ru">
-      <MemoryRouter initialEntries={[path]}>
+      <MemoryRouter initialEntries={[{ pathname, search: search ? `?${search}` : "", state }]}>
         <Routes>
           <Route path="/purchases/:purchaseId" element={<PurchaseDetailPage />} />
+          <Route path="/needs-attention" element={<QueueProbe />} />
         </Routes>
       </MemoryRouter>
     </AppProviders>
@@ -103,6 +110,33 @@ describe("PurchaseDetailPage", () => {
     expect(body.items[1]).toMatchObject({ name: "Ser Gouda 250g", productLink: "auto", productId: null });
     expect(await screen.findByText("Исправления сохранены.")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Сохранить исправления" })).not.toBeInTheDocument();
+  });
+
+  it("returns to «Нужно проверить» with its filters after saving a purchase opened from there", async () => {
+    vi.mocked(updatePurchase).mockResolvedValue({ ...purchase, updatedAt: "2026-07-02T00:00:00Z", issues: [] });
+    renderAt("/purchases/p1?edit=1&focus=total", { returnTo: "/needs-attention?category=milk&tag=kid" });
+
+    fireEvent.click(await screen.findByRole("button", { name: "Сохранить исправления" }));
+    expect(await screen.findByRole("heading", { name: "Queue ?category=milk&tag=kid" })).toBeInTheDocument();
+  });
+
+  it("keeps the way back to the queue when editing starts from the purchase view, and stays on cancel", async () => {
+    vi.mocked(updatePurchase).mockResolvedValue({ ...purchase, updatedAt: "2026-07-02T00:00:00Z", issues: [] });
+    renderAt("/purchases/p1", { returnTo: "/needs-attention" });
+
+    fireEvent.click(await screen.findByRole("button", { name: "Исправить" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Отменить" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Исправить" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Сохранить исправления" }));
+    expect(await screen.findByRole("heading", { name: /^Queue/ })).toBeInTheDocument();
+  });
+
+  it("ignores a return address that is not the review queue", async () => {
+    vi.mocked(updatePurchase).mockResolvedValue({ ...purchase, updatedAt: "2026-07-02T00:00:00Z", issues: [] });
+    renderAt("/purchases/p1?edit=1", { returnTo: "https://example.com/needs-attention" });
+
+    fireEvent.click(await screen.findByRole("button", { name: "Сохранить исправления" }));
+    expect(await screen.findByText("Исправления сохранены.")).toBeInTheDocument();
   });
 
   it("opens the product choice for a pending line and links the chosen candidate", async () => {

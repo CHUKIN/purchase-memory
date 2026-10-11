@@ -110,22 +110,27 @@
   outline-offset: 2px;
 }
 
-/* «Все / Нужно проверить / Проверено» on one row at 375 px: the segments share the width, text centred. */
+/*
+ * «Все / Нужно проверить / Проверено» on one row at 375 px: the segments share the
+ * width and a label never breaks inside its pill. If the text is still too wide
+ * (larger system text, longer translation) a whole segment moves to the next
+ * row instead of wrapping mid-label.
+ */
 @media (max-width: 40em) {
   .segments {
-    flex-wrap: nowrap;
+    gap: 0.35rem;
   }
 
   .segment {
     flex: 1 1 auto;
-    min-width: 0;
   }
 
   .segment span {
     justify-content: center;
     width: 100%;
-    padding-inline: 0.6rem;
+    padding-inline: 0.55rem;
     text-align: center;
+    white-space: nowrap;
   }
 }
 

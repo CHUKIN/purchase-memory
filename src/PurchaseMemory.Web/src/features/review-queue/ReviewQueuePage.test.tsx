@@ -249,6 +249,20 @@ describe("ReviewQueuePage", () => {
     expect(screen.getByTestId("state")).toHaveTextContent(JSON.stringify({ returnTo: "/needs-attention?tag=kid" }));
   });
 
+  it("opens the purchase editor with the way back to the queue and its filters", async () => {
+    vi.mocked(listTags).mockResolvedValue(householdTags);
+    vi.mocked(getReviewQueue).mockResolvedValue({
+      totalCount: 1,
+      groups: [{ kind: "totalMismatch", totalCount: 1, items: [item({ kind: "totalMismatch", id: "totalMismatch:p1", title: "Żabka", purchaseId: "p1", receiptTotal: 20, linesTotal: 15 })] }]
+    });
+    renderPage("/needs-attention?tag=kid");
+
+    const card = await screen.findByRole("article", { name: "Żabka" });
+    fireEvent.click(within(card).getByRole("link", { name: "Исправить покупку «Żabka»" }));
+    expect(screen.getByTestId("pathname")).toHaveTextContent("/purchases/p1");
+    expect(screen.getByTestId("state")).toHaveTextContent(JSON.stringify({ returnTo: "/needs-attention?tag=kid" }));
+  });
+
   describe("suggested products", () => {
     beforeEach(() => {
       vi.mocked(listCategories).mockResolvedValue(sampleCategories);

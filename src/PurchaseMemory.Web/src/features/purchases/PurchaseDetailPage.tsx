@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, Pencil, Plus, Trash2 } from "lucide-react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate, useParams, useSearchParams } from "react-router";
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router";
 import { ApiError, getProductCatalog, getPurchase, updatePurchase } from "../../api/client";
 import type {
   BoundingBox,
@@ -18,6 +18,7 @@ import { issueCopy, issueKey, moneyComparisonTolerance } from "../issues/issueTe
 import { discountLinks, isDiscount } from "../receipts/discountLines";
 import { ReceiptDiscountLine } from "../receipts/ReceiptDiscountLine";
 import { reviewQueueQueryKey } from "../review-queue/reviewQueueQueries";
+import { reviewQueueReturnPath } from "../review-queue/returnToQueue";
 import { PurchaseLineImpressions, usePurchaseImpressions } from "../impressions/ImpressionSections";
 import { formatMoney } from "./money";
 import { HelpLink } from "../help/HelpLink";
@@ -52,8 +53,19 @@ export function PurchaseDetailPage() {
   const photoUrl = query.data?.sourceReceiptId ? `/api/receipts/${query.data.sourceReceiptId}/image` : null;
   const photo = useAuthorizedImageUrl(photoUrl);
 
-  const startEditing = () => { setSavedNotice(false); setSearchParameters({ edit: "1" }); };
-  const stopEditing = (saved: boolean) => { setSavedNotice(saved); setSearchParameters({}); };
+  // Opened from «Нужно проверить»: saving returns there (filters kept), like a
+  // receipt does. The router state is carried across the edit/view switches so
+  // «Открыть покупку» → «Исправить» → «Сохранить» still goes back to the queue.
+  const location = useLocation();
+  const navigate = useNavigate();
+  const queueReturnPath = reviewQueueReturnPath(location.state);
+  const keepState = { state: location.state as unknown };
+  const startEditing = () => { setSavedNotice(false); setSearchParameters({ edit: "1" }, keepState); };
+  const stopEditing = (saved: boolean) => {
+    if (saved && queueReturnPath) { navigate(queueReturnPath); return; }
+    setSavedNotice(saved);
+    setSearchParameters({}, keepState);
+  };
 
   if (query.isPending) {
     return <div className={styles.page}><div role="status" aria-label={t("purchaseEdit.loading")}><SkeletonCard /></div></div>;
