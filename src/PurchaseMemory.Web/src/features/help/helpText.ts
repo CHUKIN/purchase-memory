@@ -197,7 +197,7 @@ export const helpRu: HelpText = {
       title: "Проверка и сохранение",
       summary: "Перед сохранением вы проверяете черновик: магазин, дату, итог и строки. Сомнительные места приложение показывает само.",
       steps: [
-        "Если есть неточности, открывается «Нужно уточнить»: карточка на каждую проблему с фрагментом фото чека. Исправьте значение или нажмите «Взять сумму строк».",
+        "Если есть неточности, открывается «Нужно уточнить»: карточка на каждую проблему с фрагментом фото чека (если место строки на фото не найдено — со всем фото). Исправьте значение или нажмите «Взять сумму строк».",
         "Если нужно поправить что-то ещё, нажмите «Открыть полный редактор»: там можно менять любые поля, добавлять позиции («Добавить позицию») и удалять лишние кнопкой с корзиной.",
         "Нажмите «Сохранить покупку». После сохранения откроется история покупок."
       ],
@@ -587,7 +587,7 @@ export const helpEn: HelpText = {
       title: "Review and save",
       summary: "Before saving you check the draft: store, date, total and lines. The app points out doubtful places itself.",
       steps: [
-        "If there are problems, “Needs a closer look” opens: one card per problem with a crop of the receipt photo. Fix the value or press “Use the line sum”.",
+        "If there are problems, “Needs a closer look” opens: one card per problem with a crop of the receipt photo (or the whole photo when the line could not be located). Fix the value or press “Use the line sum”.",
         "To change anything else, press “Open full editor”: every field can be edited there, lines added with “Add item” and removed with the bin button.",
         "Press “Save purchase”. Purchase history opens after saving."
       ],

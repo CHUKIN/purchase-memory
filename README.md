@@ -62,12 +62,17 @@ Backend выбирает полный способ распознавания ч
 }
 ```
 
+В продакшне (`appsettings.json`) основной путь — `anthropic` (Claude Haiku 5.5,
+ключ `ANTHROPIC_API_KEY`), запасные — `openai`, затем `ollama`.
+
+- `anthropic` — общий receipt workflow поверх Claude Messages API (официальный SDK `Anthropic`);
 - `apple` — Vision OCR → Translation → Foundation Models → C#-валидация;
 - `ollama` — локальный Ollama pipeline; его можно сделать основным, поменяв только `Pipeline`;
 - `openai` — общий receipt workflow поверх OpenAI Responses API;
 - fallback-пути вызываются по порядку, если предыдущая реализация корректно отклонила результат распознавания.
 
-Prompt, JSON Schema, parser и C#-валидация общие для OpenAI и Ollama.
+Prompt, JSON Schema, parser и C#-валидация общие для Claude, OpenAI и Ollama
+(для Claude из схемы убираются неподдерживаемые ограничения, parser проверяет их сам).
 Провайдеры отвечают только за свой транспорт. Существующий
 `IReceiptRecognitionPipeline` остаётся совместимым фасадом для worker и router.
 

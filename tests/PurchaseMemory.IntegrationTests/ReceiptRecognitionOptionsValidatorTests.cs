@@ -9,6 +9,7 @@ public sealed class ReceiptRecognitionOptionsValidatorTests
         new([new ReceiptRecognitionPipelineDescriptor("apple"),
              new ReceiptRecognitionPipelineDescriptor("ollama"),
              new ReceiptRecognitionPipelineDescriptor("openai"),
+             new ReceiptRecognitionPipelineDescriptor(AnthropicStructuredVisionProvider.ProviderId),
              new ReceiptRecognitionPipelineDescriptor(AppleGeometryOllamaExtractor.PipelineId)]);
 
     [Fact]
@@ -58,6 +59,51 @@ public sealed class ReceiptRecognitionOptionsValidatorTests
         Assert.Contains(result.Failures, failure => failure.Contains("OpenAiModel", StringComparison.Ordinal));
         Assert.Contains(result.Failures, failure => failure.Contains("OpenAiRequestTimeoutSeconds", StringComparison.Ordinal));
         Assert.Contains(result.Failures, failure => failure.Contains("OpenAiMaximumOutputTokens", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void AnthropicRouteRequiresModelAndValidProviderLimits()
+    {
+        var options = ValidOptions();
+        options.Pipeline = "anthropic";
+        options.FallbackPipelines = ["openai"];
+        options.OpenAiModel = "gpt-6-sol";
+        options.AnthropicModel = " ";
+        options.AnthropicRequestTimeoutSeconds = 0;
+        options.AnthropicMaximumOutputTokens = 0;
+        options.AnthropicMaximumRetries = -1;
+
+        var result = _validator.Validate(null, options);
+
+        Assert.True(result.Failed);
+        Assert.Contains(result.Failures, failure => failure.Contains("AnthropicModel", StringComparison.Ordinal));
+        Assert.Contains(result.Failures, failure => failure.Contains("AnthropicRequestTimeoutSeconds", StringComparison.Ordinal));
+        Assert.Contains(result.Failures, failure => failure.Contains("AnthropicMaximumOutputTokens", StringComparison.Ordinal));
+        Assert.Contains(result.Failures, failure => failure.Contains("AnthropicMaximumRetries", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void AnthropicTimeoutMustCoverTheOutputBudget()
+    {
+        var options = ValidOptions();
+        options.Pipeline = "anthropic";
+        options.AnthropicModel = "claude-haiku-5-5";
+        options.AnthropicMaximumOutputTokens = 16_384;
+        options.AnthropicRequestTimeoutSeconds = 30;
+
+        var result = _validator.Validate(null, options);
+
+        Assert.True(result.Failed);
+        Assert.Contains(result.Failures, failure => failure.Contains("too short for AnthropicMaximumOutputTokens", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void AnthropicModelIsNotRequiredWhenAnthropicIsNotInTheRoute()
+    {
+        var options = ValidOptions();
+        options.AnthropicModel = "";
+
+        Assert.True(_validator.Validate(null, options).Succeeded);
     }
 
     [Fact]

@@ -36,8 +36,9 @@
 | `Auth__SupabasePublishableKey` | `sb_publishable_K8AVpYIpXz4iwpHOG1bTZA_xfxvtKDd` |
 
 Кнопки входа берутся из `appsettings.json` (`email`, `google`). Распознавание
-(`openai`, модель `gpt-6-sol`), подсказки категорий и вопросы в «Аналитике» тоже
-уже настроены в `appsettings.json`, вписывать их не нужно.
+(`anthropic`, модель `claude-haiku-5-5`; запасной путь `openai`, модель `gpt-6-sol`),
+подсказки категорий и вопросы в «Аналитике» тоже уже настроены в
+`appsettings.json`, вписывать их не нужно.
 
 **Никогда не задавать на Render:** `Auth__DevelopmentBypass` (вне Development
 приложение с ним не запустится), `ReceiptRecognition__BaseAddress` и прочие
@@ -47,13 +48,14 @@
 
 | Переменная | Откуда |
 |---|---|
+| `ANTHROPIC_API_KEY` | console.anthropic.com → API keys (основное распознавание; без него распознаёт OpenAI) |
 | `OPENAI_API_KEY` | platform.openai.com → API keys |
 | `ConnectionStrings__Postgres` | Supabase → Connect → **Session pooler** |
 | `Storage__S3__AccessKeyId` | Supabase → Storage → S3 access keys |
 | `Storage__S3__SecretAccessKey` | там же, показывается один раз |
 
-Имена совпадают с тем, что читает код: ключ OpenAI — именно переменная
-`OPENAI_API_KEY` (не `OpenAI__ApiKey`).
+Имена совпадают с тем, что читает код: ключи — именно переменные
+`ANTHROPIC_API_KEY` и `OPENAI_API_KEY` (не `OpenAI__ApiKey`).
 
 ## Почему `ReverseProxy__TrustForwardedHeaders=true`
 
@@ -114,8 +116,9 @@ Render принимает HTTPS и передаёт запрос в контей
 полный стек ошибки соединения. Теперь пути проверяются по порядку и проверка
 останавливается на первом доступном: при настроенном ключе OpenAI до Ollama дело
 не доходит. Служебные строки фабрики HTTP-клиентов (`System.Net.Http.HttpClient`)
-пишутся только с уровня Warning. Экран при этом не меняется: с ключом OpenAI он
-показывает «Распознавание доступно» и режим `openai · fallback: ollama`.
+пишутся только с уровня Warning. С ключом Anthropic экран показывает
+«Распознавание доступно» и режим `anthropic · fallback: openai, ollama`; без него —
+`openai fallback`.
 
 ## Локальный запуск через `compose.yaml`: база в Docker-томе, не в `./data`
 

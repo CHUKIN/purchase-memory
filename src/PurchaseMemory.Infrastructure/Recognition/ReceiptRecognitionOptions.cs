@@ -21,6 +21,13 @@ public enum OpenAiReasoningEffort
     High
 }
 
+public enum AnthropicEffort
+{
+    Low,
+    Medium,
+    High
+}
+
 public sealed class ReceiptRecognitionOptions
 {
     public const string SectionName = "ReceiptRecognition";
@@ -116,4 +123,37 @@ public sealed class ReceiptRecognitionOptions
     public int OpenAiMaximumOutputTokens { get; set; } = 16_384;
 
     public OpenAiReasoningEffort OpenAiReasoningEffort { get; set; } = OpenAiReasoningEffort.Low;
+
+    /// <summary>
+    /// Claude model for the <c>anthropic</c> pipeline. Empty by default like
+    /// <see cref="OpenAiModel"/>; appsettings.json names <c>claude-haiku-5-5</c>,
+    /// the model measured in РЕЗУЛЬТАТЫ_HAIKU_5_5_РАСПОЗНАВАНИЕ.md.
+    /// </summary>
+    public string AnthropicModel { get; set; } = "";
+
+    /// <summary>
+    /// Haiku 5.5 defaults to <c>medium</c> when effort is omitted; <c>low</c>
+    /// matched it on the labelled receipts at lower cost and latency, so the
+    /// level is always sent explicitly.
+    /// </summary>
+    public AnthropicEffort AnthropicEffort { get; set; } = AnthropicEffort.Low;
+
+    /// <summary>
+    /// Per-attempt timeout for one Claude call. Measured Haiku 5.5 latency is
+    /// 7–20 s per receipt (the 27-line receipt produced ~5k output tokens in
+    /// ~16 s); 120 s covers the full 16384-token budget at that speed with
+    /// room to spare, yet keeps a hung call from delaying the OpenAI fallback
+    /// for minutes.
+    /// </summary>
+    public int AnthropicRequestTimeoutSeconds { get; set; } = 120;
+
+    /// <summary>Output ceiling, the same as <see cref="OpenAiMaximumOutputTokens"/>.</summary>
+    public int AnthropicMaximumOutputTokens { get; set; } = 16_384;
+
+    /// <summary>
+    /// SDK retries for 408/409/429/5xx and connection errors before the router
+    /// moves on to the fallback pipeline. One retry absorbs a short blip; more
+    /// would only delay the fallback (a timeout is retried too).
+    /// </summary>
+    public int AnthropicMaximumRetries { get; set; } = 1;
 }

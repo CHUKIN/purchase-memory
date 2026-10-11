@@ -15,6 +15,12 @@ if (args.Length > 0 && string.Equals(args[0], "cloud", StringComparison.OrdinalI
     return await CloudBenchmark.RunAsync(repositoryRoot, args[1..]);
 }
 
+if (args.Length > 0 && string.Equals(args[0], "anthropic", StringComparison.OrdinalIgnoreCase))
+{
+    // Photo → Claude through the production provider, with a spend ledger; see AnthropicBenchmark.
+    return await AnthropicBenchmark.RunAsync(repositoryRoot, args[1..]);
+}
+
 if (args.Length > 0 && string.Equals(args[0], "openai", StringComparison.OrdinalIgnoreCase))
 {
     // Photo → OpenAI vision models on the household set; see OpenAiBenchmark.

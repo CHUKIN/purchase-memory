@@ -8,6 +8,10 @@ public sealed class ReceiptRecognitionOptionsValidator : IValidateOptions<Receip
     // against the output budget (measured gpt-6-sol: ~100 tokens/s).
     private const int MinimumOpenAiTokensPerSecond = 100;
 
+    // The same check for Claude (Haiku 5.5 measured at ~300 output tokens/s;
+    // 150 keeps a 2x margin).
+    private const int MinimumAnthropicTokensPerSecond = 150;
+
     private readonly HashSet<string> _knownPipelines;
 
     public ReceiptRecognitionOptionsValidator(
@@ -83,6 +87,34 @@ public sealed class ReceiptRecognitionOptionsValidator : IValidateOptions<Receip
             errors.Add(
                 $"OpenAiRequestTimeoutSeconds is too short for OpenAiMaximumOutputTokens: allow at least "
                 + $"1 second per {MinimumOpenAiTokensPerSecond} output tokens.");
+        }
+
+        if (UsesPipeline(options, AnthropicStructuredVisionProvider.ProviderId))
+        {
+            RequireModel(options.AnthropicModel, "AnthropicModel", errors);
+        }
+
+        if (options.AnthropicRequestTimeoutSeconds is <= 0 or > 600)
+        {
+            errors.Add("AnthropicRequestTimeoutSeconds must be between 1 and 600.");
+        }
+
+        if (options.AnthropicMaximumRetries is < 0 or > 5)
+        {
+            errors.Add("AnthropicMaximumRetries must be between 0 and 5.");
+        }
+
+        if (options.AnthropicMaximumOutputTokens is <= 0 or > 64_000)
+        {
+            // Above ~64K a non-streaming call risks HTTP timeouts; receipts need ~2-5K.
+            errors.Add("AnthropicMaximumOutputTokens must be between 1 and 64000.");
+        }
+        else if (options.AnthropicRequestTimeoutSeconds > 0
+            && options.AnthropicMaximumOutputTokens / options.AnthropicRequestTimeoutSeconds > MinimumAnthropicTokensPerSecond)
+        {
+            errors.Add(
+                $"AnthropicRequestTimeoutSeconds is too short for AnthropicMaximumOutputTokens: allow at least "
+                + $"1 second per {MinimumAnthropicTokensPerSecond} output tokens.");
         }
 
         if (UsesPipeline(options, AppleGeometryOllamaExtractor.PipelineId))

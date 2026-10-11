@@ -19,6 +19,7 @@
     <PackageReference Include="SkiaSharp" />
     <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" />
     <PackageReference Include="OpenAI" />
+    <PackageReference Include="Anthropic" />
     <!-- Keep the native SQLite engine patched even if EF Core's transitive floor lags behind. -->
     <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" />
   </ItemGroup>

@@ -10,7 +10,7 @@ Accepted inputs (each argument is a directory; subdirectories are not searched):
   * the legacy `results/out/NN_A.json` / `NN_B.json` files (snake_case keys),
     labelled `legacy-<A|B>` unless --label is given.
 
-Usage: score_items.py [--label NAME] DIR [DIR ...] [--detail]
+Usage: score_items.py [--label NAME] DIR [DIR ...] [--detail] [--strict]
 Prints a per-receipt and per-model table. Writes nothing.
 
 Matching rules
@@ -22,7 +22,9 @@ Matching rules
     carries a discount, the net price (gross + discount) is accepted as well;
   * a discount is recognised when the model returned a negative line of that
     amount, or returned the discounted item at its net price;
-  * predicted negative lines matched to discounts are not counted as extra.
+  * predicted negative lines matched to discounts are not counted as extra;
+  * --strict: the net price is NOT accepted when that discount was also returned
+    as its own negative line (otherwise a double-counted discount scores as correct).
 """
 import ast
 import difflib
@@ -35,6 +37,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 RESULTS = ROOT / "test-data" / "receipts" / "household-2026-08" / "results"
 TOLERANCE = 0.01 + 1e-9
 NAME_THRESHOLD = 0.6
+STRICT = False
 
 
 def load_fold():
@@ -134,7 +137,8 @@ def score_receipt(gt, parsed):
     # Items: best name match, preferring a candidate with the right price.
     for g in gt["items"]:
         expected = g["lineTotal"]
-        discounts = [d for d in net_by_item.get(g["name"], []) if not d.get("_claimed")]
+        discounts = [d for d in net_by_item.get(g["name"], [])
+                     if not d.get("_claimed") and not (STRICT and d.get("_ok"))]
         net = round(expected + sum(d["amount"] for d in discounts), 2) if discounts else None
         candidates = [(similar(g["name"], p["name"]), i, p) for i, p in preds if i not in used]
         candidates = [c for c in candidates if c[0] >= NAME_THRESHOLD]
@@ -174,9 +178,11 @@ def score_receipt(gt, parsed):
 
 
 def main(argv):
+    global STRICT
     label = None
     detail = "--detail" in argv
-    argv = [a for a in argv if a != "--detail"]
+    STRICT = "--strict" in argv
+    argv = [a for a in argv if a not in ("--detail", "--strict")]
     if len(argv) >= 2 and argv[0] == "--label":
         label, argv = argv[1], argv[2:]
     if not argv:

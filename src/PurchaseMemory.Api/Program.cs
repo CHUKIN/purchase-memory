@@ -87,6 +87,8 @@ builder.Services.AddSingleton(new ReceiptRecognitionPipelineDescriptor("ollama")
 builder.Services.AddSingleton(new ReceiptRecognitionPipelineDescriptor(
     OpenAiStructuredVisionProvider.ProviderId));
 builder.Services.AddSingleton(new ReceiptRecognitionPipelineDescriptor(
+    AnthropicStructuredVisionProvider.ProviderId));
+builder.Services.AddSingleton(new ReceiptRecognitionPipelineDescriptor(
     AppleGeometryOllamaExtractor.PipelineId));
 builder.Services.AddSingleton<
     Microsoft.Extensions.Options.IValidateOptions<ReceiptRecognitionOptions>,
@@ -114,6 +116,9 @@ builder.Services.AddScoped<IStructuredVisionProvider>(serviceProvider =>
 builder.Services.AddSingleton<OpenAiStructuredVisionProvider>();
 builder.Services.AddSingleton<IStructuredVisionProvider>(serviceProvider =>
     serviceProvider.GetRequiredService<OpenAiStructuredVisionProvider>());
+builder.Services.AddSingleton<AnthropicStructuredVisionProvider>();
+builder.Services.AddSingleton<IStructuredVisionProvider>(serviceProvider =>
+    serviceProvider.GetRequiredService<AnthropicStructuredVisionProvider>());
 builder.Services.AddScoped<IStructuredVisionProviderResolver, StructuredVisionProviderResolver>();
 builder.Services.AddScoped<IReceiptAnalysisWorkflow, ReceiptAnalysisWorkflow>();
 // "Apple reads, Ollama structures": its own HTTP client with its own timeout,
@@ -135,6 +140,7 @@ builder.Services.AddScoped<IReceiptRowsAnalysisWorkflow, ReceiptRowsAnalysisWork
 builder.Services.AddScoped<AppleReceiptExtractor>();
 builder.Services.AddScoped<OllamaReceiptExtractor>();
 builder.Services.AddScoped<OpenAiReceiptExtractor>();
+builder.Services.AddScoped<AnthropicReceiptExtractor>();
 builder.Services.AddScoped<AppleGeometryOllamaExtractor>();
 builder.Services.AddScoped<IReceiptRecognitionPipeline>(serviceProvider =>
     serviceProvider.GetRequiredService<AppleReceiptExtractor>());
@@ -142,6 +148,8 @@ builder.Services.AddScoped<IReceiptRecognitionPipeline>(serviceProvider =>
     serviceProvider.GetRequiredService<OllamaReceiptExtractor>());
 builder.Services.AddScoped<IReceiptRecognitionPipeline>(serviceProvider =>
     serviceProvider.GetRequiredService<OpenAiReceiptExtractor>());
+builder.Services.AddScoped<IReceiptRecognitionPipeline>(serviceProvider =>
+    serviceProvider.GetRequiredService<AnthropicReceiptExtractor>());
 builder.Services.AddScoped<IReceiptRecognitionPipeline>(serviceProvider =>
     serviceProvider.GetRequiredService<AppleGeometryOllamaExtractor>());
 builder.Services.AddScoped<ReceiptExtractorRouter>();
