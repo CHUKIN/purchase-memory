@@ -8,7 +8,7 @@ import { CapturePage } from "./CapturePage";
 
 vi.mock("../../api/client", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../../api/client")>();
-  return { ApiError: actual.ApiError, uploadReceipt: vi.fn(), processReceipt: vi.fn(), getReceipt: vi.fn(), reviewReceipt: vi.fn(), saveReceipt: vi.fn() };
+  return { ApiError: actual.ApiError, uploadReceipt: vi.fn(), listMyUnsavedReceipts: vi.fn(async () => []), processReceipt: vi.fn(), getReceipt: vi.fn(), reviewReceipt: vi.fn(), saveReceipt: vi.fn() };
 });
 
 const receipt = (id: string, status: ReceiptView["status"] = "queued"): ReceiptView => ({

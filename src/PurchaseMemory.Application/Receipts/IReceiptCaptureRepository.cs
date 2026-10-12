@@ -18,6 +18,13 @@ public interface IReceiptCaptureRepository
         int limit,
         CancellationToken cancellationToken);
 
+    /// <summary>Receipts this user uploaded since <paramref name="since"/> that are not saved yet, newest first.</summary>
+    Task<IReadOnlyList<ReceiptCapture>> ListUnsavedUploadedByAsync(
+        string uploaderUserId,
+        DateTimeOffset since,
+        int limit,
+        CancellationToken cancellationToken);
+
     Task<IReadOnlyList<ReceiptCapture>> ListPendingAsync(CancellationToken cancellationToken);
 
     Task SaveChangesAsync(CancellationToken cancellationToken);

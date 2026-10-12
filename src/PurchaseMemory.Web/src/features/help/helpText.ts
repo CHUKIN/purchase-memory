@@ -166,13 +166,18 @@ export const helpRu: HelpText = {
         "У каждого фото свой статус: «В очереди», «Загружаем…», «Загружен, распознаётся», «Уже был загружен» или «Не удалось загрузить».",
         "«Не загружено» — загрузка остановилась раньше, чем дошла до этого фото (например, из-за лимита). Такие фото отправит кнопка «Загрузить оставшиеся».",
         "Каждый чек распознаётся отдельно — 10 фото означают 10 распознаваний. Когда чек готов, появляется уведомление, как при обычной загрузке.",
-        "Загруженные чеки видны на главной в блоке «Чеки в работе»."
+        "Загруженные чеки видны на главной в блоке «Чеки в работе».",
+        "Внизу экрана загрузки — «Недавние загрузки»: ваши чеки за последние сутки, которые ещё не сохранены, со статусом «Распознаётся», «Готов», «Нужно проверить», «Ошибка» или «Загружен». Список приходит с сервера, поэтому его видно и после перезагрузки страницы."
       ],
       trouble: [
         "«Не удалось загрузить» — нажмите «Повторить» у этого фото. Остальные фото это не останавливает.",
         "«Лимит загрузок» — за короткое время загружено слишком много чеков. Загрузка останавливается; когда пройдёт указанное время, нажмите «Загрузить оставшиеся».",
         "«Уже был загружен» — такое же фото уже есть, новый чек не создан. Его можно открыть кнопкой «Открыть чек».",
-        "Каждое фото — до 15 МБ, JPEG, PNG или WebP."
+        "Каждое фото — до 15 МБ, JPEG, PNG или WebP.",
+        "Страница перезагрузилась, приложение закрылось или вы ушли с экрана посреди загрузки — снова откройте «Добавить чек» (на телефоне — «Сфотографировать чек» на главной). Появится «Загрузка прервалась»: «Продолжить загрузку» отправит оставшиеся фото, «Не продолжать» забудет их. Пока этот блок на экране, новые фото выбрать нельзя — сначала решите, что делать с прерванной загрузкой.",
+        "«Уже был загружен» после продолжения означает, что фото дошло до сервера, но ответ потерялся при перезагрузке. Второй чек не создаётся — откройте существующий кнопкой «Открыть чек».",
+        "Если устройство не смогло сохранить какие-то фото (не хватило места или это приватный режим браузера), они будут перечислены по имени — выберите их в галерее заново. Если устройство не сохранило ни одного фото, нажмите «Понятно» и выберите фото заново.",
+        "Фото, которое сервер отклонил (например, неподдерживаемый формат или слишком большой файл), после перезагрузки не предлагается снова — выберите другое фото."
       ]
     },
     recognition: {
@@ -561,13 +566,18 @@ export const helpEn: HelpText = {
         "Every photo has its own status: “Waiting”, “Uploading…”, “Uploaded, recognizing”, “Already uploaded” or “Upload failed”.",
         "“Not uploaded” — the upload stopped before it reached this photo (for example, because of the limit). “Upload the rest” sends these photos.",
         "Every receipt is recognized separately — 10 photos mean 10 recognitions. A notification appears when a receipt is ready, just like a normal upload.",
-        "Uploaded receipts show up on Home under “Receipts in progress”."
+        "Uploaded receipts show up on Home under “Receipts in progress”.",
+        "At the bottom of the upload screen, “Recent uploads” lists your receipts from the last 24 hours that are not saved yet, with their status: “Recognizing”, “Ready”, “Needs attention”, “Failed” or “Uploaded”. The list comes from the server, so it is still there after the page reloads."
       ],
       trouble: [
         "“Upload failed” — press “Retry” next to that photo. The other photos are not affected.",
         "“Upload limit” — too many receipts in a short time. The upload stops; once the stated time has passed, press “Upload the rest”.",
         "“Already uploaded” — the same photo already exists and no new receipt was created. Open it with “Open receipt”.",
-        "Each photo can be up to 15 MB, JPEG, PNG or WebP."
+        "Each photo can be up to 15 MB, JPEG, PNG or WebP.",
+        "The page reloaded, the app was closed or you left the screen in the middle of an upload — open “Add receipt” again (on a phone — “Photograph a receipt” on Home). “The upload was interrupted” appears: “Continue upload” sends the remaining photos, “Don't continue” forgets them. While it is on screen you cannot choose new photos — first decide what to do with the interrupted upload.",
+        "“Already uploaded” after continuing means the photo had reached the server but its answer was lost in the reload. No second receipt is created — open the existing one with “Open receipt”.",
+        "If the device could not keep some photos (not enough space, or a private browser window), they are listed by name — pick them again in the gallery. If the device kept none of the photos, press “Got it” and choose the photos again.",
+        "A photo the server refused (for example, an unsupported format or a file that is too large) is not offered again after a reload — choose another photo."
       ]
     },
     recognition: {

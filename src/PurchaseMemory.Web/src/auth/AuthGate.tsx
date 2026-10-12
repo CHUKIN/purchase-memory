@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useRef, useState, type PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 import { ApiError, getAuthConfig, getCurrentUser, type AuthConfig, type CurrentUser } from "../api/client";
+import { deviceBatchStore } from "../features/receipts/pendingBatchStore";
 import { AccessStatusScreen } from "./AccessStatusScreen";
 import { AuthContext, type AuthContextValue } from "./AuthContext";
 import { setAccessTokenSource, setSessionRejectedListener } from "./authSession";
@@ -276,6 +277,8 @@ export function AuthGate({ children }: PropsWithChildren) {
     await clientRef.current?.auth.signOut().catch(() => undefined);
     signInProgress.clear();
     queryClient.clear();
+    // Photos of an unfinished batch stay on a shared device otherwise.
+    await deviceBatchStore.clear().catch(() => undefined);
     setPhase({ kind: "signedOut", notice: null });
   }, [queryClient]);
 

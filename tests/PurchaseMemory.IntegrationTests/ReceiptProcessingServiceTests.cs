@@ -409,12 +409,71 @@ public sealed class ReceiptProcessingServiceTests
         Assert.Equal(2, imageStore.StoredCount);
     }
 
+    [Fact]
+    public async Task UnsavedUploadsAreTheCallersOwnRecentNotSavedReceipts()
+    {
+        await using var application = await TestApplication.CreateAsync();
+        await using var scope = application.Services.CreateAsyncScope();
+        var clock = new MovableTimeProvider(new DateTimeOffset(2026, 10, 12, 8, 0, 0, TimeSpan.Zero));
+        var dispatcher = new FakeReceiptProcessingDispatcher();
+        var service = CreateService(
+            scope.ServiceProvider,
+            new FakeReceiptImageStore(),
+            new FakeReceiptExtractor(CreateExtractionResult()),
+            dispatcher,
+            timeProvider: clock);
+        var anna = new ReceiptActor("user-anna", "anna@example.com");
+        var boris = new ReceiptActor("user-boris", "boris@example.com");
+        var cancel = TestContext.Current.CancellationToken;
+
+        var yesterday = await UploadAsAsync(service, anna, "anna-yesterday");
+        clock.Advance(TimeSpan.FromHours(25));
+        var older = await UploadAsAsync(service, anna, "anna-older");
+        clock.Advance(TimeSpan.FromMinutes(1));
+        var saved = await UploadAsAsync(service, anna, "anna-saved");
+        clock.Advance(TimeSpan.FromMinutes(1));
+        var newer = await UploadAsAsync(service, anna, "anna-newer");
+        var borisReceipt = await UploadAsAsync(service, boris, "boris");
+        await service.QueueAsync(saved.ReceiptId, cancel);
+        await service.ProcessAsync(saved.ReceiptId, cancel);
+        await service.SaveAsync(new SaveReceiptCommand(saved.ReceiptId), cancel);
+
+        var annaList = await service.ListUnsavedUploadsAsync(anna.UserId, cancel);
+        var borisList = await service.ListUnsavedUploadsAsync(boris.UserId, cancel);
+
+        // Newest first; a day-old upload, a saved receipt and Boris's receipt are not Anna's batch.
+        Assert.Equal([newer.ReceiptId, older.ReceiptId], annaList.Select(receipt => receipt.ReceiptId));
+        Assert.DoesNotContain(yesterday.ReceiptId, annaList.Select(receipt => receipt.ReceiptId));
+        Assert.Equal([borisReceipt.ReceiptId], borisList.Select(receipt => receipt.ReceiptId));
+    }
+
+    private static async Task<ReceiptCaptureView> UploadAsAsync(
+        ReceiptProcessingService service,
+        ReceiptActor actor,
+        string content)
+    {
+        await using var image = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(content));
+        return (await service.UploadAsync(
+            new UploadReceiptCommand([new ReceiptImageUpload(image, "image/jpeg")], actor),
+            TestContext.Current.CancellationToken)).Receipt;
+    }
+
+    private sealed class MovableTimeProvider(DateTimeOffset start) : TimeProvider
+    {
+        private DateTimeOffset _now = start;
+
+        public override DateTimeOffset GetUtcNow() => _now;
+
+        public void Advance(TimeSpan by) => _now += by;
+    }
+
     private static ReceiptProcessingService CreateService(
         IServiceProvider services,
         IReceiptImageStore imageStore,
         IReceiptExtractor extractor,
         IReceiptProcessingDispatcher dispatcher,
-        IReceiptCaptureRepository? repository = null)
+        IReceiptCaptureRepository? repository = null,
+        TimeProvider? timeProvider = null)
     {
         return new ReceiptProcessingService(
             repository ?? services.GetRequiredService<IReceiptCaptureRepository>(),
@@ -422,7 +481,7 @@ public sealed class ReceiptProcessingServiceTests
             extractor,
             dispatcher,
             services.GetRequiredService<IPurchaseDraftService>(),
-            services.GetRequiredService<TimeProvider>());
+            timeProvider ?? services.GetRequiredService<TimeProvider>());
     }
 
     private sealed class ExactDuplicatePrecheck
@@ -477,6 +536,13 @@ public sealed class ReceiptProcessingServiceTests
 
         public Task<IReadOnlyList<ReceiptCapture>> ListRecentAsync(int limit, CancellationToken cancellationToken) =>
             inner.ListRecentAsync(limit, cancellationToken);
+
+        public Task<IReadOnlyList<ReceiptCapture>> ListUnsavedUploadedByAsync(
+            string uploaderUserId,
+            DateTimeOffset since,
+            int limit,
+            CancellationToken cancellationToken) =>
+            inner.ListUnsavedUploadedByAsync(uploaderUserId, since, limit, cancellationToken);
 
         public Task<IReadOnlyList<ReceiptCapture>> ListPendingAsync(CancellationToken cancellationToken) =>
             inner.ListPendingAsync(cancellationToken);

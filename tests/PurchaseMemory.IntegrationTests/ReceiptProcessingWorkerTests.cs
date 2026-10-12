@@ -71,6 +71,9 @@ public sealed class ReceiptProcessingWorkerTests
         public Task<IReadOnlyList<ReceiptCaptureView>> ListRecentAsync(int limit, CancellationToken cancellationToken) =>
             throw new NotSupportedException();
 
+        public Task<IReadOnlyList<ReceiptCaptureView>> ListUnsavedUploadsAsync(string uploaderUserId, CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
+
         public Task<ReceiptCaptureView> QueueAsync(Guid receiptId, CancellationToken cancellationToken) =>
             throw new NotSupportedException();
 

@@ -4,6 +4,8 @@ import { QueryClient } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiError, getAuthConfig, getCurrentUser } from "../api/client";
 import { AppProviders } from "../app/AppProviders";
+import { deviceBatchStore } from "../features/receipts/pendingBatchStore";
+import { useAuth } from "./AuthContext";
 import { AuthGate } from "./AuthGate";
 import { currentAccessToken, reportSessionRejected } from "./authSession";
 import { signInProgress } from "./signInProgress";
@@ -80,6 +82,24 @@ describe("AuthGate", () => {
     renderGate();
     expect(await screen.findByText("Приложение открыто")).toBeInTheDocument();
     expect(await currentAccessToken()).toBe("jwt-anna");
+  });
+
+  it("forgets the photos of an unfinished batch on sign-out", async () => {
+    vi.mocked(getAuthConfig).mockResolvedValue(supabaseConfig);
+    const auth = fakeSupabase({ access_token: "jwt-anna" });
+    vi.mocked(getCurrentUser).mockResolvedValue({ id: "u1", email: "anna@example.com", status: "approved" });
+    const clear = vi.spyOn(deviceBatchStore, "clear").mockResolvedValue(undefined);
+    function SignOutButton() {
+      const signOut = useAuth()?.signOut;
+      return <button onClick={() => void signOut?.()}>Выйти</button>;
+    }
+    render(<AppProviders locale="ru"><AuthGate><SignOutButton /></AuthGate></AppProviders>);
+
+    fireEvent.click(await screen.findByRole("button", { name: "Выйти" }));
+
+    await waitFor(() => expect(clear).toHaveBeenCalledTimes(1));
+    expect(auth.signOut).toHaveBeenCalled();
+    clear.mockRestore();
   });
 
   it("shows the waiting screen for a pending user", async () => {

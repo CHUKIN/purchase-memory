@@ -10,6 +10,7 @@ vi.mock("../api/client", () => ({
   getReviewQueue: vi.fn().mockResolvedValue({ totalCount: 0, groups: [] }),
   getRecognitionStatus: vi.fn().mockResolvedValue({ available: true, mode: "Hybrid", models: ["glm-ocr", "qwen3.5:4b"], message: null }),
   listRecentReceipts: vi.fn().mockResolvedValue([]),
+  listMyUnsavedReceipts: vi.fn().mockResolvedValue([]),
   getPurchaseFeed: vi.fn().mockResolvedValue({ items: [], page: 1, pageSize: 20, totalCount: 0, hasMore: false, truncated: false }),
   getProductCatalog: vi.fn().mockResolvedValue({ items: [], page: 1, pageSize: 30, totalCount: 0, hasMore: false, pendingMatchCount: 0 }),
   listCategories: vi.fn().mockResolvedValue([]),

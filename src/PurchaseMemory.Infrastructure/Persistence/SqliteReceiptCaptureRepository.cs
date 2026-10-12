@@ -67,6 +67,24 @@ public sealed class SqliteReceiptCaptureRepository(PurchaseMemoryDbContext dbCon
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<IReadOnlyList<ReceiptCapture>> ListUnsavedUploadedByAsync(
+        string uploaderUserId,
+        DateTimeOffset since,
+        int limit,
+        CancellationToken cancellationToken)
+    {
+        return await dbContext.ReceiptCaptures
+            .AsNoTracking()
+            .Include(receipt => receipt.Items)
+            .Include(receipt => receipt.ImageParts)
+            .Where(receipt => receipt.UploadedByUserId == uploaderUserId
+                && receipt.Status != ReceiptProcessingStatus.Saved
+                && receipt.CreatedAt >= since)
+            .OrderByDescending(receipt => receipt.CreatedAt)
+            .Take(limit)
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<IReadOnlyList<ReceiptCapture>> ListPendingAsync(CancellationToken cancellationToken)
     {
         return await dbContext.ReceiptCaptures

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiError, uploadReceipt } from "../../api/client";
+import type { PendingBatchStore } from "./pendingBatchStore";
 
 /** Where one photo of a "separate receipts" batch stands. */
 export type BatchPhotoState =
@@ -21,6 +22,12 @@ export interface ReceiptBatchUpload {
   reset: () => void;
 }
 
+/** Where the photos of a batch wait until the server has them, and whose batch it is. */
+export interface BatchPersistence {
+  store: PendingBatchStore;
+  userId: string | null;
+}
+
 /**
  * Uploads each photo as its own receipt, strictly one after another.
  *
@@ -28,8 +35,13 @@ export interface ReceiptBatchUpload {
  * photo costs one rate-limit token. A 429 stops the batch instead of firing
  * the remaining photos into a limit that will only refuse them again; the
  * user resumes it deliberately once the wait is over.
+ *
+ * With `persistence`, a new batch is written to the device before the first
+ * upload and each photo is forgotten once the server has it, so a reload can
+ * offer the rest again. Re-sending a photo whose answer was lost is safe: the
+ * server recognises the same bytes as an exact duplicate.
  */
-export function useReceiptBatchUpload(onUploaded?: () => void): ReceiptBatchUpload {
+export function useReceiptBatchUpload(onUploaded?: () => void, persistence?: BatchPersistence): ReceiptBatchUpload {
   const [photos, setPhotos] = useState<BatchPhotoState[] | null>(null);
   const [running, setRunning] = useState(false);
   const photosRef = useRef<BatchPhotoState[] | null>(null);
@@ -37,6 +49,8 @@ export function useReceiptBatchUpload(onUploaded?: () => void): ReceiptBatchUplo
   const mountedRef = useRef(true);
   const onUploadedRef = useRef(onUploaded);
   useEffect(() => { onUploadedRef.current = onUploaded; }, [onUploaded]);
+  const persistenceRef = useRef(persistence);
+  useEffect(() => { persistenceRef.current = persistence; }, [persistence]);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -53,11 +67,14 @@ export function useReceiptBatchUpload(onUploaded?: () => void): ReceiptBatchUplo
     write(current.map((photo, position) => position === index ? state : photo));
   }, [write]);
 
-  const run = useCallback(async (files: File[], indices: number[]) => {
+  const run = useCallback(async (files: File[], indices: number[], isNewBatch = false) => {
     if (runningRef.current) return;
     runningRef.current = true;
     setRunning(true);
     try {
+      const store = persistenceRef.current?.store;
+      // Stored before anything is sent, so a reload right after the first upload still has the rest.
+      if (isNewBatch) await store?.begin(files, persistenceRef.current?.userId ?? null);
       for (const index of indices) {
         // Leaving the screen stops the batch; the photo already in flight finishes.
         if (!mountedRef.current) return;
@@ -68,12 +85,17 @@ export function useReceiptBatchUpload(onUploaded?: () => void): ReceiptBatchUplo
             ? { status: "duplicate", receiptId: result.receipt.id }
             : { status: "uploaded", receiptId: result.receipt.id });
           onUploadedRef.current?.();
+          await store?.markDone(index);
         } catch (error) {
           if (error instanceof ApiError && error.status === 429) {
             update(index, { status: "rateLimited", retryAfterSeconds: error.retryAfterSeconds });
             return;
           }
           update(index, { status: "failed", message: error instanceof Error && error.message ? error.message : null });
+          // The server rejected this photo itself (unsupported, too large, empty):
+          // the same bytes would be refused again, so a reload must not offer it.
+          // Network errors, 5xx and auth problems stay resumable.
+          if (isFinalRejection(error)) await store?.markDone(index);
         }
       }
     } finally {
@@ -84,10 +106,11 @@ export function useReceiptBatchUpload(onUploaded?: () => void): ReceiptBatchUplo
 
   const start = useCallback((files: File[]) => {
     if (runningRef.current) return;
-    const current = photosRef.current?.length === files.length ? photosRef.current : files.map((): BatchPhotoState => ({ status: "waiting" }));
+    const continuing = photosRef.current?.length === files.length;
+    const current = continuing && photosRef.current ? photosRef.current : files.map((): BatchPhotoState => ({ status: "waiting" }));
     const pending = current.flatMap((photo, index) => photo.status === "uploaded" || photo.status === "duplicate" ? [] : [index]);
     write(current.map((photo, index) => pending.includes(index) ? { status: "waiting" } : photo));
-    void run(files, pending);
+    void run(files, pending, !continuing);
   }, [run, write]);
 
   const retry = useCallback((files: File[], index: number) => {
@@ -97,9 +120,17 @@ export function useReceiptBatchUpload(onUploaded?: () => void): ReceiptBatchUplo
 
   const reset = useCallback(() => {
     if (runningRef.current) return;
+    // Only a batch this screen started is dropped; picking new photos must not
+    // silently discard an interrupted batch that is still waiting to be resumed.
+    if (photosRef.current) void persistenceRef.current?.store.clear();
     photosRef.current = null;
     setPhotos(null);
   }, []);
 
   return { photos, running, start, retry, reset };
+}
+
+/** A 4xx about the photo itself, not about the session, timing or the rate limit. */
+function isFinalRejection(error: unknown): boolean {
+  return error instanceof ApiError && error.status >= 400 && error.status < 500 && ![401, 403, 408, 429].includes(error.status);
 }

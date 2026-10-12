@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { Link, useLocation, useNavigate, useParams } from "react-router";
 import { ApiError, getReceipt, processReceipt, reviewReceipt, saveReceipt, uploadReceipt } from "../../api/client";
 import { useAuthorizedImageUrl } from "../../auth/useAuthorizedImageUrl";
-import { IconButton } from "../../design-system/components";
+import { DateInput, IconButton } from "../../design-system/components";
 import type { ReceiptItemSnapshot, ReceiptSnapshot, ReceiptView, RecognitionStatus } from "../../api/types";
 import { discountLinks, isDiscount } from "./discountLines";
 import { IssueReview, type IssueReviewPhoto } from "./IssueReview";
@@ -18,18 +18,48 @@ import { reviewQueueQueryKey } from "../review-queue/reviewQueueQueries";
 import { reviewQueueReturnPath } from "../review-queue/returnToQueue";
 import { ReceiptProgress } from "./ReceiptProgress";
 import { useReceiptBatchUpload } from "./useReceiptBatchUpload";
+import { useAuth } from "../../auth/AuthContext";
+import { InterruptedBatchNotice, myUnsavedReceiptsQueryKey, RecentUploads } from "./BatchRecovery";
+import { deviceBatchStore, type PendingBatchStore, type RestoredBatch } from "./pendingBatchStore";
 
-export function CapturePage({ recognition }: { recognition: RecognitionStatus | null }) {
+/** `batchStore` is for tests and stories; the app keeps interrupted batches in IndexedDB. */
+export function CapturePage({ recognition, batchStore = deviceBatchStore }: { recognition: RecognitionStatus | null; batchStore?: PendingBatchStore }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [files, setFiles] = useState<File[]>([]);
   const [duplicate, setDuplicate] = useState<ReceiptView | null>(null);
   const [mode, setMode] = useState<CaptureMode>("parts");
-  // Each uploaded receipt refreshes the recent list, so App starts polling it
-  // and notifies about every receipt of the batch as it finishes.
-  const batch = useReceiptBatchUpload(() => void queryClient.invalidateQueries({ queryKey: ["receipts", "recent"] }));
+  const userId = useAuth()?.user.id ?? null;
+  const persistence = useMemo(() => ({ store: batchStore, userId }), [batchStore, userId]);
+  // Each uploaded receipt refreshes the recent lists, so App starts polling and
+  // notifies about every receipt of the batch, and «Недавние загрузки» shows it.
+  const batch = useReceiptBatchUpload(() => {
+    void queryClient.invalidateQueries({ queryKey: ["receipts", "recent"] });
+    void queryClient.invalidateQueries({ queryKey: myUnsavedReceiptsQueryKey });
+  }, persistence);
   const separate = mode === "separate" && files.length > 1;
+  // A batch cut short by a reload, a killed PWA or leaving the screen.
+  const [interrupted, setInterrupted] = useState<RestoredBatch | null>(null);
+  useEffect(() => {
+    let active = true;
+    void batchStore.load(userId).then((restored) => {
+      if (active && restored && restored.files.length + restored.lost.length > 0) setInterrupted(restored);
+    });
+    return () => { active = false; };
+  }, [batchStore, userId]);
+  function resumeInterrupted() {
+    if (!interrupted) return;
+    setFiles(interrupted.files);
+    setMode("separate");
+    upload.reset();
+    setInterrupted(null);
+    batch.start(interrupted.files);
+  }
+  function discardInterrupted() {
+    setInterrupted(null);
+    void batchStore.clear();
+  }
   const upload = useMutation({
     // `process=true` queues recognition in the same request: one rate-limit
     // token instead of two. An exact duplicate is never re-queued (as before);
@@ -39,6 +69,7 @@ export function CapturePage({ recognition }: { recognition: RecognitionStatus | 
     onSuccess: (result) => {
       queryClient.setQueryData(["receipts", result.receipt.id], result.receipt);
       void queryClient.invalidateQueries({ queryKey: ["receipts", "recent"] });
+      void queryClient.invalidateQueries({ queryKey: myUnsavedReceiptsQueryKey });
       if (result.exactDuplicate) setDuplicate(result.receipt);
       else navigate(`/receipts/${result.receipt.id}`);
     }
@@ -46,9 +77,12 @@ export function CapturePage({ recognition }: { recognition: RecognitionStatus | 
 
   return <section className="page capture-page">
     <div className="hero-copy"><p className="eyebrow">{t("receiptCapture.eyebrow")}</p><h1>{t("receiptCapture.title")}</h1><p>{t("receiptCapture.description")}</p><HelpLink topic="capture" /></div>
-    {duplicate ? <ReceiptDuplicateNotice receiptId={duplicate.id} onStartOver={() => { setDuplicate(null); setFiles([]); }} /> :
-      <div className="capture-card"><ReceiptCapture files={files} mode={mode} onModeChange={setMode} batch={batch.photos} uploading={upload.isPending || batch.running} disabled={recognition?.available !== true} error={upload.isError ? messageOf(t, upload.error, t("legacyCapture.unknownError")) : null} onFilesChange={(next) => { setFiles(next); upload.reset(); batch.reset(); }} onSubmit={() => separate ? batch.start(files) : upload.mutate()} onRetryPhoto={(index) => batch.retry(files, index)} onStartOver={() => { batch.reset(); setFiles([]); setMode("parts"); }} />
+    {/* An interrupted batch is decided first: a new batch would replace its stored photos. */}
+    {interrupted && !batch.photos ? <InterruptedBatchNotice restored={interrupted} disabled={recognition?.available !== true || upload.isPending} onResume={resumeInterrupted} onDiscard={discardInterrupted} /> :
+    duplicate ? <ReceiptDuplicateNotice receiptId={duplicate.id} onStartOver={() => { setDuplicate(null); setFiles([]); }} /> :
+      <div className="capture-card"><ReceiptCapture files={files} mode={mode} onModeChange={setMode} batch={batch.photos} uploading={upload.isPending || batch.running} disabled={recognition?.available !== true} error={upload.isError ? messageOf(t, upload.error, t("legacyCapture.unknownError")) : null} onFilesChange={(next) => { setFiles(next); upload.reset(); batch.reset(); }} onSubmit={() => separate || batch.photos ? batch.start(files) : upload.mutate()} onRetryPhoto={(index) => batch.retry(files, index)} onStartOver={() => { batch.reset(); setFiles([]); setMode("parts"); }} />
       {recognition && <p className={`model-note ${recognition.available ? "" : "error-text"}`}>{recognition.available ? `${recognition.mode}: ${recognition.models.join(" → ")}` : recognition.message ?? t("legacyCapture.serviceUnavailable")}</p>}</div>}
+    <RecentUploads />
   </section>;
 }
 
@@ -178,13 +212,13 @@ function ReviewForm({ snapshot, setSnapshot, warnings, warningsConfirmed, busy, 
   const discountCount = snapshot.items.length - productCount;
   return <div className="review-panel">
     <div className="section-heading"><div><p className="eyebrow">{t("legacyCapture.draft")}</p><h2>{t("legacyCapture.reviewTitle")}</h2></div><span className="item-count">{t("legacyCapture.positions", { count: productCount })}{discountCount > 0 && ` · ${t("discount.count", { count: discountCount })}`}</span></div>
-    <div className="form-grid"><Field label={t("legacyCapture.store")} value={snapshot.merchantName ?? ""} onChange={(value) => setSnapshot({ ...snapshot, merchantName: value || null })} /><Field label={t("legacyCapture.dateTime")} type="datetime-local" value={toLocalInput(snapshot.purchasedAt)} onChange={(value) => setSnapshot({ ...snapshot, purchasedAt: value ? new Date(value).toISOString() : null })} /><Field label={t("legacyCapture.currency")} value={snapshot.currency ?? ""} onChange={(value) => setSnapshot({ ...snapshot, currency: value.toUpperCase() || null })} /><NumberField label={t("legacyCapture.total")} value={snapshot.receiptTotal} onChange={(value) => setSnapshot({ ...snapshot, receiptTotal: value })} /></div>
+    <div className="form-grid"><Field label={t("legacyCapture.store")} value={snapshot.merchantName ?? ""} onChange={(value) => setSnapshot({ ...snapshot, merchantName: value || null })} /><label className="field"><span>{t("legacyCapture.dateTime")}</span><DateInput type="datetime-local" emptyText={t("purchaseEdit.unknownDate")} value={toLocalInput(snapshot.purchasedAt)} onChange={(event) => setSnapshot({ ...snapshot, purchasedAt: event.target.value ? new Date(event.target.value).toISOString() : null })} /></label><Field label={t("legacyCapture.currency")} value={snapshot.currency ?? ""} onChange={(value) => setSnapshot({ ...snapshot, currency: value.toUpperCase() || null })} /><NumberField label={t("legacyCapture.total")} value={snapshot.receiptTotal} onChange={(value) => setSnapshot({ ...snapshot, receiptTotal: value })} /></div>
     {warnings.length > 0 && <div className="review-warnings" role="status"><strong>{t("legacyCapture.needsReview")}</strong><ul>{warnings.map((warning) => <li key={warning}>{warning}</li>)}</ul></div>}
     <div className="items-list">{snapshot.items.map((item, index) => isDiscount(item) ? <ReceiptDiscountLine key={index} name={item.name} lineTotal={item.lineTotal} currency={snapshot.currency} productName={targetOf(index)?.name || null} productLineTotal={targetOf(index)?.lineTotal ?? null} appliesToReceipt={links[index].appliesToReceipt} onChange={(change) => updateItem(index, change)} onDelete={() => removeItem(index)} /> : <article className="item-editor" key={index}><div className="item-editor-header"><span>{t("legacyCapture.position", { count: index + 1 })}</span><IconButton className="item-delete" intent="danger" label={t("legacyCapture.deletePosition", { count: index + 1 })} icon={<Trash2 size={18} />} onClick={() => removeItem(index)} /></div><Field label={t("legacyCapture.name")} value={item.name} onChange={(value) => updateItem(index, { name: value })} /><div className="item-numbers"><NumberField label={t("legacyCapture.quantity")} value={item.quantity} step="0.001" onChange={(value) => updateItem(index, { quantity: value })} /><NumberField label={t("legacyCapture.price")} value={item.unitPrice} onChange={(value) => updateItem(index, { unitPrice: value })} /><NumberField label={t("legacyCapture.amount")} value={item.lineTotal} onChange={(value) => updateItem(index, { lineTotal: value })} /></div></article>)}</div>
     <button className="secondary-button add-item-button" onClick={() => setSnapshot({ ...snapshot, items: [...snapshot.items, emptyItem()] })}><Plus aria-hidden="true" size={18} />{t("legacyCapture.addPosition")}</button><button className="primary-button sticky-save" disabled={!canSave || busy} onClick={onSave}>{busy ? t("legacyCapture.saving") : warningsConfirmed ? t("legacyCapture.saveAnyway") : t("legacyCapture.savePurchase")}</button>
   </div>;
 }
-function Field({ label, value, onChange, type = "text" }: { label: string; value: string; onChange: (value: string) => void; type?: string }) { return <label className="field"><span>{label}</span><input type={type} value={value} onChange={(event) => onChange(event.target.value)} /></label>; }
+function Field({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) { return <label className="field"><span>{label}</span><input value={value} onChange={(event) => onChange(event.target.value)} /></label>; }
 function NumberField({ label, value, onChange, step = "0.01" }: { label: string; value: number | null; onChange: (value: number | null) => void; step?: string }) { return <label className="field"><span>{label}</span><input inputMode="decimal" type="number" min="0" step={step} value={value ?? ""} onChange={(event) => onChange(event.target.value === "" ? null : Number(event.target.value))} /></label>; }
 function normalizeSnapshot(snapshot: ReceiptSnapshot): ReceiptSnapshot { return { ...snapshot, merchantName: snapshot.merchantName?.trim() || null, currency: snapshot.currency?.trim().toUpperCase() || null, items: snapshot.items.map((item) => ({ ...item, name: item.name.trim(), unit: item.unit?.trim() || null })) }; }
 function toLocalInput(value: string | null): string { if (!value) return ""; const date = new Date(value); return new Date(date.getTime() - date.getTimezoneOffset() * 60_000).toISOString().slice(0, 16); }

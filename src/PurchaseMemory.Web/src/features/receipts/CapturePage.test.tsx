@@ -8,7 +8,7 @@ import { AppProviders } from "../../app/AppProviders";
 import { CapturePage, ReceiptDetailPage } from "./CapturePage";
 
 vi.mock("../../api/client", () => ({
-  uploadReceipt: vi.fn(), processReceipt: vi.fn(), getReceipt: vi.fn(), reviewReceipt: vi.fn(), saveReceipt: vi.fn()
+  uploadReceipt: vi.fn(), listMyUnsavedReceipts: vi.fn(async () => []), processReceipt: vi.fn(), getReceipt: vi.fn(), reviewReceipt: vi.fn(), saveReceipt: vi.fn()
 }));
 
 const fixture = (status: ReceiptView["status"]): ReceiptView => ({

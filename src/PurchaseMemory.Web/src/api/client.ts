@@ -138,6 +138,10 @@ export const getReceipt = (receiptId: string) =>
 export const listRecentReceipts = (limit = 20) =>
   request<ReceiptView[]>(`/api/receipts?limit=${limit}`);
 
+/** The caller's own receipts from the last 24 hours that are not saved yet, newest first. */
+export const listMyUnsavedReceipts = () =>
+  request<ReceiptView[]>("/api/receipts/my-unsaved");
+
 export const reviewReceipt = (receiptId: string, snapshot: ReceiptSnapshot) =>
   request<ReceiptView>(`/api/receipts/${receiptId}/review`, {
     method: "PUT",

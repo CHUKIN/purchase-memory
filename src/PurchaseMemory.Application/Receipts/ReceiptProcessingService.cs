@@ -242,6 +242,20 @@ public sealed class ReceiptProcessingService : IReceiptProcessingService
         return receipts.Select(CreateView).ToList();
     }
 
+    public async Task<IReadOnlyList<ReceiptCaptureView>> ListUnsavedUploadsAsync(
+        string uploaderUserId,
+        CancellationToken cancellationToken)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(uploaderUserId);
+        var since = _timeProvider.GetUtcNow() - ReceiptCaptureLimits.UnsavedUploadsWindow;
+        var receipts = await _receiptRepository.ListUnsavedUploadedByAsync(
+            uploaderUserId,
+            since,
+            ReceiptCaptureLimits.MaximumUnsavedUploadsCount,
+            cancellationToken);
+        return receipts.Select(CreateView).ToList();
+    }
+
     public async Task<int> RecoverPendingAsync(CancellationToken cancellationToken)
     {
         var pending = await _receiptRepository.ListPendingAsync(cancellationToken);

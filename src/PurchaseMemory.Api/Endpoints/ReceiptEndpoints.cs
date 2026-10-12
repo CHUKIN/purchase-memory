@@ -28,6 +28,10 @@ public static class ReceiptEndpoints
         endpoints.MapGet("/api/receipts", ListRecentAsync)
             .WithName("ListRecentReceipts");
 
+        // The capture screen rebuilds an interrupted batch from this list.
+        endpoints.MapGet("/api/receipts/my-unsaved", ListMyUnsavedAsync)
+            .WithName("ListMyUnsavedReceipts");
+
         // Re-queueing runs recognition again, which costs as much as an upload.
         endpoints.MapPost("/api/receipts/{receiptId:guid}/process", QueueAsync)
             .RequireRateLimiting(ReceiptUploadRateLimiting.PolicyName)
@@ -110,7 +114,11 @@ public static class ReceiptEndpoints
                 cancellationToken);
 
             var receipt = result.Receipt;
-            if (process && !result.IsExactDuplicate)
+            // An exact duplicate is normally left alone. The exception is one
+            // that never got queued: a batch resumed after a reload re-sends
+            // the very same bytes, and the first attempt may have died between
+            // storing the receipt and queueing it.
+            if (process && (!result.IsExactDuplicate || receipt.Status == ReceiptProcessingStatus.Uploaded))
             {
                 try
                 {
@@ -150,6 +158,15 @@ public static class ReceiptEndpoints
     {
         var effectiveLimit = limit == 0 ? 20 : limit;
         var receipts = await service.ListRecentAsync(effectiveLimit, cancellationToken);
+        return Results.Ok(receipts.Select(ReceiptResponse.FromView));
+    }
+
+    private static async Task<IResult> ListMyUnsavedAsync(
+        ClaimsPrincipal user,
+        IReceiptProcessingService service,
+        CancellationToken cancellationToken)
+    {
+        var receipts = await service.ListUnsavedUploadsAsync(AppUser.Actor(user).UserId, cancellationToken);
         return Results.Ok(receipts.Select(ReceiptResponse.FromView));
     }
 
