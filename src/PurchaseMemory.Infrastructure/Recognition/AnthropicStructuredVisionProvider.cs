@@ -93,7 +93,7 @@ public sealed partial class AnthropicStructuredVisionProvider : IStructuredVisio
         {
             throw;
         }
-        catch (Exception exception) when (exception is AnthropicServiceException or HttpRequestException or OperationCanceledException or TimeoutException)
+        catch (Exception exception) when (exception is AnthropicProviderException or HttpRequestException or OperationCanceledException or TimeoutException)
         {
             stopwatch.Stop();
             var (category, message) = Classify(exception);

@@ -1,8 +1,9 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { useState } from "react";
 import { MemoryRouter } from "react-router";
 import { describe, expect, it, vi } from "vitest";
 import { ApiError } from "../../api/client";
-import type { TagSuggestionsResponse, TagSummary } from "../../api/types";
+import type { ProductTag, TagSuggestionsResponse, TagSummary } from "../../api/types";
 import { AppProviders } from "../../app/AppProviders";
 import { ProductTags } from "./ProductTags";
 
@@ -80,6 +81,39 @@ describe("TagSuggestions", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Добавить все" }));
     await waitFor(() => expect(props.onSave).toHaveBeenCalledWith(["promo", "vegan", "extra"]));
+  });
+
+  it("keeps focus on the section after the last possible tag is accepted", async () => {
+    // The product ends up with every household tag, so the suggestions block disappears.
+    function Stateful() {
+      const [tags, setTags] = useState<ProductTag[]>([allTags[1]]);
+      return (
+        <ProductTags
+          tags={tags}
+          allTags={allTags}
+          onSave={async (ids) => setTags(allTags.filter((tag) => ids.includes(tag.id)))}
+          onCreate={vi.fn()}
+          onSuggest={vi.fn().mockResolvedValue(answer)}
+        />
+      );
+    }
+    render(<AppProviders locale="ru"><MemoryRouter><Stateful /></MemoryRouter></AppProviders>);
+    fireEvent.click(screen.getByRole("button", { name: "Предложить теги" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Добавить все" }));
+
+    await waitFor(() => expect(screen.queryByRole("button", { name: "Предложить ещё раз" })).not.toBeInTheDocument());
+    expect(screen.getByRole("heading", { name: "Теги" })).toHaveFocus();
+  });
+
+  it("moves focus to «Предложить теги» when the last shown suggestion is accepted", async () => {
+    const { props } = renderTags({
+      allTags: [...allTags, { id: "extra", name: "к празднику", productCount: 0 }],
+      onSuggest: vi.fn().mockResolvedValue({ ...answer, suggestions: [answer.suggestions[1]] })
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Предложить теги" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Добавить тег «веган»" }));
+    await waitFor(() => expect(props.onSave).toHaveBeenCalledWith(["promo", "vegan"]));
+    await waitFor(() => expect(screen.getByRole("button", { name: /Предложить/ })).toHaveFocus());
   });
 
   it("says when nothing fits", async () => {

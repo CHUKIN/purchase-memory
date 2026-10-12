@@ -252,7 +252,7 @@ public sealed class TagSuggestionTests
         }
 
         using var failing = CreateSuggester(new ThrowingTransport(
-            new AnthropicServiceException(529, "overloaded", new InvalidOperationException())));
+            new AnthropicProviderException(529, "overloaded", new InvalidOperationException())));
         await Assert.ThrowsAsync<TagSuggestionsUnavailableException>(
             () => failing.SuggestAsync(product, tags, TagSuggestionLanguage.English, Cancel));
     }
@@ -333,7 +333,7 @@ public sealed class TagSuggestionTests
 
         foreach (var failure in new Exception[]
                  {
-                     new AnthropicServiceException(500, "boom", new InvalidOperationException()),
+                     new AnthropicProviderException(500, "boom", new InvalidOperationException()),
                      new InvalidOperationException("unexpected")
                  })
         {
@@ -344,6 +344,8 @@ public sealed class TagSuggestionTests
             var entry = Assert.Single(log.Entries);
             Assert.Equal((LogLevel.Warning, 3412), (entry.Level, entry.EventId));
             Assert.DoesNotContain("unexpected\"", entry.Message, StringComparison.Ordinal);
+            // Only the unexpected one carries its exception (stack trace) into the log.
+            Assert.Same(failure is AnthropicProviderException ? null : failure, entry.Exception);
         }
     }
 
@@ -450,14 +452,14 @@ public sealed class TagSuggestionTests
 
     private sealed class CapturingLogger<T> : ILogger<T>
     {
-        public List<(LogLevel Level, int EventId, string Message)> Entries { get; } = [];
+        public List<(LogLevel Level, int EventId, string Message, Exception? Exception)> Entries { get; } = [];
 
         public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
 
         public bool IsEnabled(LogLevel logLevel) => true;
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter) =>
-            Entries.Add((logLevel, eventId.Id, formatter(state, exception)));
+            Entries.Add((logLevel, eventId.Id, formatter(state, exception), exception));
     }
 
     private sealed class StubHandler(Func<HttpRequestMessage, Task<HttpResponseMessage>> respond) : HttpMessageHandler

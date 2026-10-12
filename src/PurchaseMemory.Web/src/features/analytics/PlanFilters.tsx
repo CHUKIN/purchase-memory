@@ -2,7 +2,7 @@ import { SlidersHorizontal, X } from "lucide-react";
 import { useId, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import type { AnalyticsDiscountFilter, AnalyticsGroupBy, AnalyticsMetric, AnalyticsPlan, ProductCategory, ProductTag } from "../../api/types";
-import { Button } from "../../design-system/components";
+import { Button, DateInput } from "../../design-system/components";
 import { planChips } from "./analyticsText";
 import styles from "./PlanFilters.module.css";
 
@@ -139,11 +139,11 @@ function PlanEditor({ id, plan, merchants, tags, busy, onApply }: {
       </label>
       <label className={styles.field}>
         <span>{t("analytics.filters.from")}</span>
-        <input type="date" value={from} max={to || undefined} onChange={(event) => setFrom(event.target.value)} />
+        <DateInput value={from} max={to || undefined} onChange={(event) => setFrom(event.target.value)} />
       </label>
       <label className={styles.field}>
         <span>{t("analytics.filters.to")}</span>
-        <input type="date" value={to} min={from || undefined} onChange={(event) => setTo(event.target.value)} />
+        <DateInput value={to} min={from || undefined} onChange={(event) => setTo(event.target.value)} />
       </label>
       <label className={styles.field}>
         <span>{t("analytics.filters.merchant")}</span>

@@ -1,0 +1,57 @@
+/*
+ * Callers style border, colours and padding as for their other fields; this
+ * file only keeps the date field from outgrowing its column on iOS. When a
+ * caller changes the horizontal padding, it sets --pm-date-inset to match so
+ * the empty hint lines up with where the date text will appear.
+ */
+.root {
+  position: relative;
+  display: block;
+  min-width: 0;
+}
+
+.input {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+  text-align: left;
+  line-height: 1.4;
+}
+
+/* iOS centres the chosen date and sizes the field to it; keep it at the start. */
+.input::-webkit-date-and-time-value {
+  min-height: 1.4em;
+  text-align: left;
+}
+
+.input::-webkit-datetime-edit {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.root[data-empty-text]::after {
+  content: attr(data-empty-text);
+  position: absolute;
+  top: 50%;
+  left: var(--pm-date-inset, 0.75rem);
+  display: none;
+  transform: translateY(-50%);
+  max-width: calc(100% - 2 * var(--pm-date-inset, 0.75rem));
+  overflow: hidden;
+  color: var(--pm-content-muted);
+  font-size: inherit;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+/* Only iOS/iPadOS WebKit leaves an empty date field blank; others draw their own hint. */
+@supports (-webkit-touch-callout: none) {
+  .root[data-empty-text]::after {
+    display: block;
+  }
+}

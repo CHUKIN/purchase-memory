@@ -142,7 +142,7 @@ public sealed class AnthropicStructuredVisionProviderTests
             """{"type":"error","error":{"type":"overloaded_error","message":"upstream-secret-payload"}}"""));
         using var transport = new AnthropicMessagesTransport("test-only-key", TimeSpan.FromSeconds(5), 0, handler);
 
-        var exception = await Assert.ThrowsAsync<AnthropicServiceException>(
+        var exception = await Assert.ThrowsAsync<AnthropicProviderException>(
             () => transport.CreateAsync(CreateTransportRequest(), TestContext.Current.CancellationToken));
 
         Assert.Equal(status, exception.StatusCode);
@@ -260,7 +260,7 @@ public sealed class AnthropicStructuredVisionProviderTests
     public async Task MapsHttpErrorsWithoutLeakingServicePayload(int status, string expected)
     {
         const string sensitivePayload = "upstream-secret-payload";
-        var transport = new ThrowingTransport(new AnthropicServiceException(
+        var transport = new ThrowingTransport(new AnthropicProviderException(
             status, sensitivePayload, new InvalidOperationException(sensitivePayload)));
         using var provider = CreateProvider(transport);
 
@@ -274,7 +274,7 @@ public sealed class AnthropicStructuredVisionProviderTests
     [Fact]
     public async Task MapsNetworkFailure()
     {
-        var transport = new ThrowingTransport(new AnthropicServiceException(
+        var transport = new ThrowingTransport(new AnthropicProviderException(
             0, "transport failure", new HttpRequestException("DNS failed")));
         using var provider = CreateProvider(transport);
 
@@ -364,7 +364,7 @@ public sealed class AnthropicStructuredVisionProviderTests
     public async Task RouterFallsBackToOpenAiOnTimeoutOrServiceErrors(int status)
     {
         Exception inner = status == 0 ? new TaskCanceledException("timeout") : new InvalidOperationException();
-        var transport = new ThrowingTransport(new AnthropicServiceException(status, "failed", inner));
+        var transport = new ThrowingTransport(new AnthropicProviderException(status, "failed", inner));
         using var provider = CreateProvider(transport);
         var openAi = new FakeOpenAiPipeline();
 

@@ -103,7 +103,7 @@ public sealed partial class AnthropicTagSuggester : ITagSuggester, IDisposable
         {
             throw;
         }
-        catch (Exception exception) when (exception is AnthropicServiceException or HttpRequestException or OperationCanceledException or TimeoutException)
+        catch (Exception exception) when (exception is AnthropicProviderException or HttpRequestException or OperationCanceledException or TimeoutException)
         {
             var category = AnthropicFailure.Categorize(exception);
             RequestFailed(model, category, stopwatch.ElapsedMilliseconds);
@@ -112,9 +112,11 @@ public sealed partial class AnthropicTagSuggester : ITagSuggester, IDisposable
         catch (Exception exception)
         {
             // Anything else from the SDK or client setup is still «unavailable»,
-            // never a 500; only the exception type is logged.
+            // never a 500. The exception is logged with its stack trace so the
+            // cause can be found; the API key never appears in SDK exceptions,
+            // and the prompt holds only product and tag names.
             var category = $"unexpected:{exception.GetType().Name}";
-            RequestFailed(model, category, stopwatch.ElapsedMilliseconds);
+            RequestFailed(model, category, stopwatch.ElapsedMilliseconds, exception);
             throw new TagSuggestionsUnavailableException($"Claude did not answer ({category}).", exception);
         }
 
@@ -273,5 +275,5 @@ public sealed partial class AnthropicTagSuggester : ITagSuggester, IDisposable
         EventId = 3412,
         Level = LogLevel.Warning,
         Message = "Tag suggestions with model {Model} failed after {DurationMs} ms with category {Category}")]
-    private partial void RequestFailed(string model, string category, long durationMs);
+    private partial void RequestFailed(string model, string category, long durationMs, Exception? exception = null);
 }

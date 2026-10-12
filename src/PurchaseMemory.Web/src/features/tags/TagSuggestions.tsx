@@ -52,14 +52,15 @@ export function TagSuggestions({ onSuggest, onAccept, currentTagIds, remainingSl
     : [];
 
   useEffect(() => {
-    if (focusTarget === null) return;
+    // Wait until the accept has settled: a still-disabled button cannot take focus.
+    if (focusTarget === null || accepting) return;
     const row = rowRefs.current.get(focusTarget);
     const target = row
       ? row.querySelector<HTMLButtonElement>("button:not(:disabled)")
       : containerRef.current?.querySelector<HTMLButtonElement>("button[data-suggest]");
     target?.focus();
     setFocusTarget(null);
-  }, [focusTarget]);
+  }, [focusTarget, accepting]);
 
   /** The row that takes focus once `removed` disappear: the next one, else the previous, else the button. */
   function nextFocus(removed: string[]): string {

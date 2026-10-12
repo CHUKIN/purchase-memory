@@ -1,7 +1,7 @@
 import { useId } from "react";
 import { useTranslation } from "react-i18next";
 import type { BrandSummary, ProductCategory, TagSummary } from "../../api/types";
-import { categoryLabel, groupCategories } from "../categories/categoryText";
+import { CategoryOptions } from "../categories/CategoryOptions";
 import styles from "./ClassificationFilterFields.module.css";
 
 export interface ClassificationFilterFieldsProps {
@@ -102,17 +102,12 @@ export function CategoryFilterField({ categories, category, onCategoryChange }: 
       >
         <option value="">{t("categories.filterAll")}</option>
         <option value="none">{t("categories.none")}</option>
-        {groupCategories(categories).map(({ group, children }) => {
-          const groupLabel = categoryLabel(t, group);
-          return (
-            <optgroup key={group.id} label={groupLabel}>
-              <option value={group.id}>{t("filters.wholeGroup", { name: groupLabel })}</option>
-              {children.map((child) => (
-                <option key={child.id} value={child.id}>{`${groupLabel} / ${categoryLabel(t, child)}`}</option>
-              ))}
-            </optgroup>
-          );
-        })}
+        <CategoryOptions
+          categories={categories}
+          selected={category}
+          groupOptionText={t("filters.wholeGroupShort")}
+          selectedGroupText={(name) => t("filters.wholeGroup", { name })}
+        />
       </select>
     </div>
   );

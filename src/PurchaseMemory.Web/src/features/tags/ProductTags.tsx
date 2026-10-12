@@ -1,5 +1,5 @@
 import { Check, Pencil, Plus } from "lucide-react";
-import { useId, useState, type FormEvent } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { ApiError } from "../../api/client";
 import type { ProductTag, TagSuggestionsResponse, TagSummary } from "../../api/types";
@@ -63,6 +63,17 @@ export function ProductTags({ tags, allTags, onSave, onCreate, onSuggest, readCu
     && tags.length < maximumTagsPerProduct
     && allTags.some((tag) => !currentIds.includes(tag.id));
 
+  // Accepting the last suggestion that could still apply removes the whole
+  // suggestions block together with the focused button; land on the section
+  // heading instead of the page body. Focus that is elsewhere is left alone.
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const couldSuggest = useRef(canSuggest);
+  useEffect(() => {
+    const lostFocus = document.activeElement === null || document.activeElement === document.body;
+    if (couldSuggest.current && !canSuggest && !editing && lostFocus) headingRef.current?.focus();
+    couldSuggest.current = canSuggest;
+  }, [canSuggest, editing]);
+
   function startEditing() {
     setDraft(tags.map((tag) => tag.id));
     setError(null);
@@ -118,7 +129,7 @@ export function ProductTags({ tags, allTags, onSave, onCreate, onSuggest, readCu
   return (
     <Surface as="section" className={styles.section} aria-labelledby={titleId}>
       <div className={styles.heading}>
-        <h2 id={titleId}>{t("tags.title")}</h2>
+        <h2 id={titleId} ref={headingRef} tabIndex={-1}>{t("tags.title")}</h2>
         {!editing && <IconButton intent="secondary" iconOnly="mobile" icon={<Pencil />} label={t("tags.edit")} onClick={startEditing} />}
       </div>
 

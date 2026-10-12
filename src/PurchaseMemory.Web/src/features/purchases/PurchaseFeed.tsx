@@ -3,7 +3,7 @@ import { useId, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import type { BrandSummary, ProductCategory, PurchaseReviewFilter, PurchaseView, TagSummary } from "../../api/types";
-import { EmptyState, SkeletonCard, StatusBadge, Surface } from "../../design-system/components";
+import { DateInput, EmptyState, SkeletonCard, StatusBadge, Surface } from "../../design-system/components";
 import { ClassificationFilterFields } from "../filters/ClassificationFilterFields";
 import { issueCopy, issueKey } from "../issues/issueText";
 import styles from "./PurchaseFeed.module.css";
@@ -117,11 +117,11 @@ export function PurchaseFeed({
         <div className={styles.dates}>
           <label>
             <span className={styles.fieldLabel}>{t("feed.dateFrom")}</span>
-            <input type="date" value={filters.from} max={filters.to || undefined} onChange={(event) => update({ from: event.target.value })} />
+            <DateInput value={filters.from} max={filters.to || undefined} onChange={(event) => update({ from: event.target.value })} />
           </label>
           <label>
             <span className={styles.fieldLabel}>{t("feed.dateTo")}</span>
-            <input type="date" value={filters.to} min={filters.from || undefined} onChange={(event) => update({ to: event.target.value })} />
+            <DateInput value={filters.to} min={filters.from || undefined} onChange={(event) => update({ to: event.target.value })} />
           </label>
         </div>
 

@@ -158,12 +158,21 @@ describe("PurchaseFeedSection", () => {
   it("offers the category tree with whole groups and «Без категории»", async () => {
     renderSection();
     const select = await screen.findByLabelText("Категория");
-    await waitFor(() => expect(within(select).getByRole("option", { name: "Молочное и яйца — вся группа" })).toBeInTheDocument());
+    // The optgroup names the group, so its options stay short in the open list.
+    await waitFor(() => expect(within(select).getAllByRole("option", { name: "Вся группа" }).length).toBeGreaterThan(0));
     expect(within(select).getByRole("option", { name: "Без категории" })).toHaveValue("none");
-    expect(within(select).getByRole("option", { name: "Молочное и яйца / Молоко" })).toHaveValue("milk");
+    expect(within(select).getByRole("option", { name: "Молоко" })).toHaveValue("milk");
+    expect(within(select).queryByText(/Молочное и яйца \/|— вся группа/)).not.toBeInTheDocument();
 
     fireEvent.change(select, { target: { value: "none" } });
     await waitFor(() => expect(getPurchaseFeed).toHaveBeenCalledWith(expect.objectContaining({ category: "none" })));
+
+    // The chosen option carries the full path, since a closed select shows only it.
+    fireEvent.change(select, { target: { value: "milk" } });
+    expect(await within(select).findByRole("option", { name: "Молочное и яйца / Молоко" })).toHaveValue("milk");
+    fireEvent.change(select, { target: { value: "dairy" } });
+    expect(await within(select).findByRole("option", { name: "Молочное и яйца — вся группа" })).toHaveValue("dairy");
+    expect(within(select).getByRole("option", { name: "Молоко" })).toBeInTheDocument();
   });
 
   it("drops a category that no longer exists instead of failing the feed", async () => {

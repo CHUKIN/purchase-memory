@@ -40,7 +40,14 @@ describe("CategoryPicker", () => {
       // The household's own category keeps the name they typed.
       "Товары для дачи, рыбалки и прочих выходных за городом"
     ]);
-    expect(within(groups[0]).getByRole("option", { name: "Dairy & eggs / Cheese" })).toBeInTheDocument();
+    // Inside a group the options are short — the optgroup already names the
+    // group — and only the chosen one keeps its full path for the closed select.
+    expect(within(groups[0]).getAllByRole("option").map((option) => option.textContent)).toEqual([
+      "No subcategory",
+      "Dairy & eggs / Milk",
+      "Cheese"
+    ]);
+    expect(within(groups[0]).getByRole("option", { name: "Cheese" })).toHaveValue("cheese");
 
     fireEvent.change(select, { target: { value: "" } });
     expect(onChange).toHaveBeenCalledWith(null);

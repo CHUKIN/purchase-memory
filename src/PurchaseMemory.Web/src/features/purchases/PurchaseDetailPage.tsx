@@ -13,7 +13,7 @@ import type {
   UpdatePurchaseRequest
 } from "../../api/types";
 import { useAuthorizedImageUrl } from "../../auth/useAuthorizedImageUrl";
-import { Button, IconButton, SkeletonCard, Surface } from "../../design-system/components";
+import { Button, DateInput, IconButton, SkeletonCard, Surface } from "../../design-system/components";
 import { issueCopy, issueKey, moneyComparisonTolerance } from "../issues/issueText";
 import { discountLinks, isDiscount } from "../receipts/discountLines";
 import { ReceiptDiscountLine } from "../receipts/ReceiptDiscountLine";
@@ -315,7 +315,17 @@ function PurchaseEditor({ purchase, focus, onDone, onReload }: {
       <form className={styles.form} onSubmit={(event) => { event.preventDefault(); submit(); }} noValidate>
         <div className={styles.headerFields}>
           <TextInput id={`${idPrefix}-merchant`} label={t("purchaseEdit.store")} value={state.merchantName} onChange={(merchantName) => update({ merchantName })} />
-          <TextInput id={`${idPrefix}-date`} type="datetime-local" label={t("purchaseEdit.dateTime")} value={state.purchasedAt} onChange={(purchasedAt) => update({ purchasedAt })} />
+          <label className={styles.field} htmlFor={`${idPrefix}-date`}>
+            <span className={styles.fieldLabel}>{t("purchaseEdit.dateTime")}</span>
+            <DateInput
+              id={`${idPrefix}-date`}
+              type="datetime-local"
+              className={styles.input}
+              value={state.purchasedAt}
+              emptyText={t("purchaseEdit.unknownDate")}
+              onChange={(event) => update({ purchasedAt: event.target.value })}
+            />
+          </label>
           <TextInput id={`${idPrefix}-currency`} label={t("purchaseEdit.currency")} value={state.currency} maxLength={3} onChange={(value) => update({ currency: value.toUpperCase() })} />
           <NumberInput id={`${idPrefix}-total`} label={t("purchaseEdit.total")} value={state.receiptTotal} onChange={(receiptTotal) => update({ receiptTotal })} />
         </div>

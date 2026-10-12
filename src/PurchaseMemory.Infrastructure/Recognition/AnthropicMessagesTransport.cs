@@ -33,9 +33,9 @@ internal interface IAnthropicMessagesTransport
 /// A failed Messages API call. <see cref="StatusCode"/> is 0 when no HTTP
 /// response arrived (network failure or timeout).
 /// </summary>
-internal sealed class AnthropicServiceException : Exception
+internal sealed class AnthropicProviderException : Exception
 {
-    public AnthropicServiceException(int statusCode, string message, Exception innerException)
+    public AnthropicProviderException(int statusCode, string message, Exception innerException)
         : base(message, innerException)
     {
         StatusCode = statusCode;
@@ -51,7 +51,7 @@ internal sealed class AnthropicServiceException : Exception
 internal static class AnthropicFailure
 {
     public static int StatusCode(Exception exception) =>
-        exception is AnthropicServiceException service ? service.StatusCode : 0;
+        exception is AnthropicProviderException service ? service.StatusCode : 0;
 
     public static string Categorize(Exception exception) => StatusCode(exception) switch
     {
@@ -175,14 +175,14 @@ internal sealed class AnthropicMessagesTransport : IAnthropicMessagesTransport, 
         }
         catch (AnthropicApiException exception)
         {
-            throw new AnthropicServiceException(
+            throw new AnthropicProviderException(
                 (int)exception.StatusCode,
                 "The Anthropic service rejected the request.",
                 exception);
         }
         catch (AnthropicException exception)
         {
-            throw new AnthropicServiceException(
+            throw new AnthropicProviderException(
                 0,
                 "The Anthropic service could not be reached.",
                 exception);

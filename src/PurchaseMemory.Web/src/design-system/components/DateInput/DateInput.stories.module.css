@@ -1,0 +1,35 @@
+.card {
+  padding: 1rem;
+  border: 1px solid var(--pm-border-subtle);
+  border-radius: var(--pm-radius-md);
+  background: var(--pm-surface-paper);
+}
+
+.pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.label {
+  color: var(--pm-content-muted);
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.input {
+  min-height: 2.75rem;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--pm-border-subtle);
+  border-radius: var(--pm-radius-md);
+  color: var(--pm-content-primary);
+  background: var(--pm-surface-paper);
+  font: inherit;
+  font-size: 1rem;
+}
