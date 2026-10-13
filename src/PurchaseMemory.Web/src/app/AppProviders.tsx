@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useState, type PropsWithChildren } from "react";
 import { I18nextProvider } from "react-i18next";
 import { createPurchaseMemoryI18n, isAppLocale, type AppLocale } from "../i18n/i18n";
-import { LocaleContext, localeStorageKey } from "./LocaleContext";
+import { LANGUAGE_SWITCH_ENABLED, LocaleContext, localeStorageKey } from "./LocaleContext";
 import { ToastProvider } from "./toasts";
 
 interface AppProvidersProps extends PropsWithChildren {
@@ -12,7 +12,7 @@ interface AppProvidersProps extends PropsWithChildren {
 }
 
 function storedLocale(): AppLocale {
-  if (typeof window === "undefined") return "ru";
+  if (!LANGUAGE_SWITCH_ENABLED || typeof window === "undefined") return "ru";
   const locale = window.localStorage.getItem(localeStorageKey);
   return isAppLocale(locale) ? locale : "ru";
 }

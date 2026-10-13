@@ -58,19 +58,20 @@ describe("App", () => {
     expect(within(tabs()).getByRole("link", { name: "Товары" })).toHaveAttribute("aria-current", "page");
   });
 
-  it("moves help, language and sign-out into «Ещё» on Home, and keeps the language after remount", async () => {
-    const firstRender = render(<AppProviders><App /></AppProviders>);
-    fireEvent.click(await screen.findByRole("button", { name: "Ещё: подсказки, язык, выход" }));
+  it("keeps help and sign-out in «Ещё» on Home, without a language switch", async () => {
+    render(<AppProviders><App /></AppProviders>);
+    fireEvent.click(await screen.findByRole("button", { name: "Ещё: подсказки, выход" }));
     const settings = screen.getByRole("dialog");
     expect(within(settings).getByRole("link", { name: /Подсказки/ })).toHaveAttribute("href", "/help");
-    fireEvent.click(within(settings).getByRole("tab", { name: "English" }));
-    expect(await screen.findByRole("heading", { level: 1, name: "Home" })).toBeInTheDocument();
-    expect(window.localStorage.getItem(localeStorageKey)).toBe("en");
+    expect(within(settings).queryByRole("tab", { name: "English" })).not.toBeInTheDocument();
+    expect(within(settings).queryByText("Язык")).not.toBeInTheDocument();
+  });
 
-    firstRender.unmount();
+  it("stays Russian even if English was stored before", async () => {
+    window.localStorage.setItem(localeStorageKey, "en");
     render(<AppProviders><App /></AppProviders>);
-    expect(await screen.findByRole("heading", { level: 1, name: "Home" })).toBeInTheDocument();
-    expect(screen.getByRole("navigation", { name: "Sections" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { level: 1, name: "Главная" })).toBeInTheDocument();
+    expect(document.documentElement.lang).toBe("ru");
   });
 
   it("uses browser history for tab navigation and back", async () => {

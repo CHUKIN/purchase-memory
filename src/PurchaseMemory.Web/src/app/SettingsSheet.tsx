@@ -7,7 +7,7 @@ import { useAuth } from "../auth/AuthContext";
 import { ItemLink, SectionHeader, Sheet } from "../design-system/components";
 import { helpPath } from "../features/help/topics";
 import { isAppLocale } from "../i18n/i18n";
-import { useAppLocale } from "./LocaleContext";
+import { LANGUAGE_SWITCH_ENABLED, useAppLocale } from "./LocaleContext";
 
 export interface SettingsSheetProps {
   isOpen: boolean;
@@ -18,7 +18,7 @@ export interface SettingsSheetProps {
 
 /**
  * «Ещё» on Home: the rarely used things that used to crowd every screen's
- * header — help, the interface language, recognition status and sign-out.
+ * header — help, recognition status and sign-out.
  */
 export function SettingsSheet({ isOpen, onClose, recognition, recognitionFailed = false }: SettingsSheetProps) {
   const { t } = useTranslation();
@@ -40,6 +40,8 @@ export function SettingsSheet({ isOpen, onClose, recognition, recognitionFailed 
         </ItemLink>
       </IonList>
 
+      {LANGUAGE_SWITCH_ENABLED && (
+        <>
       <SectionHeader level={3}>{t("settings.language")}</SectionHeader>
       <IonList inset className="pm-after-header">
         <div className="ion-padding">
@@ -53,6 +55,8 @@ export function SettingsSheet({ isOpen, onClose, recognition, recognitionFailed 
           </IonSegment>
         </div>
       </IonList>
+        </>
+      )}
 
       <IonList inset>
         <IonItem>

@@ -1,7 +1,7 @@
 import { IonButtons, IonContent, IonHeader, IonLabel, IonSegment, IonSegmentButton, IonTitle, IonToolbar } from "@ionic/react";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
-import { useAppLocale } from "../app/LocaleContext";
+import { LANGUAGE_SWITCH_ENABLED, useAppLocale } from "../app/LocaleContext";
 import { isAppLocale } from "../i18n/i18n";
 
 /**
@@ -19,6 +19,7 @@ export function AuthLayout({ children }: PropsWithChildren) {
           <IonTitle>
             <span className="pm-brand"><span className="pm-brand-mark" aria-hidden="true">PM</span>{t("common.appNameEnglish")}</span>
           </IonTitle>
+          {LANGUAGE_SWITCH_ENABLED && (
           <IonButtons slot="end">
             <IonSegment
               className="pm-locale-switch"
@@ -30,6 +31,7 @@ export function AuthLayout({ children }: PropsWithChildren) {
               <IonSegmentButton value="en"><IonLabel>EN</IonLabel></IonSegmentButton>
             </IonSegment>
           </IonButtons>
+          )}
         </IonToolbar>
       </IonHeader>
       <IonContent color="light">

@@ -53,7 +53,7 @@ export const resources = {
         swipeToDelete: "Проведите строку влево, чтобы удалить."
       },
       settings: {
-        open: "Ещё: подсказки, язык, выход",
+        open: "Ещё: подсказки, выход",
         title: "Настройки",
         help: "Подсказки",
         language: "Язык",
@@ -1173,7 +1173,7 @@ export const resources = {
         recognitionUnavailable: "Receipt recognition unavailable",
       },
       settings: {
-        open: "More: help, language, sign out",
+        open: "More: help, sign out",
         title: "Settings",
         help: "Help",
         language: "Language",

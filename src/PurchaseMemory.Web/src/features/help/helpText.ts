@@ -90,7 +90,7 @@ export const helpRu: HelpText = {
         "В приложении на экране «Домой» iPhone: введите почту, нажмите «Получить код на почту», скопируйте цифры из письма и вставьте их в поле «Код из письма». Ссылку в письме здесь не нажимайте — она откроется в браузере, а не в приложении.",
         "Если владелец включил вход через Google, можно нажать «Продолжить через Google».",
         "При первом входе появится экран «Заявка отправлена». Когда владелец подтвердит доступ, нажмите «Проверить снова».",
-        "На экране входа язык переключается кнопками RU / EN вверху справа. После входа язык, «Подсказки» и «Выйти» — на «Главной» под кнопкой «Ещё» (кружок с тремя точками вверху справа)."
+        "После входа «Подсказки» и «Выйти» — на «Главной» под кнопкой «Ещё» (кружок с тремя точками вверху справа)."
       ],
       see: [
         "Покупки, товары и аналитика общие для всей семьи.",
@@ -488,7 +488,7 @@ export const helpEn: HelpText = {
         "In the app on the iPhone Home Screen: enter your email, press “Email me a sign-in code”, copy the digits from the email and paste them into “Code from the email”. Do not tap the link in the email there: it opens in the browser, not in the app.",
         "If the owner enabled Google sign-in, you can press “Continue with Google”.",
         "On your first sign-in you will see “Request sent”. Once the owner approves you, press “Check again”.",
-        "On the sign-in screen, switch the language with RU / EN at the top right. Once signed in, the language, “Help” and “Sign out” are on Home under the “More” button (the circle with three dots at the top right)."
+        "Once signed in, “Help” and “Sign out” are on Home under the “More” button (the circle with three dots at the top right)."
       ],
       see: [
         "Purchases, products and analytics are shared by the whole household.",

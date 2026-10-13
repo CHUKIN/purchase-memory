@@ -35,7 +35,7 @@ export interface HomePageProps {
 /**
  * «Главная»: one big «Сфотографировать чек», then only what needs the user
  * now — receipts in flight, the review queue, recent lines to rate — and the
- * last few purchases. Help, language and sign-out sit behind «Ещё».
+ * last few purchases. Help and sign-out sit behind «Ещё».
  */
 export function HomePage({ recognition, recognitionFailed = false, receipts, receiptsFailed = false, reviewCount = null }: HomePageProps) {
   const { t, i18n } = useTranslation();
