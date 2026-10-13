@@ -1,4 +1,5 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { getProductCatalog, listBrands, listCategories, listTags } from "../../api/client";
 import { brandsQueryKey, categoriesQueryKey } from "../categories/categoryQueries";
@@ -24,7 +25,7 @@ const emptyCatalogFilters: CatalogFilters = { query: "", category: "", brand: ""
  * (`query`, `category`, `brand`, `tag`) exactly like the purchase feed, and the
  * text fields are debounced so typing does not fire a request per keystroke.
  */
-export function ProductCatalogSection() {
+export function ProductCatalogSection({ footer }: { footer?: ReactNode }) {
   const { t } = useTranslation();
   const [filters, setFilters] = useUrlFilters(emptyCatalogFilters);
   const debouncedQuery = useDebounced(filters.query.trim());
@@ -74,6 +75,7 @@ export function ProductCatalogSection() {
       hasMore={catalogQuery.hasNextPage}
       loadingMore={catalogQuery.isFetchingNextPage}
       onLoadMore={() => void catalogQuery.fetchNextPage()}
+      footer={footer}
     />
   );
 }

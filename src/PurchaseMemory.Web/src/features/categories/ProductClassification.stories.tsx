@@ -29,7 +29,8 @@ type Story = StoryObj<typeof meta>;
 export const Confirmed: Story = {};
 export const Suggested: Story = { args: { categoryId: "coffee", categorySource: "suggested", brand: "Lavazza", brandSource: "suggested" } };
 export const Uncategorized: Story = { args: { categoryId: null, categorySource: null, brand: null, brandSource: null } };
-export const Editing: Story = { args: { initiallyEditing: true } };
+/** Category and brand are rows; a tap opens the tree or the brand alert and saves at once. */
+export const SuggestedMobileEn: Story = { globals: { ...phone, locale: "en" }, args: { categoryId: "coffee", categorySource: "suggested", brand: "Lavazza", brandSource: "suggested" } };
 export const LongNamesMobile: Story = {
   globals: phone,
   args: {
@@ -39,7 +40,6 @@ export const LongNamesMobile: Story = {
     brandSource: "suggested"
   }
 };
-export const EditingMobileEn: Story = { globals: { ...phone, locale: "en" }, args: { initiallyEditing: true } };
 export const SaveFails: Story = {
   args: { categorySource: "suggested", onSave: fn(async () => Promise.reject(new Error("offline"))) }
 };

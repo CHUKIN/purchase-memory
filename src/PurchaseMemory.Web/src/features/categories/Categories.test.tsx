@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { AppProviders } from "../../app/AppProviders";
+import { chooseAction, dialog, pick, pickerOptions, row } from "../../test/ionicHelpers";
 import { CategoryChip } from "./CategoryChip";
 import { sampleCategories } from "./categoryFixtures";
 import { CategoryManager } from "./CategoryManager";
@@ -15,43 +16,40 @@ describe("CategoryChip", () => {
   it("says in words that a category is only suggested", () => {
     renderRu(<CategoryChip label="Напитки / Кофе" source="suggested" />);
     expect(screen.getByText("Напитки / Кофе")).toBeInTheDocument();
-    expect(screen.getByText("предложено")).toBeInTheDocument();
+    expect(screen.getByText(/предложено/)).toBeInTheDocument();
   });
 
   it("shows «Без категории» for none and no marker for confirmed", () => {
     const { rerender } = renderRu(<CategoryChip label={null} />);
     expect(screen.getByText("Без категории")).toBeInTheDocument();
     rerender(<AppProviders locale="ru"><CategoryChip label="Сыр" source="confirmed" /></AppProviders>);
-    expect(screen.queryByText("предложено")).not.toBeInTheDocument();
+    expect(screen.queryByText(/предложено/)).not.toBeInTheDocument();
   });
 });
 
 describe("CategoryPicker", () => {
-  it("groups subcategories under their group, translating seeded names", () => {
+  it("lists subcategories under their group, translating seeded names", () => {
     const onChange = vi.fn();
     renderRu(<CategoryPicker categories={sampleCategories} value="milk" onChange={onChange} />, "en");
 
-    const select = screen.getByLabelText("Product category") as HTMLSelectElement;
-    expect(select.value).toBe("milk");
-    const groups = [...select.querySelectorAll("optgroup")];
-    expect(groups.map((group) => group.label)).toEqual([
+    // The closed row shows the whole path of the choice.
+    expect(row("Product category")).toHaveTextContent("Dairy & eggs / Milk");
+    fireEvent.click(row("Product category"));
+    const picker = dialog("Product category");
+    expect(within(picker).getAllByRole("heading", { level: 3 }).map((heading) => heading.textContent)).toEqual([
       "Dairy & eggs",
       "Drinks",
       // The household's own category keeps the name they typed.
       "Товары для дачи, рыбалки и прочих выходных за городом"
     ]);
-    // Inside a group the options are short — the optgroup already names the
-    // group — and only the chosen one keeps its full path for the closed select.
-    expect(within(groups[0]).getAllByRole("option").map((option) => option.textContent)).toEqual([
-      "No subcategory",
-      "Dairy & eggs / Milk",
-      "Cheese"
-    ]);
-    expect(within(groups[0]).getByRole("option", { name: "Cheese" })).toHaveValue("cheese");
+    // Inside a section the rows are short: the header already names the group.
+    expect(within(picker).getByRole("button", { name: /^Milk/ })).toHaveAttribute("aria-current", "true");
+    fireEvent.click(within(picker).getByRole("button", { name: "Cancel" }));
 
-    fireEvent.change(select, { target: { value: "" } });
+    expect(pickerOptions("Product category").slice(0, 4)).toEqual(["No category", "No subcategory", "Milk", "Cheese"]);
+    pick("Product category", "No category");
     expect(onChange).toHaveBeenCalledWith(null);
-    fireEvent.change(select, { target: { value: "coffee" } });
+    pick("Product category", "Coffee");
     expect(onChange).toHaveBeenLastCalledWith("coffee");
   });
 });
@@ -70,6 +68,7 @@ describe("ProductClassification", () => {
     renderRu(<ProductClassification {...base} onSave={onSave} />);
 
     expect(screen.getByText("Напитки / Кофе")).toBeInTheDocument();
+    expect(screen.getByText("Категорию предложил AI — подтвердите или исправьте.")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Подтвердить" }));
     await waitFor(() => expect(onSave).toHaveBeenCalledWith({ categoryId: "coffee", brand: "Lavazza" }));
   });
@@ -81,27 +80,29 @@ describe("ProductClassification", () => {
     await waitFor(() => expect(onSave).toHaveBeenCalledWith({ categoryId: "coffee" }));
   });
 
-  it("edits category and brand, clearing an empty brand", async () => {
+  it("saves a picked category at once and clears an empty brand", async () => {
     const onSave = vi.fn().mockResolvedValue(undefined);
     renderRu(<ProductClassification {...base} categorySource="confirmed" brandSource="confirmed" onSave={onSave} />);
 
     expect(screen.queryByRole("button", { name: "Подтвердить" })).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Изменить" }));
-    fireEvent.change(screen.getByLabelText("Категория товара"), { target: { value: "tea" } });
-    fireEvent.change(screen.getByLabelText("Бренд"), { target: { value: "   " } });
     expect(screen.getByText(/применится ко всем покупкам/)).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Сохранить" }));
+    pick("Категория", "Чай");
+    await waitFor(() => expect(onSave).toHaveBeenCalledWith({ categoryId: "tea" }));
 
-    await waitFor(() => expect(onSave).toHaveBeenCalledWith({ categoryId: "tea", brand: null }));
-    expect(await screen.findByRole("button", { name: "Изменить" })).toBeInTheDocument();
+    fireEvent.click(row("Бренд"));
+    const alert = dialog("Бренд");
+    expect(within(alert).getByLabelText("Например, Łaciate")).toHaveValue("Lavazza");
+    fireEvent.change(within(alert).getByLabelText("Например, Łaciate"), { target: { value: "   " } });
+    fireEvent.click(within(alert).getByRole("button", { name: "Сохранить" }));
+    await waitFor(() => expect(onSave).toHaveBeenLastCalledWith({ brand: null }));
   });
 
-  it("keeps the form and reports a failed save", async () => {
+  it("reports a failed save", async () => {
     const onSave = vi.fn().mockRejectedValue(new Error("offline"));
-    renderRu(<ProductClassification {...base} onSave={onSave} initiallyEditing />);
-    fireEvent.click(screen.getByRole("button", { name: "Сохранить" }));
+    renderRu(<ProductClassification {...base} onSave={onSave} />);
+    fireEvent.click(screen.getByRole("button", { name: "Подтвердить" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("Не удалось сохранить");
-    expect(screen.getByLabelText("Категория товара")).toBeInTheDocument();
+    expect(row("Категория")).toBeInTheDocument();
   });
 
   it("shows «Без категории» and no brand when nothing is known", () => {
@@ -109,48 +110,60 @@ describe("ProductClassification", () => {
       <ProductClassification categories={sampleCategories} categoryId={null} categorySource={null} brand={null}
         brandSource={null} onSave={vi.fn()} />
     );
-    expect(screen.getByText("Без категории")).toBeInTheDocument();
+    expect(row("Категория")).toHaveTextContent("Без категории");
     expect(screen.getByText("Бренд не указан")).toBeInTheDocument();
   });
 });
 
 describe("CategoryManager", () => {
+  const manager = (props: Partial<React.ComponentProps<typeof CategoryManager>> = {}) => (
+    <CategoryManager categories={sampleCategories} onCreate={vi.fn()} onRename={vi.fn()} onDelete={vi.fn()} {...props} />
+  );
+
   it("adds a subcategory under the chosen group", async () => {
     const onCreate = vi.fn().mockResolvedValue(undefined);
-    renderRu(<CategoryManager categories={sampleCategories} onCreate={onCreate} onRename={vi.fn()} onDelete={vi.fn()} defaultOpen />);
+    renderRu(manager({ onCreate }));
 
     fireEvent.change(screen.getByLabelText("Новая категория"), { target: { value: "  Кефир " } });
-    fireEvent.change(screen.getByLabelText("Где создать"), { target: { value: "dairy" } });
+    pick("Где создать", "Молочное и яйца");
+    expect(row("Где создать")).toHaveTextContent("Молочное и яйца");
     fireEvent.click(screen.getByRole("button", { name: "Добавить" }));
     await waitFor(() => expect(onCreate).toHaveBeenCalledWith("Кефир", "dairy"));
   });
 
-  it("renames inline and deletes only after confirmation", async () => {
+  it("renames in an alert and deletes only after confirmation", async () => {
     const onRename = vi.fn().mockResolvedValue(undefined);
     const onDelete = vi.fn().mockResolvedValue(undefined);
-    renderRu(<CategoryManager categories={sampleCategories} onCreate={vi.fn()} onRename={onRename} onDelete={onDelete} defaultOpen />);
+    renderRu(manager({ onRename, onDelete }));
 
-    fireEvent.click(screen.getByRole("button", { name: "Переименовать: Сыр" }));
-    fireEvent.change(screen.getByLabelText("Переименовать"), { target: { value: "Сыры" } });
-    fireEvent.click(screen.getByRole("button", { name: "Сохранить" }));
+    expect(screen.getByRole("list", { name: "Дерево категорий" })).toBeInTheDocument();
+    fireEvent.click(row("Сыр"));
+    chooseAction("Переименовать");
+    fireEvent.change(within(dialog("Переименовать")).getByLabelText("Переименовать"), { target: { value: "Сыры" } });
+    fireEvent.click(within(dialog("Переименовать")).getByRole("button", { name: "Сохранить" }));
     await waitFor(() => expect(onRename).toHaveBeenCalledWith("cheese", "Сыры"));
 
-    fireEvent.click(screen.getByRole("button", { name: "Удалить: Чай" }));
+    fireEvent.click(row("Чай"));
+    chooseAction("Удалить");
     expect(onDelete).not.toHaveBeenCalled();
-    fireEvent.click(screen.getByRole("button", { name: "Да, удалить" }));
+    expect(screen.getByText("Удалить «Чай»?")).toBeInTheDocument();
+    chooseAction("Да, удалить");
     await waitFor(() => expect(onDelete).toHaveBeenCalledWith("tea"));
   });
 
   it("does not offer deleting a group that still has subcategories", () => {
-    renderRu(<CategoryManager categories={sampleCategories} onCreate={vi.fn()} onRename={vi.fn()} onDelete={vi.fn()} defaultOpen />);
-    expect(screen.getByRole("button", { name: "Удалить: Молочное и яйца" })).toBeDisabled();
+    renderRu(manager());
+    fireEvent.click(row("Молочное и яйца"));
+    expect(screen.getByText("Сначала удалите подкатегории.")).toBeInTheDocument();
+    expect(within(dialog()).queryByRole("button", { name: "Удалить" })).not.toBeInTheDocument();
   });
 
   it("reports a refused action", async () => {
     const onDelete = vi.fn().mockRejectedValue(new Error("conflict"));
-    renderRu(<CategoryManager categories={sampleCategories} onCreate={vi.fn()} onRename={vi.fn()} onDelete={onDelete} defaultOpen />);
-    fireEvent.click(screen.getByRole("button", { name: "Удалить: Чай" }));
-    fireEvent.click(screen.getByRole("button", { name: "Да, удалить" }));
+    renderRu(manager({ onDelete }));
+    fireEvent.click(row("Чай"));
+    chooseAction("Удалить");
+    chooseAction("Да, удалить");
     expect(await screen.findByRole("alert")).toHaveTextContent("conflict");
   });
 });

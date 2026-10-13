@@ -12,8 +12,9 @@ vi.mock("../api/client", () => ({
   getPurchaseFeed: vi.fn().mockResolvedValue({ items: [], page: 1, pageSize: 20, totalCount: 0, hasMore: false, truncated: false })
 }));
 
-vi.mock("../features/receipts/CapturePage", () => ({
-  CapturePage: () => <div>Capture receipt</div>,
+vi.mock("../features/receipts/CapturePage", () => ({ CapturePage: () => <div>Capture receipt</div> }));
+
+vi.mock("../features/receipts/ReceiptDetailPage", () => ({
   ReceiptDetailPage: () => <h1>Resumed receipt</h1>
 }));
 

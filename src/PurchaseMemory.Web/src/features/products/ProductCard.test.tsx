@@ -66,11 +66,11 @@ describe("ProductCard", () => {
     renderCard(detail());
 
     expect(screen.getByRole("heading", { level: 1, name: "Mleko Łaciate 3,2% 1L" })).toBeInTheDocument();
-    const lastPurchase = screen.getByRole("heading", { name: "Последняя покупка" }).parentElement;
+    const lastPurchase = screen.getByRole("region", { name: "Последняя покупка" });
     expect(lastPurchase).toHaveTextContent("Żabka");
     expect(lastPurchase).toHaveTextContent("21 июл. 2026 г.");
 
-    const figures = screen.getAllByRole("definition").map((node) => node.textContent);
+    const figures = within(lastPurchase).getAllByText(/\/шт\./).map((node) => node.textContent ?? "");
     expect(figures.some((text) => text?.includes("6,30"))).toBe(true);
     expect(figures.some((text) => text?.includes("3,49"))).toBe(true);
     expect(figures.some((text) => text?.includes("4,93"))).toBe(true);
@@ -232,19 +232,19 @@ describe("ProductCard", () => {
     expect(screen.getByRole("heading", { name: "Теги" })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Изменить теги" }));
 
-    const kid = screen.getByRole("button", { name: "для ребёнка" });
-    const party = screen.getByRole("button", { name: "к празднику" });
-    expect(kid).toHaveAttribute("aria-pressed", "true");
-    expect(party).toHaveAttribute("aria-pressed", "false");
+    const kid = screen.getByRole("checkbox", { name: "для ребёнка" });
+    const party = screen.getByRole("checkbox", { name: "к празднику" });
+    expect(kid).toBeChecked();
+    expect(party).not.toBeChecked();
     fireEvent.click(party);
     fireEvent.click(kid);
-    expect(party).toHaveAttribute("aria-pressed", "true");
-    expect(kid).toHaveAttribute("aria-pressed", "false");
+    expect(party).toBeChecked();
+    expect(kid).not.toBeChecked();
 
     fireEvent.change(screen.getByLabelText("Новый тег"), { target: { value: "  веган " } });
     fireEvent.click(screen.getByRole("button", { name: "Создать тег" }));
     await waitFor(() => expect(onCreateTag).toHaveBeenCalledWith("веган"));
-    expect(await screen.findByRole("button", { name: "веган" })).toHaveAttribute("aria-pressed", "true");
+    expect(await screen.findByRole("checkbox", { name: "веган" })).toBeChecked();
     expect(screen.getByLabelText("Новый тег")).toHaveValue("");
 
     fireEvent.click(screen.getByRole("button", { name: "Сохранить" }));
@@ -302,7 +302,7 @@ describe("ProductCard", () => {
     fireEvent.click(screen.getByRole("button", { name: "Изменить теги" }));
     fireEvent.change(screen.getByLabelText("Новый тег"), { target: { value: "  LODZ " } });
     fireEvent.click(screen.getByRole("button", { name: "Создать тег" }));
-    expect(screen.getByRole("button", { name: "Łódź" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("checkbox", { name: "Łódź" })).toBeChecked();
     expect(onCreateTag).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole("button", { name: "Сохранить" }));
     await waitFor(() => expect(onSetTags).toHaveBeenCalledWith(["city"]));

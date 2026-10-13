@@ -1,10 +1,10 @@
+import { IonButton, IonItem, IonLabel, IonList, IonSelect, IonSelectOption } from "@ionic/react";
 import { SlidersHorizontal, X } from "lucide-react";
-import { useId, useState, type FormEvent } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { AnalyticsDiscountFilter, AnalyticsGroupBy, AnalyticsMetric, AnalyticsPlan, ProductCategory, ProductTag } from "../../api/types";
-import { Button, DateInput } from "../../design-system/components";
+import { ActionButton, DateField, SectionHeader, SelectRow, Sheet } from "../../design-system/components";
 import { planChips } from "./analyticsText";
-import styles from "./PlanFilters.module.css";
 
 const metrics: AnalyticsMetric[] = ["spend", "quantity", "purchaseCount", "averageUnitPrice", "minimumUnitPrice", "maximumUnitPrice", "exists", "top"];
 const groupings: AnalyticsGroupBy[] = ["none", "month", "week", "merchant", "category", "product", "brand", "tag"];
@@ -24,40 +24,37 @@ export interface PlanFiltersProps {
 }
 
 /**
- * The server's interpretation as chips. Removing a chip or editing the form
- * re-runs the plan directly, so correcting a misunderstanding never costs a
- * model call.
+ * The server's interpretation as chips. Removing a chip or editing the plan
+ * in the sheet re-runs it directly, so correcting a misunderstanding never
+ * costs a model call.
  */
 export function PlanFilters({ plan, categories, merchants, tags = [], productNames, locale, onChange, busy = false }: PlanFiltersProps) {
   const { t } = useTranslation();
   const [editing, setEditing] = useState(false);
   const chips = planChips(t, locale, plan, categories, productNames, tags);
-  const formId = useId();
 
   return (
-    <section className={styles.root} aria-labelledby={`${formId}-title`}>
-      <div className={styles.header}>
-        <h3 id={`${formId}-title`} className={styles.title}>{t("analytics.filters.title")}</h3>
-        <Button
-          intent="quiet"
-          leftSection={<SlidersHorizontal aria-hidden="true" size={16} />}
-          aria-expanded={editing}
-          aria-controls={`${formId}-form`}
-          onClick={() => setEditing((value) => !value)}
-          disabled={busy}
-        >
-          {editing ? t("analytics.filters.close") : t("analytics.filters.edit")}
-        </Button>
-      </div>
+    <section aria-labelledby="analytics-filters-title">
+      <SectionHeader
+        id="analytics-filters-title"
+        level={3}
+        action={(
+          <IonButton fill="clear" size="small" disabled={busy} onClick={() => setEditing(true)}>
+            <SlidersHorizontal aria-hidden="true" size={16} />&nbsp;{t("analytics.filters.edit")}
+          </IonButton>
+        )}
+      >
+        {t("analytics.filters.title")}
+      </SectionHeader>
 
-      <ul className={styles.chips} aria-label={t("analytics.filters.chipsLabel")}>
+      <ul className="pm-chips pm-padded" aria-label={t("analytics.filters.chipsLabel")}>
         {chips.map((chip) => (
-          <li key={chip.key} className={styles.chip} data-kind={chip.kind}>
-            <span className={styles.chipLabel} title={chip.label}>{chip.label}</span>
+          <li key={chip.key} className="pm-chip pm-plan-chip" data-kind={chip.kind}>
+            <span title={chip.label}>{chip.label}</span>
             {chip.without && (
               <button
                 type="button"
-                className={styles.remove}
+                className="pm-chip-remove"
                 onClick={() => onChange(chip.without!)}
                 disabled={busy}
                 aria-label={t("analytics.filters.remove", { filter: chip.label })}
@@ -71,11 +68,11 @@ export function PlanFilters({ plan, categories, merchants, tags = [], productNam
 
       {editing && (
         <PlanEditor
-          id={`${formId}-form`}
           plan={plan}
           merchants={merchants}
           tags={tags}
           busy={busy}
+          onClose={() => setEditing(false)}
           onApply={(next) => {
             setEditing(false);
             onChange(next);
@@ -86,13 +83,13 @@ export function PlanFilters({ plan, categories, merchants, tags = [], productNam
   );
 }
 
-function PlanEditor({ id, plan, merchants, tags, busy, onApply }: {
-  id: string;
+function PlanEditor({ plan, merchants, tags, busy, onApply, onClose }: {
   plan: AnalyticsPlan;
   merchants: string[];
   tags: ProductTag[];
   busy: boolean;
   onApply: (plan: AnalyticsPlan) => void;
+  onClose: () => void;
 }) {
   const { t } = useTranslation();
   const [metric, setMetric] = useState(plan.metric);
@@ -105,20 +102,17 @@ function PlanEditor({ id, plan, merchants, tags, busy, onApply }: {
   // Null until the field is touched, so a plan with several tags keeps them all when only the period changes.
   const [tag, setTag] = useState<string | null>(null);
 
-  const submit = (event: FormEvent) => {
-    event.preventDefault();
-    onApply({
-      ...plan,
-      metric,
-      from: from || null,
-      to: to || null,
-      merchants: merchant ? [merchant] : [],
-      tagIds: tag === null ? planTagIds : tag ? [tag] : [],
-      groupBy,
-      discount,
-      limit: metric === "top" ? plan.limit : null
-    });
-  };
+  const apply = () => onApply({
+    ...plan,
+    metric,
+    from: from || null,
+    to: to || null,
+    merchants: merchant ? [merchant] : [],
+    tagIds: tag === null ? planTagIds : tag ? [tag] : [],
+    groupBy,
+    discount,
+    limit: metric === "top" ? plan.limit : null
+  });
 
   // Stores the plan already names stay selectable even if they are rare.
   const merchantOptions = Array.from(new Set([...plan.merchants, ...merchants]));
@@ -128,56 +122,66 @@ function PlanEditor({ id, plan, merchants, tags, busy, onApply }: {
     // A tag the plan names but the list no longer has (just deleted) stays visible rather than vanishing.
     ...planTagIds.filter((tagId) => !tags.some((entry) => entry.id === tagId)).map((tagId) => ({ id: tagId, name: t("analytics.chips.unknownTag") }))
   ];
+  const tagValue = tag ?? planTagIds[0] ?? "";
 
   return (
-    <form id={id} className={styles.editor} onSubmit={submit}>
-      <label className={styles.field}>
-        <span>{t("analytics.filters.metric")}</span>
-        <select value={metric} onChange={(event) => setMetric(event.target.value as AnalyticsMetric)}>
-          {metrics.map((value) => <option key={value} value={value}>{t(`analytics.metrics.${value}`)}</option>)}
-        </select>
-      </label>
-      <label className={styles.field}>
-        <span>{t("analytics.filters.from")}</span>
-        <DateInput value={from} max={to || undefined} onChange={(event) => setFrom(event.target.value)} />
-      </label>
-      <label className={styles.field}>
-        <span>{t("analytics.filters.to")}</span>
-        <DateInput value={to} min={from || undefined} onChange={(event) => setTo(event.target.value)} />
-      </label>
-      <label className={styles.field}>
-        <span>{t("analytics.filters.merchant")}</span>
-        <select value={merchant} onChange={(event) => setMerchant(event.target.value)}>
-          <option value="">{t("analytics.chips.allMerchants")}</option>
-          {merchantOptions.map((value) => <option key={value} value={value}>{value}</option>)}
-        </select>
-      </label>
-      {showTags && (
-        <label className={styles.field}>
-          <span>{t("analytics.filters.tag")}</span>
-          <select value={tag ?? planTagIds[0] ?? ""} onChange={(event) => setTag(event.target.value)}>
-            <option value="">{t("analytics.filters.allTags")}</option>
-            {tagOptions.map((entry) => <option key={entry.id} value={entry.id}>{entry.name}</option>)}
-          </select>
-        </label>
-      )}
-      <label className={styles.field}>
-        <span>{t("analytics.filters.groupBy")}</span>
-        <select value={groupBy} onChange={(event) => setGroupBy(event.target.value as AnalyticsGroupBy)}>
-          {groupings
-            .filter((value) => value !== "tag" || showTags)
-            .map((value) => <option key={value} value={value}>{t(`analytics.groupBy.${value}`)}</option>)}
-        </select>
-      </label>
-      <label className={styles.field}>
-        <span>{t("analytics.filters.discount")}</span>
-        <select value={discount} onChange={(event) => setDiscount(event.target.value as AnalyticsDiscountFilter)}>
-          {discounts.map((value) => <option key={value} value={value}>{t(`analytics.discount.${value}`)}</option>)}
-        </select>
-      </label>
-      <div className={styles.actions}>
-        <Button type="submit" loading={busy}>{t("analytics.filters.apply")}</Button>
-      </div>
-    </form>
+    <Sheet
+      isOpen
+      onClose={onClose}
+      title={t("analytics.filters.title")}
+      variant="full"
+      start={<IonButton onClick={onClose}>{t("ui.cancel")}</IonButton>}
+      end={<ActionButton strong loading={busy} onClick={apply}>{t("analytics.filters.apply")}</ActionButton>}
+    >
+      <IonList inset>
+        <IonItem>
+          <IonSelect label={t("analytics.filters.metric")} interface="action-sheet" cancelText={t("ui.cancel")} value={metric} onIonChange={(event) => setMetric(event.detail.value as AnalyticsMetric)}>
+            {metrics.map((value) => <IonSelectOption key={value} value={value}>{t(`analytics.metrics.${value}`)}</IonSelectOption>)}
+          </IonSelect>
+        </IonItem>
+        <IonItem>
+          <IonSelect label={t("analytics.filters.groupBy")} interface="action-sheet" cancelText={t("ui.cancel")} value={groupBy} onIonChange={(event) => setGroupBy(event.detail.value as AnalyticsGroupBy)}>
+            {groupings
+              .filter((value) => value !== "tag" || showTags)
+              .map((value) => <IonSelectOption key={value} value={value}>{t(`analytics.groupBy.${value}`)}</IonSelectOption>)}
+          </IonSelect>
+        </IonItem>
+        <IonItem lines="none">
+          <IonSelect label={t("analytics.filters.discount")} interface="action-sheet" cancelText={t("ui.cancel")} value={discount} onIonChange={(event) => setDiscount(event.detail.value as AnalyticsDiscountFilter)}>
+            {discounts.map((value) => <IonSelectOption key={value} value={value}>{t(`analytics.discount.${value}`)}</IonSelectOption>)}
+          </IonSelect>
+        </IonItem>
+      </IonList>
+
+      <IonList inset>
+        <DateField label={t("analytics.filters.from")} value={from} max={to || undefined} onChange={setFrom} />
+        <DateField label={t("analytics.filters.to")} value={to} min={from || undefined} onChange={setTo} />
+      </IonList>
+
+      <IonList inset>
+        <SelectRow
+          label={t("analytics.filters.merchant")}
+          valueText={merchant || t("analytics.chips.allMerchants")}
+          value={merchant}
+          onChange={setMerchant}
+          searchable={merchantOptions.length > 8}
+          groups={[{ options: [{ value: "", label: t("analytics.chips.allMerchants") }, ...merchantOptions.map((value) => ({ value, label: value }))] }]}
+        />
+        {showTags && (
+          <SelectRow
+            label={t("analytics.filters.tag")}
+            valueText={tagOptions.find((entry) => entry.id === tagValue)?.name ?? t("analytics.filters.allTags")}
+            value={tagValue}
+            onChange={setTag}
+            groups={[{ options: [{ value: "", label: t("analytics.filters.allTags") }, ...tagOptions.map((entry) => ({ value: entry.id, label: entry.name }))] }]}
+          />
+        )}
+      </IonList>
+      <IonList inset>
+        <IonItem button detail={false} lines="none" disabled={busy} onClick={apply}>
+          <IonLabel color="primary">{t("analytics.filters.apply")}</IonLabel>
+        </IonItem>
+      </IonList>
+    </Sheet>
   );
 }

@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { getPurchaseFeed, listTags } from "../../api/client";
 import type { PurchaseFeedPage, PurchaseView } from "../../api/types";
 import { AppProviders } from "../../app/AppProviders";
+import { dialog, findRow, openFilters, pick, pickerOptions, row, setDate } from "../../test/ionicHelpers";
 import { PurchaseFeedSection } from "./PurchaseFeedSection";
 
 vi.mock("../../api/client", () => ({
@@ -80,13 +81,14 @@ describe("PurchaseFeedSection", () => {
     renderSection();
     await screen.findByRole("heading", { name: "Biedronka" });
 
-    fireEvent.click(screen.getByRole("radio", { name: "Нужно проверить" }));
+    const sheet = openFilters();
+    fireEvent.click(within(sheet).getByRole("tab", { name: "Нужно проверить" }));
     await waitFor(() => expect(getPurchaseFeed).toHaveBeenCalledWith(
       expect.objectContaining({ status: "needsAttention", page: 1 })
     ));
 
-    fireEvent.change(screen.getByLabelText("Дата с"), { target: { value: "2026-08-01" } });
-    fireEvent.change(screen.getByLabelText("Дата по"), { target: { value: "2026-08-24" } });
+    setDate("Дата с", "2026-08-01");
+    setDate("Дата по", "2026-08-24");
     await waitFor(() => expect(getPurchaseFeed).toHaveBeenCalledWith(
       expect.objectContaining({ from: "2026-08-01", to: "2026-08-24", status: "needsAttention" })
     ));
@@ -132,47 +134,59 @@ describe("PurchaseFeedSection", () => {
     expect(getPurchaseFeed).toHaveBeenCalledWith(expect.objectContaining({
       query: "mleko", status: "reviewed", category: "milk", brand: "Łaciate", from: "2026-08-01"
     }));
-    expect(await screen.findByLabelText("Категория")).toHaveValue("milk");
-    expect(screen.getByLabelText("Бренд")).toHaveValue("Łaciate");
-    expect(screen.getByRole("radio", { name: "Проверено" })).toBeChecked();
+    expect(screen.getByRole("button", { name: "Фильтры, выбрано 4" })).toBeInTheDocument();
+    const sheet = openFilters();
+    expect(await findRow("Категория")).toHaveTextContent("Молочное и яйца / Молоко");
+    expect(row("Бренд")).toHaveTextContent("Łaciate");
+    expect(within(sheet).getByRole("tab", { name: "Проверено" })).toHaveAttribute("aria-selected", "true");
   });
 
   it("writes category and brand to the URL and clears them with one button", async () => {
     renderSection();
     await screen.findByRole("heading", { name: "Biedronka" });
+    const sheet = openFilters();
 
-    fireEvent.change(await screen.findByLabelText("Категория"), { target: { value: "dairy" } });
+    await findRow("Категория");
+    pick("Категория", "Вся группа");
     await waitFor(() => expect(getPurchaseFeed).toHaveBeenCalledWith(expect.objectContaining({ category: "dairy" })));
-    fireEvent.change(screen.getByLabelText("Бренд"), { target: { value: "Łaciate" } });
+    pick("Бренд", "Łaciate");
     await waitFor(() => expect(getPurchaseFeed).toHaveBeenCalledWith(
       expect.objectContaining({ category: "dairy", brand: "Łaciate" })
     ));
     expect(screen.getByTestId("location")).toHaveTextContent("/purchases?category=dairy&brand=%C5%81aciate");
 
-    fireEvent.click(screen.getByRole("button", { name: "Сбросить фильтры" }));
+    fireEvent.click(within(sheet).getByRole("button", { name: "Сбросить" }));
     await waitFor(() => expect(screen.getByTestId("location")).toHaveTextContent(/^\/purchases$/));
-    expect(screen.getByLabelText("Категория")).toHaveValue("");
-    expect(screen.getByLabelText("Бренд")).toHaveValue("");
+    expect(row("Категория")).toHaveTextContent("Все категории");
+    expect(row("Бренд")).toHaveTextContent("Любой бренд");
+  });
+
+  it("filters by part of a brand typed in its picker", async () => {
+    renderSection();
+    await screen.findByRole("heading", { name: "Biedronka" });
+    openFilters();
+
+    fireEvent.click(row("Бренд"));
+    fireEvent.change(within(dialog("Бренд")).getByLabelText("Например, Lavazza"), { target: { value: "laci" } });
+    fireEvent.click(within(dialog("Бренд")).getByRole("button", { name: "Бренд содержит «laci»" }));
+    await waitFor(() => expect(getPurchaseFeed).toHaveBeenCalledWith(expect.objectContaining({ brand: "laci" })));
   });
 
   it("offers the category tree with whole groups and «Без категории»", async () => {
     renderSection();
-    const select = await screen.findByLabelText("Категория");
-    // The optgroup names the group, so its options stay short in the open list.
-    await waitFor(() => expect(within(select).getAllByRole("option", { name: "Вся группа" }).length).toBeGreaterThan(0));
-    expect(within(select).getByRole("option", { name: "Без категории" })).toHaveValue("none");
-    expect(within(select).getByRole("option", { name: "Молоко" })).toHaveValue("milk");
-    expect(within(select).queryByText(/Молочное и яйца \/|— вся группа/)).not.toBeInTheDocument();
+    openFilters();
+    await findRow("Категория");
+    // The section header names the group, so its rows stay short in the open list.
+    expect(pickerOptions("Категория")).toEqual(["Все категории", "Без категории", "Вся группа", "Молоко"]);
 
-    fireEvent.change(select, { target: { value: "none" } });
+    pick("Категория", "Без категории");
     await waitFor(() => expect(getPurchaseFeed).toHaveBeenCalledWith(expect.objectContaining({ category: "none" })));
 
-    // The chosen option carries the full path, since a closed select shows only it.
-    fireEvent.change(select, { target: { value: "milk" } });
-    expect(await within(select).findByRole("option", { name: "Молочное и яйца / Молоко" })).toHaveValue("milk");
-    fireEvent.change(select, { target: { value: "dairy" } });
-    expect(await within(select).findByRole("option", { name: "Молочное и яйца — вся группа" })).toHaveValue("dairy");
-    expect(within(select).getByRole("option", { name: "Молоко" })).toBeInTheDocument();
+    // The closed row carries the full path or «— вся группа».
+    pick("Категория", "Молоко");
+    expect(row("Категория")).toHaveTextContent("Молочное и яйца / Молоко");
+    pick("Категория", "Вся группа");
+    expect(row("Категория")).toHaveTextContent("Молочное и яйца — вся группа");
   });
 
   it("drops a category that no longer exists instead of failing the feed", async () => {
@@ -212,38 +226,40 @@ describe("PurchaseFeedSection", () => {
       </AppProviders>
     );
 
-    fireEvent.click(await screen.findByRole("link", { name: "Biedronka" }));
+    fireEvent.click(await screen.findByRole("link", { name: /^Biedronka/ }));
     fireEvent.click(await screen.findByRole("button", { name: "назад" }));
 
-    expect(await screen.findByLabelText("Категория")).toHaveValue("milk");
+    await screen.findByRole("heading", { name: "Biedronka" });
+    expect(screen.getByRole("button", { name: "Фильтры, выбран 1" })).toBeInTheDocument();
     await waitFor(() => expect(getPurchaseFeed).toHaveBeenLastCalledWith(expect.objectContaining({ category: "milk" })));
   });
 
   it("filters by tag, keeps it in the URL and clears it with the other filters", async () => {
     renderSection();
     await screen.findByRole("heading", { name: "Biedronka" });
+    const sheet = openFilters();
 
-    const tagSelect = await screen.findByLabelText("Тег");
-    await waitFor(() => expect(within(tagSelect).getByRole("option", { name: "для ребёнка" })).toHaveValue("kid"));
-    expect(within(tagSelect).getByRole("option", { name: "Все теги" })).toHaveValue("");
-    fireEvent.change(tagSelect, { target: { value: "kid" } });
+    await findRow("Тег");
+    expect(pickerOptions("Тег")).toEqual(["Все теги", "для ребёнка", "к празднику"]);
+    pick("Тег", "для ребёнка");
     await waitFor(() => expect(getPurchaseFeed).toHaveBeenCalledWith(expect.objectContaining({ tag: "kid" })));
-    fireEvent.change(screen.getByLabelText("Категория"), { target: { value: "milk" } });
+    pick("Категория", "Молоко");
     await waitFor(() => expect(getPurchaseFeed).toHaveBeenCalledWith(
       expect.objectContaining({ tag: "kid", category: "milk" })
     ));
     expect(screen.getByTestId("location")).toHaveTextContent("/purchases?tag=kid&category=milk");
 
-    fireEvent.click(screen.getByRole("button", { name: "Сбросить фильтры" }));
+    fireEvent.click(within(sheet).getByRole("button", { name: "Сбросить" }));
     await waitFor(() => expect(screen.getByTestId("location")).toHaveTextContent(/^\/purchases$/));
-    expect(screen.getByLabelText("Тег")).toHaveValue("");
+    expect(row("Тег")).toHaveTextContent("Все теги");
   });
 
   it("restores a tag from a shared link", async () => {
     renderSection("/purchases?tag=party");
     await screen.findByRole("heading", { name: "Biedronka" });
     expect(getPurchaseFeed).toHaveBeenCalledWith(expect.objectContaining({ tag: "party" }));
-    expect(await screen.findByLabelText("Тег")).toHaveValue("party");
+    openFilters();
+    expect(await findRow("Тег")).toHaveTextContent("к празднику");
   });
 
   it("silently drops a tag that no longer exists, without a failing request", async () => {
@@ -252,7 +268,8 @@ describe("PurchaseFeedSection", () => {
     expect(getPurchaseFeed).toHaveBeenCalledTimes(1);
     expect(getPurchaseFeed).toHaveBeenCalledWith(expect.objectContaining({ tag: undefined }));
     expect(getPurchaseFeed).not.toHaveBeenCalledWith(expect.objectContaining({ tag: "deleted-tag" }));
-    expect(await screen.findByLabelText("Тег")).toHaveValue("");
+    openFilters();
+    expect(await findRow("Тег")).toHaveTextContent("Все теги");
   });
 
   it("drops the tag from a link when the tag list cannot load, instead of showing an error", async () => {

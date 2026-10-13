@@ -42,6 +42,10 @@ export default defineConfig({
     })
   ],
   test: {
+    // Ionic's shadow DOM hides native controls from Testing Library; unit tests
+    // get semantic stand-ins (see src/test/ionicShim.tsx). Exact match only, so
+    // `ionic.smoke.test.tsx` can still load the real package by its file path.
+    alias: [{ find: /^@ionic\/react$/, replacement: "/src/test/ionicShim.tsx" }],
     environment: "jsdom",
     setupFiles: "./src/test/setup.ts",
     pool: "vmThreads"
@@ -49,7 +53,17 @@ export default defineConfig({
   build: {
     outDir: "../PurchaseMemory.Api/wwwroot",
     emptyOutDir: true,
-    sourcemap: true
+    sourcemap: true,
+    rolldownOptions: {
+      treeshake: {
+        // @ionic/react imports every Ionic component module, and @ionic/core
+        // declares no `sideEffects`, so all ~90 components would ship. A
+        // component module only registers its custom element when its
+        // `defineCustomElement` is called (by the React wrapper on first
+        // render), so the ones the app never renders can be dropped.
+        moduleSideEffects: (id: string) => !/[\\/]@ionic[\\/]core[\\/]components[\\/]ion-[^\\/]+\.js$/.test(id)
+      }
+    }
   },
   server: {
     host: "0.0.0.0",

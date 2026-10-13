@@ -80,7 +80,7 @@ const filtered = { ...emptyPurchaseFeedFilters, query: "kawa", status: "needsAtt
 const meta = {
   title: "Purchase Memory/PurchaseFeed/Production",
   component: PurchaseFeed,
-  parameters: { layout: "padded" },
+  parameters: { layout: "fullscreen" },
   decorators: [(Story) => <MemoryRouter><Story /></MemoryRouter>],
   args: {
     filters: emptyPurchaseFeedFilters,

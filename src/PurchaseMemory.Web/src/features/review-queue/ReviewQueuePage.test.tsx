@@ -5,6 +5,7 @@ import { classifyProduct, getPurchase, getReviewQueue, listCategories, listTags,
 import type { PurchaseDetail, PurchaseDetailItem, ReviewQueue, ReviewQueueItem, TagSummary } from "../../api/types";
 import { AppProviders } from "../../app/AppProviders";
 import { sampleCategories } from "../categories/categoryFixtures";
+import { findRow, openFilters, pick, row } from "../../test/ionicHelpers";
 import { ReviewQueuePage } from "./ReviewQueuePage";
 
 vi.mock("../../api/client", () => ({
@@ -364,11 +365,12 @@ describe("ReviewQueuePage", () => {
       vi.mocked(getReviewQueue).mockImplementation(async (_limit, filter) => (filter?.category === "milk" ? milkQueue : queue));
       renderPage();
 
-      const select = await screen.findByLabelText("Категория");
       expect(await screen.findByText("4 пункта требуют внимания.")).toBeInTheDocument();
-      expect(screen.queryByLabelText("Тег")).not.toBeInTheDocument();
+      openFilters();
+      await findRow("Категория");
+      expect(screen.queryByRole("button", { name: /^Тег/ })).not.toBeInTheDocument();
 
-      fireEvent.change(select, { target: { value: "milk" } });
+      pick("Категория", "Молоко");
 
       expect(await screen.findByText("1 пункт из категории «Молочное и яйца / Молоко» требует внимания.")).toBeInTheDocument();
       expect(getReviewQueue).toHaveBeenLastCalledWith(20, { category: "milk", tag: undefined });
@@ -378,7 +380,7 @@ describe("ReviewQueuePage", () => {
       fireEvent.click(screen.getByRole("button", { name: "Сбросить фильтр" }));
       expect(await screen.findByText("4 пункта требуют внимания.")).toBeInTheDocument();
       expect(screen.getByTestId("location")).toBeEmptyDOMElement();
-      expect(screen.getByLabelText("Категория")).toHaveValue("");
+      expect(row("Категория")).toHaveTextContent("Все категории");
     });
 
     it("combines «Без категории» with a tag and resets both", async () => {
@@ -404,7 +406,8 @@ describe("ReviewQueuePage", () => {
       expect(await screen.findByText("4 пункта требуют внимания.")).toBeInTheDocument();
       expect(getReviewQueue).toHaveBeenCalledTimes(1);
       expect(getReviewQueue).toHaveBeenCalledWith(20, { category: undefined, tag: undefined });
-      expect(screen.getByLabelText("Категория")).toHaveValue("");
+      openFilters();
+      expect(row("Категория")).toHaveTextContent("Все категории");
     });
 
     it("loads the whole queue when the category tree fails", async () => {
@@ -414,7 +417,8 @@ describe("ReviewQueuePage", () => {
 
       expect(await screen.findByText("4 пункта требуют внимания.", {}, { timeout: 4_000 })).toBeInTheDocument();
       expect(getReviewQueue).not.toHaveBeenCalledWith(20, expect.objectContaining({ category: "milk" }));
-      expect(screen.queryByLabelText("Категория")).not.toBeInTheDocument();
+      // Nothing to filter by: no tree and no tags.
+      expect(screen.queryByRole("button", { name: /^Фильтры/ })).not.toBeInTheDocument();
     });
   });
 
@@ -434,11 +438,12 @@ describe("ReviewQueuePage", () => {
       vi.mocked(getReviewQueue).mockImplementation(async (_limit, filter) => (filter?.tag === "kid" ? kidQueue : queue));
       renderPage();
 
-      const select = await screen.findByLabelText("Тег");
       expect(await screen.findByText("4 пункта требуют внимания.")).toBeInTheDocument();
       expect(screen.queryByRole("button", { name: "Сбросить фильтр" })).not.toBeInTheDocument();
+      openFilters();
+      await findRow("Тег");
 
-      fireEvent.change(select, { target: { value: "kid" } });
+      pick("Тег", "Для ребёнка");
 
       expect(await screen.findByText("1 пункт с тегом «Для ребёнка» требует внимания.")).toBeInTheDocument();
       expect(getReviewQueue).toHaveBeenLastCalledWith(20, { category: undefined, tag: "kid" });
@@ -450,7 +455,7 @@ describe("ReviewQueuePage", () => {
       fireEvent.click(screen.getByRole("button", { name: "Сбросить фильтр" }));
       expect(await screen.findByText("4 пункта требуют внимания.")).toBeInTheDocument();
       expect(screen.getByTestId("location")).toBeEmptyDOMElement();
-      expect(screen.getByLabelText("Тег")).toHaveValue("");
+      expect(row("Тег")).toHaveTextContent("Все теги");
     });
 
     it("shows a filtered empty state with a way back to the whole queue", async () => {
@@ -477,7 +482,8 @@ describe("ReviewQueuePage", () => {
       expect(await screen.findByText("4 пункта требуют внимания.")).toBeInTheDocument();
       expect(getReviewQueue).toHaveBeenCalledTimes(1);
       expect(getReviewQueue).toHaveBeenCalledWith(20, { category: undefined, tag: undefined });
-      expect(screen.getByLabelText("Тег")).toHaveValue("");
+      openFilters();
+      expect(row("Тег")).toHaveTextContent("Все теги");
     });
 
     it("loads the whole queue when the tag list fails", async () => {

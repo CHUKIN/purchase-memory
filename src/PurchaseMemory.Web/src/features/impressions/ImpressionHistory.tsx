@@ -1,13 +1,13 @@
+import { IonActionSheet, IonButton, IonItem, IonLabel, IonList } from "@ionic/react";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { Impression } from "../../api/types";
 import { useAuthorizedImageUrl } from "../../auth/useAuthorizedImageUrl";
-import { Button, IconButton } from "../../design-system/components";
+import { Footnote } from "../../design-system/components";
 import { formatMoney } from "../purchases/money";
 import { compareByStore, groupByAuthor, ratingLabel, ratings } from "./impressionText";
 import { RatingIcon } from "./RatingControl";
-import styles from "./Impressions.module.css";
 
 function formatDay(locale: string, value: string): string {
   return new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(value));
@@ -27,22 +27,22 @@ export function ImpressionHistory({ impressions, locale, headingLevel = 3, onDel
   const { t } = useTranslation();
   const Heading = headingLevel === 3 ? "h3" : "h4";
   if (impressions.length === 0) {
-    return <p className={styles.muted}>{t("impressions.empty")}</p>;
+    return <Footnote>{t("impressions.empty")}</Footnote>;
   }
 
   return (
-    <div className={styles.people}>
+    <>
       {groupByAuthor(t, impressions).map((group) => (
-        <section key={group.authorUserId} className={styles.person} aria-label={group.label}>
-          <Heading>{group.label} · {t("impressions.count", { count: group.impressions.length })}</Heading>
-          <ul className={styles.history}>
+        <section key={group.authorUserId} aria-label={group.label}>
+          <div className="pm-section-header"><Heading>{group.label} · {t("impressions.count", { count: group.impressions.length })}</Heading></div>
+          <IonList inset className="pm-after-header">
             {group.impressions.map((impression) => (
               <ImpressionEntry key={impression.id} impression={impression} locale={locale} onDelete={impression.isMine ? onDelete : undefined} />
             ))}
-          </ul>
+          </IonList>
         </section>
       ))}
-    </div>
+    </>
   );
 }
 
@@ -72,35 +72,36 @@ function ImpressionEntry({ impression, locale, onDelete }: { impression: Impress
   };
 
   return (
-    <li className={styles.entry}>
-      <div className={styles.entryHeader}>
-        <span className={styles.badge} data-rating={impression.rating}>
+    <IonItem>
+      <IonLabel className="pm-wrap">
+        <p className="pm-rating-line" data-rating={impression.rating}>
           <RatingIcon rating={impression.rating} />
-          {ratingLabel(t, impression.rating)}
-        </span>
-        <time className={styles.muted} dateTime={impression.createdAt}>
-          {t("impressions.ratedOn", { date: formatDay(locale, impression.createdAt) })}
-        </time>
-      </div>
-      <p className={styles.muted}>{context}</p>
-      {impression.note && <p className={styles.note}>{impression.note}</p>}
-      {photo.src && <img className={styles.photo} src={photo.src} alt={t("impressions.photoAlt", { name: impression.itemName })} />}
-      {photo.failed && <p className={styles.muted}>{t("impressions.photoFailed")}</p>}
+          <strong>{ratingLabel(t, impression.rating)}</strong>
+        </p>
+        <p><time dateTime={impression.createdAt}>{t("impressions.ratedOn", { date: formatDay(locale, impression.createdAt) })}</time></p>
+        <p>{context}</p>
+        {impression.note && <p className="pm-note-text">{impression.note}</p>}
+        {photo.src && <img className="pm-impression-photo" src={photo.src} alt={t("impressions.photoAlt", { name: impression.itemName })} />}
+        {photo.failed && <p>{t("impressions.photoFailed")}</p>}
+        {failed && <p className="pm-danger-text" role="alert">{t("impressions.deleteFailed")}</p>}
+      </IonLabel>
       {onDelete && (
-        <div className={`${styles.formActions} ${styles.entryActions}`}>
-          {confirming
-            ? (
-              <>
-                <span className={styles.muted}>{t("impressions.deleteConfirm")}</span>
-                <Button intent="danger" loading={busy} onClick={() => void remove()}>{t("impressions.deleteYes")}</Button>
-                <Button intent="quiet" disabled={busy} onClick={() => setConfirming(false)}>{t("impressions.cancel")}</Button>
-              </>
-            )
-            : <IconButton intent="danger" iconOnly="mobile" icon={<Trash2 />} label={t("impressions.delete")} onClick={() => setConfirming(true)} />}
-        </div>
+        <>
+          <IonButton slot="end" fill="clear" color="danger" disabled={busy} aria-label={t("impressions.delete")} onClick={() => setConfirming(true)}>
+            <Trash2 size={20} aria-hidden="true" />
+          </IonButton>
+          <IonActionSheet
+            isOpen={confirming}
+            header={t("impressions.deleteConfirm")}
+            onDidDismiss={() => setConfirming(false)}
+            buttons={[
+              { text: t("impressions.deleteYes"), role: "destructive", handler: () => { void remove(); } },
+              { text: t("impressions.cancel"), role: "cancel" }
+            ]}
+          />
+        </>
       )}
-      {failed && <p className={styles.error} role="alert">{t("impressions.deleteFailed")}</p>}
-    </li>
+    </IonItem>
   );
 }
 
@@ -109,17 +110,17 @@ export function StoreComparison({ impressions }: { impressions: Impression[] }) 
   const { t } = useTranslation();
   const stores = compareByStore(t, impressions);
   if (stores.length < 2) {
-    return <p className={styles.muted}>{t("impressions.comparisonNeedsTwoStores")}</p>;
+    return <Footnote>{t("impressions.comparisonNeedsTwoStores")}</Footnote>;
   }
 
   return (
-    <div className={styles.tableScroll}>
-      <table className={styles.comparison}>
+    <div className="pm-table-card">
+      <table className="pm-table">
         <caption className="visually-hidden">{t("impressions.comparisonCaption")}</caption>
         <thead>
           <tr>
             <th scope="col">{t("impressions.store")}</th>
-            {ratings.map((rating) => <th key={rating} scope="col">{ratingLabel(t, rating)}</th>)}
+            {ratings.map((rating) => <th key={rating} scope="col" className="pm-number">{ratingLabel(t, rating)}</th>)}
             <th scope="col">{t("impressions.latestByPerson")}</th>
           </tr>
         </thead>
@@ -127,7 +128,7 @@ export function StoreComparison({ impressions }: { impressions: Impression[] }) 
           {stores.map((store) => (
             <tr key={store.store ?? ""}>
               <th scope="row">{store.store ?? t("impressions.unknownStore")}</th>
-              {ratings.map((rating) => <td key={rating} className={styles.count}>{store.counts[rating]}</td>)}
+              {ratings.map((rating) => <td key={rating} className="pm-number">{store.counts[rating]}</td>)}
               <td>{store.latestByAuthor.map((entry) => `${entry.label}: ${ratingLabel(t, entry.rating)}`).join("; ")}</td>
             </tr>
           ))}

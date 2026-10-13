@@ -1,0 +1,8 @@
+/*
+ * ion-app fills the whole window in the app. On a docs page several stories
+ * share one document, so each gets its own phone-high box instead.
+ */
+.docs-story ion-app {
+  position: relative;
+  height: 640px;
+}

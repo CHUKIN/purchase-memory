@@ -1,8 +1,9 @@
+import { IonButton, IonItem, IonLabel, IonList } from "@ionic/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CheckCircle2, SearchX } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useLocation } from "react-router";
+import { Link } from "react-router";
 import { classifyProduct, getReviewQueue, listCategories, listTags } from "../../api/client";
 import type {
   ProductCategory,
@@ -13,10 +14,21 @@ import type {
   ReviewQueueKind,
   TagSummary
 } from "../../api/types";
-import { Button, EmptyState, SkeletonCard, Surface } from "../../design-system/components";
+import {
+  ActionButton,
+  EmptyState,
+  FilterButton,
+  Footnote,
+  ItemLink,
+  LoadingList,
+  Notice,
+  Page,
+  SectionHeader,
+  Sheet
+} from "../../design-system/components";
 import { categoryPath } from "../categories/categoryText";
 import { categoriesQueryKey } from "../categories/categoryQueries";
-import { CategoryFilterField, TagFilterField } from "../filters/ClassificationFilterFields";
+import { CategoryFilterRow, TagFilterRow } from "../filters/FilterRows";
 import { knownCategoryFilter, knownTagFilter } from "../filters/categoryFilter";
 import { useUrlFilters } from "../filters/useUrlFilters";
 import { formatMoney } from "../purchases/money";
@@ -24,9 +36,8 @@ import { purchaseEditPath } from "../purchases/PurchaseDetailPage";
 import { tagsQueryKey } from "../tags/tagQueries";
 import { reviewQueueQueryKey } from "./reviewQueueQueries";
 import { resolvePendingMatch, StalePendingMatchError, type PendingMatchChoice } from "./resolvePendingMatch";
-import { reviewQueueReturnState } from "./returnToQueue";
+import { useBackTarget, useReturnState } from "../../app/backNavigation";
 import { HelpLink } from "../help/HelpLink";
-import styles from "./ReviewQueuePage.module.css";
 
 export const reviewQueueLimitPerKind = 20;
 
@@ -37,7 +48,7 @@ type Translate = ReturnType<typeof useTranslation>["t"];
 /**
  * Connects the queue to `GET /api/review-queue`. The category and tag filters
  * live in the URL (`category`, `tag`) like in the feed and catalog. The
- * navigation badge keeps counting the whole queue; only this screen is narrowed.
+ * badge on «Главная» keeps counting the whole queue; only this screen is narrowed.
  */
 export function ReviewQueuePage() {
   const [filters, setFilters] = useUrlFilters(emptyFilters);
@@ -88,6 +99,8 @@ export interface ReviewQueueViewProps {
   tag: string;
   onTagChange: (tag: string) => void;
   onResetFilters: () => void;
+  /** Opens with the filter sheet up; for stories. */
+  initialFiltersOpen?: boolean;
 }
 
 export function ReviewQueueView({
@@ -101,81 +114,57 @@ export function ReviewQueueView({
   tags,
   tag,
   onTagChange,
-  onResetFilters
+  onResetFilters,
+  initialFiltersOpen = false
 }: ReviewQueueViewProps) {
   const { t } = useTranslation();
+  const [filtersOpen, setFiltersOpen] = useState(initialFiltersOpen);
   const filtered = category !== "" || tag !== "";
   const filterText = describeFilter(t, categories, category, tags, tag);
-  const resetButton = (
-    <button className={styles.reset} type="button" onClick={onResetFilters}>
-      {t("reviewQueue.resetFilter")}
-    </button>
-  );
+  const canFilter = categories.length > 0 || tags.length > 0;
+  const resetButton = <IonButton fill="clear" onClick={onResetFilters}>{t("reviewQueue.resetFilter")}</IonButton>;
+  const back = useBackTarget({ to: "/", labelKey: "common.home" });
 
   return (
-    <div className={styles.page}>
-      <header className={styles.hero}>
-        <p className={styles.eyebrow}>{t("reviewQueue.eyebrow")}</p>
-        <h1>{t("reviewQueue.title")}</h1>
-        <p className={styles.intro}>{t("reviewQueue.intro")}</p>
-        <HelpLink topic="review-queue" />
-      </header>
+    <Page
+      title={t("reviewQueue.title")}
+      back={back}
+      end={canFilter ? <FilterButton count={(category !== "" ? 1 : 0) + (tag !== "" ? 1 : 0)} onClick={() => setFiltersOpen(true)} /> : undefined}
+    >
+      <p className="pm-home-intro">{t("reviewQueue.intro")} <HelpLink topic="review-queue" /></p>
 
-      {(categories.length > 0 || tags.length > 0) && (
-        <Surface as="section" className={styles.filters} aria-label={t("reviewQueue.filtersLabel")}>
-          <div className={styles.filterFields}>
-            {categories.length > 0 && <CategoryFilterField categories={categories} category={category} onCategoryChange={onCategoryChange} />}
-            {tags.length > 0 && <TagFilterField tags={tags} tag={tag} onTagChange={onTagChange} />}
-          </div>
-          {filtered && (
-            <>
-              <p className={styles.filterNote}>{t("reviewQueue.filterNote")}</p>
-              {resetButton}
-            </>
-          )}
-        </Surface>
+      {filtered && (
+        <>
+          <Footnote>{t("reviewQueue.filterNote")}</Footnote>
+          <div className="ion-padding-horizontal">{resetButton}</div>
+        </>
       )}
 
-      {loading && (
-        <div className={styles.loading} role="status" aria-label={t("reviewQueue.loading")}>
-          <SkeletonCard />
-          <SkeletonCard />
-        </div>
-      )}
+      {loading && <LoadingList label={t("reviewQueue.loading")} rows={3} />}
 
       {!loading && error && (
-        <Surface className={styles.notice} role="alert">
+        <Notice tone="danger" role="alert">
           <p>{t("reviewQueue.loadError")}</p>
-          <Button intent="secondary" onClick={onRetry}>{t("reviewQueue.retry")}</Button>
-        </Surface>
+          <IonButton fill="outline" size="small" onClick={onRetry}>{t("reviewQueue.retry")}</IonButton>
+        </Notice>
       )}
 
       {!loading && queue && queue.totalCount === 0 && (
-        <Surface>
-          {filtered
-            ? (
-              <EmptyState
-                icon={<SearchX />}
-                title={t("reviewQueue.filteredEmptyTitle")}
-                description={t("reviewQueue.filteredEmptyDescription", { filter: filterText })}
-                action={resetButton}
-                headingLevel={2}
-              />
-            )
-            : (
-              <EmptyState
-                icon={<CheckCircle2 />}
-                title={t("reviewQueue.emptyTitle")}
-                description={t("reviewQueue.emptyDescription")}
-                headingLevel={2}
-              />
-            )}
-        </Surface>
+        filtered
+          ? (
+            <EmptyState
+              icon={<SearchX />}
+              title={t("reviewQueue.filteredEmptyTitle")}
+              description={t("reviewQueue.filteredEmptyDescription", { filter: filterText })}
+              action={resetButton}
+            />
+          )
+          : <EmptyState icon={<CheckCircle2 />} title={t("reviewQueue.emptyTitle")} description={t("reviewQueue.emptyDescription")} />
       )}
 
       {!loading && queue && queue.totalCount > 0 && (
         <>
-          <p className={styles.summary} aria-live="polite">
+          <p className="pm-footnote" aria-live="polite">
             {filtered
               ? t("reviewQueue.filteredSummary", { count: queue.totalCount, filter: filterText })
               : t("reviewQueue.summary", { count: queue.totalCount })}
@@ -183,7 +172,22 @@ export function ReviewQueueView({
           {queue.groups.map((group) => <GroupSection key={group.kind} group={group} categories={categories} />)}
         </>
       )}
-    </div>
+
+      {canFilter && (
+        <Sheet
+          isOpen={filtersOpen}
+          onClose={() => setFiltersOpen(false)}
+          title={t("reviewQueue.filtersLabel")}
+          start={<IonButton disabled={!filtered} onClick={onResetFilters}>{t("ui.reset")}</IonButton>}
+          initialBreakpoint={0.5}
+        >
+          <IonList inset>
+            {categories.length > 0 && <CategoryFilterRow categories={categories} category={category} onCategoryChange={onCategoryChange} />}
+            {tags.length > 0 && <TagFilterRow tags={tags} tag={tag} onTagChange={onTagChange} />}
+          </IonList>
+        </Sheet>
+      )}
+    </Page>
   );
 }
 
@@ -200,18 +204,18 @@ function GroupSection({ group, categories }: { group: ReviewQueueGroup; categori
   const { t } = useTranslation();
   const headingId = `review-group-${group.kind}`;
   return (
-    <section className={styles.group} aria-labelledby={headingId}>
-      <header className={styles.groupHeader}>
-        <h2 id={headingId}>{t(`reviewQueue.kinds.${group.kind}.title`)}</h2>
-        <span className={styles.count} aria-label={t("reviewQueue.groupCount", { count: group.totalCount })}>{group.totalCount}</span>
-      </header>
-      <p className={styles.groupHint}>{t(`reviewQueue.kinds.${group.kind}.hint`)}</p>
-      <ul className={styles.list}>
-        {group.items.map((item) => <li key={item.id}><ItemCard item={item} categories={categories} /></li>)}
-      </ul>
-      {group.totalCount > group.items.length && (
-        <p className={styles.more}>{t("reviewQueue.more", { count: group.totalCount - group.items.length })}</p>
-      )}
+    <section aria-labelledby={headingId}>
+      <SectionHeader
+        id={headingId}
+        action={<span className="pm-count-badge" aria-label={t("reviewQueue.groupCount", { count: group.totalCount })}>{group.totalCount}</span>}
+      >
+        {t(`reviewQueue.kinds.${group.kind}.title`)}
+      </SectionHeader>
+      {group.items.map((item) => <ItemCard key={item.id} item={item} categories={categories} />)}
+      <Footnote>
+        {t(`reviewQueue.kinds.${group.kind}.hint`)}
+        {group.totalCount > group.items.length && <> {t("reviewQueue.more", { count: group.totalCount - group.items.length })}</>}
+      </Footnote>
     </section>
   );
 }
@@ -223,29 +227,29 @@ function ItemCard({ item, categories }: { item: ReviewQueueItem; categories: Pro
   const suggestions = item.kind === "pendingMatch" && item.purchaseId && (item.candidates?.length ?? 0) > 0;
 
   return (
-    <Surface as="article" density="compact" className={styles.item} aria-label={title}>
-      <div className={styles.itemText}>
-        <h3>{title}</h3>
-        <p>{reason(item, t, i18n.language)}</p>
-        <p className={styles.meta}><time dateTime={item.occurredAt}>{date}</time></p>
-      </div>
-      {suggestions
-        // «Другой товар» goes under the suggestions, next to «Создать новый товар»: it is the fallback, not the first choice.
-        ? <PendingMatchSuggestions item={item} title={title} categories={categories} otherProduct={<ItemActions item={item} title={title} />} />
-        : (
-          <div className={styles.actions}>
-            <ItemActions item={item} title={title} />
-          </div>
-        )}
-    </Surface>
+    <article aria-label={title}>
+      <IonList inset className="pm-after-header pm-queue-item">
+        <IonItem>
+          <IonLabel className="pm-wrap">
+            <h3>{title}</h3>
+            <p>{reason(item, t, i18n.language)}</p>
+            <p><time dateTime={item.occurredAt}>{date}</time></p>
+          </IonLabel>
+        </IonItem>
+        {suggestions
+          // «Другой товар» goes under the suggestions, next to «Создать новый товар»: it is the fallback, not the first choice.
+          ? <PendingMatchSuggestions item={item} title={title} categories={categories} />
+          : <ItemActions item={item} title={title} />}
+      </IonList>
+    </article>
   );
 }
 
 function ItemActions({ item, title }: { item: ReviewQueueItem; title: string }) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  // A receipt or purchase opened from here comes back here after saving, with the filters as they were.
-  const returnState = reviewQueueReturnState(useLocation().search);
+  // A screen opened from here comes back here (a receipt or purchase also after saving), with the filters as they were.
+  const returnState = useReturnState();
   const confirm = useMutation({
     mutationFn: () => classifyProduct(item.productId!, { categoryId: item.categoryId }),
     onSuccess: () => Promise.all([
@@ -255,17 +259,17 @@ function ItemActions({ item, title }: { item: ReviewQueueItem; title: string }) 
   });
 
   const receiptLink = item.receiptId
-    ? <Link className={styles.link} to={`/receipts/${item.receiptId}`} state={returnState}>{t("reviewQueue.openReceipt")}</Link>
+    ? <ActionRow key="receipt" to={`/receipts/${item.receiptId}`} state={returnState} label={t("reviewQueue.openReceipt")} />
     : item.purchaseId
-      ? <Link className={styles.link} to={`/purchases/${item.purchaseId}`} state={returnState}>{t("reviewQueue.openPurchase")}</Link>
+      ? <ActionRow key="purchase" to={`/purchases/${item.purchaseId}`} state={returnState} label={t("reviewQueue.openPurchase")} />
       : null;
   // Saved purchases are fixed in the purchase editor, opened on the flagged spot.
-  const editLink = (focus: string | undefined, label: string, labelFor: string, primary = true) => item.purchaseId
-    ? <Link className={primary ? styles.primaryLink : styles.link} to={purchaseEditPath(item.purchaseId, focus)} state={returnState} aria-label={t(labelFor, { name: title })}>{t(label)}</Link>
+  const editLink = (focus: string | undefined, label: string, labelFor: string) => item.purchaseId
+    ? <ActionRow key="edit" to={purchaseEditPath(item.purchaseId, focus)} state={returnState} label={t(label)} ariaLabel={t(labelFor, { name: title })} />
     : null;
   const line = item.itemPosition ?? null;
   const productLink = (label: string) => item.productId
-    ? <Link className={styles.link} to={`/products/${item.productId}`} aria-label={`${label}: ${title}`}>{label}</Link>
+    ? <ActionRow key="product" to={`/products/${item.productId}`} state={returnState} label={label} ariaLabel={`${label}: ${title}`} />
     : null;
 
   switch (item.kind) {
@@ -278,29 +282,32 @@ function ItemActions({ item, title }: { item: ReviewQueueItem; title: string }) 
       return <>{editLink(line === null ? undefined : `price-${line}`, "reviewQueue.fixPurchase", "reviewQueue.fixPurchaseFor")}{item.receiptId && receiptLink}</>;
     case "pendingMatch": {
       const focus = line === null ? undefined : `product-${line}`;
-      // With suggestions inline, the editor's picker stays one tap away for «another product».
       return (item.candidates?.length ?? 0) > 0
-        ? editLink(focus, "reviewQueue.otherProduct", "reviewQueue.otherProductFor", false)
+        ? editLink(focus, "reviewQueue.otherProduct", "reviewQueue.otherProductFor")
         : <>{editLink(focus, "reviewQueue.chooseProduct", "reviewQueue.chooseProductFor")}{productLink(t("reviewQueue.openSimilarProduct"))}</>;
     }
     case "suggestedCategory":
       return (
         <>
-          <Button
-            intent="primary"
-            loading={confirm.isPending}
-            onClick={() => confirm.mutate()}
-            aria-label={t("reviewQueue.confirmCategoryFor", { name: title, category: item.categoryName ?? "" })}
-          >
-            {t("reviewQueue.confirmCategory")}
-          </Button>
+          <IonItem button detail={false} disabled={confirm.isPending} onClick={() => confirm.mutate()} aria-label={t("reviewQueue.confirmCategoryFor", { name: title, category: item.categoryName ?? "" })}>
+            <IonLabel color="primary">{t("reviewQueue.confirmCategory")}</IonLabel>
+          </IonItem>
           {productLink(t("reviewQueue.changeCategory"))}
-          {confirm.isError && <p className={styles.error} role="alert">{t("reviewQueue.confirmError")}</p>}
+          {confirm.isError && <IonItem lines="none"><IonLabel className="pm-wrap pm-danger-text" role="alert">{t("reviewQueue.confirmError")}</IonLabel></IonItem>}
         </>
       );
     case "missingCategory":
       return productLink(t("reviewQueue.chooseCategory"));
   }
+}
+
+/** One fix as a full-width row in the item's group, the iOS way of listing actions. */
+function ActionRow({ to, state, label, ariaLabel }: { to: string; state?: unknown; label: string; ariaLabel?: string }) {
+  return (
+    <ItemLink to={to} state={state} aria-label={ariaLabel}>
+      <IonLabel color="primary">{label}</IonLabel>
+    </ItemLink>
+  );
 }
 
 /**
@@ -309,7 +316,7 @@ function ItemActions({ item, title }: { item: ReviewQueueItem; title: string }) 
  * through the same API as the editor's picker, so the store remembers the
  * choice; the queue and the badge then refresh and the card disappears.
  */
-function PendingMatchSuggestions({ item, title, categories, otherProduct }: { item: ReviewQueueItem; title: string; categories: ProductCategory[]; otherProduct: ReactNode }) {
+function PendingMatchSuggestions({ item, title, categories }: { item: ReviewQueueItem; title: string; categories: ProductCategory[] }) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [choice, setChoice] = useState<PendingMatchChoice | null>(null);
@@ -330,50 +337,47 @@ function PendingMatchSuggestions({ item, title, categories, otherProduct }: { it
     ? choice === "new"
     : choice !== null && choice !== "new" && choice.productId === candidate.productId);
   const candidates = item.candidates ?? [];
+  const returnState = useReturnState();
 
   return (
-    <div className={styles.suggestions}>
-      <p className={styles.suggestionsLabel} aria-hidden="true">{t("reviewQueue.suggestionsLabel")}</p>
-      <ul className={styles.suggestionList} aria-label={t("reviewQueue.suggestionsFor", { name: title })}>
+    <>
+      <div role="list" aria-label={t("reviewQueue.suggestionsFor", { name: title })}>
         {candidates.map((candidate, index) => {
           const details = [candidate.brand, categoryPath(t, categories, candidate.categoryId)].filter(Boolean).join(" · ");
           return (
-            <li key={candidate.productId} className={styles.suggestion}>
-              <div className={styles.suggestionText}>
-                <Link className={styles.suggestionName} to={`/products/${candidate.productId}`}>{candidate.name}</Link>
-                {details && <span className={`${styles.meta} ${styles.details}`} title={details}>{details}</span>}
-              </div>
-              <Button
-                intent={index === 0 ? "primary" : "secondary"}
+            <IonItem key={candidate.productId} role="listitem">
+              <IonLabel className="pm-wrap">
+                {index === 0 && <p className="pm-overline" aria-hidden="true">{t("reviewQueue.suggestionsLabel")}</p>}
+                <h3><Link className="pm-text-link" to={`/products/${candidate.productId}`} state={returnState}>{candidate.name}</Link></h3>
+                {details && <p>{details}</p>}
+              </IonLabel>
+              <ActionButton
+                slot="end"
+                size="small"
+                fill={index === 0 ? "solid" : "outline"}
                 loading={busy(candidate)}
                 disabled={resolve.isPending && !busy(candidate)}
                 onClick={() => choose({ productId: candidate.productId })}
                 aria-label={t("reviewQueue.acceptCandidateFor", { name: title, product: candidate.name })}
               >
                 {t("reviewQueue.acceptCandidate")}
-              </Button>
-            </li>
+              </ActionButton>
+            </IonItem>
           );
         })}
-      </ul>
-      <div className={styles.suggestionActions}>
-        <Button
-          intent="quiet"
-          loading={busy("new")}
-          disabled={resolve.isPending && !busy("new")}
-          onClick={() => choose("new")}
-          aria-label={t("reviewQueue.createProductFor", { name: title })}
-        >
-          {t("reviewQueue.createProduct")}
-        </Button>
-        {otherProduct}
       </div>
+      <IonItem button detail={false} disabled={resolve.isPending && !busy("new")} onClick={() => choose("new")} aria-label={t("reviewQueue.createProductFor", { name: title })}>
+        <IonLabel color="primary">{t("reviewQueue.createProduct")}</IonLabel>
+      </IonItem>
+      <ItemActions item={item} title={title} />
       {resolve.isError && (
-        <p className={styles.error} role="alert">
-          {resolve.error instanceof StalePendingMatchError ? t("reviewQueue.resolveStale") : t("reviewQueue.resolveError")}
-        </p>
+        <IonItem lines="none">
+          <IonLabel className="pm-wrap pm-danger-text" role="alert">
+            {resolve.error instanceof StalePendingMatchError ? t("reviewQueue.resolveStale") : t("reviewQueue.resolveError")}
+          </IonLabel>
+        </IonItem>
       )}
-    </div>
+    </>
   );
 }
 

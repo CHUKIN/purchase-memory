@@ -1,14 +1,15 @@
+import { IonItem, IonLabel, IonList, IonNote } from "@ionic/react";
 import { Info, ReceiptText } from "lucide-react";
 import { forwardRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import type { AnalyticsAnswer, AnalyticsPlan, ProductCategory, ProductTag } from "../../api/types";
-import { Surface } from "../../design-system/components";
+import { Footnote, SectionHeader } from "../../design-system/components";
 import { formatDate, formatMoney } from "../products/productText";
 import { AnalyticsChart } from "./AnalyticsChart";
 import { coverageLines, kpiLabel, kpiValue, noteText, productNamesOf } from "./analyticsText";
 import { PlanFilters } from "./PlanFilters";
-import styles from "./AnswerCard.module.css";
+import { useReturnState } from "../../app/backNavigation";
 
 export interface AnswerCardProps {
   answer: AnalyticsAnswer;
@@ -33,25 +34,26 @@ export const AnswerCard = forwardRef<HTMLHeadingElement, AnswerCardProps>(functi
   conclusionRef
 ) {
   const { t } = useTranslation();
+  const returnState = useReturnState();
   const { result } = answer;
   const priceUnit = result.kpis.find((kpi) => kpi.code === "priceCount")?.unit ?? null;
   const kpis = result.kpis.filter((kpi) => kpi.code !== "priceCount");
 
   return (
-    <Surface as="article" className={styles.card} aria-labelledby="analytics-conclusion" aria-busy={rerunning || undefined}>
-      <h2 id="analytics-conclusion" ref={conclusionRef} tabIndex={-1} className={styles.conclusion}>
-        {answer.conclusion}
-      </h2>
+    <article aria-labelledby="analytics-conclusion" aria-busy={rerunning || undefined} className="pm-answer">
+      <div className="pm-answer-card">
+        <h2 id="analytics-conclusion" ref={conclusionRef} tabIndex={-1} className="pm-conclusion">{answer.conclusion}</h2>
+      </div>
 
       {result.hasData && kpis.length > 0 && (
-        <dl className={styles.kpis}>
-          {kpis.map((kpi) => (
-            <div key={kpi.code} className={styles.kpi}>
-              <dt>{kpiLabel(t, kpi, priceUnit)}</dt>
-              <dd>{kpiValue(t, locale, kpi, result.currency)}</dd>
-            </div>
+        <IonList inset>
+          {kpis.map((kpi, index) => (
+            <IonItem key={kpi.code} lines={index === kpis.length - 1 ? "none" : undefined}>
+              <IonLabel className="pm-wrap">{kpiLabel(t, kpi, priceUnit)}</IonLabel>
+              <IonNote slot="end" className="pm-amount pm-kpi">{kpiValue(t, locale, kpi, result.currency)}</IonNote>
+            </IonItem>
           ))}
-        </dl>
+        </IonList>
       )}
 
       {result.hasData && <AnalyticsChart answer={answer} categories={categories} locale={locale} />}
@@ -68,63 +70,68 @@ export const AnswerCard = forwardRef<HTMLHeadingElement, AnswerCardProps>(functi
       />
 
       {answer.notes.length > 0 && (
-        <ul className={styles.notes} aria-label={t("analytics.notes.title")}>
+        <ul className="pm-notes" aria-label={t("analytics.notes.title")}>
           {answer.notes.map((note, index) => (
             <li key={`${note.code}-${index}`}><Info aria-hidden="true" size={15} />{noteText(t, note)}</li>
           ))}
         </ul>
       )}
 
-      <section className={styles.coverage} aria-labelledby="analytics-coverage-title">
-        <h3 id="analytics-coverage-title">{t("analytics.coverage.title")}</h3>
-        <ul>
-          {coverageLines(t, result.coverage, answer.plan).map((line) => <li key={line}>{line}</li>)}
-        </ul>
-        {!result.hasData && <p className={styles.hint}>{t("analytics.noDataHint")}</p>}
+      <section aria-labelledby="analytics-coverage-title">
+        <SectionHeader id="analytics-coverage-title" level={3}>{t("analytics.coverage.title")}</SectionHeader>
+        <IonList inset className="pm-after-header">
+          {coverageLines(t, result.coverage, answer.plan).map((line, index, lines) => (
+            <IonItem key={line} lines={index === lines.length - 1 ? "none" : undefined}>
+              <IonLabel className="pm-wrap"><p className="pm-plain-text">{line}</p></IonLabel>
+            </IonItem>
+          ))}
+        </IonList>
+        {!result.hasData && <Footnote>{t("analytics.noDataHint")}</Footnote>}
       </section>
 
       {result.evidence.length > 0 && (
-        <section className={styles.evidence} aria-labelledby="analytics-evidence-title">
-          <h3 id="analytics-evidence-title">{t("analytics.evidence.title")}</h3>
+        <section aria-labelledby="analytics-evidence-title">
+          <SectionHeader id="analytics-evidence-title" level={3}>{t("analytics.evidence.title")}</SectionHeader>
           {result.evidenceTotal > result.evidence.length && (
-            <p className={styles.hint}>{t("analytics.evidence.shown", { shown: result.evidence.length, count: result.evidenceTotal })}</p>
+            <Footnote>{t("analytics.evidence.shown", { shown: result.evidence.length, count: result.evidenceTotal })}</Footnote>
           )}
-          <ul className={styles.purchases}>
-            {result.evidence.map((purchase) => {
-              const heading = `${formatDate(locale, purchase.purchasedAt)} · ${purchase.merchantName ?? t("analytics.groups.noMerchant")}`;
-              return (
-                <li key={purchase.purchaseId} className={styles.purchase}>
-                  <div className={styles.purchaseHeader}>
-                    {purchase.sourceReceiptId ? (
-                      <Link to={`/receipts/${purchase.sourceReceiptId}`} className={styles.purchaseLink}>
-                        <ReceiptText aria-hidden="true" size={16} />{heading}
-                      </Link>
-                    ) : (
-                      <span className={styles.purchaseLink}><ReceiptText aria-hidden="true" size={16} />{heading}</span>
-                    )}
-                    <span className={styles.amount}>{formatMoney(locale, purchase.currency, purchase.amount)}</span>
-                  </div>
-                  <ul className={styles.items}>
-                    {purchase.items.map((item, index) => (
-                      <li key={`${item.name}-${index}`}>
-                        {item.productId
-                          ? <Link to={`/products/${item.productId}`}>{item.name}</Link>
-                          : <span>{item.name}</span>}
-                        {item.discountTotal !== 0 && (
-                          <span className={styles.discount}>{t("analytics.evidence.discount", { amount: formatMoney(locale, purchase.currency, item.discountTotal) })}</span>
-                        )}
-                      </li>
-                    ))}
-                    {purchase.matchedLineCount > purchase.items.length && (
-                      <li className={styles.hint}>{t("analytics.evidence.moreItems", { count: purchase.matchedLineCount - purchase.items.length })}</li>
-                    )}
-                  </ul>
-                </li>
-              );
-            })}
-          </ul>
+          {result.evidence.map((purchase) => {
+            const heading = `${formatDate(locale, purchase.purchasedAt)} · ${purchase.merchantName ?? t("analytics.groups.noMerchant")}`;
+            return (
+              <IonList inset key={purchase.purchaseId}>
+                <IonItem>
+                  <ReceiptText slot="start" size={18} className="pm-row-icon" aria-hidden="true" />
+                  <IonLabel className="pm-wrap">
+                    <h3>
+                      {purchase.sourceReceiptId
+                        ? <Link className="pm-text-link" to={`/receipts/${purchase.sourceReceiptId}`} state={returnState}>{heading}</Link>
+                        : heading}
+                    </h3>
+                  </IonLabel>
+                  <IonNote slot="end" className="pm-amount">{formatMoney(locale, purchase.currency, purchase.amount)}</IonNote>
+                </IonItem>
+                {purchase.items.map((item, index) => (
+                  <IonItem key={`${item.name}-${index}`} lines={index === purchase.items.length - 1 && purchase.matchedLineCount <= purchase.items.length ? "none" : undefined}>
+                    <IonLabel className="pm-wrap">
+                      <p className="pm-plain-text">
+                        {item.productId ? <Link className="pm-text-link pm-primary-text" to={`/products/${item.productId}`} state={returnState}>{item.name}</Link> : <span>{item.name}</span>}
+                      </p>
+                      {item.discountTotal !== 0 && (
+                        <p>{t("analytics.evidence.discount", { amount: formatMoney(locale, purchase.currency, item.discountTotal) })}</p>
+                      )}
+                    </IonLabel>
+                  </IonItem>
+                ))}
+                {purchase.matchedLineCount > purchase.items.length && (
+                  <IonItem lines="none">
+                    <IonLabel color="medium"><p>{t("analytics.evidence.moreItems", { count: purchase.matchedLineCount - purchase.items.length })}</p></IonLabel>
+                  </IonItem>
+                )}
+              </IonList>
+            );
+          })}
         </section>
       )}
-    </Surface>
+    </article>
   );
 });

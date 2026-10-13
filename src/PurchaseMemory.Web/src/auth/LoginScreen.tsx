@@ -1,9 +1,9 @@
+import { IonButton, IonInput, IonItem, IonList } from "@ionic/react";
 import { KeyRound, Mail } from "lucide-react";
 import { useEffect, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
-import { Button, Field } from "../design-system/components";
+import { ActionButton, Footnote, Notice } from "../design-system/components";
 import { AuthLayout } from "./AuthLayout";
-import styles from "./LoginScreen.module.css";
 import { signInProgress } from "./signInProgress";
 
 export interface LoginScreenProps {
@@ -104,8 +104,8 @@ export function LoginScreen({
     }
   }
 
-  async function sendLink(event: FormEvent) {
-    event.preventDefault();
+  async function sendLink(event?: FormEvent) {
+    event?.preventDefault();
     const address = email.trim();
     if (!/^\S+@\S+\.\S+$/.test(address)) {
       setEmailInvalid(true);
@@ -127,8 +127,8 @@ export function LoginScreen({
     }
   }
 
-  async function verify(event: FormEvent) {
-    event.preventDefault();
+  async function verify(event?: FormEvent) {
+    event?.preventDefault();
     if (!sentTo || !codeReady) return;
     await run("code", () => onVerifyCode(sentTo, code), t("auth.codeInvalid"));
   }
@@ -143,88 +143,96 @@ export function LoginScreen({
 
   return (
     <AuthLayout>
-      <h1>{t("auth.loginTitle")}</h1>
-      <p className={styles.intro}>{t("auth.loginIntro")}</p>
-      {notice && <p className={styles.notice} role="status">{notice}</p>}
+      <h1 className="pm-auth-title">{t("auth.loginTitle")}</h1>
+      <p className="pm-auth-intro">{t("auth.loginIntro")}</p>
+      {notice && <Notice tone="warning" role="status"><p>{notice}</p></Notice>}
 
       {emailEnabled && !sentTo && (
-        <form className={styles.form} onSubmit={sendLink} noValidate>
-          {standalone && <p className={styles.hint}>{t("auth.standaloneIntro")}</p>}
-          <Field
-            label={t("auth.emailLabel")}
-            type="email"
-            autoComplete="email"
-            inputMode="email"
-            placeholder={t("auth.emailPlaceholder")}
-            value={email}
-            onChange={(event) => setEmail(event.currentTarget.value)}
-            error={emailInvalid ? t("auth.emailInvalid") : undefined}
-          />
-          <Button type="submit" fullWidth loading={busy === "email"} disabled={busy !== null} leftSection={<Mail aria-hidden="true" size={18} />}>
-            {standalone ? t("auth.sendCode") : t("auth.sendLink")}
-          </Button>
+        <form onSubmit={(event) => void sendLink(event)} noValidate>
+          {standalone && <Footnote>{t("auth.standaloneIntro")}</Footnote>}
+          <IonList inset>
+            <IonItem lines="none">
+              <IonInput
+                label={t("auth.emailLabel")}
+                labelPlacement="stacked"
+                type="email"
+                autocomplete="email"
+                inputmode="email"
+                enterkeyhint="send"
+                placeholder={t("auth.emailPlaceholder")}
+                value={email}
+                className={emailInvalid ? "ion-invalid ion-touched" : undefined}
+                aria-invalid={emailInvalid || undefined}
+                errorText={t("auth.emailInvalid")}
+                onIonInput={(event) => setEmail(String(event.detail.value ?? ""))}
+              />
+            </IonItem>
+          </IonList>
+          <div className="pm-primary-block">
+            <ActionButton type="submit" expand="block" shape="round" loading={busy === "email"} disabled={busy !== null}>
+              <Mail aria-hidden="true" size={18} />&nbsp;{standalone ? t("auth.sendCode") : t("auth.sendLink")}
+            </ActionButton>
+          </div>
         </form>
       )}
 
       {emailEnabled && sentTo && (
-        <form className={styles.form} onSubmit={verify}>
-          <p className={styles.notice} role="status">
-            {t(standalone ? "auth.codeSentStandalone" : "auth.linkSent", { email: sentTo })}
-          </p>
-          <Field
-            label={t("auth.codeLabel")}
-            description={t("auth.codeHint", { min: minCodeLength, max: maxCodeLength })}
-            autoComplete="one-time-code"
-            inputMode="numeric"
-            pattern="[0-9]*"
-            maxLength={maxCodeLength}
-            autoFocus={standalone}
-            value={code}
-            onChange={(event) => setCode(normalizeCode(event.currentTarget.value))}
-          />
-          <Button
-            type="submit"
-            fullWidth
-            loading={busy === "code"}
-            disabled={busy !== null || !codeReady}
-            leftSection={<KeyRound aria-hidden="true" size={18} />}
-          >
-            {t("auth.verifyCode")}
-          </Button>
-          <div className={styles.secondaryActions}>
-            <Button intent="quiet" loading={busy === "resend"} disabled={busy !== null} onClick={() => void resend()}>
+        <form onSubmit={(event) => void verify(event)}>
+          <Notice tone="success" role="status">
+            <p>{t(standalone ? "auth.codeSentStandalone" : "auth.linkSent", { email: sentTo })}</p>
+          </Notice>
+          <IonList inset>
+            <IonItem lines="none">
+              <IonInput
+                label={t("auth.codeLabel")}
+                labelPlacement="stacked"
+                helperText={t("auth.codeHint", { min: minCodeLength, max: maxCodeLength })}
+                autocomplete="one-time-code"
+                inputmode="numeric"
+                pattern="[0-9]*"
+                maxlength={maxCodeLength}
+                autofocus={standalone}
+                enterkeyhint="go"
+                value={code}
+                onIonInput={(event) => setCode(normalizeCode(String(event.detail.value ?? "")))}
+              />
+            </IonItem>
+          </IonList>
+          <div className="pm-primary-block">
+            <ActionButton type="submit" expand="block" shape="round" loading={busy === "code"} disabled={busy !== null || !codeReady}>
+              <KeyRound aria-hidden="true" size={18} />&nbsp;{t("auth.verifyCode")}
+            </ActionButton>
+            <ActionButton expand="block" fill="clear" loading={busy === "resend"} disabled={busy !== null} onClick={() => void resend()}>
               {t("auth.resend")}
-            </Button>
-            <Button intent="quiet" disabled={busy !== null} onClick={startOver}>
-              {t("auth.useAnotherEmail")}
-            </Button>
+            </ActionButton>
+            <IonButton expand="block" fill="clear" disabled={busy !== null} onClick={startOver}>{t("auth.useAnotherEmail")}</IonButton>
           </div>
-          {status && <p className={styles.hint} role="status">{status}</p>}
+          {status && <Footnote role="status">{status}</Footnote>}
         </form>
       )}
 
       {/* Right under the form the user just used, not below the providers. */}
-      {error && <p className={styles.error} role="alert">{error}</p>}
-      {emailEnabled && oauthProviders.length > 0 && <div className={styles.divider}>{t("auth.orDivider")}</div>}
+      {error && <Footnote tone="danger" role="alert">{error}</Footnote>}
+      {emailEnabled && oauthProviders.length > 0 && <p className="pm-divider">{t("auth.orDivider")}</p>}
 
       {oauthProviders.length > 0 && (
-        <div className={styles.providers}>
+        <div className="pm-primary-block">
           {oauthProviders.map((provider) => (
-            <Button
+            <ActionButton
               key={provider}
-              intent="secondary"
-              fullWidth
+              expand="block"
+              shape="round"
+              fill="outline"
               loading={busy === provider}
               disabled={busy !== null}
               onClick={() => void run(provider, () => onProviderSignIn(provider), t("auth.providerFailed", { provider: providerLabel(provider) }))}
             >
               {t("auth.continueWith", { provider: providerLabel(provider) })}
-            </Button>
+            </ActionButton>
           ))}
-          {standalone && emailEnabled && <p className={styles.hint}>{t("auth.standaloneProviderHint")}</p>}
+          {standalone && emailEnabled && <Footnote>{t("auth.standaloneProviderHint")}</Footnote>}
         </div>
       )}
-
     </AuthLayout>
   );
 }

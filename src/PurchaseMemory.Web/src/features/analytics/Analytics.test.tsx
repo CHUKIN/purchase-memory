@@ -16,6 +16,7 @@ import {
 import type { AnalyticsAnswer, AnalyticsAskResponse } from "../../api/types";
 import { AppProviders } from "../../app/AppProviders";
 import { sampleCategories } from "../categories/categoryFixtures";
+import { pick, pickerOptions, row, setDate } from "../../test/ionicHelpers";
 import { AnalyticsPage } from "./AnalyticsPage";
 import { AnalyticsView, type AnalyticsViewProps } from "./AnalyticsView";
 import {
@@ -119,10 +120,10 @@ describe("AnalyticsView", () => {
   it("edits the period and store in a form", () => {
     const { props } = renderView({ answer: biedronkaSpendAnswer });
     fireEvent.click(screen.getByRole("button", { name: "Изменить" }));
-    fireEvent.change(screen.getByLabelText("С даты"), { target: { value: "2026-07-01" } });
-    fireEvent.change(screen.getByLabelText("Магазин"), { target: { value: "Lidl" } });
+    setDate("С даты", "2026-07-01");
+    pick("Магазин", "Lidl");
     fireEvent.change(screen.getByLabelText("Разбивка"), { target: { value: "week" } });
-    fireEvent.click(screen.getByRole("button", { name: "Пересчитать" }));
+    fireEvent.click(screen.getAllByRole("button", { name: "Пересчитать" })[0]);
     expect(props.onPlanChange).toHaveBeenCalledWith({
       ...biedronkaSpendAnswer.plan, from: "2026-07-01", merchants: ["Lidl"], groupBy: "week"
     });
@@ -157,11 +158,10 @@ describe("AnalyticsView", () => {
   it("picks a tag and the breakdown by tag in the form", () => {
     const { props } = renderView({ answer: biedronkaSpendAnswer, tags: sampleAnalyticsTags });
     fireEvent.click(screen.getByRole("button", { name: "Изменить" }));
-    const tagField = screen.getByLabelText("Тег");
-    expect(tagField).toHaveValue("");
-    fireEvent.change(tagField, { target: { value: "tag-promo" } });
+    expect(row("Тег")).toHaveTextContent("Все теги");
+    pick("Тег", "Акция");
     fireEvent.change(screen.getByLabelText("Разбивка"), { target: { value: "tag" } });
-    fireEvent.click(screen.getByRole("button", { name: "Пересчитать" }));
+    fireEvent.click(screen.getAllByRole("button", { name: "Пересчитать" })[0]);
     expect(props.onPlanChange).toHaveBeenCalledWith({ ...biedronkaSpendAnswer.plan, tagIds: ["tag-promo"], groupBy: "tag" });
   });
 
@@ -169,20 +169,20 @@ describe("AnalyticsView", () => {
     const twoTags = { ...kidsByTagAnswer, plan: { ...kidsByTagAnswer.plan, tagIds: ["tag-kid", "tag-promo"] } };
     const { props } = renderView({ answer: twoTags, tags: sampleAnalyticsTags });
     fireEvent.click(screen.getByRole("button", { name: "Изменить" }));
-    fireEvent.change(screen.getByLabelText("С даты"), { target: { value: "2026-08-01" } });
-    fireEvent.click(screen.getByRole("button", { name: "Пересчитать" }));
+    setDate("С даты", "2026-08-01");
+    fireEvent.click(screen.getAllByRole("button", { name: "Пересчитать" })[0]);
     expect(props.onPlanChange).toHaveBeenLastCalledWith({ ...twoTags.plan, from: "2026-08-01" });
 
     fireEvent.click(screen.getByRole("button", { name: "Изменить" }));
-    fireEvent.change(screen.getByLabelText("Тег"), { target: { value: "" } });
-    fireEvent.click(screen.getByRole("button", { name: "Пересчитать" }));
+    pick("Тег", "Все теги");
+    fireEvent.click(screen.getAllByRole("button", { name: "Пересчитать" })[0]);
     expect(props.onPlanChange).toHaveBeenLastCalledWith({ ...twoTags.plan, tagIds: [] });
   });
 
   it("offers no tag field or tag breakdown to a household without tags", () => {
     renderView({ answer: biedronkaSpendAnswer, tags: [] });
     fireEvent.click(screen.getByRole("button", { name: "Изменить" }));
-    expect(screen.queryByLabelText("Тег")).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /^Тег/ })).not.toBeInTheDocument();
     expect(within(screen.getByLabelText("Разбивка")).queryByRole("option", { name: "По тегам" })).not.toBeInTheDocument();
   });
 
@@ -251,7 +251,7 @@ describe("AnalyticsView", () => {
     fireEvent.click(screen.getByRole("button", { name: "Отмена" }));
     expect(screen.queryByText("Удалить этот вопрос из истории?")).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Удалить вопрос: а по магазинам?" }));
-    fireEvent.click(within(screen.getByRole("group", { name: "Удалить этот вопрос из истории?" })).getByRole("button", { name: "Удалить" }));
+    fireEvent.click(within(screen.getByRole("dialog", { name: "Удалить этот вопрос из истории?" })).getByRole("button", { name: "Удалить" }));
     expect(props.onDeleteHistory).toHaveBeenCalledWith("history-biedronka-shops");
     expect(screen.getByRole("heading", { level: 2, name: "Предыдущие вопросы" })).toHaveFocus();
 
@@ -297,7 +297,7 @@ describe("AnalyticsView", () => {
         </MemoryRouter>
       </AppProviders>
     );
-    expect(screen.getByRole("heading", { level: 1, name: "Ask about your purchases" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: "Insights" })).toBeInTheDocument();
     expect(screen.getByText("“makaron pelnoziarn” in the name")).toBeInTheDocument();
     expect(screen.getByText("All history")).toBeInTheDocument();
   });
@@ -326,7 +326,7 @@ describe("AnalyticsPage", () => {
     expect(askAnalytics).toHaveBeenLastCalledWith("Сколько мы купили молока за год?", null, "ru", false);
     // The household's tags reach the plan editor.
     fireEvent.click(screen.getByRole("button", { name: "Изменить" }));
-    expect(within(screen.getByLabelText("Тег")).getByRole("option", { name: "Для ребёнка" })).toBeInTheDocument();
+    expect(pickerOptions("Тег")).toContain("Для ребёнка");
 
     fireEvent.change(screen.getByLabelText("Уточните вопрос"), { target: { value: "а в Biedronce?" } });
     fireEvent.click(screen.getByRole("button", { name: "Спросить" }));
@@ -369,7 +369,7 @@ describe("AnalyticsPage", () => {
     await waitFor(() => expect(askAnalytics).toHaveBeenCalledWith("Сколько мы купили молока за год?", null, "ru", true));
 
     fireEvent.click(screen.getByRole("button", { name: "Удалить вопрос: Сколько мы купили молока за год?" }));
-    fireEvent.click(within(screen.getByRole("group", { name: "Удалить этот вопрос из истории?" })).getByRole("button", { name: "Удалить" }));
+    fireEvent.click(within(screen.getByRole("dialog", { name: "Удалить этот вопрос из истории?" })).getByRole("button", { name: "Удалить" }));
     await waitFor(() => expect(deleteAnalyticsHistoryEntry).toHaveBeenCalledWith("history-milk"));
     await waitFor(() => expect(listAnalyticsHistory).toHaveBeenCalledTimes(4));
   });
@@ -421,7 +421,7 @@ describe("AnalyticsPage", () => {
     expect(milk()).toHaveAttribute("aria-current", "true");
 
     fireEvent.click(screen.getByRole("button", { name: "Удалить вопрос: Сколько мы купили молока за год?" }));
-    fireEvent.click(within(screen.getByRole("group", { name: "Удалить этот вопрос из истории?" })).getByRole("button", { name: "Удалить" }));
+    fireEvent.click(within(screen.getByRole("dialog", { name: "Удалить этот вопрос из истории?" })).getByRole("button", { name: "Удалить" }));
     await waitFor(() => expect(milk()).not.toHaveAttribute("aria-current"));
     expect(screen.queryByText(/Сохранённый ответ от/)).not.toBeInTheDocument();
   });

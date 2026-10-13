@@ -14,6 +14,7 @@ import { ImpressionForm } from "./ImpressionForm";
 import { ImpressionHistory, StoreComparison } from "./ImpressionHistory";
 import { ProductImpressionsSection, PurchaseLineImpressions, UnratedPurchasesBlock } from "./ImpressionSections";
 import { RatingControl } from "./RatingControl";
+import { findRow, pick } from "../../test/ionicHelpers";
 
 vi.mock("../../api/client", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../../api/client")>();
@@ -94,19 +95,19 @@ describe("impressions", () => {
     const onChange = vi.fn();
     renderWithApp(<RatingControl legend="Оценка" value="neutral" onChange={onChange} />);
 
-    const group = screen.getByRole("group", { name: "Оценка" });
-    const radios = within(group).getAllByRole("radio");
-    expect(radios.map((radio) => radio.getAttribute("value"))).toEqual(["dislike", "neutral", "like"]);
-    expect(within(group).getByRole("radio", { name: "Средне" })).toBeChecked();
+    const group = screen.getByRole("tablist", { name: "Оценка" });
+    const radios = within(group).getAllByRole("tab");
+    expect(radios.map((radio) => radio.textContent)).toEqual(["Не нравится", "Средне", "Нравится"]);
+    expect(within(group).getByRole("tab", { name: "Средне" })).toHaveAttribute("aria-selected", "true");
 
-    fireEvent.click(within(group).getByRole("radio", { name: "Нравится" }));
+    fireEvent.click(within(group).getByRole("tab", { name: "Нравится" }));
     expect(onChange).toHaveBeenCalledWith("like");
   });
 
   it("uses English labels in the English locale", () => {
     renderWithApp(<RatingControl legend="Rating" value={null} onChange={vi.fn()} />, "en");
-    expect(screen.getByRole("radio", { name: "So-so" })).toBeInTheDocument();
-    expect(screen.getByRole("radio", { name: "Dislike" })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: "So-so" })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: "Dislike" })).toBeInTheDocument();
   });
 
   it("groups history by person, the viewer first, and lets only the author delete", async () => {
@@ -148,14 +149,14 @@ describe("impressions", () => {
     expect(onSubmit).not.toHaveBeenCalled();
 
     const photo = new File(["x"], "inside.jpg", { type: "image/jpeg" });
-    fireEvent.click(screen.getByRole("radio", { name: "Нравится" }));
+    fireEvent.click(screen.getByRole("tab", { name: "Нравится" }));
     fireEvent.change(screen.getByLabelText("Заметка (необязательно)"), { target: { value: "Хрустящее" } });
     fireEvent.change(screen.getByLabelText("Фото впечатления (необязательно)"), { target: { files: [photo] } });
     fireEvent.click(screen.getByRole("button", { name: "Сохранить впечатление" }));
 
     await waitFor(() => expect(onSubmit).toHaveBeenCalledWith({ rating: "like", note: "Хрустящее", photo }));
     expect(await screen.findByRole("status")).toHaveTextContent("Впечатление сохранено.");
-    expect(screen.getByRole("radio", { name: "Нравится" })).not.toBeChecked();
+    expect(screen.getByRole("tab", { name: "Нравится" })).toHaveAttribute("aria-selected", "false");
   });
 
   it("rates the chosen purchase from the product page and shows the history", async () => {
@@ -166,10 +167,10 @@ describe("impressions", () => {
     expect(await screen.findByRole("region", { name: "boris@example.com" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Сравнение по магазинам" })).toBeInTheDocument();
 
-    const select = await screen.findByLabelText("Какую покупку оцениваете");
-    expect(select).toHaveValue("line2");
-    fireEvent.change(select, { target: { value: "line1" } });
-    fireEvent.click(screen.getByRole("radio", { name: "Средне" }));
+    // The most recent purchase is chosen until another one is picked.
+    expect(await findRow("Какую покупку оцениваете")).toHaveTextContent(/Biedronka · .* · 2,99/);
+    pick("Какую покупку оцениваете", "Lidl");
+    fireEvent.click(screen.getByRole("tab", { name: "Средне" }));
     fireEvent.click(screen.getByRole("button", { name: "Сохранить впечатление" }));
 
     await waitFor(() => expect(createImpression).toHaveBeenCalledWith({ purchaseItemId: "line1", rating: "neutral", note: "", photo: null }));
@@ -182,7 +183,7 @@ describe("impressions", () => {
 
     expect(await screen.findByRole("heading", { name: "Оценить недавнее" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Chleb" })).toHaveAttribute("href", "/products/milk");
-    fireEvent.click(within(screen.getByRole("group", { name: "Оценка: Chleb" })).getByRole("radio", { name: "Нравится" }));
+    fireEvent.click(within(screen.getByRole("tablist", { name: "Оценка: Chleb" })).getByRole("tab", { name: "Нравится" }));
     await waitFor(() => expect(createImpression).toHaveBeenCalledWith({ purchaseItemId: "fresh", rating: "like", note: "", photo: null }));
     unmount();
 
@@ -206,7 +207,7 @@ describe("impressions", () => {
     ]);
 
     fireEvent.click(screen.getByRole("button", { name: "Оценить «MLEKO 2%»" }));
-    fireEvent.click(screen.getByRole("radio", { name: "Не нравится" }));
+    fireEvent.click(screen.getByRole("tab", { name: "Не нравится" }));
     fireEvent.click(screen.getByRole("button", { name: "Сохранить впечатление" }));
     await waitFor(() => expect(createImpression).toHaveBeenCalledWith({ purchaseItemId: "line1", rating: "dislike", note: "", photo: null }));
   });

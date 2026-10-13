@@ -3,7 +3,7 @@ import { MemoryRouter, Route, Routes } from "react-router";
 import { describe, expect, it, vi } from "vitest";
 import type { ProductDetail } from "../../api/types";
 import { AppProviders } from "../../app/AppProviders";
-import { ProductDetailPage } from "./ProductsPage";
+import { ProductDetailPage } from "./ProductDetailPage";
 
 const product: ProductDetail = {
   id: "p1",

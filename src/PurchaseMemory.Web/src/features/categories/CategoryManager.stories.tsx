@@ -9,7 +9,6 @@ const meta = {
   parameters: { layout: "padded" },
   args: {
     categories: sampleCategories,
-    defaultOpen: true,
     onCreate: fn(async () => undefined),
     onRename: fn(async () => undefined),
     onDelete: fn(async () => undefined)
@@ -20,7 +19,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Open: Story = {};
-export const Collapsed: Story = { args: { defaultOpen: false } };
+
 export const MobileEn: Story = { globals: { viewport: { value: "phone", isRotated: false }, locale: "en" } };
 export const ActionFails: Story = {
   args: { onDelete: fn(async () => Promise.reject(new Error("Delete or move the subcategories first"))) }

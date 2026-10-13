@@ -44,7 +44,6 @@ export const Manager: StoryObj<typeof TagManager> = {
   render: () => (
     <TagManager
       tags={householdTags}
-      defaultOpen
       onCreate={fn(async () => undefined)}
       onRename={fn(async () => undefined)}
       onDelete={fn(async () => undefined)}

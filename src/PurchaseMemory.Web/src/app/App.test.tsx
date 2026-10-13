@@ -19,8 +19,11 @@ vi.mock("../api/client", () => ({
   listUnratedPurchaseItems: vi.fn().mockResolvedValue([]),
   createImpression: vi.fn(),
   deleteImpression: vi.fn(),
-  getAnalyticsContext: vi.fn().mockResolvedValue({ enabled: true, today: "2026-09-26", merchants: [], brands: [] })
+  getAnalyticsContext: vi.fn().mockResolvedValue({ enabled: true, today: "2026-09-26", merchants: [], brands: [] }),
+  listAnalyticsHistory: vi.fn().mockResolvedValue({ items: [], hasMore: false })
 }));
+
+const tabs = () => screen.getByRole("navigation", { name: /Разделы|Sections/ });
 
 describe("App", () => {
   beforeEach(() => {
@@ -35,50 +38,52 @@ describe("App", () => {
     window.history.replaceState({}, "", "/");
   });
 
-  it("starts in the production home shell without invented purchase metrics", async () => {
+  it("starts on Home with one main action and no invented purchase metrics", async () => {
     render(<AppProviders><App /></AppProviders>);
-    expect(screen.getByRole("heading", { name: "Сохраните следующую покупку" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Сфотографировать чек" })).toHaveAttribute("href", "/purchases/new");
-    expect(screen.getByRole("link", { name: "Открыть очередь" })).toHaveAttribute("href", "/needs-attention");
-    expect(await screen.findByText("Сервис готов принимать фотографии.")).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { level: 1, name: "Главная" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Сфотографировать чек/ })).toHaveAttribute("href", "/purchases/new");
+    expect(screen.getByRole("link", { name: /^Нужно проверить/ })).toHaveAttribute("href", "/needs-attention");
+    expect(await screen.findByText(/Сервис готов принимать фотографии\./)).toBeInTheDocument();
     expect(screen.queryByText("1 284,70 zł")).not.toBeInTheDocument();
   });
 
-  it("supports deep links and exposes all five sections in desktop navigation", async () => {
+  it("supports deep links and keeps the four sections in the tab bar", async () => {
     window.history.replaceState({}, "", "/products");
     render(<AppProviders><App /></AppProviders>);
 
-    expect(screen.getByRole("heading", { level: 1, name: "Товары" })).toBeInTheDocument();
-    const navigation = screen.getByRole("navigation", { name: "Основная навигация для компьютера" });
-    for (const name of ["Главная", "Покупки", "Товары", "Аналитика", "Нужно проверить"]) {
-      expect(within(navigation).getByRole("link", { name })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { level: 1, name: "Товары" })).toBeInTheDocument();
+    for (const name of ["Главная", "Покупки", "Товары", "Аналитика"]) {
+      expect(within(tabs()).getByRole("link", { name })).toBeInTheDocument();
     }
-    expect(within(navigation).getByRole("link", { name: "Товары" })).toHaveAttribute("aria-current", "page");
+    expect(within(tabs()).getByRole("link", { name: "Товары" })).toHaveAttribute("aria-current", "page");
   });
 
-  it("changes locale, persists it, and restores it after remount", async () => {
+  it("moves help, language and sign-out into «Ещё» on Home, and keeps the language after remount", async () => {
     const firstRender = render(<AppProviders><App /></AppProviders>);
-    fireEvent.click(screen.getAllByRole("button", { name: "EN" })[0]);
-    expect(await screen.findByRole("heading", { name: "Remember your next purchase" })).toBeInTheDocument();
+    fireEvent.click(await screen.findByRole("button", { name: "Ещё: подсказки, язык, выход" }));
+    const settings = screen.getByRole("dialog");
+    expect(within(settings).getByRole("link", { name: /Подсказки/ })).toHaveAttribute("href", "/help");
+    fireEvent.click(within(settings).getByRole("tab", { name: "English" }));
+    expect(await screen.findByRole("heading", { level: 1, name: "Home" })).toBeInTheDocument();
     expect(window.localStorage.getItem(localeStorageKey)).toBe("en");
 
     firstRender.unmount();
     render(<AppProviders><App /></AppProviders>);
-    expect(await screen.findByRole("heading", { name: "Remember your next purchase" })).toBeInTheDocument();
-    expect(screen.getByRole("navigation", { name: "Desktop primary navigation" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { level: 1, name: "Home" })).toBeInTheDocument();
+    expect(screen.getByRole("navigation", { name: "Sections" })).toBeInTheDocument();
   });
 
-  it("uses browser history for link navigation and back", async () => {
+  it("uses browser history for tab navigation and back", async () => {
     render(<AppProviders><App /></AppProviders>);
-    const desktopNavigation = screen.getByRole("navigation", { name: "Основная навигация для компьютера" });
-    fireEvent.click(within(desktopNavigation).getByRole("link", { name: "Аналитика" }));
-    expect(await screen.findByRole("heading", { level: 1, name: "Спросите о покупках" })).toBeInTheDocument();
+    await screen.findByRole("heading", { level: 1, name: "Главная" });
+    fireEvent.click(within(tabs()).getByRole("link", { name: "Аналитика" }));
+    expect(await screen.findByRole("heading", { level: 1, name: "Аналитика" })).toBeInTheDocument();
     expect(window.location.pathname).toBe("/analytics");
 
     window.history.back();
     window.dispatchEvent(new PopStateEvent("popstate"));
     await waitFor(() => expect(window.location.pathname).toBe("/"));
-    expect(screen.getByRole("heading", { name: "Сохраните следующую покупку" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { level: 1, name: "Главная" })).toBeInTheDocument();
   });
 
   it("keeps receipt recognition disabled after the status request fails", async () => {
@@ -87,11 +92,8 @@ describe("App", () => {
     render(<AppProviders><App /></AppProviders>);
 
     expect(await screen.findByText("Сервис распознавания недоступен")).toBeInTheDocument();
-    const input = document.querySelector<HTMLInputElement>('input[type="file"]');
-    expect(input).not.toBeNull();
-    fireEvent.change(input!, { target: { files: [new File(["receipt"], "receipt.jpg", { type: "image/jpeg" })] } });
+    fireEvent.change(screen.getByLabelText("Выбрать из галереи"), { target: { files: [new File(["receipt"], "receipt.jpg", { type: "image/jpeg" })] } });
 
     expect(screen.getByRole("button", { name: "Загрузить и распознать" })).toBeDisabled();
-    expect(screen.getAllByText("Распознавание недоступно")).toHaveLength(2);
   });
 });

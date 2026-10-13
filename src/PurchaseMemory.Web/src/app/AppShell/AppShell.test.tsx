@@ -1,42 +1,49 @@
-import { render, screen, within } from "@testing-library/react";
-import { MemoryRouter } from "react-router";
+import { fireEvent, render, screen, within } from "@testing-library/react";
+import { MemoryRouter, useLocation } from "react-router";
 import { describe, expect, it } from "vitest";
 import { AppProviders } from "../AppProviders";
-import { AppShell } from "./AppShell";
+import { AppShell, tabOf } from "./AppShell";
 
-function renderShell(path = "/") {
+function Where() {
+  return <output data-testid="where">{useLocation().pathname}</output>;
+}
+
+function renderShell(path = "/", reviewCount: number | null = null) {
   return render(
     <AppProviders locale="ru">
       <MemoryRouter initialEntries={[path]}>
-        <AppShell recognition={null}><h1>Content</h1></AppShell>
+        <AppShell reviewCount={reviewCount}><Where /></AppShell>
       </MemoryRouter>
     </AppProviders>
   );
 }
 
 describe("AppShell navigation", () => {
-  it("announces a neutral checking state while recognition status is pending", () => {
+  it("keeps four sections in the tab bar; review is reached from Home", () => {
     renderShell();
-    expect(screen.getAllByText("Проверяем распознавание")).toHaveLength(2);
-    expect(screen.queryByText("Распознавание недоступно")).not.toBeInTheDocument();
-  });
-
-  it("keeps four compact mobile destinations and reaches review from Home", () => {
-    renderShell();
-    const mobile = screen.getByRole("navigation", { name: "Основная навигация для телефона" });
-    expect(within(mobile).getAllByRole("link")).toHaveLength(4);
-    for (const name of ["Главная", "Покупки", "Товары", "Аналитика"]) {
-      expect(within(mobile).getByRole("link", { name })).toBeInTheDocument();
+    const tabs = screen.getByRole("navigation", { name: "Разделы" });
+    expect(within(tabs).getAllByRole("link")).toHaveLength(4);
+    for (const [name, href] of [["Главная", "/"], ["Покупки", "/purchases"], ["Товары", "/products"], ["Аналитика", "/analytics"]]) {
+      expect(within(tabs).getByRole("link", { name })).toHaveAttribute("href", href);
     }
-    expect(within(mobile).queryByRole("link", { name: "Нужно проверить" })).not.toBeInTheDocument();
+    expect(within(tabs).queryByRole("link", { name: /Нужно проверить/ })).not.toBeInTheDocument();
   });
 
-  it("marks the current section active in both navigation layouts", () => {
-    renderShell("/purchases");
-    const desktop = screen.getByRole("navigation", { name: "Основная навигация для компьютера" });
-    const mobile = screen.getByRole("navigation", { name: "Основная навигация для телефона" });
-    expect(within(desktop).getByRole("link", { name: "Покупки" })).toHaveAttribute("aria-current", "page");
-    expect(within(mobile).getByRole("link", { name: "Покупки" })).toHaveAttribute("aria-current", "page");
-    expect(within(desktop).getByRole("link", { name: "Главная" })).not.toHaveAttribute("aria-current");
+  it("marks the current section, also on its detail screens", () => {
+    renderShell("/purchases/p1");
+    const tabs = screen.getByRole("navigation", { name: "Разделы" });
+    expect(within(tabs).getByRole("link", { name: "Покупки" })).toHaveAttribute("aria-current", "page");
+    expect(within(tabs).getByRole("link", { name: "Главная" })).not.toHaveAttribute("aria-current");
+    expect(tabOf("/needs-attention")).toBe("home");
+    expect(tabOf("/purchases/new")).toBe("home");
+    expect(tabOf("/products/a")).toBe("products");
+  });
+
+  it("navigates inside the app and counts the review queue on Home", () => {
+    renderShell("/", 3);
+    const tabs = screen.getByRole("navigation", { name: "Разделы" });
+    expect(within(tabs).getByRole("link", { name: /Главная.*3 пункта требуют внимания/ })).toBeInTheDocument();
+    fireEvent.click(within(tabs).getByRole("link", { name: "Товары" }));
+    expect(screen.getByTestId("where")).toHaveTextContent("/products");
   });
 });

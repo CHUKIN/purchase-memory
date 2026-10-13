@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
-import { ReceiptDiscountLine } from "./ReceiptDiscountLine";
+import { IonItem, IonList } from "@ionic/react";
+import { DiscountFields, ReceiptDiscountLine } from "./ReceiptDiscountLine";
 
 const phone = { viewport: { value: "phone", isRotated: false } };
 const desktop = { viewport: { value: "desktop", isRotated: false } };
@@ -9,6 +10,8 @@ const meta = {
   title: "Purchase Memory/ReceiptDiscountLine/Production",
   component: ReceiptDiscountLine,
   parameters: { layout: "padded" },
+  // The line is the content of a list row, as in the receipt editor.
+  render: (args) => <IonList inset><IonItem><ReceiptDiscountLine {...args} /></IonItem></IonList>,
   args: {
     name: "OPUST",
     lineTotal: -30,
@@ -26,8 +29,11 @@ export const LinkedMobileRu: Story = { globals: phone };
 
 export const LinkedDesktopEn: Story = { globals: { ...desktop, locale: "en" } };
 
-/** Editable in the full review editor: the size is typed as a positive number and stored negative. */
-export const EditableMobileRu: Story = { globals: phone, args: { onChange: fn(), onDelete: fn() } };
+/** The discount's fields in the line sheet: the size is typed as a positive number and stored negative. */
+export const FieldsMobileRu: StoryObj<typeof DiscountFields> = {
+  globals: phone,
+  render: () => <IonList inset><DiscountFields name="OPUST" lineTotal={-30} onChange={fn()} /></IonList>
+};
 
 /** A discount with no product above it: kept, but flagged as not attached. */
 export const UnlinkedDesktopRu: Story = {
@@ -37,7 +43,7 @@ export const UnlinkedDesktopRu: Story = {
 
 export const UnreadableAmountMobileEn: Story = {
   globals: { ...phone, locale: "en" },
-  args: { lineTotal: null, onChange: fn(), onDelete: fn() }
+  args: { lineTotal: null }
 };
 
 /** A discount on the whole receipt ("OPUST (podsuma)"): a normal case, no product and no warning. */

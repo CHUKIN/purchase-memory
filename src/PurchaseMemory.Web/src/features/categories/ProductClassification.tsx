@@ -1,12 +1,9 @@
-import { Pencil } from "lucide-react";
-import { useId, useState, type FormEvent } from "react";
+import { IonAlert, IonItem, IonLabel, IonList, IonNote } from "@ionic/react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { AttributeSource, ProductCategory } from "../../api/types";
-import { Button, Field, IconButton, Surface } from "../../design-system/components";
-import { CategoryChip } from "./CategoryChip";
+import { Footnote, SectionHeader } from "../../design-system/components";
 import { CategoryPicker } from "./CategoryPicker";
-import { categoryPath } from "./categoryText";
-import styles from "./ProductClassification.module.css";
 
 export interface ClassificationChange {
   categoryId?: string | null;
@@ -21,32 +18,19 @@ export interface ProductClassificationProps {
   brandSource: AttributeSource | null;
   /** Everything sent becomes the person's confirmed decision. */
   onSave: (change: ClassificationChange) => Promise<unknown>;
-  /** Starts in edit mode; for stories and tests. */
-  initiallyEditing?: boolean;
 }
 
 /**
- * Category and brand of one product. A human choice here is authoritative:
- * it covers every purchase of the product and AI never overwrites it.
+ * Category and brand of one product as two rows. Picking a category or
+ * entering a brand saves it at once; a suggestion from the AI can be
+ * confirmed as it is. A human choice here is authoritative: it covers every
+ * purchase of the product and AI never overwrites it.
  */
-export function ProductClassification({
-  categories,
-  categoryId,
-  categorySource,
-  brand,
-  brandSource,
-  onSave,
-  initiallyEditing = false
-}: ProductClassificationProps) {
+export function ProductClassification({ categories, categoryId, categorySource, brand, brandSource, onSave }: ProductClassificationProps) {
   const { t } = useTranslation();
-  const titleId = useId();
-  const [editing, setEditing] = useState(initiallyEditing);
-  const [draftCategory, setDraftCategory] = useState(categoryId);
-  const [draftBrand, setDraftBrand] = useState(brand ?? "");
   const [saving, setSaving] = useState(false);
   const [failed, setFailed] = useState(false);
-
-  const label = categoryPath(t, categories, categoryId);
+  const [editingBrand, setEditingBrand] = useState(false);
   const suggestedSomething = categorySource === "suggested" || brandSource === "suggested";
 
   async function save(change: ClassificationChange) {
@@ -54,7 +38,6 @@ export function ProductClassification({
     setFailed(false);
     try {
       await onSave(change);
-      setEditing(false);
     } catch {
       setFailed(true);
     } finally {
@@ -62,81 +45,59 @@ export function ProductClassification({
     }
   }
 
-  function startEditing() {
-    setDraftCategory(categoryId);
-    setDraftBrand(brand ?? "");
-    setFailed(false);
-    setEditing(true);
-  }
-
-  function submit(event: FormEvent) {
-    event.preventDefault();
-    void save({ categoryId: draftCategory, brand: draftBrand.trim() === "" ? null : draftBrand.trim() });
-  }
-
   return (
-    <Surface as="section" className={styles.section} aria-labelledby={titleId}>
-      <div className={styles.heading}>
-        <h2 id={titleId}>{t("categories.title")}</h2>
-        {!editing && (
-          <IconButton intent="secondary" iconOnly="mobile" icon={<Pencil />} label={t("categories.edit")} onClick={startEditing} disabled={saving} />
-        )}
-      </div>
-
-      {!editing && (
-        <>
-          <dl className={styles.values}>
-            <div>
-              <dt>{t("categories.category")}</dt>
-              <dd><CategoryChip label={label} source={categorySource} /></dd>
-            </div>
-            <div>
-              <dt>{t("categories.brand")}</dt>
-              <dd className={brand ? undefined : styles.muted}>
-                {brand ?? t("categories.noBrand")}
-                {brand && brandSource === "suggested" && <span className={styles.marker}> · {t("categories.suggested")}</span>}
-              </dd>
-            </div>
-          </dl>
-          {suggestedSomething && (
-            <>
-              <p className={styles.hint}>{t("categories.suggestedHint")}</p>
-              <div className={styles.actions}>
-                <Button
-                  loading={saving}
-                  onClick={() => void save({
-                    ...(categorySource === "suggested" ? { categoryId } : {}),
-                    ...(brandSource === "suggested" ? { brand } : {})
-                  })}
-                >
-                  {t("categories.confirm")}
-                </Button>
-              </div>
-            </>
-          )}
-        </>
-      )}
-
-      {editing && (
-        <form className={styles.form} onSubmit={submit}>
-          <CategoryPicker categories={categories} value={draftCategory} onChange={setDraftCategory} disabled={saving} />
-          <Field
-            label={t("categories.brand")}
-            placeholder={t("categories.brandPlaceholder")}
-            value={draftBrand}
-            maxLength={100}
+    <section aria-labelledby="classification-title">
+      <SectionHeader id="classification-title">{t("categories.title")}</SectionHeader>
+      <IonList inset className="pm-after-header">
+        <CategoryPicker
+          categories={categories}
+          value={categoryId}
+          label={categorySource === "suggested" ? `${t("categories.category")} · ${t("categories.suggested")}` : t("categories.category")}
+          disabled={saving}
+          onChange={(next) => void save({ categoryId: next })}
+        />
+        <IonItem button detail disabled={saving} lines={suggestedSomething ? undefined : "none"} onClick={() => setEditingBrand(true)}>
+          <IonLabel>{t("categories.brand")}</IonLabel>
+          <IonNote slot="end" className="pm-pick-value">
+            {brand ?? t("categories.noBrand")}
+            {brand && brandSource === "suggested" && ` · ${t("categories.suggested")}`}
+          </IonNote>
+        </IonItem>
+        {suggestedSomething && (
+          <IonItem
+            button
+            detail={false}
+            lines="none"
             disabled={saving}
-            onChange={(event) => setDraftBrand(event.currentTarget.value)}
-          />
-          <p className={styles.hint}>{t("categories.appliesToAll")}</p>
-          <div className={styles.actions}>
-            <Button type="submit" loading={saving}>{t("categories.save")}</Button>
-            <Button intent="quiet" onClick={() => setEditing(false)} disabled={saving}>{t("categories.cancel")}</Button>
-          </div>
-        </form>
-      )}
+            onClick={() => void save({
+              ...(categorySource === "suggested" ? { categoryId } : {}),
+              ...(brandSource === "suggested" ? { brand } : {})
+            })}
+          >
+            <IonLabel color="primary">{t("categories.confirm")}</IonLabel>
+          </IonItem>
+        )}
+      </IonList>
+      {suggestedSomething && <Footnote>{t("categories.suggestedHint")}</Footnote>}
+      <Footnote>{t("categories.appliesToAll")}</Footnote>
+      {failed && <Footnote tone="danger" role="alert">{t("categories.saveError")}</Footnote>}
 
-      {failed && <p className={styles.error} role="alert">{t("categories.saveError")}</p>}
-    </Surface>
+      <IonAlert
+        isOpen={editingBrand}
+        header={t("categories.brand")}
+        inputs={[{ name: "brand", type: "text", value: brand ?? "", placeholder: t("categories.brandPlaceholder"), attributes: { maxlength: 100 } }]}
+        buttons={[
+          { text: t("categories.cancel"), role: "cancel" },
+          {
+            text: t("categories.save"),
+            handler: (values: { brand?: string }) => {
+              const next = (values.brand ?? "").trim();
+              void save({ brand: next === "" ? null : next });
+            }
+          }
+        ]}
+        onDidDismiss={() => setEditingBrand(false)}
+      />
+    </section>
   );
 }

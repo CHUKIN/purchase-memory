@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { ApiError } from "../../api/client";
 import { AppProviders } from "../../app/AppProviders";
 import { knownTagFilter } from "../filters/categoryFilter";
+import { chooseAction, dialog, row } from "../../test/ionicHelpers";
 import { TagManager } from "./TagManager";
 import { tagKey } from "./tagKey";
 
@@ -17,7 +18,6 @@ function renderManager(overrides: Partial<Parameters<typeof TagManager>[0]> = {}
     onCreate: vi.fn().mockResolvedValue(undefined),
     onRename: vi.fn().mockResolvedValue(undefined),
     onDelete: vi.fn().mockResolvedValue(undefined),
-    defaultOpen: true,
     ...overrides
   };
   render(<AppProviders locale="ru"><TagManager {...props} /></AppProviders>);
@@ -34,14 +34,16 @@ describe("TagManager", () => {
     fireEvent.click(screen.getByRole("button", { name: "Добавить" }));
     await waitFor(() => expect(props.onCreate).toHaveBeenCalledWith("акция"));
 
-    fireEvent.click(screen.getByRole("button", { name: "Переименовать: для ребёнка" }));
-    fireEvent.change(screen.getByLabelText("Переименовать"), { target: { value: "детям" } });
-    fireEvent.click(screen.getByRole("button", { name: "Сохранить" }));
+    fireEvent.click(row("для ребёнка"));
+    chooseAction("Переименовать");
+    fireEvent.change(within(dialog("Переименовать")).getByLabelText("Переименовать"), { target: { value: "детям" } });
+    fireEvent.click(within(dialog("Переименовать")).getByRole("button", { name: "Сохранить" }));
     await waitFor(() => expect(props.onRename).toHaveBeenCalledWith("kid", "детям"));
 
-    fireEvent.click(screen.getByRole("button", { name: "Удалить: к празднику" }));
+    fireEvent.click(row("к празднику"));
+    chooseAction("Удалить");
     expect(screen.getByText("Удалить тег «к празднику»?")).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Да, удалить" }));
+    chooseAction("Да, удалить");
     await waitFor(() => expect(props.onDelete).toHaveBeenCalledWith("party"));
   });
 

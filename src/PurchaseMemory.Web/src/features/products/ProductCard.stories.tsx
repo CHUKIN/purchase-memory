@@ -134,7 +134,7 @@ const desktop = { viewport: { value: "desktop", isRotated: false } };
 const meta = {
   title: "Purchase Memory/Products/Card",
   component: ProductCard,
-  parameters: { layout: "padded" },
+  parameters: { layout: "fullscreen" },
   decorators: [(Story) => <MemoryRouter><Story /></MemoryRouter>],
   args: { product: milk, locale: "ru-RU" }
 } satisfies Meta<typeof ProductCard>;

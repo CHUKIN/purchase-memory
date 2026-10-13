@@ -3,6 +3,7 @@ import { useState } from "react";
 import { MemoryRouter } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AppProviders } from "../../app/AppProviders";
+import { chooseAction } from "../../test/ionicHelpers";
 import { ReceiptCapture, type CaptureMode } from "./ReceiptCapture";
 
 function Harness() {
@@ -31,10 +32,14 @@ describe("production ReceiptCapture", () => {
     let parts = screen.getAllByRole("listitem");
     expect(within(parts[0]).getByText("top.jpg")).toBeInTheDocument();
     expect(within(parts[1]).getByText("bottom.jpg")).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Переместить часть 1 ниже" }));
+    // A tap on a part offers its actions in an action sheet; the first part cannot move up.
+    fireEvent.click(within(parts[0]).getByRole("button"));
+    expect(screen.queryByRole("button", { name: "Переместить часть 1 выше" })).not.toBeInTheDocument();
+    chooseAction("Переместить часть 1 ниже");
     parts = screen.getAllByRole("listitem");
     expect(within(parts[0]).getByText("bottom.jpg")).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Удалить часть 2" }));
+    fireEvent.click(within(parts[1]).getByRole("button"));
+    chooseAction("Удалить часть 2");
     expect(screen.getAllByRole("listitem")).toHaveLength(1);
     expect(screen.queryByText("top.jpg")).not.toBeInTheDocument();
   });
@@ -71,6 +76,9 @@ describe("production ReceiptCapture", () => {
     fireEvent.click(screen.getByRole("radio", { name: /Separate receipts/ }));
     expect(screen.getByText(/2 photos — 2 recognitions/)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Upload 2 receipts" })).toBeEnabled();
+    fireEvent.click(within(screen.getAllByRole("listitem")[1]).getByRole("button"));
     expect(screen.getByRole("button", { name: "Remove receipt 2" })).toBeInTheDocument();
+    // Separate receipts have no order to change.
+    expect(screen.queryByRole("button", { name: /Move part/ })).not.toBeInTheDocument();
   });
 });

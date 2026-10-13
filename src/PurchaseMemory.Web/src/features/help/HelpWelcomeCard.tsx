@@ -1,10 +1,9 @@
+import { IonButton, IonItem, IonLabel, IonList } from "@ionic/react";
 import { CircleHelp, X } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
-import { Surface } from "../../design-system/components";
 import { helpPath } from "./topics";
-import styles from "./Help.module.css";
 
 export const helpWelcomeStorageKey = "purchase-memory.help-welcome-dismissed";
 
@@ -33,21 +32,26 @@ export function HelpWelcomeCard() {
   if (dismissed) return null;
 
   return (
-    <Surface as="aside" tone="warm" className={styles.welcome} aria-labelledby="help-welcome-heading">
-      <span className={styles.welcomeIcon} aria-hidden="true"><CircleHelp /></span>
-      <div className={styles.welcomeCopy}>
-        <h2 id="help-welcome-heading">{t("help.ui.welcomeTitle")}</h2>
-        <p>{t("help.ui.welcomeBody")}</p>
-        <Link className={styles.welcomeAction} to={helpPath()}>{t("help.ui.welcomeOpen")}</Link>
-      </div>
-      <button
-        type="button"
-        className={styles.welcomeDismiss}
-        aria-label={t("help.ui.welcomeDismiss")}
-        onClick={() => { writeDismissed(); setDismissed(true); }}
-      >
-        <X aria-hidden="true" size={18} />
-      </button>
-    </Surface>
+    <aside aria-labelledby="help-welcome-heading">
+      <IonList inset>
+        <IonItem lines="none">
+          <CircleHelp slot="start" size={24} className="pm-row-icon" aria-hidden="true" />
+          <IonLabel className="pm-wrap">
+            <h2 id="help-welcome-heading">{t("help.ui.welcomeTitle")}</h2>
+            <p>{t("help.ui.welcomeBody")}</p>
+            <p><Link className="pm-help-link" to={helpPath()}>{t("help.ui.welcomeOpen")}</Link></p>
+          </IonLabel>
+          <IonButton
+            slot="end"
+            fill="clear"
+            color="medium"
+            aria-label={t("help.ui.welcomeDismiss")}
+            onClick={() => { writeDismissed(); setDismissed(true); }}
+          >
+            <X aria-hidden="true" size={20} />
+          </IonButton>
+        </IonItem>
+      </IonList>
+    </aside>
   );
 }

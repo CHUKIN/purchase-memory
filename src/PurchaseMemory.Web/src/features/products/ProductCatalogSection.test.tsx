@@ -1,9 +1,10 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { getProductCatalog, listTags } from "../../api/client";
 import type { ProductCatalogPage, ProductSummary } from "../../api/types";
 import { AppProviders } from "../../app/AppProviders";
+import { findRow, openFilters, pick, pickerOptions, row } from "../../test/ionicHelpers";
 import { ProductCatalogSection } from "./ProductCatalogSection";
 
 vi.mock("../../api/client", () => ({
@@ -95,12 +96,14 @@ describe("ProductCatalogSection", () => {
     renderSection();
     await screen.findByRole("heading", { name: "Mleko Łaciate 3,2% 1L" });
 
-    fireEvent.change(await screen.findByLabelText("Категория"), { target: { value: "dairy" } });
+    openFilters();
+    await findRow("Категория");
+    pick("Категория", "Вся группа");
     await waitFor(() => expect(getProductCatalog).toHaveBeenCalledWith(
       expect.objectContaining({ category: "dairy", page: 1 })
     ));
 
-    fireEvent.change(screen.getByLabelText("Бренд"), { target: { value: "Łaciate" } });
+    pick("Бренд", "Łaciate");
     await waitFor(() => expect(getProductCatalog).toHaveBeenCalledWith(
       expect.objectContaining({ category: "dairy", brand: "Łaciate" })
     ));
@@ -164,10 +167,10 @@ describe("ProductCatalogSection", () => {
     await screen.findByRole("heading", { name: "Mleko Łaciate 3,2% 1L" });
     expect(getProductCatalog).toHaveBeenCalledWith({ query: "mleko", category: "none", brand: "laciate", tag: "", page: 1, pageSize: 30 });
     expect(screen.getByLabelText("Поиск товара")).toHaveValue("mleko");
-    const brandField = screen.getByLabelText("Бренд");
-    await waitFor(() => expect(brandField).toHaveAttribute("list"));
-    const options = document.getElementById(brandField.getAttribute("list")!)!.querySelectorAll("option");
-    expect([...options].map((option) => option.value)).toEqual(["Łaciate"]);
+    expect(screen.getByRole("button", { name: "Фильтры, выбрано 2" })).toBeInTheDocument();
+    openFilters();
+    expect(row("Бренд")).toHaveTextContent("laciate");
+    await waitFor(() => expect(pickerOptions("Бренд")).toEqual(["Любой бренд", "Łaciate 2 товара"]));
   });
 
   it("shows each product's tags and filters by a tag from the URL", async () => {
@@ -179,20 +182,23 @@ describe("ProductCatalogSection", () => {
     await screen.findByRole("heading", { name: "Mleko Łaciate 3,2% 1L" });
     expect(getProductCatalog).toHaveBeenCalledWith(expect.objectContaining({ tag: "vegan" }));
     expect(screen.getByRole("list", { name: "Теги товара" })).toHaveTextContent("веган");
-    expect(await screen.findByLabelText("Тег")).toHaveValue("vegan");
+    openFilters();
+    expect(await findRow("Тег")).toHaveTextContent("веган");
   });
 
   it("resets a stale tag and clears the tag with «Сбросить поиск»", async () => {
     renderSection("/products?tag=gone");
     await screen.findByRole("heading", { name: "Mleko Łaciate 3,2% 1L" });
     expect(getProductCatalog).not.toHaveBeenCalledWith(expect.objectContaining({ tag: "gone" }));
-    expect(await screen.findByLabelText("Тег")).toHaveValue("");
+    const sheet = openFilters();
+    expect(await findRow("Тег")).toHaveTextContent("Все теги");
 
     vi.mocked(getProductCatalog).mockResolvedValue(page([]));
-    fireEvent.change(screen.getByLabelText("Тег"), { target: { value: "vegan" } });
+    pick("Тег", "веган");
     await waitFor(() => expect(getProductCatalog).toHaveBeenCalledWith(expect.objectContaining({ tag: "vegan" })));
+    fireEvent.click(within(sheet).getByRole("button", { name: "Готово" }));
     fireEvent.click(await screen.findByRole("button", { name: "Сбросить поиск" }));
-    await waitFor(() => expect(screen.getByLabelText("Тег")).toHaveValue(""));
+    await waitFor(() => expect(screen.getByRole("button", { name: "Фильтры" })).toBeInTheDocument());
     expect(listTags).toHaveBeenCalled();
   });
 

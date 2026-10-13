@@ -1,7 +1,7 @@
-import { BadgePercent, Trash2 } from "lucide-react";
+import { IonInput, IonItem, IonLabel, IonNote } from "@ionic/react";
+import { BadgePercent } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Field, IconButton } from "../../design-system/components";
-import styles from "./ReceiptDiscountLine.module.css";
+import { DecimalInput } from "../../design-system/components";
 
 export interface ReceiptDiscountLineProps {
   /** The printed discount label, e.g. "OPUST". */
@@ -15,15 +15,13 @@ export interface ReceiptDiscountLineProps {
   productLineTotal?: number | null;
   /** A discount on the whole receipt: shown as such, calmly, with no product. */
   appliesToReceipt?: boolean;
-  /** Makes the line editable; the amount is edited as a positive size and stored negative. */
-  onChange?: (change: { name: string; lineTotal: number | null }) => void;
-  onDelete?: () => void;
 }
 
 /**
- * A receipt discount shown as its own line under the product it belongs to
- * (owner decision, variant A). The product keeps its printed price; the
- * discount shows how much came off and what the product really cost.
+ * A receipt discount as the content of its own list row, under the product
+ * it belongs to (owner decision, variant A). The product keeps its printed
+ * price; the discount shows how much came off and what the product really
+ * cost. Render it inside an `IonItem`: the amount goes to the row's end slot.
  */
 export function ReceiptDiscountLine({
   name,
@@ -31,12 +29,10 @@ export function ReceiptDiscountLine({
   currency,
   productName,
   productLineTotal = null,
-  appliesToReceipt = false,
-  onChange,
-  onDelete
+  appliesToReceipt = false
 }: ReceiptDiscountLineProps) {
   const { t, i18n } = useTranslation();
-  const money = (value: number) => formatMoney(value, currency, i18n.language);
+  const money = (value: number) => formatDiscountMoney(value, currency, i18n.language);
   const size = lineTotal === null ? null : Math.abs(lineTotal);
   const amountText = size === null ? t("discount.unknownAmount") : `−${money(size)}`;
   const label = name || t("discount.label");
@@ -50,64 +46,51 @@ export function ReceiptDiscountLine({
       : t("discount.accessibleNameUnlinked", { name: label, amount: amountText });
 
   return (
-    <article className={styles.discount} aria-label={accessibleName} data-testid="receipt-discount-line">
-      <div className={styles.header}>
-        <span className={styles.label}>
-          <BadgePercent aria-hidden="true" size={16} strokeWidth={2.25} />
-          {t("discount.label")}
-          {appliesToReceipt ? (
-            <span className={styles.target}>{t("discount.onReceipt")}</span>
-          ) : productName ? (
-            <span className={styles.target}>{t("discount.forProduct", { product: productName })}</span>
-          ) : (
-            <span className={`${styles.target} ${styles.unlinked}`}>{t("discount.unlinked")}</span>
-          )}
-        </span>
-        {onDelete && (
-          <IconButton
-            className={styles.delete}
-            intent="danger"
-            label={t("discount.delete", { name: label })}
-            tooltip={t("discount.deleteShort")}
-            icon={<Trash2 size={18} />}
-            onClick={onDelete}
-          />
-        )}
-      </div>
-
-      {onChange ? (
-        <div className={styles.fields}>
-          <Field label={t("discount.name")} value={name} onChange={(event) => onChange({ name: event.currentTarget.value, lineTotal })} />
-          <Field
-            label={t("discount.size")}
-            type="number"
-            inputMode="decimal"
-            min={0}
-            step="0.01"
-            value={size ?? ""}
-            onChange={(event) => {
-              const raw = event.currentTarget.value;
-              onChange({ name, lineTotal: raw === "" ? null : -Math.abs(Number(raw)) });
-            }}
-          />
-        </div>
-      ) : (
-        <div className={styles.summary}>
-          <p className={styles.name}>{name}</p>
-          <span className={styles.amount}>{amountText}</span>
-        </div>
-      )}
-
-      {after !== null && (
-        <p className={styles.after}>
-          {t("discount.after")} <strong>{money(after)}</strong>
-        </p>
-      )}
-    </article>
+    <>
+      <IonLabel className="pm-wrap">
+        <article aria-label={accessibleName} data-testid="receipt-discount-line" className="pm-discount">
+          <h3 className="pm-discount-title">
+            <BadgePercent aria-hidden="true" size={15} strokeWidth={2.25} />
+            {t("discount.label")}{" "}
+            {appliesToReceipt
+              ? <span>{t("discount.onReceipt")}</span>
+              : productName
+                ? <span>{t("discount.forProduct", { product: productName })}</span>
+                : <span className="pm-warn-text">{t("discount.unlinked")}</span>}
+          </h3>
+          <p>{name}</p>
+          {after !== null && <p>{t("discount.after")} <strong>{money(after)}</strong></p>}
+        </article>
+      </IonLabel>
+      <IonNote slot="end" className="pm-amount pm-discount-amount">{amountText}</IonNote>
+    </>
   );
 }
 
-function formatMoney(value: number, currency: string | null, locale: string): string {
+/**
+ * The discount's own fields in the line sheet. The size is typed as a
+ * positive amount and stored negative, the way it sums with the other lines.
+ */
+export function DiscountFields({ name, lineTotal, onChange }: {
+  name: string;
+  lineTotal: number | null;
+  onChange: (change: { name: string; lineTotal: number | null }) => void;
+}) {
+  const { t } = useTranslation();
+  const size = lineTotal === null ? null : Math.abs(lineTotal);
+  return (
+    <>
+      <IonItem>
+        <IonInput label={t("discount.name")} labelPlacement="stacked" value={name} onIonInput={(event) => onChange({ name: String(event.detail.value ?? ""), lineTotal })} />
+      </IonItem>
+      <IonItem>
+        <DecimalInput label={t("discount.size")} value={size} onChange={(value) => onChange({ name, lineTotal: value === null ? null : -Math.abs(value) })} />
+      </IonItem>
+    </>
+  );
+}
+
+export function formatDiscountMoney(value: number, currency: string | null, locale: string): string {
   if (currency && /^[A-Z]{3}$/.test(currency)) {
     return new Intl.NumberFormat(locale, { style: "currency", currency }).format(value);
   }

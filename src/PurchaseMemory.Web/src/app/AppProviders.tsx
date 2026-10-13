@@ -1,15 +1,11 @@
-import { MantineProvider } from "@mantine/core";
-import { Notifications } from "@mantine/notifications";
+import "./ionic";
+import { IonApp } from "@ionic/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useState, type PropsWithChildren } from "react";
 import { I18nextProvider } from "react-i18next";
-import { purchaseMemoryTheme } from "../design-system/theme";
 import { createPurchaseMemoryI18n, isAppLocale, type AppLocale } from "../i18n/i18n";
 import { LocaleContext, localeStorageKey } from "./LocaleContext";
-import "@mantine/core/styles.css";
-import "@mantine/notifications/styles.css";
-import "@mantine/charts/styles.css";
-import "../styles.css";
+import { ToastProvider } from "./toasts";
 
 interface AppProvidersProps extends PropsWithChildren {
   locale?: AppLocale;
@@ -49,10 +45,11 @@ export function AppProviders({ children, locale: controlledLocale }: AppProvider
   return (
     <I18nextProvider i18n={i18n}>
       <QueryClientProvider client={queryClient}>
-        <MantineProvider theme={purchaseMemoryTheme} forceColorScheme="light">
-          <Notifications position="top-right" limit={3} />
-          <LocaleContext.Provider value={localeContext}>{children}</LocaleContext.Provider>
-        </MantineProvider>
+        <LocaleContext.Provider value={localeContext}>
+          <IonApp>
+            <ToastProvider>{children}</ToastProvider>
+          </IonApp>
+        </LocaleContext.Provider>
       </QueryClientProvider>
     </I18nextProvider>
   );

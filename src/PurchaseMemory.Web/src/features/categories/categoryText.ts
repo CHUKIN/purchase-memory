@@ -36,3 +36,36 @@ export function categoryPath(t: TFunction, categories: ProductCategory[], catego
   const parent = category.parentId ? categories.find((entry) => entry.id === category.parentId) : undefined;
   return parent ? `${categoryLabel(t, parent)} / ${categoryLabel(t, category)}` : categoryLabel(t, category);
 }
+
+interface PickerOptionLike { value: string; label: string; detail?: string }
+interface PickerGroupLike { title?: string; options: PickerOptionLike[] }
+
+/**
+ * The tree as picker sections: one section per group, its own row first
+ * (`groupOptionText`, e.g. «Вся группа») and then its subcategories. Inside a
+ * section the group name is already the header, so the rows stay short.
+ * `leading` rows («Все категории», «Без категории») come first, without a header.
+ */
+export function categoryPickerGroups(t: TFunction, categories: ProductCategory[], leading: PickerOptionLike[], groupOptionText: string): PickerGroupLike[] {
+  return [
+    ...(leading.length > 0 ? [{ options: leading }] : []),
+    ...groupCategories(categories).map(({ group, children }) => ({
+      title: categoryLabel(t, group),
+      options: [
+        { value: group.id, label: groupOptionText },
+        ...children.map((child) => ({ value: child.id, label: categoryLabel(t, child) }))
+      ]
+    }))
+  ];
+}
+
+/** A category filter as the row shows it: «Все категории», «Без категории», «Молочное и яйца — вся группа» or a path. */
+export function categoryFilterText(t: TFunction, categories: ProductCategory[], value: string): string {
+  if (value === "") return t("categories.filterAll");
+  if (value === "none") return t("categories.none");
+  const category = categories.find((entry) => entry.id === value);
+  if (!category) return t("categories.filterAll");
+  return category.parentId === null
+    ? t("filters.wholeGroup", { name: categoryLabel(t, category) })
+    : categoryPath(t, categories, value) ?? "";
+}

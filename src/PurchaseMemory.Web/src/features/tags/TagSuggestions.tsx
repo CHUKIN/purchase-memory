@@ -1,10 +1,9 @@
+import { IonButton, IonItem, IonLabel, IonSpinner } from "@ionic/react";
 import { Check, Hash, Sparkles, X } from "lucide-react";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ApiError } from "../../api/client";
 import type { TagSuggestion, TagSuggestionsResponse } from "../../api/types";
-import { Button, IconButton } from "../../design-system/components";
-import styles from "./Tags.module.css";
 
 export interface TagSuggestionsProps {
   /** Asks the server which existing household tags fit; never applies anything. */
@@ -29,22 +28,27 @@ export type SuggestionState =
   | { kind: "unavailable" }
   | { kind: "rateLimited"; retryAfterSeconds: number | null };
 
+/** Focuses an Ionic control (its native button lives in shadow DOM) or a plain element. */
+function focusControl(element: Element | null | undefined) {
+  const target = (element?.shadowRoot?.querySelector("button") ?? element) as HTMLElement | null | undefined;
+  target?.focus();
+}
+
 /**
  * «Предложить теги»: the AI picks from the household's own tags and the person
- * accepts or dismisses each hint. Nothing is applied without a press on
+ * accepts or dismisses each hint. Nothing is applied without a tap on
  * «Добавить», and new tags are never invented — that stays a person's job.
+ * Rendered as rows inside the tags list.
  */
 export function TagSuggestions({ onSuggest, onAccept, currentTagIds, remainingSlots = Number.POSITIVE_INFINITY, initialState }: TagSuggestionsProps) {
   const { t } = useTranslation();
-  const titleId = useId();
   const [state, setState] = useState<SuggestionState>(initialState ?? { kind: "idle" });
   const [accepting, setAccepting] = useState(false);
   const [acceptError, setAcceptError] = useState(false);
   // Where focus goes after «Добавить»/«Скрыть» removes the focused row: the
-  // next suggestion, or the «Предложить» button when none are left.
+  // next suggestion, or the «Предложить» row when none are left.
   const [focusTarget, setFocusTarget] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const rowRefs = useRef(new Map<string, HTMLLIElement>());
 
   // A tag added meanwhile (by hand or by accepting) is no longer a suggestion.
   const visible = state.kind === "shown"
@@ -54,11 +58,11 @@ export function TagSuggestions({ onSuggest, onAccept, currentTagIds, remainingSl
   useEffect(() => {
     // Wait until the accept has settled: a still-disabled button cannot take focus.
     if (focusTarget === null || accepting) return;
-    const row = rowRefs.current.get(focusTarget);
-    const target = row
-      ? row.querySelector<HTMLButtonElement>("button:not(:disabled)")
-      : containerRef.current?.querySelector<HTMLButtonElement>("button[data-suggest]");
-    target?.focus();
+    const container = containerRef.current;
+    const row = container?.querySelector(`[data-suggestion="${CSS.escape(focusTarget)}"]`);
+    focusControl(row
+      ? row.querySelector("[data-accept]:not([disabled])") ?? row.querySelector("[data-dismiss]")
+      : container?.querySelector("[data-suggest]"));
     setFocusTarget(null);
   }, [focusTarget, accepting]);
 
@@ -110,98 +114,80 @@ export function TagSuggestions({ onSuggest, onAccept, currentTagIds, remainingSl
 
   const loading = state.kind === "loading";
   const hasResult = state.kind !== "idle" && state.kind !== "loading";
+  const message = loading
+    ? t("tags.suggesting")
+    : state.kind === "empty"
+      ? t("tags.suggestionsEmpty")
+      : state.kind === "unavailable"
+        ? t("tags.suggestionsUnavailable")
+        : state.kind === "rateLimited"
+          ? state.retryAfterSeconds
+            ? t("tags.suggestionsRateLimited", { minutes: Math.max(1, Math.ceil(state.retryAfterSeconds / 60)) })
+            : t("tags.suggestionsRateLimitedLater")
+          : null;
 
   return (
-    <div className={styles.suggestions} ref={containerRef}>
-      <div>
-        <Button
-          data-suggest
-          intent="secondary"
-          loading={loading}
-          disabled={accepting}
-          leftSection={<Sparkles aria-hidden="true" size={16} />}
-          onClick={() => void suggest()}
-        >
-          {hasResult ? t("tags.suggestAgain") : t("tags.suggest")}
-        </Button>
-      </div>
+    <div ref={containerRef}>
+      <IonItem button detail={false} data-suggest disabled={loading || accepting} lines={visible.length > 0 || message ? "full" : "none"} onClick={() => void suggest()}>
+        {loading ? <IonSpinner slot="start" name="crescent" aria-hidden="true" /> : <Sparkles slot="start" size={20} className="pm-row-icon" aria-hidden="true" />}
+        <IonLabel color="primary">{hasResult ? t("tags.suggestAgain") : t("tags.suggest")}</IonLabel>
+      </IonItem>
 
-      <div aria-live="polite" className={styles.suggestionStatus}>
-        {loading && <p className={styles.hint}>{t("tags.suggesting")}</p>}
-        {visible.length > 0 && (
-          <p className="visually-hidden">{t("tags.suggestionsFound", { count: visible.length })}</p>
-        )}
-        {state.kind === "empty" && <p className={styles.hint}>{t("tags.suggestionsEmpty")}</p>}
-        {state.kind === "unavailable" && <p className={styles.hint}>{t("tags.suggestionsUnavailable")}</p>}
-        {state.kind === "rateLimited" && (
-          <p className={styles.hint}>
-            {state.retryAfterSeconds
-              ? t("tags.suggestionsRateLimited", { minutes: Math.max(1, Math.ceil(state.retryAfterSeconds / 60)) })
-              : t("tags.suggestionsRateLimitedLater")}
-          </p>
-        )}
+      <div aria-live="polite">
+        {message && <IonItem lines={visible.length > 0 ? "full" : "none"}><IonLabel className="pm-wrap" color="medium"><p>{message}</p></IonLabel></IonItem>}
+        {visible.length > 0 && <p className="visually-hidden">{t("tags.suggestionsFound", { count: visible.length })}</p>}
       </div>
 
       {visible.length > 0 && (
-        <section className={styles.suggestionPanel} aria-labelledby={titleId}>
-          <p id={titleId} className={styles.suggestionTitle}>
-            <Sparkles aria-hidden="true" size={14} />
-            {t("tags.suggestionsTitle")}
-          </p>
-          <ul className={styles.suggestionList} aria-label={t("tags.suggestionsListLabel")}>
+        <section aria-label={t("tags.suggestionsTitle")}>
+          <div role="list" aria-label={t("tags.suggestionsListLabel")}>
             {visible.map((suggestion) => (
-              <li
-                key={suggestion.tagId}
-                className={styles.suggestionItem}
-                ref={(element) => {
-                  if (element) rowRefs.current.set(suggestion.tagId, element);
-                  else rowRefs.current.delete(suggestion.tagId);
-                }}
-              >
-                <div className={styles.suggestionText}>
-                  <span className={styles.chip} title={suggestion.name}>
-                    <Hash aria-hidden="true" size={12} strokeWidth={2.5} />
-                    <span className={styles.chipLabel}>{suggestion.name}</span>
+              <IonItem key={suggestion.tagId} role="listitem" data-suggestion={suggestion.tagId}>
+                <IonLabel className="pm-wrap">
+                  <span className="pm-chip pm-ai" title={suggestion.name}>
+                    <Hash aria-hidden="true" size={11} strokeWidth={2.5} />
+                    <span>{suggestion.name}</span>
                   </span>
-                  {suggestion.reason && <span className={styles.suggestionReason}>{suggestion.reason}</span>}
-                </div>
-                <div className={styles.suggestionActions}>
-                  <IconButton
-                    intent="secondary"
-                    iconOnly="mobile"
-                    icon={<Check />}
-                    label={t("tags.acceptLabel", { name: suggestion.name })}
-                    text={t("tags.accept")}
-                    tooltip={t("tags.accept")}
-                    disabled={accepting || remainingSlots < 1}
-                    onClick={() => void accept([suggestion.tagId])}
-                  />
-                  <IconButton
-                    icon={<X />}
-                    label={t("tags.dismissLabel", { name: suggestion.name })}
-                    tooltip={t("tags.dismiss")}
-                    disabled={accepting}
-                    onClick={() => dismiss(suggestion.tagId)}
-                  />
-                </div>
-              </li>
+                  {suggestion.reason && <p>{suggestion.reason}</p>}
+                </IonLabel>
+                <IonButton
+                  slot="end"
+                  size="small"
+                  fill="outline"
+                  data-accept
+                  disabled={accepting || remainingSlots < 1}
+                  aria-label={t("tags.acceptLabel", { name: suggestion.name })}
+                  onClick={() => void accept([suggestion.tagId])}
+                >
+                  <Check aria-hidden="true" size={16} />&nbsp;{t("tags.accept")}
+                </IonButton>
+                <IonButton
+                  slot="end"
+                  size="small"
+                  fill="clear"
+                  color="medium"
+                  data-dismiss
+                  disabled={accepting}
+                  aria-label={t("tags.dismissLabel", { name: suggestion.name })}
+                  onClick={() => dismiss(suggestion.tagId)}
+                >
+                  <X aria-hidden="true" size={18} />
+                </IonButton>
+              </IonItem>
             ))}
-          </ul>
+          </div>
           {visible.length > 1 && (
-            <div className={styles.actions}>
-              <Button
-                intent="quiet"
-                loading={accepting}
-                disabled={visible.length > remainingSlots}
-                leftSection={<Check aria-hidden="true" size={16} />}
-                onClick={() => void accept(visible.map((suggestion) => suggestion.tagId))}
-              >
-                {t("tags.acceptAll")}
-              </Button>
-            </div>
+            <IonItem button detail={false} disabled={accepting || visible.length > remainingSlots} onClick={() => void accept(visible.map((suggestion) => suggestion.tagId))}>
+              <Check slot="start" size={20} className="pm-row-icon" aria-hidden="true" />
+              <IonLabel color="primary">{t("tags.acceptAll")}</IonLabel>
+            </IonItem>
           )}
-          <p className={styles.hint}>{t("tags.suggestionsNote")}</p>
-          {acceptError && <p className={styles.error} role="alert">{t("tags.acceptError")}</p>}
+          <IonItem lines="none">
+            <IonLabel className="pm-wrap" color="medium">
+              <p>{t("tags.suggestionsNote")}</p>
+              {acceptError && <p className="pm-danger-text" role="alert">{t("tags.acceptError")}</p>}
+            </IonLabel>
+          </IonItem>
         </section>
       )}
     </div>

@@ -1,14 +1,14 @@
-import { Check, Pencil, Plus } from "lucide-react";
-import { useEffect, useId, useRef, useState, type FormEvent } from "react";
+import { IonButton, IonCheckbox, IonInput, IonItem, IonLabel, IonList } from "@ionic/react";
+import { Pencil, Plus } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ApiError } from "../../api/client";
 import type { ProductTag, TagSuggestionsResponse, TagSummary } from "../../api/types";
-import { Button, Field, IconButton, Surface } from "../../design-system/components";
+import { ActionButton, Footnote, Sheet } from "../../design-system/components";
 import { HelpLink } from "../help/HelpLink";
 import { TagChips } from "./TagChips";
 import { TagSuggestions } from "./TagSuggestions";
 import { tagKey } from "./tagKey";
-import styles from "./Tags.module.css";
 
 /** Mirrors `ProductTagLink.MaximumTagsPerProduct` and `ProductTag.MaximumNameLength` on the server. */
 export const maximumTagsPerProduct = 20;
@@ -29,20 +29,17 @@ export interface ProductTagsProps {
    * accept never builds on a stale render; the `tags` prop is the fallback.
    */
   readCurrentTagIds?: () => string[] | undefined;
-  /** Starts in edit mode; for stories and tests. */
+  /** Starts with the editor open; for stories and tests. */
   initiallyEditing?: boolean;
 }
 
 /**
  * The product's tags: extra, overlapping slices next to the one category.
- * Editing shows every household tag as a toggle (a real button with
- * `aria-pressed`, so keyboard and screen readers need nothing custom) and a
- * field to create a new tag, which is picked straight away.
+ * «Изменить теги» opens a sheet with every household tag as a checkbox row
+ * and a field to create a new tag, which is picked straight away.
  */
 export function ProductTags({ tags, allTags, onSave, onCreate, onSuggest, readCurrentTagIds, initiallyEditing = false }: ProductTagsProps) {
   const { t } = useTranslation();
-  const titleId = useId();
-  const pickId = useId();
   const [editing, setEditing] = useState(initiallyEditing);
   const [draft, setDraft] = useState<string[]>(() => tags.map((tag) => tag.id));
   const [newName, setNewName] = useState("");
@@ -99,8 +96,7 @@ export function ProductTags({ tags, allTags, onSave, onCreate, onSuggest, readCu
     }
   }
 
-  async function create(event: FormEvent) {
-    event.preventDefault();
+  async function create() {
     const name = newName.trim();
     if (name === "") return;
     const key = tagKey(name);
@@ -127,92 +123,86 @@ export function ProductTags({ tags, allTags, onSave, onCreate, onSuggest, readCu
   }
 
   return (
-    <Surface as="section" className={styles.section} aria-labelledby={titleId}>
-      <div className={styles.heading}>
-        <h2 id={titleId} ref={headingRef} tabIndex={-1}>{t("tags.title")}</h2>
-        {!editing && <IconButton intent="secondary" iconOnly="mobile" icon={<Pencil />} label={t("tags.edit")} onClick={startEditing} />}
+    <section aria-labelledby="product-tags-title">
+      <div className="pm-section-header">
+        <h2 id="product-tags-title" ref={headingRef} tabIndex={-1}>{t("tags.title")}</h2>
+        <HelpLink topic="tags" />
       </div>
+      <IonList inset className="pm-after-header">
+        <IonItem>
+          <IonLabel className="pm-wrap"><TagChips tags={tags} showEmpty /></IonLabel>
+        </IonItem>
+        <IonItem button detail lines={canSuggest ? undefined : "none"} onClick={startEditing}>
+          <Pencil slot="start" size={20} className="pm-row-icon" aria-hidden="true" />
+          <IonLabel color="primary">{t("tags.edit")}</IonLabel>
+        </IonItem>
+        {canSuggest && onSuggest && (
+          <TagSuggestions
+            onSuggest={onSuggest}
+            onAccept={(tagIds) => {
+              const latest = readCurrentTagIds?.() ?? currentIds;
+              return onSave([...latest, ...tagIds.filter((id) => !latest.includes(id))]);
+            }}
+            currentTagIds={currentIds}
+            remainingSlots={maximumTagsPerProduct - tags.length}
+          />
+        )}
+      </IonList>
+      {!editing && error && <Footnote tone="danger" role="alert">{error}</Footnote>}
 
-      {!editing && (
-        <>
-          <TagChips tags={tags} showEmpty />
-          {canSuggest && onSuggest && (
-            <TagSuggestions
-              onSuggest={onSuggest}
-              onAccept={(tagIds) => {
-                const latest = readCurrentTagIds?.() ?? currentIds;
-                return onSave([...latest, ...tagIds.filter((id) => !latest.includes(id))]);
-              }}
-              currentTagIds={currentIds}
-              remainingSlots={maximumTagsPerProduct - tags.length}
-            />
+      <Sheet
+        isOpen={editing}
+        onClose={() => setEditing(false)}
+        title={t("tags.edit")}
+        variant="full"
+        start={<IonButton disabled={saving} onClick={() => setEditing(false)}>{t("tags.cancel")}</IonButton>}
+        end={<ActionButton strong loading={saving} disabled={creating} onClick={() => void save()}>{t("tags.save")}</ActionButton>}
+      >
+        <Footnote id="product-tags-pick">{t("tags.pickLabel")} · {t("tags.selectedCount", { count: draft.length, max: maximumTagsPerProduct })}</Footnote>
+        {choices.length === 0
+          ? <Footnote>{t("tags.noTagsYet")}</Footnote>
+          : (
+            <IonList inset role="group" aria-labelledby="product-tags-pick">
+              {choices.map((tag, index) => {
+                const selected = draft.includes(tag.id);
+                return (
+                  <IonItem key={tag.id} lines={index === choices.length - 1 ? "none" : undefined}>
+                    <IonCheckbox
+                      checked={selected}
+                      disabled={saving || (!selected && full)}
+                      justify="space-between"
+                      onIonChange={() => toggle(tag.id)}
+                    >
+                      <span className="pm-wrap">{tag.name}</span>
+                    </IonCheckbox>
+                  </IonItem>
+                );
+              })}
+            </IonList>
           )}
-          <HelpLink topic="tags" />
-        </>
-      )}
+        {full && <Footnote>{t("tags.limitReached", { max: maximumTagsPerProduct })}</Footnote>}
 
-      {editing && (
-        <div className={styles.editor}>
-          <div role="group" aria-labelledby={pickId} className={styles.pickGroup}>
-            <p id={pickId} className={styles.pickLabel}>
-              {t("tags.pickLabel")}
-              <span className={styles.counter}>{t("tags.selectedCount", { count: draft.length, max: maximumTagsPerProduct })}</span>
-            </p>
-            {choices.length === 0
-              ? <p className={styles.hint}>{t("tags.noTagsYet")}</p>
-              : (
-                <ul className={styles.toggles}>
-                  {choices.map((tag) => {
-                    const selected = draft.includes(tag.id);
-                    return (
-                      <li key={tag.id}>
-                        <button
-                          type="button"
-                          className={styles.toggle}
-                          aria-pressed={selected}
-                          disabled={saving || (!selected && full)}
-                          onClick={() => toggle(tag.id)}
-                        >
-                          {selected && <Check aria-hidden="true" size={14} strokeWidth={2.5} />}
-                          <span className={styles.chipLabel}>{tag.name}</span>
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            {full && <p className={styles.hint}>{t("tags.limitReached", { max: maximumTagsPerProduct })}</p>}
-          </div>
-
-          <form className={styles.create} onSubmit={create}>
-            <Field
+        <IonList inset>
+          <IonItem>
+            <IonInput
               label={t("tags.newLabel")}
+              labelPlacement="stacked"
               placeholder={t("tags.newPlaceholder")}
               value={newName}
-              maxLength={maximumTagNameLength}
+              maxlength={maximumTagNameLength}
               disabled={saving || creating}
-              onChange={(event) => setNewName(event.currentTarget.value)}
+              onIonInput={(event) => setNewName(String(event.detail.value ?? ""))}
+              onKeyDown={(event) => { if (event.key === "Enter") void create(); }}
             />
-            <Button
-              type="submit"
-              intent="secondary"
-              loading={creating}
-              disabled={saving || newName.trim() === "" || full}
-              leftSection={<Plus aria-hidden="true" size={16} />}
-            >
-              {t("tags.create")}
-            </Button>
-          </form>
-
-          <p className={styles.hint}>{t("tags.appliesToAll")}</p>
-          <div className={styles.actions}>
-            <Button loading={saving} disabled={creating} onClick={() => void save()}>{t("tags.save")}</Button>
-            <Button intent="quiet" onClick={() => setEditing(false)} disabled={saving}>{t("tags.cancel")}</Button>
-          </div>
-        </div>
-      )}
-
-      {error && <p className={styles.error} role="alert">{error}</p>}
-    </Surface>
+          </IonItem>
+          <IonItem button detail={false} lines="none" disabled={saving || creating || newName.trim() === "" || full} onClick={() => void create()}>
+            <Plus slot="start" size={22} className="pm-row-icon" aria-hidden="true" />
+            <IonLabel color="primary">{t("tags.create")}</IonLabel>
+          </IonItem>
+        </IonList>
+        {error && <Footnote tone="danger" role="alert">{error}</Footnote>}
+        <Footnote>{t("tags.appliesToAll")}</Footnote>
+      </Sheet>
+    </section>
   );
 }

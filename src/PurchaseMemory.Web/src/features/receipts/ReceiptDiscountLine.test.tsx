@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { AppProviders } from "../../app/AppProviders";
 import { discountLinks } from "./discountLines";
-import { ReceiptDiscountLine } from "./ReceiptDiscountLine";
+import { DiscountFields, ReceiptDiscountLine } from "./ReceiptDiscountLine";
 
 describe("ReceiptDiscountLine", () => {
   it("names the discount, its product and the price after the discount", () => {
@@ -32,20 +32,18 @@ describe("ReceiptDiscountLine", () => {
 
   it("edits the size as a positive number and reports it negative", () => {
     const onChange = vi.fn();
-    const onDelete = vi.fn();
     render(
       <AppProviders>
-        <ReceiptDiscountLine name="OPUST" lineTotal={-30} currency="PLN" productName="Odkurzacz" onChange={onChange} onDelete={onDelete} />
+        <DiscountFields name="OPUST" lineTotal={-30} onChange={onChange} />
       </AppProviders>
     );
 
     const size = screen.getByLabelText("Размер скидки");
-    expect(size).toHaveValue(30);
-    fireEvent.change(size, { target: { value: "12.5" } });
+    expect(size).toHaveValue("30");
+    fireEvent.change(size, { target: { value: "12,5" } });
     expect(onChange).toHaveBeenLastCalledWith({ name: "OPUST", lineTotal: -12.5 });
-
-    fireEvent.click(screen.getByRole("button", { name: "Удалить скидку OPUST" }));
-    expect(onDelete).toHaveBeenCalledOnce();
+    fireEvent.change(screen.getByLabelText("Название скидки"), { target: { value: "RABAT" } });
+    expect(onChange).toHaveBeenLastCalledWith({ name: "RABAT", lineTotal: -30 });
   });
 
   it("attaches each discount to the nearest product above it", () => {

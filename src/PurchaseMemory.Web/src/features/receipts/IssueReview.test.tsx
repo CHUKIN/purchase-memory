@@ -64,7 +64,7 @@ describe("IssueReview", () => {
 
     expect(screen.getByRole("heading", { name: "Сумма строк не сходится с итогом чека" })).toBeInTheDocument();
     expect(screen.getByText("Сумма распознанных строк — 9.00 PLN.")).toBeInTheDocument();
-    expect(screen.getByLabelText("Итого")).toHaveValue(10);
+    expect(screen.getByLabelText("Итого")).toHaveValue("10");
   });
 
   it("renders an item-level missing price card naming the item", () => {
@@ -80,7 +80,7 @@ describe("IssueReview", () => {
 
     expect(screen.getByRole("heading", { name: "Не распознана цена: Chleb" })).toBeInTheDocument();
     expect(screen.getByText("Ни цена, ни сумма строки не распознаны.")).toBeInTheDocument();
-    expect(screen.getByLabelText("Цена")).toHaveValue(null);
+    expect(screen.getByLabelText("Цена")).toHaveValue("");
   });
 
   it("renders both issue types together and counts the unresolved ones", () => {

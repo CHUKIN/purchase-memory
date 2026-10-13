@@ -1,9 +1,9 @@
+import { IonButton, IonSpinner } from "@ionic/react";
 import { Clock3, RefreshCw, ServerCrash, ShieldOff, WifiOff, Wrench } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button, EmptyState } from "../design-system/components";
+import { ActionButton, EmptyState, Footnote } from "../design-system/components";
 import { AuthLayout } from "./AuthLayout";
-import styles from "./LoginScreen.module.css";
 
 export type AccessScreenKind = "pending" | "blocked" | "unconfigured" | "configError" | "connectionError" | "checking";
 
@@ -42,15 +42,15 @@ export function AccessStatusScreen({ kind, email = null, busy = false, sessionKe
           headingLevel={1}
           icon={content.icon}
           title={content.title}
-          description={content.description}
+          description={content.description || undefined}
           action={
-            <div className={styles.actions}>
+            <div className="pm-auth-actions">
               {content.retry && onRetry && (
-                <Button intent="primary" loading={busy} leftSection={<RefreshCw aria-hidden="true" size={18} />} onClick={onRetry}>
-                  {content.retry}
-                </Button>
+                <ActionButton expand="block" shape="round" loading={busy} onClick={onRetry}>
+                  <RefreshCw aria-hidden="true" size={18} />&nbsp;{content.retry}
+                </ActionButton>
               )}
-              {onSignOut && <Button intent="quiet" onClick={onSignOut}>{t("auth.signOut")}</Button>}
+              {onSignOut && <IonButton expand="block" fill="clear" onClick={onSignOut}>{t("auth.signOut")}</IonButton>}
             </div>
           }
         />
@@ -68,9 +68,10 @@ function CheckingScreen() {
   }, []);
   return (
     <AuthLayout>
-      <div role="status" className={styles.checking}>
-        <p className={styles.intro}>{t("auth.checking")}</p>
-        {slow && <p className={styles.hint}>{t("auth.checkingSlow")}</p>}
+      <div role="status" className="pm-auth-checking">
+        <IonSpinner name="crescent" aria-hidden="true" />
+        <p>{t("auth.checking")}</p>
+        {slow && <Footnote>{t("auth.checkingSlow")}</Footnote>}
       </div>
     </AuthLayout>
   );

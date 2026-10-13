@@ -1,10 +1,10 @@
-import { History, MessageSquareReply, RefreshCw, Sparkles, Trash2 } from "lucide-react";
-import { useId, useRef, useState } from "react";
+import { IonActionSheet, IonButton, IonItem, IonLabel, IonList } from "@ionic/react";
+import { MessageSquareReply, RefreshCw, Sparkles, Trash2 } from "lucide-react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { AnalyticsHistoryItem } from "../../api/types";
-import { Button, IconButton, Surface } from "../../design-system/components";
+import { Footnote, Notice } from "../../design-system/components";
 import { HelpLink } from "../help/HelpLink";
-import styles from "./AnalyticsHistory.module.css";
 
 /** Where the answer on screen came from, when it is a saved one. */
 export interface SavedAnswerInfo {
@@ -41,26 +41,28 @@ export function SavedAnswerBar({ saved, locale, canAsk, busy, refreshing, onRefr
   const message = saved.origin === "reused"
     ? t("analytics.history.reused")
     : t("analytics.history.saved", { date: formatMoment(saved.answeredAt, locale) });
+  const showRefresh = saved.origin === "history" && onRefresh;
+  const showAskAgain = canAsk && !saved.isFollowUp && onAskAgain;
   return (
-    <Surface tone="soft" className={styles.savedBar} aria-label={t("analytics.history.savedLabel")} as="section">
-      <p className={styles.savedText}>
-        <History aria-hidden="true" size={16} />
-        <span>{message}</span>
-      </p>
-      <div className={styles.savedActions}>
-        {saved.origin === "history" && onRefresh && (
-          <Button intent="secondary" loading={refreshing} disabled={busy && !refreshing} onClick={onRefresh}
-            leftSection={<RefreshCw aria-hidden="true" size={15} />}>
-            {t("analytics.history.refresh")}
-          </Button>
-        )}
-        {canAsk && !saved.isFollowUp && onAskAgain && (
-          <Button intent="quiet" disabled={busy} onClick={onAskAgain} leftSection={<Sparkles aria-hidden="true" size={15} />}>
-            {t("analytics.history.askAgain")}
-          </Button>
-        )}
-      </div>
-    </Surface>
+    <section aria-label={t("analytics.history.savedLabel")}>
+      <Notice><p>{message}</p></Notice>
+      {(showRefresh || showAskAgain) && (
+        <IonList inset>
+          {showRefresh && (
+            <IonItem button detail={false} disabled={busy && !refreshing} lines={showAskAgain ? undefined : "none"} onClick={onRefresh}>
+              <RefreshCw slot="start" size={18} className="pm-row-icon" aria-hidden="true" />
+              <IonLabel color="primary">{t("analytics.history.refresh")}</IonLabel>
+            </IonItem>
+          )}
+          {showAskAgain && (
+            <IonItem button detail={false} disabled={busy} lines="none" onClick={onAskAgain}>
+              <Sparkles slot="start" size={18} className="pm-row-icon" aria-hidden="true" />
+              <IonLabel color="primary">{t("analytics.history.askAgain")}</IonLabel>
+            </IonItem>
+          )}
+        </IonList>
+      )}
+    </section>
   );
 }
 
@@ -90,77 +92,89 @@ export function AnalyticsHistoryList({
   onShowMore
 }: AnalyticsHistoryListProps) {
   const { t } = useTranslation();
-  const titleId = useId();
   const [confirming, setConfirming] = useState<string | null>(null);
-  // The confirm buttons vanish with the deleted row, so focus moves to the heading instead of being lost.
+  // The confirm sheet goes away with the deleted row, so focus moves to the heading instead of being lost.
   const headingRef = useRef<HTMLHeadingElement>(null);
 
   if (items.length === 0 && !failed) return null;
 
   return (
-    <Surface as="section" className={styles.history} aria-labelledby={titleId}>
-      <div className={styles.header}>
-        <h2 id={titleId} className={styles.title} ref={headingRef} tabIndex={-1}>
-          <History aria-hidden="true" size={18} />{t("analytics.history.title")}
-        </h2>
+    <section aria-labelledby="analytics-history-title">
+      <div className="pm-section-header">
+        <h2 id="analytics-history-title" ref={headingRef} tabIndex={-1}>{t("analytics.history.title")}</h2>
         <HelpLink topic="analytics-history" />
       </div>
-      {failed && <p className={styles.failed} role="alert">{t("analytics.history.loadFailed")}</p>}
+      {failed && <Footnote tone="danger" role="alert">{t("analytics.history.loadFailed")}</Footnote>}
       {items.length > 0 && (
-        <ul className={styles.list}>
-          {items.map((item) => {
+        <IonList inset className="pm-after-header" role="list">
+          {items.map((item, index) => {
             const active = item.id === activeId;
             const busy = item.id === busyId;
             const asker = item.askedByMe
               ? t("analytics.history.askedByMe")
               : item.askedByEmail ?? t("analytics.history.askedBySomeone");
             return (
-              <li key={item.id} className={`${styles.item} ${active ? styles.active : ""}`}>
-                <button type="button" className={styles.open} aria-current={active ? "true" : undefined}
-                  aria-busy={busy || undefined} disabled={busy} onClick={() => onOpen(item.id)}>
-                  <span className={styles.question}>
-                    {item.isFollowUp && <MessageSquareReply aria-hidden="true" size={14} className={styles.followUpIcon} />}
-                    {item.question}
-                  </span>
-                  {item.conclusion && <span className={styles.conclusion}>{item.conclusion}</span>}
-                  <span className={styles.meta}>
-                    {item.isFollowUp && <span className={styles.badge}>{t("analytics.history.followUp")}</span>}
-                    <span>{formatMoment(item.answeredAt, locale)}</span>
-                    <span aria-hidden="true">·</span>
-                    <span className={styles.asker} title={asker}>{asker}</span>
-                  </span>
-                </button>
-                <div className={styles.actions}>
-                  {confirming === item.id
-                    ? (
-                      <div className={styles.confirm} role="group" aria-label={t("analytics.history.deleteConfirm")}>
-                        <span>{t("analytics.history.deleteConfirm")}</span>
-                        <Button intent="danger" loading={busy} onClick={() => {
-                          setConfirming(null);
-                          onDelete(item.id);
-                          headingRef.current?.focus();
-                        }}>
-                          {t("analytics.history.deleteYes")}
-                        </Button>
-                        <Button intent="quiet" onClick={() => setConfirming(null)}>{t("analytics.history.cancel")}</Button>
-                      </div>
-                    )
-                    : (
-                      <IconButton disabled={busy}
-                        label={t("analytics.history.deleteLabel", { question: item.question })}
-                        tooltip={t("analytics.history.delete")}
-                        icon={<Trash2 size={16} />}
-                        onClick={() => setConfirming(item.id)} />
-                    )}
-                </div>
-              </li>
+              <div role="listitem" key={item.id} className={active ? "pm-history-active" : undefined}>
+                <IonItem lines={index === items.length - 1 ? "none" : undefined}>
+                  <IonButton
+                    fill="clear"
+                    className="pm-history-open"
+                    aria-current={active ? "true" : undefined}
+                    aria-busy={busy || undefined}
+                    disabled={busy}
+                    onClick={() => onOpen(item.id)}
+                  >
+                    <span className="pm-history-text">
+                      <span className="pm-history-question">
+                        {item.isFollowUp && <MessageSquareReply aria-hidden="true" size={14} />}
+                        {item.question}
+                      </span>
+                      {item.conclusion && <span className="pm-history-conclusion">{item.conclusion}</span>}
+                      <span className="pm-history-meta">
+                        {item.isFollowUp && <span className="pm-chip">{t("analytics.history.followUp")}</span>}
+                        <span>{formatMoment(item.answeredAt, locale)}</span>
+                        <span aria-hidden="true">·</span>
+                        <span title={asker}>{asker}</span>
+                      </span>
+                    </span>
+                  </IonButton>
+                  <IonButton
+                    slot="end"
+                    fill="clear"
+                    color="medium"
+                    disabled={busy}
+                    aria-label={t("analytics.history.deleteLabel", { question: item.question })}
+                    onClick={() => setConfirming(item.id)}
+                  >
+                    <Trash2 size={18} aria-hidden="true" />
+                  </IonButton>
+                </IonItem>
+              </div>
             );
           })}
-        </ul>
+        </IonList>
       )}
       {hasMore && onShowMore && (
-        <Button intent="quiet" onClick={onShowMore}>{t("analytics.history.more")}</Button>
+        <div className="ion-padding-horizontal">
+          <IonButton expand="block" fill="clear" onClick={onShowMore}>{t("analytics.history.more")}</IonButton>
+        </div>
       )}
-    </Surface>
+      <IonActionSheet
+        isOpen={confirming !== null}
+        header={t("analytics.history.deleteConfirm")}
+        onDidDismiss={() => setConfirming(null)}
+        buttons={[
+          {
+            text: t("analytics.history.deleteYes"),
+            role: "destructive",
+            handler: () => {
+              if (confirming) onDelete(confirming);
+              headingRef.current?.focus();
+            }
+          },
+          { text: t("analytics.history.cancel"), role: "cancel" }
+        ]}
+      />
+    </section>
   );
 }

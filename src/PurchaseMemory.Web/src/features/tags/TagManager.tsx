@@ -1,33 +1,27 @@
-import { Pencil, Plus, Trash2 } from "lucide-react";
-import { useId, useState, type FormEvent } from "react";
+import { IonInput, IonItem, IonLabel, IonList } from "@ionic/react";
+import { Plus } from "lucide-react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ApiError } from "../../api/client";
 import type { TagSummary } from "../../api/types";
-import { Button, Field, IconButton } from "../../design-system/components";
-// Same look as the category manager right above it on the page.
-import styles from "../categories/CategoryManager.module.css";
+import { Footnote, SectionHeader } from "../../design-system/components";
+import { ManagedRow } from "../categories/ManagedRow";
 import { maximumTagNameLength } from "./ProductTags";
-import tagStyles from "./Tags.module.css";
 
 export interface TagManagerProps {
   tags: TagSummary[];
   onCreate: (name: string) => Promise<unknown>;
   onRename: (tagId: string, name: string) => Promise<unknown>;
   onDelete: (tagId: string) => Promise<unknown>;
-  /** Open by default; the page keeps it collapsed. */
-  defaultOpen?: boolean;
 }
 
 /**
- * Where the household renames and deletes its tags. A deleted tag simply
- * disappears from its products; the products themselves stay.
+ * Where the household creates, renames and deletes its tags. A deleted tag
+ * simply disappears from its products; the products themselves stay.
  */
-export function TagManager({ tags, onCreate, onRename, onDelete, defaultOpen = false }: TagManagerProps) {
+export function TagManager({ tags, onCreate, onRename, onDelete }: TagManagerProps) {
   const { t } = useTranslation();
-  const formId = useId();
   const [name, setName] = useState("");
-  const [renaming, setRenaming] = useState<{ id: string; name: string } | null>(null);
-  const [confirmingDelete, setConfirmingDelete] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -47,90 +41,63 @@ export function TagManager({ tags, onCreate, onRename, onDelete, defaultOpen = f
     }
   }
 
-  async function create(event: FormEvent) {
-    event.preventDefault();
+  async function create() {
     if (name.trim() === "") return;
     if (await run(() => onCreate(name.trim()))) setName("");
   }
 
-  async function rename(event: FormEvent) {
-    event.preventDefault();
-    if (!renaming || renaming.name.trim() === "") return;
-    if (await run(() => onRename(renaming.id, renaming.name.trim()))) setRenaming(null);
-  }
-
-  function row(tag: TagSummary) {
-    if (renaming?.id === tag.id) {
-      return (
-        <form className={styles.row} onSubmit={rename}>
-          <Field
-            aria-label={t("tags.rename")}
-            value={renaming.name}
-            maxLength={maximumTagNameLength}
-            autoFocus
-            onChange={(event) => setRenaming({ id: tag.id, name: event.currentTarget.value })}
-          />
-          <div className={styles.rowActions}>
-            <Button type="submit" loading={busy}>{t("tags.save")}</Button>
-            <Button intent="quiet" onClick={() => setRenaming(null)} disabled={busy}>{t("tags.cancel")}</Button>
-          </div>
-        </form>
-      );
-    }
-
-    return (
-      <div className={styles.row}>
-        <span className={styles.name}>
-          {tag.name}
-          <span className={styles.count}>{t("tags.productCount", { count: tag.productCount })}</span>
-        </span>
-        <div className={styles.rowActions}>
-          {confirmingDelete === tag.id
-            ? (
-              <>
-                <span className={styles.confirm}>{t("tags.deleteConfirm", { name: tag.name })}</span>
-                <Button intent="danger" loading={busy} onClick={() => void run(() => onDelete(tag.id)).then((done) => done && setConfirmingDelete(null))}>
-                  {t("tags.deleteYes")}
-                </Button>
-                <Button intent="quiet" onClick={() => setConfirmingDelete(null)} disabled={busy}>{t("tags.cancel")}</Button>
-              </>
-            )
-            : (
-              <>
-                <IconButton iconOnly="mobile" icon={<Pencil />} label={`${t("tags.rename")}: ${tag.name}`} text={t("tags.rename")}
-                  onClick={() => setRenaming({ id: tag.id, name: tag.name })} disabled={busy} />
-                <IconButton intent="danger" iconOnly="mobile" icon={<Trash2 />} label={`${t("tags.delete")}: ${tag.name}`} text={t("tags.delete")}
-                  onClick={() => setConfirmingDelete(tag.id)} disabled={busy} />
-              </>
-            )}
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <details className={styles.manager} open={defaultOpen}>
-      <summary>{t("tags.manageTitle")}</summary>
-      <p className={styles.intro}>{t("tags.manageIntro")}</p>
+    <>
+      <Footnote>{t("tags.manageIntro")}</Footnote>
 
-      <form className={`${styles.create} ${tagStyles.twoColumns}`} onSubmit={create} aria-labelledby={`${formId}-title`}>
-        <span id={`${formId}-title`} className="visually-hidden">{t("tags.add")}</span>
-        <Field label={t("tags.newLabel")} placeholder={t("tags.newPlaceholder")} value={name} maxLength={maximumTagNameLength}
-          onChange={(event) => setName(event.currentTarget.value)} disabled={busy} />
-        <Button type="submit" loading={busy} disabled={name.trim() === ""} leftSection={<Plus aria-hidden="true" size={16} />}>
-          {t("tags.add")}
-        </Button>
-      </form>
+      <SectionHeader level={3}>{t("tags.add")}</SectionHeader>
+      <IonList inset className="pm-after-header">
+        <IonItem>
+          <IonInput
+            label={t("tags.newLabel")}
+            labelPlacement="stacked"
+            placeholder={t("tags.newPlaceholder")}
+            value={name}
+            maxlength={maximumTagNameLength}
+            disabled={busy}
+            onIonInput={(event) => setName(String(event.detail.value ?? ""))}
+            onKeyDown={(event) => { if (event.key === "Enter") void create(); }}
+          />
+        </IonItem>
+        <IonItem button detail={false} lines="none" disabled={busy || name.trim() === ""} onClick={() => void create()}>
+          <Plus slot="start" size={22} className="pm-row-icon" aria-hidden="true" />
+          <IonLabel color="primary">{t("tags.add")}</IonLabel>
+        </IonItem>
+      </IonList>
 
-      {error && <p className={styles.error} role="alert">{error}</p>}
+      {error && <Footnote tone="danger" role="alert">{error}</Footnote>}
 
       {tags.length === 0
-        ? <p className={styles.intro}>{t("tags.noTagsYet")}</p>
+        ? <Footnote>{t("tags.noTagsYet")}</Footnote>
         : (
-          <ul className={styles.tree} aria-label={t("tags.listLabel")}>
-            {tags.map((tag) => <li key={tag.id}>{row(tag)}</li>)}
-          </ul>
+          <IonList inset aria-label={t("tags.listLabel")}>
+            {tags.map((tag, index) => (
+              <ManagedRow
+                key={tag.id}
+                label={tag.name}
+                detail={t("tags.productCount", { count: tag.productCount })}
+                disabled={busy}
+                maxLength={maximumTagNameLength}
+                last={index === tags.length - 1}
+                text={{
+                  rename: t("tags.rename"),
+                  delete: t("tags.delete"),
+                  cancel: t("tags.cancel"),
+                  save: t("tags.save"),
+                  deleteConfirm: t("tags.deleteConfirm", { name: tag.name }),
+                  deleteYes: t("tags.deleteYes")
+                }}
+                onRename={(next) => void run(() => onRename(tag.id, next))}
+                onDelete={() => void run(() => onDelete(tag.id))}
+              />
+            ))}
+          </IonList>
         )}
-    </details>
+    </>
   );
 }

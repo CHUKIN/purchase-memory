@@ -3,6 +3,7 @@ import { MemoryRouter } from "react-router";
 import { describe, expect, it, vi } from "vitest";
 import type { PurchaseView } from "../../api/types";
 import { AppProviders } from "../../app/AppProviders";
+import { openFilters, setDate } from "../../test/ionicHelpers";
 import { PurchaseFeed, emptyPurchaseFeedFilters, type PurchaseFeedFilters } from "./PurchaseFeed";
 
 function purchase(overrides: Partial<PurchaseView> = {}): PurchaseView {
@@ -41,14 +42,19 @@ function renderFeed(
   return { onFiltersChange };
 }
 
+const purchaseLink = () => screen.getByRole("link", { name: /^Biedronka/ });
+
 describe("PurchaseFeed", () => {
   it("shows merchant, item count and the reviewed status for a clean purchase", () => {
     renderFeed();
 
-    expect(screen.getByRole("heading", { name: "Biedronka" })).toBeInTheDocument();
-    expect(screen.getByText("1 позиция")).toBeInTheDocument();
-    expect(within(screen.getByRole("article")).getByText("Проверено")).toBeInTheDocument();
-    expect(screen.getByText("1 покупка")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: "Покупки" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 2, name: "Biedronka" })).toBeInTheDocument();
+    expect(purchaseLink()).toHaveAttribute("href", "/purchases/6d0b2b2e-8b1e-4b1e-9c2b-000000000001");
+    expect(within(purchaseLink()).getByText(/1 позиция/)).toBeInTheDocument();
+    expect(within(purchaseLink()).getByText("Проверено")).toBeInTheDocument();
+    expect(within(purchaseLink()).getByText("42,50 PLN")).toBeInTheDocument();
+    expect(screen.getByText(/1 покупка/)).toBeInTheDocument();
   });
 
   it("marks a purchase with issues as needing attention and names each issue", () => {
@@ -61,7 +67,7 @@ describe("PurchaseFeed", () => {
       })]
     });
 
-    expect(within(screen.getByRole("article")).getByText("Нужно проверить")).toBeInTheDocument();
+    expect(within(purchaseLink()).getByText("Нужно проверить")).toBeInTheDocument();
     expect(screen.getByText("Сумма строк не сходится с итогом чека")).toBeInTheDocument();
     expect(screen.getByText("Не распознана цена: Mleko")).toBeInTheDocument();
   });
@@ -70,7 +76,7 @@ describe("PurchaseFeed", () => {
     renderFeed({ purchases: [], totalCount: 0 });
 
     expect(screen.getByRole("heading", { name: "Покупок пока нет" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Сфотографировать чек" })).toHaveAttribute("href", "/purchases/new");
+    expect(screen.getByRole("link", { name: /Сфотографировать чек/ })).toHaveAttribute("href", "/purchases/new");
     expect(screen.queryByRole("heading", { name: "Ничего не найдено" })).not.toBeInTheDocument();
   });
 
@@ -79,7 +85,7 @@ describe("PurchaseFeed", () => {
     const { onFiltersChange } = renderFeed({ purchases: [], totalCount: 0, filters });
 
     expect(screen.getByRole("heading", { name: "Ничего не найдено" })).toBeInTheDocument();
-    fireEvent.click(screen.getAllByRole("button", { name: "Сбросить фильтры" })[0]);
+    fireEvent.click(screen.getByRole("button", { name: "Сбросить фильтры" }));
     expect(onFiltersChange).toHaveBeenCalledWith(emptyPurchaseFeedFilters);
   });
 
@@ -91,27 +97,39 @@ describe("PurchaseFeed", () => {
         </MemoryRouter>
       </AppProviders>
     );
-    expect(screen.getByText("Загружаем покупки…")).toBeInTheDocument();
+    expect(screen.getByRole("status", { name: "Загружаем покупки…" })).toHaveAttribute("aria-busy", "true");
     unmount();
 
     renderFeed({ purchases: [], totalCount: 0, error: "Не удалось загрузить покупки." });
     expect(screen.getByRole("alert")).toHaveTextContent("Не удалось загрузить покупки.");
   });
 
-  it("reports every filter change through a single callback", () => {
+  it("keeps the search on screen and every other filter in the sheet, reporting each change", () => {
     const { onFiltersChange } = renderFeed();
 
     fireEvent.change(screen.getByLabelText("Поиск"), { target: { value: "mleko" } });
     expect(onFiltersChange).toHaveBeenCalledWith({ ...emptyPurchaseFeedFilters, query: "mleko" });
 
-    fireEvent.change(screen.getByLabelText("Дата с"), { target: { value: "2026-08-01" } });
+    const sheet = openFilters();
+    expect(within(sheet).getByRole("heading", { name: "Фильтры" })).toBeInTheDocument();
+    setDate("Дата с", "2026-08-01");
     expect(onFiltersChange).toHaveBeenCalledWith({ ...emptyPurchaseFeedFilters, from: "2026-08-01" });
 
-    fireEvent.change(screen.getByLabelText("Дата по"), { target: { value: "2026-08-24" } });
+    setDate("Дата по", "2026-08-24");
     expect(onFiltersChange).toHaveBeenCalledWith({ ...emptyPurchaseFeedFilters, to: "2026-08-24" });
 
-    fireEvent.click(screen.getByRole("radio", { name: "Нужно проверить" }));
+    fireEvent.click(within(sheet).getByRole("tab", { name: "Нужно проверить" }));
     expect(onFiltersChange).toHaveBeenCalledWith({ ...emptyPurchaseFeedFilters, status: "needsAttention" });
+  });
+
+  it("counts the filters set in the sheet on the toolbar button and resets them but not the search", () => {
+    const filters: PurchaseFeedFilters = { ...emptyPurchaseFeedFilters, query: "mleko", from: "2026-08-01", status: "reviewed", brand: "Łaciate" };
+    const { onFiltersChange } = renderFeed({ filters });
+
+    expect(screen.getByRole("button", { name: "Фильтры, выбрано 3" })).toBeInTheDocument();
+    const sheet = openFilters();
+    fireEvent.click(within(sheet).getByRole("button", { name: "Сбросить" }));
+    expect(onFiltersChange).toHaveBeenCalledWith({ ...emptyPurchaseFeedFilters, query: "mleko" });
   });
 
   it("offers the load-more action only while another page exists", () => {
@@ -125,8 +143,10 @@ describe("PurchaseFeed", () => {
   it("translates the feed into English", () => {
     renderFeed({ purchases: [purchase({ items: [] })], totalCount: 1 }, "en");
 
-    expect(screen.getByRole("heading", { name: "Purchase feed" })).toBeInTheDocument();
-    expect(screen.getByText("0 items")).toBeInTheDocument();
-    expect(screen.getByRole("radio", { name: "Needs attention" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: "Purchases" })).toBeInTheDocument();
+    expect(screen.getByText(/Purchase feed/)).toBeInTheDocument();
+    expect(screen.getByText(/0 items/)).toBeInTheDocument();
+    const sheet = openFilters();
+    expect(within(sheet).getByRole("tab", { name: "Needs attention" })).toBeInTheDocument();
   });
 });

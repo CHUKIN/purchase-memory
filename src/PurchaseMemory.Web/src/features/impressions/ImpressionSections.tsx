@@ -1,7 +1,7 @@
+import { IonButton, IonItem, IonLabel, IonList } from "@ionic/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useId, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router";
 import {
   createImpression,
   deleteImpression,
@@ -11,14 +11,15 @@ import {
   listUnratedPurchaseItems
 } from "../../api/client";
 import type { Impression, ImpressionRating, PurchaseDetailItem } from "../../api/types";
-import { Button, Surface } from "../../design-system/components";
+import { Link } from "react-router";
+import { Footnote, SectionHeader, SelectRow, Sheet } from "../../design-system/components";
 import { formatMoney } from "../purchases/money";
+import { HelpLink } from "../help/HelpLink";
 import { ImpressionForm, type ImpressionDraft } from "./ImpressionForm";
 import { ImpressionHistory, StoreComparison } from "./ImpressionHistory";
 import { authorLabel, groupByAuthor, impressionsQueryKey, ratingLabel } from "./impressionText";
 import { RatingControl, RatingIcon } from "./RatingControl";
-import { HelpLink } from "../help/HelpLink";
-import styles from "./Impressions.module.css";
+import { useReturnState } from "../../app/backNavigation";
 
 function formatDay(locale: string, value: string): string {
   return new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(value));
@@ -40,55 +41,48 @@ function useImpressionMutations() {
 /** The product page's «Впечатления»: rate one of its purchases, each person's history, and stores side by side. */
 export function ProductImpressionsSection({ productId, locale }: { productId: string; locale: string }) {
   const { t } = useTranslation();
-  const headingId = useId();
-  const selectId = useId();
   const impressions = useQuery({ queryKey: [...impressionsQueryKey, "product", productId], queryFn: () => listProductImpressions(productId) });
   const lines = useQuery({ queryKey: [...impressionsQueryKey, "rateable", productId], queryFn: () => listProductRateableLines(productId) });
   const { create, remove } = useImpressionMutations();
   const [chosenLine, setChosenLine] = useState<string | null>(null);
   const lineId = chosenLine ?? lines.data?.[0]?.purchaseItemId ?? null;
+  const lineText = (line: NonNullable<typeof lines.data>[number]) => {
+    const price = line.unitPrice ?? line.lineTotal;
+    return [line.merchantName ?? t("impressions.unknownStore"), formatDay(locale, line.purchasedAt), price === null ? null : formatMoney(price, line.currency, locale)]
+      .filter(Boolean).join(" · ");
+  };
+  const chosen = lines.data?.find((line) => line.purchaseItemId === lineId);
 
   return (
-    <Surface as="section" className={styles.section} aria-labelledby={headingId}>
-      <h2 id={headingId}>{t("impressions.title")}</h2>
-      <HelpLink topic="impressions" />
+    <section aria-labelledby="product-impressions-title">
+      <SectionHeader id="product-impressions-title" action={<HelpLink topic="impressions" />}>{t("impressions.title")}</SectionHeader>
 
       {lines.data && lines.data.length > 0 && (
-        <ImpressionForm
-          disabled={!lineId}
-          onSubmit={(draft) => create.mutateAsync({ purchaseItemId: lineId!, draft })}
-        >
-          <label htmlFor={selectId}>
-            {t("impressions.whichPurchase")}
-            <select id={selectId} value={lineId ?? ""} onChange={(event) => setChosenLine(event.target.value)}>
-              {lines.data.map((line) => {
-                const price = line.unitPrice ?? line.lineTotal;
-                return (
-                  <option key={line.purchaseItemId} value={line.purchaseItemId}>
-                    {[line.merchantName ?? t("impressions.unknownStore"), formatDay(locale, line.purchasedAt), price === null ? null : formatMoney(price, line.currency, locale)]
-                      .filter(Boolean).join(" · ")}
-                  </option>
-                );
-              })}
-            </select>
-          </label>
+        <ImpressionForm disabled={!lineId} onSubmit={(draft) => create.mutateAsync({ purchaseItemId: lineId!, draft })}>
+          <SelectRow
+            label={t("impressions.whichPurchase")}
+            valueText={chosen ? lineText(chosen) : ""}
+            value={lineId ?? ""}
+            onChange={setChosenLine}
+            groups={[{ options: lines.data.map((line) => ({ value: line.purchaseItemId, label: lineText(line) })) }]}
+          />
         </ImpressionForm>
       )}
-      {lines.data?.length === 0 && <p className={styles.muted}>{t("impressions.noPurchasesToRate")}</p>}
+      {lines.data?.length === 0 && <Footnote>{t("impressions.noPurchasesToRate")}</Footnote>}
 
-      {impressions.isError && <p className={styles.error} role="alert">{t("impressions.loadFailed")}</p>}
+      {impressions.isError && <Footnote tone="danger" role="alert">{t("impressions.loadFailed")}</Footnote>}
       {impressions.data && (
         <>
           <ImpressionHistory impressions={impressions.data} locale={locale} onDelete={(id) => remove.mutateAsync(id)} />
           {impressions.data.length > 0 && (
-            <section className={styles.section} aria-label={t("impressions.comparisonTitle")}>
-              <h3>{t("impressions.comparisonTitle")}</h3>
+            <section aria-labelledby="impressions-comparison-title">
+              <SectionHeader id="impressions-comparison-title" level={3}>{t("impressions.comparisonTitle")}</SectionHeader>
               <StoreComparison impressions={impressions.data} />
             </section>
           )}
         </>
       )}
-    </Surface>
+    </section>
   );
 }
 
@@ -97,7 +91,10 @@ export function usePurchaseImpressions(purchaseId: string) {
   return useQuery({ queryKey: [...impressionsQueryKey, "purchase", purchaseId], queryFn: () => listPurchaseImpressions(purchaseId) });
 }
 
-/** Under a purchase line: each person's latest opinion of it and an «Оценить» form. */
+/**
+ * Under a purchase line: each person's latest opinion of it, and «Оценить»,
+ * which opens a sheet with the form and this line's history.
+ */
 export function PurchaseLineImpressions({ item, impressions, locale }: { item: PurchaseDetailItem; impressions: Impression[]; locale: string }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -106,34 +103,24 @@ export function PurchaseLineImpressions({ item, impressions, locale }: { item: P
   const latest = groupByAuthor(t, mine).map((group) => ({ group, impression: group.impressions[0] }));
 
   return (
-    <div className={open ? styles.section : styles.lineRow}>
+    <div className="pm-line-impressions">
       {latest.length > 0 && (
-        <ul className={styles.lineSummary} aria-label={t("impressions.lineSummary", { name: item.name })}>
+        <ul className="pm-chips" aria-label={t("impressions.lineSummary", { name: item.name })}>
           {latest.map(({ group, impression }) => (
-            <li key={group.authorUserId} className={styles.badge} data-rating={impression.rating}>
-              <RatingIcon rating={impression.rating} />
+            <li key={group.authorUserId} className="pm-chip" data-rating={impression.rating}>
+              <RatingIcon rating={impression.rating} size={12} />
               {authorLabel(t, impression)}: {ratingLabel(t, impression.rating)}
             </li>
           ))}
         </ul>
       )}
-      {open
-        ? (
-          <>
-            <ImpressionForm
-              onSubmit={(draft) => create.mutateAsync({ purchaseItemId: item.id, draft })}
-              onCancel={() => setOpen(false)}
-            />
-            {mine.length > 0 && (
-              <ImpressionHistory impressions={mine} locale={locale} headingLevel={4} onDelete={(id) => remove.mutateAsync(id)} />
-            )}
-          </>
-        )
-        : (
-          <Button className={styles.rateButton} intent="quiet" onClick={() => setOpen(true)} aria-label={t("impressions.rateLine", { name: item.name })}>
-            {t("impressions.rate")}
-          </Button>
-        )}
+      <IonButton size="small" fill="clear" className="pm-inline-button" onClick={() => setOpen(true)} aria-label={t("impressions.rateLine", { name: item.name })}>
+        {t("impressions.rate")}
+      </IonButton>
+      <Sheet isOpen={open} onClose={() => setOpen(false)} title={t("impressions.rateLine", { name: item.name })}>
+        <ImpressionForm onSubmit={(draft) => create.mutateAsync({ purchaseItemId: item.id, draft })} />
+        {mine.length > 0 && <ImpressionHistory impressions={mine} locale={locale} headingLevel={4} onDelete={(id) => remove.mutateAsync(id)} />}
+      </Sheet>
     </div>
   );
 }
@@ -144,7 +131,7 @@ export function PurchaseLineImpressions({ item, impressions, locale }: { item: P
  */
 export function UnratedPurchasesBlock({ locale }: { locale: string }) {
   const { t } = useTranslation();
-  const headingId = useId();
+  const returnState = useReturnState();
   const unrated = useQuery({ queryKey: [...impressionsQueryKey, "unrated"], queryFn: () => listUnratedPurchaseItems() });
   const { create } = useImpressionMutations();
   const [failedItem, setFailedItem] = useState<string | null>(null);
@@ -161,34 +148,38 @@ export function UnratedPurchasesBlock({ locale }: { locale: string }) {
   };
 
   return (
-    <Surface as="section" className={styles.section} aria-labelledby={headingId}>
-      <h2 id={headingId}>{t("impressions.unratedTitle")}</h2>
-      <p className={styles.muted}>{t("impressions.unratedIntro")}</p>
-      <HelpLink topic="impressions" />
-      <ul className={styles.unratedList}>
+    <section aria-labelledby="unrated-title">
+      <SectionHeader id="unrated-title" action={<HelpLink topic="impressions" />}>{t("impressions.unratedTitle")}</SectionHeader>
+      <IonList inset className="pm-after-header">
         {unrated.data.map((item) => {
           const price = item.unitPrice ?? item.lineTotal;
+          const name = item.productName ?? item.itemName;
           return (
-            <li key={item.purchaseItemId} className={styles.unratedItem}>
-              <Link to={item.productId ? `/products/${encodeURIComponent(item.productId)}` : `/purchases/${encodeURIComponent(item.purchaseId)}`}>
-                {item.productName ?? item.itemName}
-              </Link>
-              <p className={styles.muted}>
-                {[item.merchantName ?? t("impressions.unknownStore"), formatDay(locale, item.purchasedAt), price === null ? null : formatMoney(price, item.currency, locale)]
-                  .filter(Boolean).join(" · ")}
-              </p>
-              <RatingControl
-                legend={t("impressions.quickLegend", { name: item.productName ?? item.itemName })}
-                hideLegend
-                value={null}
-                disabled={create.isPending}
-                onChange={(rating) => void rate(item.purchaseItemId, rating)}
-              />
-              {failedItem === item.purchaseItemId && <p className={styles.error} role="alert">{t("impressions.saveFailed")}</p>}
-            </li>
+            <IonItem key={item.purchaseItemId}>
+              <IonLabel className="pm-wrap">
+                <h3>
+                  <Link className="pm-text-link" to={item.productId ? `/products/${encodeURIComponent(item.productId)}` : `/purchases/${encodeURIComponent(item.purchaseId)}`} state={returnState}>
+                    {name}
+                  </Link>
+                </h3>
+                <p>
+                  {[item.merchantName ?? t("impressions.unknownStore"), formatDay(locale, item.purchasedAt), price === null ? null : formatMoney(price, item.currency, locale)]
+                    .filter(Boolean).join(" · ")}
+                </p>
+                <RatingControl
+                  legend={t("impressions.quickLegend", { name })}
+                  hideLegend
+                  value={null}
+                  disabled={create.isPending}
+                  onChange={(rating) => void rate(item.purchaseItemId, rating)}
+                />
+                {failedItem === item.purchaseItemId && <p className="pm-danger-text" role="alert">{t("impressions.saveFailed")}</p>}
+              </IonLabel>
+            </IonItem>
           );
         })}
-      </ul>
-    </Surface>
+      </IonList>
+      <Footnote>{t("impressions.unratedIntro")}</Footnote>
+    </section>
   );
 }

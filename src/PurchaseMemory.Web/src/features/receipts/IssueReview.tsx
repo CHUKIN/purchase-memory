@@ -1,7 +1,8 @@
+import { IonItem, IonLabel, IonList, IonNote } from "@ionic/react";
+import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle, CheckCircle2, ChevronDown, SlidersHorizontal } from "lucide-react";
 import { useId, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useQuery } from "@tanstack/react-query";
 import { getReceiptAuditTrail } from "../../api/client";
 import type {
   BoundingBox,
@@ -10,9 +11,8 @@ import type {
   ReceiptReviewAuditEntry,
   ReceiptSnapshot
 } from "../../api/types";
-import { EmptyState, StatusBadge, Surface } from "../../design-system/components";
+import { DecimalInput, EmptyState, Footnote, PrimaryButton, SectionHeader } from "../../design-system/components";
 import { isIssueResolved, issueCopy, issueKey } from "../issues/issueText";
-import styles from "./IssueReview.module.css";
 
 /** The receipt photo an issue card can point at. */
 export interface IssueReviewPhoto {
@@ -44,9 +44,9 @@ export interface IssueReviewProps {
 }
 
 /**
- * The default review surface for a receipt that needs attention: one card per
- * detected issue, each scoped to just the fields that issue is about. Anything
- * broader belongs in the full editor, which stays one click away.
+ * The default review surface for a receipt that needs attention: one group per
+ * detected issue, each with just the fields that issue is about. Anything
+ * broader belongs in the full editor, which stays one tap away.
  */
 export function IssueReview({
   snapshot,
@@ -64,48 +64,23 @@ export function IssueReview({
   const unresolved = issues.filter((issue) => !isIssueResolved(issue, snapshot));
 
   return (
-    <section className={styles.review} aria-labelledby={titleId}>
-      <div className={styles.heading}>
-        <div>
-          <p className={styles.eyebrow}>{t("issues.eyebrow")}</p>
-          <h2 id={titleId}>{t("issues.title")}</h2>
-          <p className={styles.lead}>
-            {unresolved.length === 0 ? t("issues.allResolved") : t("issues.remaining", { count: unresolved.length })}
-          </p>
-        </div>
-        <StatusBadge status={unresolved.length === 0 ? "verified" : "needsAttention"} />
-      </div>
+    <section aria-labelledby={titleId}>
+      <SectionHeader id={titleId}>{t("issues.title")}</SectionHeader>
+      <Footnote role="status">{unresolved.length === 0 ? t("issues.allResolved") : t("issues.remaining", { count: unresolved.length })}</Footnote>
 
-      {issues.length === 0 ? (
-        <EmptyState
-          icon={<CheckCircle2 />}
-          title={t("issues.emptyTitle")}
-          description={t("issues.emptyDescription")}
-        />
-      ) : (
-        <ul className={styles.list}>
-          {issues.map((issue) => (
-            <li key={issueKey(issue)}>
-              <IssueCard
-                issue={issue}
-                snapshot={snapshot}
-                onSnapshotChange={onSnapshotChange}
-                photo={photo}
-              />
-            </li>
-          ))}
-        </ul>
-      )}
+      {issues.length === 0
+        ? <EmptyState icon={<CheckCircle2 />} title={t("issues.emptyTitle")} description={t("issues.emptyDescription")} headingLevel={3} />
+        : issues.map((issue) => <IssueCard key={issueKey(issue)} issue={issue} snapshot={snapshot} onSnapshotChange={onSnapshotChange} photo={photo} />)}
 
-      <div className={styles.actions}>
-        <button type="button" className={styles.fullEditor} onClick={onOpenFullEditor}>
-          <SlidersHorizontal aria-hidden="true" />
-          {t("issues.openFullEditor")}
-        </button>
-        <button type="button" className={styles.save} disabled={!canSave || busy || unresolved.length > 0} onClick={onSave}>
-          {busy ? t("legacyCapture.saving") : t("legacyCapture.savePurchase")}
-        </button>
-      </div>
+      <PrimaryButton disabled={!canSave || unresolved.length > 0} loading={busy} onClick={onSave}>
+        {busy ? t("legacyCapture.saving") : t("legacyCapture.savePurchase")}
+      </PrimaryButton>
+      <IonList inset>
+        <IonItem button detail lines="none" onClick={onOpenFullEditor}>
+          <SlidersHorizontal slot="start" size={20} className="pm-row-icon" aria-hidden="true" />
+          <IonLabel color="primary">{t("issues.openFullEditor")}</IonLabel>
+        </IonItem>
+      </IonList>
 
       {receiptId && <ReviewHistory receiptId={receiptId} />}
     </section>
@@ -129,36 +104,34 @@ function ReviewHistory({ receiptId }: { receiptId: string }) {
   });
 
   return (
-    <Surface as="section" className={styles.history}>
-      <button
-        type="button"
-        className={styles.historyToggle}
-        aria-expanded={open}
-        aria-controls={historyId}
-        onClick={() => setOpen((current) => !current)}
-      >
-        <ChevronDown aria-hidden="true" className={styles.historyChevron} data-open={open} />
-        {open ? t("review.history.toggleHide") : t("review.history.toggleShow")}
-      </button>
-
-      <div className={styles.historyCollapsible} data-open={open}>
-        <div id={historyId} className={styles.historyInner}>
-          <h3 className={styles.historyTitle}>{t("review.history.title")}</h3>
-          {query.isLoading && <p className={styles.detail}>{t("review.history.loading")}</p>}
-          {query.isError && <p className={styles.detail}>{t("review.history.loadFailed")}</p>}
-          {query.data && query.data.length === 0 && <p className={styles.detail}>{t("review.history.empty")}</p>}
-          {query.data && query.data.length > 0 && (
-            <ul className={styles.historyList}>
-              {query.data.map((entry, index) => (
-                <li key={`${entry.occurredAt}-${entry.fieldName}-${index}`} className={styles.historyEntry}>
-                  <HistoryEntryLine entry={entry} />
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </div>
-    </Surface>
+    <section>
+      <IonList inset>
+        <IonItem
+          button
+          detail={false}
+          lines={open ? undefined : "none"}
+          aria-expanded={open}
+          aria-controls={historyId}
+          onClick={() => setOpen((current) => !current)}
+        >
+          <IonLabel>{open ? t("review.history.toggleHide") : t("review.history.toggleShow")}</IonLabel>
+          <ChevronDown slot="end" size={20} aria-hidden="true" className="pm-chevron" data-open={open} />
+        </IonItem>
+        {open && (
+          <div id={historyId}>
+            <h3 className="visually-hidden">{t("review.history.title")}</h3>
+            {query.isLoading && <IonItem lines="none"><IonLabel color="medium">{t("review.history.loading")}</IonLabel></IonItem>}
+            {query.isError && <IonItem lines="none"><IonLabel color="medium">{t("review.history.loadFailed")}</IonLabel></IonItem>}
+            {query.data && query.data.length === 0 && <IonItem lines="none"><IonLabel color="medium">{t("review.history.empty")}</IonLabel></IonItem>}
+            {query.data?.map((entry, index) => (
+              <IonItem key={`${entry.occurredAt}-${entry.fieldName}-${index}`} lines={index === query.data.length - 1 ? "none" : undefined}>
+                <HistoryEntryLine entry={entry} />
+              </IonItem>
+            ))}
+          </div>
+        )}
+      </IonList>
+    </section>
   );
 }
 
@@ -172,16 +145,14 @@ function HistoryEntryLine({ entry }: { entry: ReceiptReviewAuditEntry }) {
         : "review.history.modified";
 
   return (
-    <div>
-      <p className={styles.historyEntrySummary}>{t(summaryKey, { field: entry.fieldName })}</p>
-      <p className={styles.historyEntryValues}>
+    <IonLabel className="pm-wrap">
+      <h3>{t(summaryKey, { field: entry.fieldName })}</h3>
+      <p>
         {entry.oldValue !== null && `${t("review.history.from", { value: entry.oldValue })} `}
         {entry.newValue !== null && t("review.history.to", { value: entry.newValue })}
       </p>
-      <p className={styles.historyEntryMeta}>
-        {t("review.history.actor", { actor: entry.actor })} · {new Date(entry.occurredAt).toLocaleString()}
-      </p>
-    </div>
+      <p>{t("review.history.actor", { actor: entry.actor })} · {new Date(entry.occurredAt).toLocaleString()}</p>
+    </IonLabel>
   );
 }
 
@@ -201,37 +172,35 @@ function IssueCard({
   const resolved = isIssueResolved(issue, snapshot);
 
   return (
-    <Surface as="article" className={styles.card} data-resolved={resolved}>
-      <div className={styles.cardHeading}>
-        <span className={styles.icon} aria-hidden="true">
-          {resolved ? <CheckCircle2 /> : <AlertTriangle />}
-        </span>
-        <div>
-          <h3>{copy.title}</h3>
-          <p className={styles.detail}>{copy.detail}</p>
-        </div>
-        {resolved && <span className={styles.resolved}>{t("issues.resolved")}</span>}
-      </div>
-
-      {/*
-        Once resolved, the suggestion and its inputs no longer matter, so this
-        region collapses smoothly instead of the card just losing content.
-        The grid-rows trick animates to an auto height without measuring it.
-      */}
-      <div className={styles.collapsible} data-resolved={resolved}>
-        <div className={styles.collapsibleInner}>
-          <IssuePhoto issue={issue} photo={photo} />
-          <p className={styles.suggestion}>{copy.suggestion}</p>
-
-          {issue.type === "receiptTotalMismatch" && (
-            <TotalMismatchFix snapshot={snapshot} onSnapshotChange={onSnapshotChange} />
-          )}
-          {issue.type === "missingItemPrice" && issue.itemPosition !== null && (
-            <MissingPriceFix position={issue.itemPosition} snapshot={snapshot} onSnapshotChange={onSnapshotChange} />
-          )}
-        </div>
-      </div>
-    </Surface>
+    <article className="pm-issue" data-resolved={resolved}>
+      <IonList inset>
+        <IonItem lines={resolved ? "none" : "full"}>
+          {resolved
+            ? <CheckCircle2 slot="start" size={22} className="pm-row-icon" aria-hidden="true" />
+            : <AlertTriangle slot="start" size={22} className="pm-row-icon pm-row-icon-warning" aria-hidden="true" />}
+          <IonLabel className="pm-wrap">
+            <h3>{copy.title}</h3>
+            <p>{copy.detail}</p>
+          </IonLabel>
+          {resolved && <IonNote slot="end" className="pm-status pm-ok">{t("issues.resolved")}</IonNote>}
+        </IonItem>
+        {/* Once resolved, the suggestion and its inputs no longer matter. */}
+        {!resolved && (
+          <>
+            <IssuePhoto issue={issue} photo={photo} />
+            <IonItem lines="full">
+              <IonLabel className="pm-wrap" color="medium"><p>{copy.suggestion}</p></IonLabel>
+            </IonItem>
+            {issue.type === "receiptTotalMismatch" && (
+              <TotalMismatchFix snapshot={snapshot} onSnapshotChange={onSnapshotChange} />
+            )}
+            {issue.type === "missingItemPrice" && issue.itemPosition !== null && (
+              <MissingPriceFix position={issue.itemPosition} snapshot={snapshot} onSnapshotChange={onSnapshotChange} />
+            )}
+          </>
+        )}
+      </IonList>
+    </article>
   );
 }
 
@@ -250,32 +219,29 @@ function IssuePhoto({ issue, photo }: { issue: PurchaseDraftIssue; photo: IssueR
   if (!photo) return null;
 
   const box = photo.croppable ? padBox(issue.boundingBox) : null;
-  if (!box) {
-    return (
-      <img className={styles.photoFull} src={photo.url} alt={t("issues.photoFullAlt")} loading="lazy" />
-    );
-  }
-
   return (
-    <div
-      className={styles.crop}
-      style={photoRatio === null ? undefined : { aspectRatio: `${(photoRatio * box.width) / box.height}` }}
-    >
-      <img
-        className={styles.cropImage}
-        src={photo.url}
-        alt={t("issues.photoCropAlt")}
-        loading="lazy"
-        onLoad={(event) =>
-          setPhotoRatio(event.currentTarget.naturalWidth / Math.max(event.currentTarget.naturalHeight, 1))
-        }
-        style={{
-          width: `${100 / box.width}%`,
-          left: `${(-100 * box.x) / box.width}%`,
-          top: `${(-100 * box.y) / box.height}%`
-        }}
-      />
-    </div>
+    <IonItem lines="full">
+      <div className="pm-issue-photo">
+        {!box
+          ? <img className="pm-issue-photo-full" src={photo.url} alt={t("issues.photoFullAlt")} loading="lazy" />
+          : (
+            <div className="pm-crop" style={photoRatio === null ? undefined : { aspectRatio: `${(photoRatio * box.width) / box.height}` }}>
+              <img
+                className="pm-crop-image"
+                src={photo.url}
+                alt={t("issues.photoCropAlt")}
+                loading="lazy"
+                onLoad={(event) => setPhotoRatio(event.currentTarget.naturalWidth / Math.max(event.currentTarget.naturalHeight, 1))}
+                style={{
+                  width: `${100 / box.width}%`,
+                  left: `${(-100 * box.x) / box.width}%`,
+                  top: `${(-100 * box.y) / box.height}%`
+                }}
+              />
+            </div>
+          )}
+      </div>
+    </IonItem>
   );
 }
 
@@ -327,22 +293,16 @@ function TotalMismatchFix({
     : null;
 
   return (
-    <div className={styles.fix}>
-      <NumberField
-        label={t("legacyCapture.total")}
-        value={snapshot.receiptTotal}
-        onChange={(receiptTotal) => onSnapshotChange({ ...snapshot, receiptTotal })}
-      />
+    <>
+      <IonItem lines={linesTotal === null ? "none" : "full"}>
+        <DecimalInput label={t("legacyCapture.total")} value={snapshot.receiptTotal} onChange={(receiptTotal) => onSnapshotChange({ ...snapshot, receiptTotal })} />
+      </IonItem>
       {linesTotal !== null && (
-        <button
-          type="button"
-          className={styles.apply}
-          onClick={() => onSnapshotChange({ ...snapshot, receiptTotal: round(linesTotal) })}
-        >
-          {t("issues.useLinesTotal", { value: linesTotal.toFixed(2) })}
-        </button>
+        <IonItem button detail={false} lines="none" onClick={() => onSnapshotChange({ ...snapshot, receiptTotal: round(linesTotal) })}>
+          <IonLabel color="primary">{t("issues.useLinesTotal", { value: linesTotal.toFixed(2) })}</IonLabel>
+        </IonItem>
       )}
-    </div>
+    </>
   );
 }
 
@@ -371,42 +331,14 @@ function MissingPriceFix({
     (item.quantity ?? 1) === 1 ? { unitPrice: value, lineTotal: value } : {};
 
   return (
-    <div className={styles.fix}>
-      <NumberField
-        label={t("legacyCapture.price")}
-        value={item.unitPrice}
-        onChange={(unitPrice) => patch({ ...mirror(unitPrice), unitPrice })}
-      />
-      <NumberField
-        label={t("legacyCapture.amount")}
-        value={item.lineTotal}
-        onChange={(lineTotal) => patch({ ...mirror(lineTotal), lineTotal })}
-      />
-    </div>
-  );
-}
-
-function NumberField({
-  label,
-  value,
-  onChange
-}: {
-  label: string;
-  value: number | null;
-  onChange: (value: number | null) => void;
-}) {
-  return (
-    <label className={styles.field}>
-      <span>{label}</span>
-      <input
-        type="number"
-        inputMode="decimal"
-        min="0"
-        step="0.01"
-        value={value ?? ""}
-        onChange={(event) => onChange(event.target.value === "" ? null : Number(event.target.value))}
-      />
-    </label>
+    <>
+      <IonItem>
+        <DecimalInput label={t("legacyCapture.price")} value={item.unitPrice} onChange={(unitPrice) => patch({ ...mirror(unitPrice), unitPrice })} />
+      </IonItem>
+      <IonItem lines="none">
+        <DecimalInput label={t("legacyCapture.amount")} value={item.lineTotal} onChange={(lineTotal) => patch({ ...mirror(lineTotal), lineTotal })} />
+      </IonItem>
+    </>
   );
 }
 

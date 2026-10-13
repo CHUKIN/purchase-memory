@@ -1,11 +1,13 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { dialog } from "../../test/ionicHelpers";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router";
 import { focusManager } from "@tanstack/react-query";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import * as api from "../../api/client";
 import type { ReceiptView } from "../../api/types";
 import { AppProviders } from "../../app/AppProviders";
-import { CapturePage, ReceiptDetailPage } from "./CapturePage";
+import { CapturePage } from "./CapturePage";
+import { ReceiptDetailPage } from "./ReceiptDetailPage";
 
 vi.mock("../../api/client", () => ({
   uploadReceipt: vi.fn(), listMyUnsavedReceipts: vi.fn(async () => []), processReceipt: vi.fn(), getReceipt: vi.fn(), reviewReceipt: vi.fn(), saveReceipt: vi.fn()
@@ -102,9 +104,11 @@ describe("receipt background flow", () => {
     vi.mocked(api.saveReceipt).mockResolvedValue({ id: "purchase-2", merchantName: "Lidl", purchasedAt: null, currency: "PLN", receiptTotal: 69.99, createdAt: ready.uploadedAt, updatedAt: ready.updatedAt, items: ready.snapshot!.items, issues: [] });
     render(<AppProviders><MemoryRouter initialEntries={[`/receipts/${ready.id}`]}><Routes><Route path="/receipts/:receiptId" element={<ReceiptDetailPage />} /><Route path="/purchases" element={<h1>Purchase history</h1>} /></Routes></MemoryRouter></AppProviders>);
 
-    expect(await screen.findByRole("article", { name: /Скидка OPUST −30,00.*к товару Odkurzacz/ })).toBeInTheDocument();
+    const discount = await screen.findByRole("article", { name: /Скидка OPUST −30,00.*к товару Odkurzacz/ });
     expect(screen.getByText("1 поз. · 1 скидка")).toBeInTheDocument();
-    fireEvent.change(screen.getByLabelText("Размер скидки"), { target: { value: "25" } });
+    fireEvent.click(discount);
+    fireEvent.change(within(dialog("Скидка, строка 2")).getByLabelText("Размер скидки"), { target: { value: "25" } });
+    fireEvent.click(within(dialog("Скидка, строка 2")).getByRole("button", { name: "Готово" }));
     fireEvent.click(screen.getByRole("button", { name: "Сохранить покупку" }));
 
     await waitFor(() => expect(api.reviewReceipt).toHaveBeenCalledTimes(1));

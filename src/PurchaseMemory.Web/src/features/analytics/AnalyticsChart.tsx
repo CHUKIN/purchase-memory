@@ -1,8 +1,8 @@
 import { lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import type { AnalyticsAnswer, ProductCategory } from "../../api/types";
+import { Footnote, SectionHeader } from "../../design-system/components";
 import { formatGroupValue, groupLabel } from "./analyticsText";
-import styles from "./AnalyticsChart.module.css";
 
 const AnalyticsBarChart = lazy(() => import("./AnalyticsBarChart"));
 
@@ -32,38 +32,36 @@ export function AnalyticsChart({ answer, categories, locale }: AnalyticsChartPro
   const format = (value: number) => formatGroupValue(t, locale, answer, value);
 
   return (
-    <section className={styles.root} aria-labelledby="analytics-chart-title">
-      <h3 id="analytics-chart-title" className={styles.title}>{t(`analytics.chartTitle.${answer.result.groupBy}`)}</h3>
+    <section aria-labelledby="analytics-chart-title">
+      <SectionHeader id="analytics-chart-title" level={3}>{t(`analytics.chartTitle.${answer.result.groupBy}`)}</SectionHeader>
       {rows.length > 1 && (
-        <div className={styles.chart} aria-hidden="true">
-          <Suspense fallback={<div className={styles.placeholder} />}>
+        <div className="pm-chart-card" aria-hidden="true">
+          <Suspense fallback={<div className="pm-chart-placeholder" />}>
             <AnalyticsBarChart data={rows} formatValue={format} horizontal={!timeline} />
           </Suspense>
         </div>
       )}
-      <table className={styles.table}>
-        <caption className="visually-hidden">{t(`analytics.chartTitle.${answer.result.groupBy}`)}</caption>
-        <thead>
-          <tr>
-            <th scope="col">{t(`analytics.groupColumn.${answer.result.groupBy}`)}</th>
-            <th scope="col">{t(`analytics.metrics.${answer.result.metric === "top" ? "spend" : answer.result.metric}`)}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr key={row.key}>
-              <td>{row.label}</td>
-              <td className={styles.value}>{format(row.value)}</td>
+      <div className="pm-table-card">
+        <table className="pm-table">
+          <caption className="visually-hidden">{t(`analytics.chartTitle.${answer.result.groupBy}`)}</caption>
+          <thead>
+            <tr>
+              <th scope="col">{t(`analytics.groupColumn.${answer.result.groupBy}`)}</th>
+              <th scope="col" className="pm-number">{t(`analytics.metrics.${answer.result.metric === "top" ? "spend" : answer.result.metric}`)}</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-      {answer.result.groupBy === "tag" && (answer.result.coverage.multiTaggedLines ?? 0) > 0 && (
-        <p className={styles.more}>{t("analytics.groups.tagOverlap")}</p>
-      )}
-      {answer.result.hiddenGroupCount > 0 && (
-        <p className={styles.more}>{t("analytics.hiddenGroups", { count: answer.result.hiddenGroupCount })}</p>
-      )}
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr key={row.key}>
+                <td>{row.label}</td>
+                <td className="pm-number">{format(row.value)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {answer.result.groupBy === "tag" && (answer.result.coverage.multiTaggedLines ?? 0) > 0 && <Footnote>{t("analytics.groups.tagOverlap")}</Footnote>}
+      {answer.result.hiddenGroupCount > 0 && <Footnote>{t("analytics.hiddenGroups", { count: answer.result.hiddenGroupCount })}</Footnote>}
     </section>
   );
 }

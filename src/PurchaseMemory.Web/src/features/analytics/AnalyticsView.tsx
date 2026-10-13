@@ -1,13 +1,13 @@
-import { AlertTriangle, CornerDownRight, MessageSquareText, Search, X } from "lucide-react";
-import { useEffect, useId, useRef, type FormEvent } from "react";
+import { IonButton, IonItem, IonLabel, IonList, IonTextarea } from "@ionic/react";
+import { CornerDownRight, MessageSquareText, Search } from "lucide-react";
+import { useEffect, useRef, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import type { AnalyticsAnswer, AnalyticsHistoryItem, AnalyticsPlan, ProductCategory, ProductTag } from "../../api/types";
-import { Button, EmptyState, SkeletonCard, Surface } from "../../design-system/components";
+import { ActionButton, EmptyState, Footnote, LoadingList, Notice, Page, SectionHeader } from "../../design-system/components";
+import { HelpLink } from "../help/HelpLink";
+import { AnalyticsHistoryList, SavedAnswerBar, type SavedAnswerInfo } from "./AnalyticsHistory";
 import { periodLabel } from "./analyticsText";
 import { AnswerCard } from "./AnswerCard";
-import { AnalyticsHistoryList, SavedAnswerBar, type SavedAnswerInfo } from "./AnalyticsHistory";
-import { HelpLink } from "../help/HelpLink";
-import styles from "./AnalyticsView.module.css";
 
 export type AnalyticsProblem =
   | { kind: "rateLimited"; retryAfterSeconds: number | null }
@@ -61,7 +61,7 @@ export interface AnalyticsViewProps {
 
 const exampleKeys = ["milkYear", "coffeeBrandPrice", "sweets", "wholegrainPasta", "biedronkaAugust"] as const;
 
-/** The Analytics page without data fetching: the question form, its states and the answer. */
+/** The Analytics tab without data fetching: the question box, its states and the answer. */
 export function AnalyticsView({
   enabled,
   question,
@@ -92,7 +92,6 @@ export function AnalyticsView({
   onAskAgain
 }: AnalyticsViewProps) {
   const { t } = useTranslation();
-  const inputId = useId();
   const conclusionRef = useRef<HTMLHeadingElement>(null);
   // Starts at the answer shown on first render, so only answers that arrive later move focus.
   const shownAnswer = useRef<AnalyticsAnswer | null>(answer);
@@ -103,8 +102,8 @@ export function AnalyticsView({
     shownAnswer.current = answer;
   }, [answer]);
 
-  const submit = (event: FormEvent) => {
-    event.preventDefault();
+  const submit = (event?: FormEvent) => {
+    event?.preventDefault();
     const trimmed = question.trim();
     if (trimmed && !asking) onAsk(trimmed);
   };
@@ -114,83 +113,72 @@ export function AnalyticsView({
     : refreshing
       ? t("analytics.status.refreshing")
       : rerunning
-      ? t("analytics.status.rerunning")
-      : answer
-        ? t("analytics.status.ready")
-        : "";
+        ? t("analytics.status.rerunning")
+        : answer
+          ? t("analytics.status.ready")
+          : "";
 
   return (
-    <div className={styles.page}>
-      <header className={styles.hero}>
-        <p className={styles.eyebrow}>{t("analytics.eyebrow")}</p>
-        <h1>{t("analytics.title")}</h1>
-        <p className={styles.intro}>{t("analytics.intro")}</p>
-        <HelpLink topic="analytics" />
-      </header>
+    <Page title={t("common.analytics")}>
+      <p className="pm-home-intro">{t("analytics.intro")} <HelpLink topic="analytics" /></p>
 
-      <Surface className={styles.askCard}>
-        <form className={styles.form} onSubmit={submit} role="search" aria-label={t("analytics.formLabel")}>
+      <form onSubmit={submit} role="search" aria-label={t("analytics.formLabel")}>
+        <IonList inset>
           {followUp && (
-            <div className={styles.followUp}>
-              <CornerDownRight aria-hidden="true" size={16} />
-              <span>{t("analytics.followUp.label", { period: periodLabel(t, locale, followUp) })}</span>
-              <button type="button" className={styles.clearFollowUp} onClick={onClearFollowUp}>
-                <X aria-hidden="true" size={14} />{t("analytics.followUp.clear")}
-              </button>
-            </div>
+            <IonItem>
+              <CornerDownRight slot="start" size={18} className="pm-row-icon" aria-hidden="true" />
+              <IonLabel className="pm-wrap"><p>{t("analytics.followUp.label", { period: periodLabel(t, locale, followUp) })}</p></IonLabel>
+              <IonButton slot="end" fill="clear" size="small" onClick={onClearFollowUp}>{t("analytics.followUp.clear")}</IonButton>
+            </IonItem>
           )}
-          <label htmlFor={inputId} className={styles.label}>
-            {followUp ? t("analytics.followUp.inputLabel") : t("analytics.inputLabel")}
-          </label>
-          <div className={styles.inputRow}>
-            <textarea
-              id={inputId}
-              className={styles.input}
+          <IonItem lines="none">
+            <IonTextarea
+              label={followUp ? t("analytics.followUp.inputLabel") : t("analytics.inputLabel")}
+              labelPlacement="stacked"
               value={question}
-              maxLength={500}
+              maxlength={500}
               rows={2}
+              autoGrow
               placeholder={t("analytics.placeholder")}
               disabled={!enabled}
-              onChange={(event) => onQuestionChange(event.target.value)}
+              enterkeyhint="search"
+              onIonInput={(event) => onQuestionChange(String(event.detail.value ?? ""))}
               onKeyDown={(event) => {
-                if (event.key === "Enter" && !event.shiftKey) submit(event);
+                if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); submit(); }
               }}
             />
-            <Button type="submit" loading={asking} disabled={!enabled || !question.trim()} leftSection={<Search aria-hidden="true" size={16} />}>
-              {t("analytics.ask")}
-            </Button>
-          </div>
-          {enabled && !followUp && (
-            <div className={styles.examples}>
-              <span id={`${inputId}-examples`} className={styles.examplesLabel}>{t("analytics.examplesLabel")}</span>
-              <ul aria-labelledby={`${inputId}-examples`}>
-                {exampleKeys.map((key) => (
-                  <li key={key}>
-                    <button type="button" className={styles.example} disabled={asking} onClick={() => {
-                      const text = t(`analytics.examples.${key}`);
-                      onQuestionChange(text);
-                      onAsk(text);
-                    }}>
-                      {t(`analytics.examples.${key}`)}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </form>
-        {!enabled && (
-          <p className={styles.disabled} role="note">{t("analytics.disabled")}</p>
-        )}
-      </Surface>
+          </IonItem>
+        </IonList>
+        <div className="pm-primary-block">
+          <ActionButton type="submit" expand="block" shape="round" loading={asking} disabled={!enabled || !question.trim()}>
+            <Search aria-hidden="true" size={18} />&nbsp;{t("analytics.ask")}
+          </ActionButton>
+        </div>
+      </form>
+      {!enabled && <Footnote tone="warning" role="note">{t("analytics.disabled")}</Footnote>}
+
+      {enabled && !followUp && !answer && (
+        <section aria-labelledby="analytics-examples">
+          <SectionHeader id="analytics-examples">{t("analytics.examplesLabel")}</SectionHeader>
+          <IonList inset className="pm-after-header">
+            {exampleKeys.map((key, index) => (
+              <IonItem key={key} button detail={false} disabled={asking} lines={index === exampleKeys.length - 1 ? "none" : undefined} onClick={() => {
+                const text = t(`analytics.examples.${key}`);
+                onQuestionChange(text);
+                onAsk(text);
+              }}>
+                <IonLabel className="pm-wrap" color="primary">{t(`analytics.examples.${key}`)}</IonLabel>
+              </IonItem>
+            ))}
+          </IonList>
+        </section>
+      )}
 
       <div aria-live="polite" className="visually-hidden">{status}</div>
 
       {problem && <ProblemNotice problem={problem} />}
 
-      {asking && !answer && (
-        <div aria-busy="true"><div aria-hidden="true"><SkeletonCard /></div></div>
-      )}
+      {asking && !answer && <LoadingList label={t("analytics.status.asking")} rows={2} />}
 
       {answer && saved && (
         <SavedAnswerBar
@@ -217,10 +205,8 @@ export function AnalyticsView({
         />
       )}
 
-      {!answer && !asking && !problem && enabled && (
-        <Surface className={styles.empty}>
-          <EmptyState icon={<MessageSquareText />} title={t("analytics.emptyTitle")} description={t("analytics.emptyDescription")} />
-        </Surface>
+      {!answer && !asking && !problem && enabled && history.length === 0 && (
+        <EmptyState icon={<MessageSquareText />} title={t("analytics.emptyTitle")} description={t("analytics.emptyDescription")} />
       )}
 
       {onOpenHistory && onDeleteHistory && (
@@ -236,7 +222,7 @@ export function AnalyticsView({
           onShowMore={onShowMoreHistory}
         />
       )}
-    </div>
+    </Page>
   );
 }
 
@@ -247,10 +233,5 @@ function ProblemNotice({ problem }: { problem: AnalyticsProblem }) {
       ? t("analytics.problems.rateLimitedIn", { minutes: Math.max(1, Math.ceil(problem.retryAfterSeconds / 60)) })
       : t("analytics.problems.rateLimited")
     : t(`analytics.problems.${problem.kind}`);
-  return (
-    <Surface className={styles.problem} role="alert">
-      <AlertTriangle aria-hidden="true" size={18} />
-      <p>{message}</p>
-    </Surface>
-  );
+  return <Notice tone="warning" role="alert"><p>{message}</p></Notice>;
 }

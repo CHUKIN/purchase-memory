@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import * as api from "../../api/client";
 import type { ReceiptUploadResult, ReceiptView } from "../../api/types";
 import { AppProviders } from "../../app/AppProviders";
+import { chooseAction } from "../../test/ionicHelpers";
 import { CapturePage } from "./CapturePage";
 
 vi.mock("../../api/client", async (importOriginal) => {
@@ -40,7 +41,7 @@ describe("capture: separate receipts batch", () => {
     vi.mocked(api.uploadReceipt).mockResolvedValue({ receipt: receipt("one", "uploaded"), exactDuplicate: true });
     renderCapture(files);
 
-    expect(screen.getByRole("group", { name: "Что на этих фото?" })).toBeInTheDocument();
+    expect(screen.getByRole("radiogroup", { name: "Что на этих фото?" })).toBeInTheDocument();
     expect(screen.getByRole("radio", { name: /Части одного чека/ })).toBeChecked();
     expect(screen.getByRole("radio", { name: /Отдельные чеки/ })).not.toBeChecked();
     expect(screen.getByText("Часть 1")).toBeInTheDocument();
@@ -147,7 +148,8 @@ describe("capture: separate receipts batch", () => {
     expect(screen.getByRole("alert")).toHaveTextContent("не больше 10 фото за раз");
     expect(screen.getByRole("button", { name: "Загрузить 11 чеков" })).toBeDisabled();
 
-    fireEvent.click(screen.getByRole("button", { name: "Удалить чек 11" }));
+    fireEvent.click(statusOf(11).getByRole("button"));
+    chooseAction("Удалить чек 11");
     expect(screen.getByRole("button", { name: "Загрузить 10 чеков" })).toBeEnabled();
   });
 

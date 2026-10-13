@@ -77,7 +77,7 @@ const desktop = { viewport: { value: "desktop", isRotated: false } };
 const meta = {
   title: "Purchase Memory/Products/Catalog",
   component: ProductCatalog,
-  parameters: { layout: "padded" },
+  parameters: { layout: "fullscreen" },
   decorators: [(Story) => <MemoryRouter><Story /></MemoryRouter>],
   args: {
     query: "",

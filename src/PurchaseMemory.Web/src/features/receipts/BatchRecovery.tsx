@@ -1,13 +1,12 @@
+import { IonItem, IonLabel, IonList, IonNote } from "@ionic/react";
 import { useQuery } from "@tanstack/react-query";
 import { ReceiptText } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router";
 import { listMyUnsavedReceipts } from "../../api/client";
 import type { ReceiptView } from "../../api/types";
-import { StatusBadge, type PurchaseStatus } from "../../design-system/components";
+import { ActionButton, Footnote, ItemLink, Notice, SectionHeader, StatusText, type PurchaseStatus } from "../../design-system/components";
 import { HelpLink } from "../help/HelpLink";
 import type { RestoredBatch } from "./pendingBatchStore";
-import styles from "./BatchRecovery.module.css";
 
 export const myUnsavedReceiptsQueryKey = ["receipts", "my-unsaved"] as const;
 
@@ -42,25 +41,24 @@ export function RecentUploadsList({ receipts }: { receipts: ReceiptView[] }) {
   const { t, i18n } = useTranslation();
   if (receipts.length === 0) return null;
   const time = new Intl.DateTimeFormat(i18n.resolvedLanguage === "en" ? "en" : "ru", { hour: "2-digit", minute: "2-digit" });
-  return <section className={styles.recent} aria-labelledby="recent-uploads-heading">
-    <div className={styles.heading}>
-      <h2 id="recent-uploads-heading">{t("receiptCapture.recentTitle")}</h2>
-      <p>{t("receiptCapture.recentHint")}</p>
-      <HelpLink topic="capture-batch" />
-    </div>
-    <ul className={styles.list}>
-      {receipts.map((receipt) => <li key={receipt.id}>
-        <Link className={styles.row} to={`/receipts/${receipt.id}`}>
-          <ReceiptText aria-hidden="true" size={20} />
-          <span className={styles.copy}>
-            <strong>{receipt.snapshot?.merchantName ?? t("receiptJobs.receipt")}</strong>
-            <small>{time.format(new Date(receipt.uploadedAt))}</small>
-          </span>
-          <StatusBadge status={badgeStatus(receipt)} />
-        </Link>
-      </li>)}
-    </ul>
-  </section>;
+  return (
+    <section aria-labelledby="recent-uploads-heading">
+      <SectionHeader id="recent-uploads-heading" action={<HelpLink topic="capture-batch" />}>{t("receiptCapture.recentTitle")}</SectionHeader>
+      <IonList inset className="pm-after-header">
+        {receipts.map((receipt) => (
+          <ItemLink key={receipt.id} to={`/receipts/${receipt.id}`}>
+            <ReceiptText slot="start" size={22} className="pm-row-icon" aria-hidden="true" />
+            <IonLabel className="pm-wrap">
+              <h3>{receipt.snapshot?.merchantName ?? t("receiptJobs.receipt")}</h3>
+              <p>{time.format(new Date(receipt.uploadedAt))}</p>
+            </IonLabel>
+            <IonNote slot="end"><StatusText status={badgeStatus(receipt)} /></IonNote>
+          </ItemLink>
+        ))}
+      </IonList>
+      <Footnote>{t("receiptCapture.recentHint")}</Footnote>
+    </section>
+  );
 }
 
 function badgeStatus(receipt: ReceiptView): PurchaseStatus {
@@ -86,21 +84,28 @@ export function InterruptedBatchNotice({ restored, disabled, onResume, onDiscard
   const { t } = useTranslation();
   const kept = restored.files.length;
   const lost = restored.lost.length;
-  return <section className={styles.interrupted} aria-labelledby="interrupted-batch-heading">
-    <h2 id="interrupted-batch-heading">{t("receiptCapture.interruptedTitle")}</h2>
-    {kept > 0 && <p>{t("receiptCapture.interruptedKept", { count: kept })}</p>}
-    {lost > 0 && <>
-      <p>{t("receiptCapture.interruptedLost", { count: lost })}</p>
-      <ul className={styles.lostList} aria-label={t("receiptCapture.interruptedLostLabel")}>
-        {restored.lost.map((photo, index) => <li key={`${photo.name}-${index}`}>{photo.name}</li>)}
-      </ul>
-    </>}
-    <p className={styles.muted}>{t("receiptCapture.interruptedSafe")}</p>
-    <p className={styles.muted}>{kept > 0 ? t("receiptCapture.interruptedFirst") : t("receiptCapture.interruptedFirstLost")}</p>
-    <HelpLink topic="capture-batch" />
-    <div className={styles.actions}>
-      {kept > 0 && <button className={styles.primary} disabled={disabled} onClick={onResume}>{t("receiptCapture.resumeBatch", { count: kept })}</button>}
-      <button className={styles.secondary} onClick={onDiscard}>{kept > 0 ? t("receiptCapture.discardBatch") : t("receiptCapture.dismissInterrupted")}</button>
-    </div>
-  </section>;
+  return (
+    <section aria-labelledby="interrupted-batch-heading">
+      <SectionHeader id="interrupted-batch-heading" action={<HelpLink topic="capture-batch" />}>{t("receiptCapture.interruptedTitle")}</SectionHeader>
+      <Notice tone="warning">
+        {kept > 0 && <p>{t("receiptCapture.interruptedKept", { count: kept })}</p>}
+        {lost > 0 && <p>{t("receiptCapture.interruptedLost", { count: lost })}</p>}
+      </Notice>
+      {lost > 0 && (
+        <IonList inset aria-label={t("receiptCapture.interruptedLostLabel")}>
+          {restored.lost.map((photo, index) => (
+            <IonItem key={`${photo.name}-${index}`} lines={index === lost - 1 ? "none" : undefined}>
+              <IonLabel className="pm-wrap">{photo.name}</IonLabel>
+            </IonItem>
+          ))}
+        </IonList>
+      )}
+      <Footnote>{t("receiptCapture.interruptedSafe")}</Footnote>
+      <Footnote>{kept > 0 ? t("receiptCapture.interruptedFirst") : t("receiptCapture.interruptedFirstLost")}</Footnote>
+      <div className="pm-primary-block">
+        {kept > 0 && <ActionButton expand="block" shape="round" disabled={disabled} onClick={onResume}>{t("receiptCapture.resumeBatch", { count: kept })}</ActionButton>}
+        <ActionButton expand="block" fill="clear" onClick={onDiscard}>{kept > 0 ? t("receiptCapture.discardBatch") : t("receiptCapture.dismissInterrupted")}</ActionButton>
+      </div>
+    </section>
+  );
 }

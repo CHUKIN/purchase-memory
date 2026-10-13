@@ -1,5 +1,4 @@
-import { render, screen } from "@testing-library/react";
-import { notifications } from "@mantine/notifications";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type { ReceiptView } from "../api/types";
 import { App } from "./App";
@@ -10,37 +9,42 @@ const receipt = (status: ReceiptView["status"], id = "6faf4fca-d37d-4f59-b281-a5
   originalFileName: "receipt.jpg", sourceImageUrl: "/image", imageParts: [{ position: 0, contentType: "image/jpeg", sizeBytes: 42, sourceImageUrl: "/image/0" }],
   provider: null, model: null, processingDurationMs: null, snapshot: null, warnings: [], issues: [], error: null, savedPurchaseId: null
 });
-const { listRecentReceipts } = vi.hoisted(() => ({ listRecentReceipts: vi.fn() }));
+const { listRecentReceipts, getReceipt } = vi.hoisted(() => ({ listRecentReceipts: vi.fn(), getReceipt: vi.fn() }));
 vi.mock("../api/client", () => ({
   getReviewQueueCount: vi.fn().mockResolvedValue({ totalCount: 0, byKind: {} }),
   getReviewQueue: vi.fn().mockResolvedValue({ totalCount: 0, groups: [] }),
   getRecognitionStatus: vi.fn().mockResolvedValue({ available: true, mode: "test", models: [], message: null }),
   listRecentReceipts,
+  getReceipt,
   listUnratedPurchaseItems: vi.fn().mockResolvedValue([]),
   createImpression: vi.fn(),
   deleteImpression: vi.fn(),
   getPurchaseFeed: vi.fn().mockResolvedValue({ items: [], page: 1, pageSize: 20, totalCount: 0, hasMore: false, truncated: false }),
   listCategories: vi.fn().mockResolvedValue([]),
   listBrands: vi.fn().mockResolvedValue([]),
-  listTags: vi.fn().mockResolvedValue([])
+  listTags: vi.fn().mockResolvedValue([]),
+  fetchProtectedBlob: vi.fn(() => new Promise(() => undefined))
 }));
 
 describe("receipt terminal notifications", () => {
-  it("polls only an active job and notifies its terminal transition once", async () => {
+  it("polls only an active job, notifies its terminal transition once and opens the receipt from the toast", async () => {
     listRecentReceipts.mockResolvedValueOnce([receipt("processing")]).mockResolvedValue([receipt("ready")]);
+    getReceipt.mockResolvedValue(receipt("ready"));
+    window.history.replaceState({}, "", "/");
     render(<AppProviders><App /></AppProviders>);
     expect(await screen.findByText("Распознаётся")).toBeInTheDocument();
     expect(await screen.findByText("Чек готов к проверке", {}, { timeout: 3_000 })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Открыть чек" })).toHaveAttribute("href", `/receipts/${receipt("ready").id}`);
     await new Promise((resolve) => window.setTimeout(resolve, 1_350));
     expect(screen.getAllByText("Чек готов к проверке")).toHaveLength(1);
     expect(listRecentReceipts).toHaveBeenCalledTimes(2);
+
+    fireEvent.click(screen.getByRole("button", { name: "Открыть чек" }));
+    expect(window.location.pathname).toBe(`/receipts/${receipt("ready").id}`);
+    window.history.replaceState({}, "", "/");
   }, 5_000);
 
-  it("keeps polling while any receipt of a batch is active and notifies each one", async () => {
+  it("keeps polling while any receipt of a batch is active and notifies each one in turn", async () => {
     listRecentReceipts.mockReset();
-    // Mantine keeps notifications in a module-level store shared across tests.
-    notifications.clean();
     const ids = ["b1", "b2", "b3"];
     listRecentReceipts
       .mockResolvedValueOnce(ids.map((id) => receipt("queued", id)))
@@ -48,14 +52,21 @@ describe("receipt terminal notifications", () => {
       .mockResolvedValue([receipt("ready", "b1"), receipt("ready", "b2"), receipt("failed", "b3")]);
     render(<AppProviders><App /></AppProviders>);
 
-    expect(await screen.findByText("Не удалось распознать чек", {}, { timeout: 3_000 })).toBeInTheDocument();
-    expect(screen.getAllByText("Чек готов к проверке")).toHaveLength(1);
+    // The first poll finishes two receipts: their toasts queue up, one at a time.
+    expect(await screen.findByText("Чек готов к проверке", {}, { timeout: 3_000 })).toBeInTheDocument();
+    expect(screen.queryByText("Не удалось распознать чек")).not.toBeInTheDocument();
     await new Promise((resolve) => window.setTimeout(resolve, 1_400));
-    expect(screen.getAllByText("Чек готов к проверке")).toHaveLength(2);
-    const hrefs = screen.getAllByRole("link", { name: "Открыть чек" }).map((link) => link.getAttribute("href"));
-    expect(hrefs).toEqual(expect.arrayContaining(ids.map((id) => `/receipts/${id}`)));
     // Nothing is active any more, so polling stops.
-    await new Promise((resolve) => window.setTimeout(resolve, 1_350));
     expect(listRecentReceipts).toHaveBeenCalledTimes(3);
+
+    const seen: string[] = [];
+    for (let index = 0; index < 3; index += 1) {
+      const current = screen.getByText(/Чек готов к проверке|Не удалось распознать чек/).closest("[role=status]") as HTMLElement;
+      seen.push(within(current).getByText(/Чек готов к проверке|Не удалось распознать чек/).textContent ?? "");
+      fireEvent.click(within(current).getByRole("button", { name: "Закрыть" }));
+    }
+    expect(seen).toEqual(["Чек готов к проверке", "Не удалось распознать чек", "Чек готов к проверке"]);
+    expect(screen.queryByText(/Чек готов к проверке|Не удалось распознать чек/)).not.toBeInTheDocument();
   }, 8_000);
 });
+

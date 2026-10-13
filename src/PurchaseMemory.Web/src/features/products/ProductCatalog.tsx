@@ -1,28 +1,29 @@
+import { IonButton, IonLabel, IonList, IonSearchbar } from "@ionic/react";
 import { PackageSearch, SearchX } from "lucide-react";
-import { useId } from "react";
+import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router";
 import type { BrandSummary, ProductCategory, ProductSummary, TagSummary } from "../../api/types";
-import { EmptyState, SkeletonCard, Surface } from "../../design-system/components";
+import { EmptyState, FilterButton, Footnote, ItemLink, LoadingList, Notice, Page, SectionHeader, Sheet } from "../../design-system/components";
 import { CategoryChip } from "../categories/CategoryChip";
+import { HelpLink } from "../help/HelpLink";
 import { categoryPath } from "../categories/categoryText";
-import { ClassificationFilterFields } from "../filters/ClassificationFilterFields";
+import { BrandFilterRow, CategoryFilterRow, TagFilterRow } from "../filters/FilterRows";
 import { TagChips } from "../tags/TagChips";
-import styles from "./ProductCatalog.module.css";
+import { useReturnState } from "../../app/backNavigation";
 
 export interface ProductCatalogProps {
   query: string;
   onQueryChange: (query: string) => void;
-  /** The tree for the filter and the chips; the filter hides while it is empty. */
+  /** The tree for the filter and the chips; the filter row hides while it is empty. */
   categories?: ProductCategory[];
   /** Category id, `"none"` for «Без категории», or `""` for any. */
   categoryFilter?: string;
   onCategoryFilterChange?: (value: string) => void;
   brandFilter?: string;
   onBrandFilterChange?: (value: string) => void;
-  /** Known brands offered as suggestions in the brand field. */
+  /** Known brands offered in the brand filter. */
   brands?: BrandSummary[];
-  /** Household tags for the tag filter; the field hides while there are none. */
+  /** Household tags for the tag filter; the row hides while there are none. */
   tags?: TagSummary[];
   /** Tag id, or `""` for any. */
   tagFilter?: string;
@@ -35,8 +36,16 @@ export interface ProductCatalogProps {
   hasMore?: boolean;
   loadingMore?: boolean;
   onLoadMore?: () => void;
+  /** Rows under the list, e.g. managing categories and tags. */
+  footer?: ReactNode;
+  /** Opens with the filter sheet up; for stories. */
+  initialFiltersOpen?: boolean;
 }
 
+/**
+ * «Товары»: search under the large title, category/brand/tag in the filter
+ * sheet, and every product as a row with its category and tags as chips.
+ */
 export function ProductCatalog({
   query,
   onQueryChange,
@@ -56,60 +65,43 @@ export function ProductCatalog({
   error = null,
   hasMore = false,
   loadingMore = false,
-  onLoadMore
+  onLoadMore,
+  footer,
+  initialFiltersOpen = false
 }: ProductCatalogProps) {
   const { t } = useTranslation();
-  const groupId = useId();
-  const searching = query.trim() !== "" || categoryFilter !== "" || brandFilter.trim() !== "" || tagFilter !== "";
-  const resetFilters = () => {
-    onQueryChange("");
+  const returnState = useReturnState();
+  const [filtersOpen, setFiltersOpen] = useState(initialFiltersOpen);
+  const sheetCount = [categoryFilter !== "", brandFilter.trim() !== "", tagFilter !== ""].filter(Boolean).length;
+  const searching = query.trim() !== "" || sheetCount > 0;
+  const filterable = onCategoryFilterChange !== undefined && onBrandFilterChange !== undefined;
+  const resetSheet = () => {
     onCategoryFilterChange?.("");
     onBrandFilterChange?.("");
     onTagFilterChange?.("");
   };
+  const resetFilters = () => {
+    onQueryChange("");
+    resetSheet();
+  };
 
   return (
-    <section className={styles.catalog} aria-labelledby={`${groupId}-title`}>
-      <div className={styles.heading}>
-        <h2 id={`${groupId}-title`}>{t("products.listTitle")}</h2>
-        {!loading && !error && <p className={styles.count}>{t("products.count", { count: totalCount })}</p>}
-      </div>
-
-      <Surface as="section" className={styles.filters}>
-        <label className={styles.search}>
-          <span className={styles.fieldLabel}>{t("products.searchLabel")}</span>
-          <input
-            type="search"
-            value={query}
-            placeholder={t("products.searchPlaceholder")}
-            onChange={(event) => onQueryChange(event.target.value)}
-          />
-        </label>
-        {onCategoryFilterChange && onBrandFilterChange && (
-          <ClassificationFilterFields
-            categories={categories}
-            brands={brands}
-            category={categoryFilter}
-            onCategoryChange={onCategoryFilterChange}
-            brand={brandFilter}
-            onBrandChange={onBrandFilterChange}
-            tags={tags}
-            tag={tagFilter}
-            onTagChange={onTagFilterChange}
-          />
-        )}
-      </Surface>
-
-      {loading && (
-        <div aria-busy="true">
-          <span className="visually-hidden">{t("products.loading")}</span>
-          <ul className={styles.list} aria-hidden="true">
-            {Array.from({ length: 4 }, (_, index) => <li key={index}><SkeletonCard /></li>)}
-          </ul>
-        </div>
+    <Page
+      title={t("products.pageTitle")}
+      end={filterable ? <FilterButton count={sheetCount} onClick={() => setFiltersOpen(true)} /> : undefined}
+      search={(
+        <IonSearchbar
+          value={query}
+          placeholder={t("products.searchPlaceholder")}
+          aria-label={t("products.searchLabel")}
+          onIonInput={(event) => onQueryChange(event.detail.value ?? "")}
+        />
       )}
+    >
+      <SectionHeader>{t("products.listTitle")}{!loading && !error ? ` · ${t("products.count", { count: totalCount })}` : ""}</SectionHeader>
 
-      {!loading && error && <Surface className={styles.notice} role="alert">{error}</Surface>}
+      {loading && <LoadingList label={t("products.loading")} />}
+      {!loading && error && <Notice tone="danger" role="alert"><p>{error}</p></Notice>}
 
       {!loading && !error && products.length === 0 && (
         searching
@@ -118,63 +110,65 @@ export function ProductCatalog({
               icon={<SearchX />}
               title={t("products.filteredEmptyTitle")}
               description={t("products.filteredEmptyDescription")}
-              action={<button className={styles.reset} type="button" onClick={resetFilters}>{t("products.resetSearch")}</button>}
+              action={<IonButton fill="clear" onClick={resetFilters}>{t("products.resetSearch")}</IonButton>}
             />
           )
-          : (
-            <EmptyState
-              icon={<PackageSearch />}
-              title={t("products.emptyTitle")}
-              description={t("products.emptyDescription")}
-            />
-          )
+          : <EmptyState icon={<PackageSearch />} title={t("products.emptyTitle")} description={t("products.emptyDescription")} />
       )}
 
       {!loading && !error && products.length > 0 && (
         <>
-          <ul className={styles.list}>
+          <IonList inset className="pm-after-header">
             {products.map((product) => (
-              <li key={product.id}>
-                <Link className={styles.card} to={`/products/${product.id}`}>
-                  <Surface as="article" className={styles.cardBody}>
-                    <h3 title={product.name}>{product.name}</h3>
-                    {(categories.length > 0 || product.brand) && (
-                      <p className={styles.classification}>
-                        {categories.length > 0 && (
-                          <CategoryChip
-                            label={categoryPath(t, categories, product.categoryId)}
-                            source={product.categorySource ?? null}
-                          />
-                        )}
-                        {product.brand && <span className={styles.brand}>{product.brand}</span>}
-                      </p>
-                    )}
-                    <TagChips tags={product.tags ?? []} />
-                    <p className={styles.meta}>
-                      <span>{t("products.purchaseCount", { count: product.purchaseCount })}</span>
-                      <span aria-hidden="true">·</span>
-                      <span>{t("products.aliasCount", { count: product.aliasCount })}</span>
-                    </p>
-                  </Surface>
-                </Link>
-              </li>
+              <ItemLink key={product.id} to={`/products/${product.id}`} state={returnState}>
+                <IonLabel className="pm-wrap">
+                  <h2>{product.name}</h2>
+                  {(categories.length > 0 || (product.tags ?? []).length > 0) && (
+                    <div className="pm-chip-row">
+                      {categories.length > 0 && <CategoryChip label={categoryPath(t, categories, product.categoryId)} source={product.categorySource ?? null} />}
+                      <TagChips tags={product.tags ?? []} />
+                    </div>
+                  )}
+                  <p>
+                    {[product.brand, t("products.purchaseCount", { count: product.purchaseCount }), t("products.aliasCount", { count: product.aliasCount })]
+                      .filter(Boolean).join(" · ")}
+                  </p>
+                </IonLabel>
+              </ItemLink>
             ))}
-          </ul>
-
+          </IonList>
           {hasMore && onLoadMore && (
-            <button className={styles.loadMore} type="button" onClick={onLoadMore} disabled={loadingMore}>
-              {loadingMore ? t("products.loadingMore") : t("products.loadMore")}
-            </button>
+            <div className="ion-padding-horizontal">
+              <IonButton expand="block" fill="clear" onClick={onLoadMore} disabled={loadingMore}>
+                {loadingMore ? t("products.loadingMore") : t("products.loadMore")}
+              </IonButton>
+            </div>
           )}
         </>
       )}
 
-      {/* Matching deliberately leaves uncertain lines unlinked. Saying so here
-          keeps the catalog honest about being incomplete until the review queue
-          of the next stage exists. */}
-      {!loading && !error && pendingMatchCount > 0 && (
-        <p className={styles.pending}>{t("products.pendingMatches", { count: pendingMatchCount })}</p>
+      {/* Matching deliberately leaves uncertain lines unlinked; saying so keeps the catalog honest. */}
+      {!loading && !error && pendingMatchCount > 0 && <Footnote>{t("products.pendingMatches", { count: pendingMatchCount })}</Footnote>}
+      <Footnote><HelpLink topic="products" /></Footnote>
+
+      {footer}
+
+      {filterable && (
+        <Sheet
+          isOpen={filtersOpen}
+          onClose={() => setFiltersOpen(false)}
+          title={t("ui.filters")}
+          start={<IonButton disabled={sheetCount === 0} onClick={resetSheet}>{t("ui.reset")}</IonButton>}
+          initialBreakpoint={0.6}
+        >
+          <IonList inset>
+            {categories.length > 0 && <CategoryFilterRow categories={categories} category={categoryFilter} onCategoryChange={onCategoryFilterChange} />}
+            <BrandFilterRow brands={brands} brand={brandFilter} onBrandChange={onBrandFilterChange} />
+            {tags.length > 0 && onTagFilterChange && <TagFilterRow tags={tags} tag={tagFilter} onTagChange={onTagFilterChange} />}
+          </IonList>
+          <Footnote><HelpLink topic="filters" /></Footnote>
+        </Sheet>
       )}
-    </section>
+    </Page>
   );
 }

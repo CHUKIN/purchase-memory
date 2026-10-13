@@ -1,6 +1,7 @@
 # Purchase Memory — дизайн-бриф и UI-стек
 
-Статус: предложение после продуктового интервью  
+Статус: предложение после продуктового интервью; UI-стек заменён на Ionic
+React (iOS) 13.10.2026 — см. раздел «Current UI stack»  
 Дата: 3 августа 2026
 
 Полные подтверждённые требования находятся в `ПРОДУКТОВАЯ_СЕССИЯ.md`. Этот
@@ -68,7 +69,37 @@
 Значения не являются окончательными: перед фиксацией проверяются контраст,
 focus-состояния и реальные фотографии товаров.
 
-## Рекомендуемая UI-библиотека
+## Current UI stack (since 13.10.2026) — Ionic React, iOS mode
+
+The owner chose an iPhone-like UI (approved prototype variant B). The app now
+uses **Ionic React 9.0.7 with `setupIonicReact({ mode: "ios" })` on every
+device**; Mantine is removed. The sections below about Mantine are history.
+
+- Look: iOS large collapsing titles, searchbar under the title, inset grouped
+  lists on `#f2f2f7`, bottom sheets (`IonModal` with breakpoints) for filters,
+  editors and pickers, action sheets and alerts for short choices, toasts for
+  background news. Brand green `#315c4b` is Ionic `primary`.
+- Navigation: standalone `IonTabBar` (Главная / Покупки / Товары / Аналитика)
+  with React Router 8 — `@ionic/react-router` supports React Router 6 only, so
+  there is no `IonRouterOutlet` and no native page-transition animation.
+- Simplicity rules: one primary action per screen; rarely used things behind
+  «Ещё» on Главная (help, language, recognition status, sign-out) or in
+  «Справочники» at the bottom of Товары (categories, tags).
+- Own kit on top of Ionic: `src/design-system/components` — `Page`,
+  `SectionHeader`/`Footnote`/`Notice`/`EmptyState`, `ItemLink`/`ButtonLink`
+  (real links routed by React Router), `Sheet`, `PickerModal`/`SelectRow`
+  (full-screen list with group headers and a checkmark), `DateField`
+  (`IonDatetime` in a sheet; replaces the native-date `DateInput`),
+  `DecimalInput` (accepts «12,5»), `FilterButton` with a count badge.
+- Light only: Ionic's dark palette is not imported, `color-scheme: light`.
+- Charts: recharts directly, lazy-loaded with a table copy of the same numbers.
+- Tests run against a semantic stand-in for `@ionic/react`
+  (`src/test/ionicShim.tsx`); one smoke test loads the real package.
+- Storybook: `AppProviders` applies the Ionic setup; parts of screens are shown
+  on the grouped background, whole screens (`layout: "fullscreen"`) bring
+  their own page. Details and numbers: `РЕЗУЛЬТАТЫ_IONIC.md`.
+
+## Рекомендуемая UI-библиотека (историческое, до 13.10.2026)
 
 ### Основной вариант: Mantine с собственной темой
 

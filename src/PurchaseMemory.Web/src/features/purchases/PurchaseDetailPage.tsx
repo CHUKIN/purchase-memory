@@ -1,9 +1,9 @@
+import { IonButton, IonInput, IonItem, IonLabel, IonList, IonNote } from "@ionic/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, Pencil, Plus, Trash2 } from "lucide-react";
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router";
-import { ApiError, getProductCatalog, getPurchase, updatePurchase } from "../../api/client";
+import { useLocation, useNavigate, useParams, useSearchParams } from "react-router";
+import { ApiError, getPurchase, updatePurchase } from "../../api/client";
 import type {
   BoundingBox,
   ProductLinkChoice,
@@ -13,16 +13,31 @@ import type {
   UpdatePurchaseRequest
 } from "../../api/types";
 import { useAuthorizedImageUrl } from "../../auth/useAuthorizedImageUrl";
-import { Button, DateInput, IconButton, SkeletonCard, Surface } from "../../design-system/components";
+import { useToast } from "../../app/toasts";
+import {
+  ActionButton,
+  type BackTarget,
+  ButtonLink,
+  DateField,
+  DecimalInput,
+  Footnote,
+  ItemLink,
+  LoadingList,
+  Notice,
+  Page,
+  SectionHeader
+} from "../../design-system/components";
 import { issueCopy, issueKey, moneyComparisonTolerance } from "../issues/issueText";
-import { discountLinks, isDiscount } from "../receipts/discountLines";
+import { isDiscount, discountLinks } from "../receipts/discountLines";
+import { LinesEditor, type LineFocus } from "../receipts/LinesEditor";
 import { ReceiptDiscountLine } from "../receipts/ReceiptDiscountLine";
 import { reviewQueueQueryKey } from "../review-queue/reviewQueueQueries";
 import { reviewQueueReturnPath } from "../review-queue/returnToQueue";
+import { useBackTarget, useReturnState } from "../../app/backNavigation";
 import { PurchaseLineImpressions, usePurchaseImpressions } from "../impressions/ImpressionSections";
-import { formatMoney } from "./money";
 import { HelpLink } from "../help/HelpLink";
-import styles from "./PurchaseDetailPage.module.css";
+import { formatMoney } from "./money";
+import { ProductLinkRows, productStatusText } from "./ProductLinkRows";
 
 export const purchaseQueryKey = (purchaseId: string) => ["purchases", "detail", purchaseId] as const;
 
@@ -41,7 +56,7 @@ export function PurchaseDetailPage() {
   const { purchaseId = "" } = useParams();
   const [searchParameters, setSearchParameters] = useSearchParams();
   const { t } = useTranslation();
-  const [savedNotice, setSavedNotice] = useState(false);
+  const showToast = useToast();
   const query = useQuery({
     queryKey: purchaseQueryKey(purchaseId),
     queryFn: () => getPurchase(purchaseId),
@@ -50,8 +65,6 @@ export function PurchaseDetailPage() {
   });
   const editing = searchParameters.get("edit") === "1";
   const focus = searchParameters.get("focus");
-  const photoUrl = query.data?.sourceReceiptId ? `/api/receipts/${query.data.sourceReceiptId}/image` : null;
-  const photo = useAuthorizedImageUrl(photoUrl);
 
   // Opened from «Нужно проверить»: saving returns there (filters kept), like a
   // receipt does. The router state is carried across the edit/view switches so
@@ -60,113 +73,133 @@ export function PurchaseDetailPage() {
   const navigate = useNavigate();
   const queueReturnPath = reviewQueueReturnPath(location.state);
   const keepState = { state: location.state as unknown };
-  const startEditing = () => { setSavedNotice(false); setSearchParameters({ edit: "1" }, keepState); };
+  const startEditing = () => setSearchParameters({ edit: "1" }, keepState);
   const stopEditing = (saved: boolean) => {
+    if (saved) showToast({ id: `purchase-saved-${Date.now()}`, message: t("purchaseEdit.saved"), tone: "success" });
     if (saved && queueReturnPath) { navigate(queueReturnPath); return; }
-    setSavedNotice(saved);
     setSearchParameters({}, keepState);
   };
+  const back = useBackTarget({ to: "/purchases", labelKey: "common.purchases" });
 
   if (query.isPending) {
-    return <div className={styles.page}><div role="status" aria-label={t("purchaseEdit.loading")}><SkeletonCard /></div></div>;
+    return <Page title={t("purchaseEdit.eyebrow")} back={back}><LoadingList label={t("purchaseEdit.loading")} /></Page>;
   }
 
   if (query.isError || !query.data) {
     const notFound = query.error instanceof ApiError && query.error.status === 404;
     return (
-      <div className={styles.page}>
-        <Surface className={styles.notice} role="alert">
+      <Page title={t("purchaseEdit.eyebrow")} back={back}>
+        <Notice tone="danger" role="alert">
           <p>{notFound ? t("purchaseEdit.notFound") : t("purchaseEdit.loadError")}</p>
-          {!notFound && <Button intent="secondary" onClick={() => void query.refetch()}>{t("purchaseEdit.retry")}</Button>}
-          <Link className={styles.link} to="/purchases">{t("purchaseEdit.backToPurchases")}</Link>
-        </Surface>
-      </div>
+          {!notFound && <IonButton fill="outline" size="small" onClick={() => void query.refetch()}>{t("purchaseEdit.retry")}</IonButton>}
+        </Notice>
+        <div className="ion-padding-horizontal"><ButtonLink to="/purchases" fill="clear">{t("purchaseEdit.backToPurchases")}</ButtonLink></div>
+      </Page>
     );
   }
 
   const purchase = query.data;
-  return (
-    <div className={styles.page}>
-      <header className={styles.hero}>
-        <p className={styles.eyebrow}>{t("purchaseEdit.eyebrow")}</p>
-        <h1>{editing ? t("purchaseEdit.editTitle") : purchase.merchantName ?? t("purchaseEdit.unknownStore")}</h1>
-        <nav className={styles.heroLinks}>
-          <Link className={styles.back} to="/purchases"><ArrowLeft aria-hidden="true" />{t("purchaseEdit.backToPurchases")}</Link>
-          {purchase.sourceReceiptId && <Link className={styles.link} to={`/receipts/${purchase.sourceReceiptId}`}>{t("purchaseEdit.openReceipt")}</Link>}
-          <HelpLink topic="purchase-edit" />
-        </nav>
-      </header>
-
-      <div className={styles.layout}>
-        <div className={styles.main}>
-          {savedNotice && !editing && <p className={styles.success} role="status">{t("purchaseEdit.saved")}</p>}
-          {editing
-            ? <PurchaseEditor key={purchase.updatedAt} purchase={purchase} focus={focus} onDone={stopEditing} onReload={() => void query.refetch()} />
-            : <PurchaseSummary purchase={purchase} onEdit={startEditing} />}
-        </div>
-        <aside className={styles.photo} aria-label={t("purchaseEdit.photoAlt")}>
-          {!photoUrl && <p className={styles.muted}>{t("purchaseEdit.noPhoto")}</p>}
-          {photoUrl && photo.src && <img src={photo.src} alt={t("purchaseEdit.photoAlt")} />}
-          {photoUrl && photo.failed && <p className={styles.muted}>{t("purchaseEdit.photoFailed")}</p>}
-        </aside>
-      </div>
-    </div>
-  );
+  return editing
+    ? <PurchaseEditor key={purchase.updatedAt} purchase={purchase} focus={focus} onDone={stopEditing} onReload={() => void query.refetch()} />
+    : <PurchaseSummary purchase={purchase} back={back} onEdit={startEditing} />;
 }
 
-function PurchaseSummary({ purchase, onEdit }: { purchase: PurchaseDetail; onEdit: () => void }) {
+function PurchaseSummary({ purchase, back, onEdit }: { purchase: PurchaseDetail; back: BackTarget; onEdit: () => void }) {
   const { t, i18n } = useTranslation();
-  const locale = i18n.language;
+  const locale = i18n.resolvedLanguage === "en" ? "en-GB" : "ru-RU";
   const money = (value: number | null) => value === null ? "—" : formatMoney(value, purchase.currency, locale);
   const productCount = purchase.items.filter((item) => !isDiscount(item)).length;
+  const links = discountLinks(purchase.items);
   // Optional context: if it fails to load the purchase is still fully usable.
   const impressions = usePurchaseImpressions(purchase.id);
+  const photoUrl = purchase.sourceReceiptId ? `/api/receipts/${purchase.sourceReceiptId}/image` : null;
+  const photo = useAuthorizedImageUrl(photoUrl);
+  const returnState = useReturnState();
+
   return (
-    <Surface className={styles.card}>
-      <div className={styles.summaryHeader}>
-        <div>
-          <p className={styles.muted}>{purchase.purchasedAt ? formatDateTime(purchase.purchasedAt, locale) : t("purchaseEdit.unknownDate")}</p>
-          <p className={styles.total}>{money(purchase.receiptTotal)}</p>
-        </div>
-        <Button intent="primary" leftSection={<Pencil aria-hidden="true" size={17} />} onClick={onEdit}>{t("purchaseEdit.edit")}</Button>
-      </div>
+    <Page
+      title={purchase.merchantName ?? t("purchaseEdit.unknownStore")}
+      back={back}
+      end={<IonButton strong onClick={onEdit}>{t("purchaseEdit.edit")}</IonButton>}
+    >
+      <IonList inset>
+        <IonItem>
+          <IonLabel>{t("purchaseEdit.dateTime")}</IonLabel>
+          <IonNote slot="end" className="pm-pick-value">{purchase.purchasedAt ? formatDateTime(purchase.purchasedAt, locale) : t("purchaseEdit.unknownDate")}</IonNote>
+        </IonItem>
+        <IonItem lines={purchase.sourceReceiptId ? undefined : "none"}>
+          <IonLabel>{t("purchaseEdit.total")}</IonLabel>
+          <IonNote slot="end" className="pm-amount pm-total">{money(purchase.receiptTotal)}</IonNote>
+        </IonItem>
+        {purchase.sourceReceiptId && (
+          <ItemLink to={`/receipts/${purchase.sourceReceiptId}`} state={returnState} lines="none">
+            <IonLabel color="primary">{t("purchaseEdit.openReceipt")}</IonLabel>
+          </ItemLink>
+        )}
+      </IonList>
 
       <section aria-labelledby="purchase-issues">
-        <h2 id="purchase-issues" className={styles.sectionTitle}>{t("purchaseEdit.issuesTitle")}</h2>
+        <SectionHeader id="purchase-issues">{t("purchaseEdit.issuesTitle")}</SectionHeader>
         {purchase.issues.length === 0
-          ? <p className={styles.muted}>{t("purchaseEdit.noIssues")}</p>
-          : <ul className={styles.issues}>{purchase.issues.map((issue) => <li key={issueKey(issue)}>{issueCopy(t, issue).title}</li>)}</ul>}
+          ? <Footnote>{t("purchaseEdit.noIssues")}</Footnote>
+          : (
+            <IonList inset className="pm-after-header">
+              {purchase.issues.map((issue) => (
+                <IonItem key={issueKey(issue)}>
+                  <IonLabel className="pm-wrap pm-warn-text">{issueCopy(t, issue).title}</IonLabel>
+                </IonItem>
+              ))}
+            </IonList>
+          )}
       </section>
 
       <section aria-labelledby="purchase-lines">
-        <h2 id="purchase-lines" className={styles.sectionTitle}>{t("purchaseEdit.lines")} · {t("purchaseEdit.linesCount", { count: productCount })}</h2>
-        <ul className={styles.lines}>
-          {purchase.items.map((item) => (
-            <li key={item.position} className={isDiscount(item) ? styles.discount : undefined}>
-              <div className={styles.lineName}>
-                <strong>{item.name}</strong>
-                {!isDiscount(item) && (
-                  <span className={item.pendingMatch ? styles.warningText : styles.muted}>
+        <SectionHeader id="purchase-lines">{t("purchaseEdit.lines")} · {t("purchaseEdit.linesCount", { count: productCount })}</SectionHeader>
+        <IonList inset className="pm-after-header">
+          {purchase.items.map((item, index) => {
+            if (isDiscount(item)) {
+              const target = links[index].target;
+              return (
+                <IonItem key={item.position}>
+                  <ReceiptDiscountLine
+                    name={item.name}
+                    lineTotal={item.lineTotal}
+                    currency={purchase.currency}
+                    productName={target === null ? null : purchase.items[target].name}
+                    productLineTotal={target === null ? null : purchase.items[target].lineTotal}
+                    appliesToReceipt={links[index].appliesToReceipt}
+                  />
+                </IonItem>
+              );
+            }
+            return (
+              <IonItem key={item.position}>
+                <IonLabel className="pm-wrap">
+                  <h3>{item.name}</h3>
+                  <p className={item.pendingMatch ? "pm-warn-text" : undefined}>
                     {item.productName
                       ? t("purchaseEdit.productLinked", { name: item.productName })
                       : item.pendingMatch ? t("purchaseEdit.productPending") : t("purchaseEdit.productUnlinked")}
-                  </span>
-                )}
-              </div>
-              <span className={styles.amount}>
-                {item.unitPrice === null && !isDiscount(item) && <span className={styles.badge}>{t("purchaseEdit.missingPrice")}</span>}
-                {money(item.lineTotal)}
-              </span>
-              {!isDiscount(item) && impressions.data && (
-                <div className={styles.lineImpressions}>
-                  <PurchaseLineImpressions item={item} impressions={impressions.data} locale={locale} />
-                </div>
-              )}
-            </li>
-          ))}
-        </ul>
+                  </p>
+                  {item.unitPrice === null && <p className="pm-warn-text">{t("purchaseEdit.missingPrice")}</p>}
+                  {impressions.data && <PurchaseLineImpressions item={item} impressions={impressions.data} locale={locale} />}
+                </IonLabel>
+                <IonNote slot="end" className="pm-amount">{money(item.lineTotal)}</IonNote>
+              </IonItem>
+            );
+          })}
+        </IonList>
       </section>
-    </Surface>
+
+      <section aria-label={t("purchaseEdit.photoAlt")}>
+        <SectionHeader>{t("purchaseEdit.photoAlt")}</SectionHeader>
+        {!photoUrl && <Footnote>{t("purchaseEdit.noPhoto")}</Footnote>}
+        {photoUrl && photo.src && <div className="pm-photo-card"><img className="pm-photo" src={photo.src} alt={t("purchaseEdit.photoAlt")} /></div>}
+        {photoUrl && photo.failed && <Footnote>{t("purchaseEdit.photoFailed")}</Footnote>}
+      </section>
+
+      <Footnote><HelpLink topic="purchase-edit" /></Footnote>
+    </Page>
   );
 }
 
@@ -250,26 +283,24 @@ function PurchaseEditor({ purchase, focus, onDone, onReload }: {
 }) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const idPrefix = useId();
   const [state, setState] = useState(() => toEditState(purchase));
   const [validation, setValidation] = useState<string | null>(null);
-  const [openPicker, setOpenPicker] = useState<number | null>(() => {
-    const target = parseFocus(focus);
-    return target?.kind === "product" ? target.line : null;
-  });
-  const focusedOnce = useRef(false);
+  const target = parseFocus(focus);
+  const [openLine, setOpenLine] = useState<number | null>(() => target && target.kind !== "total" ? target.line : null);
+  const [lineFocus] = useState<LineFocus | null>(() => target?.kind === "price" ? "price" : null);
+  const [pickerOpenFor, setPickerOpenFor] = useState<number | null>(() => target?.kind === "product" ? target.line : null);
+  const totalRef = useRef<HTMLIonInputElement>(null);
+  const merchantRef = useRef<HTMLIonInputElement>(null);
 
+  // A review-queue link lands on the flagged field; otherwise the store name.
   useEffect(() => {
-    if (focusedOnce.current) return;
-    focusedOnce.current = true;
-    const target = parseFocus(focus);
-    const id = target === null
-      ? `${idPrefix}-merchant`
-      : target.kind === "total" ? `${idPrefix}-total` : `${idPrefix}-${target.kind}-${target.line}`;
-    const element = document.getElementById(id) ?? document.getElementById(`${idPrefix}-merchant`);
-    element?.focus();
-    element?.scrollIntoView?.({ block: "center" });
-  }, [focus, idPrefix]);
+    if (target && target.kind !== "total") return;
+    const element = target?.kind === "total" ? totalRef.current : merchantRef.current;
+    const timer = window.setTimeout(() => void element?.setFocus?.(), 300);
+    return () => window.clearTimeout(timer);
+    // Only on arrival.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const save = useMutation({
     mutationFn: () => updatePurchase(purchase.id, toRequest(purchase, state)),
@@ -287,17 +318,21 @@ function PurchaseEditor({ purchase, focus, onDone, onReload }: {
 
   const update = (patch: Partial<EditState>) => { setState((current) => ({ ...current, ...patch })); setValidation(null); };
   const updateItem = (index: number, patch: Partial<EditLine>) =>
-    update({ items: state.items.map((item, position) => position === index ? { ...item, ...patch } : item) });
+    setState((current) => ({ ...current, items: current.items.map((item, position) => position === index ? { ...item, ...patch } : item) }));
   const removeItem = (index: number) => {
-    update({ items: state.items.filter((_, position) => position !== index) });
-    setOpenPicker(null);
+    setState((current) => ({ ...current, items: current.items.filter((_, position) => position !== index) }));
+    setOpenLine(null);
+    setValidation(null);
   };
-  const addItem = (kind: ReceiptLineKind) => update({
-    items: [...state.items, {
-      key: nextKey(), name: "", quantity: kind === "product" ? 1 : null, unit: null, unitPrice: null, lineTotal: null, kind,
-      productLink: "auto", productId: null, productName: null, pendingMatch: false, candidates: [], boundingBox: null
-    }]
-  });
+  const addItem = (kind: ReceiptLineKind) => {
+    update({
+      items: [...state.items, {
+        key: nextKey(), name: "", quantity: kind === "product" ? 1 : null, unit: null, unitPrice: null, lineTotal: null, kind,
+        productLink: "auto", productId: null, productName: null, pendingMatch: false, candidates: [], boundingBox: null
+      }]
+    });
+    setOpenLine(state.items.length);
+  };
 
   const submit = () => {
     if (state.items.length === 0) { setValidation(t("purchaseEdit.needLine")); return; }
@@ -305,100 +340,67 @@ function PurchaseEditor({ purchase, focus, onDone, onReload }: {
     save.mutate();
   };
 
-  const links = discountLinks(state.items);
   const currency = state.currency.trim().toUpperCase() || null;
   const conflict = save.error instanceof ApiError && save.error.status === 409;
 
   return (
-    <Surface className={styles.card}>
-      <p className={styles.muted}>{t("purchaseEdit.editHint")}</p>
-      <form className={styles.form} onSubmit={(event) => { event.preventDefault(); submit(); }} noValidate>
-        <div className={styles.headerFields}>
-          <TextInput id={`${idPrefix}-merchant`} label={t("purchaseEdit.store")} value={state.merchantName} onChange={(merchantName) => update({ merchantName })} />
-          <label className={styles.field} htmlFor={`${idPrefix}-date`}>
-            <span className={styles.fieldLabel}>{t("purchaseEdit.dateTime")}</span>
-            <DateInput
-              id={`${idPrefix}-date`}
-              type="datetime-local"
-              className={styles.input}
-              value={state.purchasedAt}
-              emptyText={t("purchaseEdit.unknownDate")}
-              onChange={(event) => update({ purchasedAt: event.target.value })}
-            />
-          </label>
-          <TextInput id={`${idPrefix}-currency`} label={t("purchaseEdit.currency")} value={state.currency} maxLength={3} onChange={(value) => update({ currency: value.toUpperCase() })} />
-          <NumberInput id={`${idPrefix}-total`} label={t("purchaseEdit.total")} value={state.receiptTotal} onChange={(receiptTotal) => update({ receiptTotal })} />
-        </div>
+    <Page
+      title={t("purchaseEdit.edit")}
+      largeTitle={false}
+      start={<IonButton disabled={save.isPending} onClick={() => onDone(false)}>{t("ui.cancel")}</IonButton>}
+      end={<ActionButton strong loading={save.isPending} onClick={submit}>{save.isPending ? t("purchaseEdit.saving") : t("purchaseEdit.saveShort")}</ActionButton>}
+    >
+      <Footnote>{t("purchaseEdit.editHint")}</Footnote>
+      <IonList inset>
+        <IonItem>
+          <IonInput ref={merchantRef} label={t("purchaseEdit.store")} labelPlacement="fixed" value={state.merchantName} onIonInput={(event) => update({ merchantName: String(event.detail.value ?? "") })} />
+        </IonItem>
+        <DateField label={t("purchaseEdit.dateTime")} withTime formValue value={state.purchasedAt} emptyText={t("purchaseEdit.unknownDate")} onChange={(purchasedAt) => update({ purchasedAt })} />
+        <IonItem>
+          <IonInput label={t("purchaseEdit.currency")} labelPlacement="fixed" value={state.currency} maxlength={3} autocapitalize="characters" onIonInput={(event) => update({ currency: String(event.detail.value ?? "").toUpperCase() })} />
+        </IonItem>
+        <IonItem lines="none">
+          <DecimalInput inputRef={totalRef} label={t("purchaseEdit.total")} value={state.receiptTotal} onChange={(receiptTotal) => update({ receiptTotal })} />
+          {currency && <IonNote slot="end">{currency}</IonNote>}
+        </IonItem>
+      </IonList>
 
-        <Reconciliation items={state.items} receiptTotal={state.receiptTotal} currency={currency} />
+      <Reconciliation items={state.items} receiptTotal={state.receiptTotal} currency={currency} />
 
-        <fieldset className={styles.linesFieldset}>
-          <legend className={styles.sectionTitle}>{t("purchaseEdit.lines")}</legend>
-          {state.items.map((item, index) => {
-            const number = index + 1;
-            if (isDiscount(item)) {
-              const target = links[index].target;
-              return (
-                <div key={item.key} className={styles.discountEditor} role="group" aria-label={t("purchaseEdit.discountLine", { number })}>
-                  <ReceiptDiscountLine
-                    name={item.name}
-                    lineTotal={item.lineTotal}
-                    currency={currency}
-                    productName={target === null ? null : state.items[target].name || null}
-                    productLineTotal={target === null ? null : state.items[target].lineTotal}
-                    appliesToReceipt={links[index].appliesToReceipt}
-                    onChange={(change) => updateItem(index, change)}
-                    onDelete={() => removeItem(index)}
-                  />
-                </div>
-              );
-            }
-            const missingPrice = item.unitPrice === null;
-            return (
-              <article key={item.key} className={styles.lineEditor} aria-label={t("purchaseEdit.line", { number })}>
-                <div className={styles.lineHeader}>
-                  <span>{t("purchaseEdit.line", { number })}</span>
-                  {missingPrice && <span className={styles.badge}>{t("purchaseEdit.missingPrice")}</span>}
-                  <IconButton className={styles.remove} intent="danger" icon={<Trash2 />} label={t("purchaseEdit.removeLine", { number })} onClick={() => removeItem(index)} />
-                </div>
-                <TextInput id={`${idPrefix}-name-${index}`} label={t("purchaseEdit.name")} value={item.name} required onChange={(name) => updateItem(index, { name })} />
-                <div className={styles.numbers}>
-                  <NumberInput id={`${idPrefix}-quantity-${index}`} label={t("purchaseEdit.quantity")} step="0.001" value={item.quantity} onChange={(quantity) => updateItem(index, { quantity })} />
-                  <NumberInput id={`${idPrefix}-price-${index}`} label={t("purchaseEdit.unitPrice")} value={item.unitPrice} invalid={missingPrice} onChange={(unitPrice) => updateItem(index, { unitPrice })} />
-                  <NumberInput id={`${idPrefix}-lineTotal-${index}`} label={t("purchaseEdit.lineTotal")} value={item.lineTotal} onChange={(lineTotal) => updateItem(index, { lineTotal })} />
-                </div>
-                <ProductLink
-                  id={`${idPrefix}-product-${index}`}
-                  number={number}
-                  line={item}
-                  open={openPicker === index}
-                  onToggle={() => setOpenPicker(openPicker === index ? null : index)}
-                  onChoose={(choice) => { updateItem(index, choice); setOpenPicker(null); }}
-                />
-              </article>
-            );
-          })}
-        </fieldset>
-
-        <div className={styles.addButtons}>
-          <Button type="button" intent="secondary" leftSection={<Plus aria-hidden="true" size={17} />} onClick={() => addItem("product")}>{t("purchaseEdit.addLine")}</Button>
-          <Button type="button" intent="quiet" leftSection={<Plus aria-hidden="true" size={17} />} onClick={() => addItem("discount")}>{t("purchaseEdit.addDiscount")}</Button>
-        </div>
-
-        {validation && <p className={styles.error} role="alert">{validation}</p>}
-        {save.isError && (
-          <div className={styles.error} role="alert">
-            <p>{conflict ? t("purchaseEdit.conflict") : t("purchaseEdit.saveError", { message: save.error instanceof Error ? save.error.message : "" })}</p>
-            {conflict && <Button type="button" intent="secondary" onClick={onReload}>{t("purchaseEdit.reload")}</Button>}
-          </div>
+      <LinesEditor
+        title={`${t("purchaseEdit.lines")} · ${t("purchaseEdit.linesCount", { count: state.items.filter((item) => !isDiscount(item)).length })}`}
+        lines={state.items}
+        currency={currency}
+        openLine={openLine}
+        onOpenLine={(index) => { setOpenLine(index); if (index === null) setPickerOpenFor(null); }}
+        onChange={(index, patch) => { updateItem(index, patch); setValidation(null); }}
+        onRemove={removeItem}
+        onAdd={addItem}
+        addKinds={["product", "discount"]}
+        focusField={lineFocus}
+        describe={(line) => (
+          <p className={line.pendingMatch && line.productLink === "auto" ? "pm-warn-text" : undefined}>{productStatusText(t, line)}</p>
         )}
+        sheetExtra={(line, index) => (
+          <ProductLinkRows
+            line={line}
+            number={index + 1}
+            pickerOpen={pickerOpenFor === index}
+            onPickerOpenChange={(open) => setPickerOpenFor(open ? index : null)}
+            onChoose={(choice) => updateItem(index, choice)}
+          />
+        )}
+      />
 
-        <div className={styles.actions}>
-          <Button type="submit" intent="primary" loading={save.isPending}>{save.isPending ? t("purchaseEdit.saving") : t("purchaseEdit.save")}</Button>
-          <Button type="button" intent="secondary" disabled={save.isPending} onClick={() => onDone(false)}>{t("purchaseEdit.cancel")}</Button>
-        </div>
-      </form>
-    </Surface>
+      {validation && <Notice tone="danger" role="alert"><p>{validation}</p></Notice>}
+      {save.isError && (
+        <Notice tone="danger" role="alert">
+          <p>{conflict ? t("purchaseEdit.conflict") : t("purchaseEdit.saveError", { message: save.error instanceof Error ? save.error.message : "" })}</p>
+          {conflict && <IonButton fill="outline" size="small" onClick={onReload}>{t("purchaseEdit.reload")}</IonButton>}
+        </Notice>
+      )}
+      <Footnote><HelpLink topic="purchase-edit" /></Footnote>
+    </Page>
   );
 }
 
@@ -410,149 +412,19 @@ function Reconciliation({ items, receiptTotal, currency }: { items: EditLine[]; 
   const missing = items.filter((item) => item.lineTotal === null).length;
   const difference = receiptTotal === null ? null : linesTotal - receiptTotal;
   const matches = difference !== null && Math.abs(difference) <= moneyComparisonTolerance;
-  const tone = receiptTotal === null ? styles.reconcileNeutral : matches ? styles.reconcileOk : styles.reconcileMismatch;
+  const tone = receiptTotal === null ? "neutral" : matches ? "success" : "warning";
   return (
-    <div className={`${styles.reconcile} ${tone}`} role="status" aria-live="polite">
-      <p>
+    <div role="status" aria-live="polite">
+      <Footnote tone={tone}>
         {receiptTotal === null
           ? t("purchaseEdit.reconcileNoTotal", { lines: money(linesTotal) })
           : matches
             ? t("purchaseEdit.reconcileOk", { lines: money(linesTotal) })
             : t("purchaseEdit.reconcileMismatch", { lines: money(linesTotal), total: money(receiptTotal), difference: money(difference!) })}
-      </p>
-      {missing > 0 && <p>{t("purchaseEdit.reconcileMissing", { count: missing })}</p>}
+        {missing > 0 && <><br />{t("purchaseEdit.reconcileMissing", { count: missing })}</>}
+      </Footnote>
     </div>
   );
-}
-
-type LinkChoice = Pick<EditLine, "productLink" | "productId" | "productName">;
-
-function ProductLink({ id, number, line, open, onToggle, onChoose }: {
-  id: string;
-  number: number;
-  line: EditLine;
-  open: boolean;
-  onToggle: () => void;
-  onChoose: (choice: LinkChoice) => void;
-}) {
-  const { t } = useTranslation();
-  const panelId = `${id}-panel`;
-  const status = line.productLink === "existing" && line.productName
-    ? t("purchaseEdit.productLinked", { name: line.productName })
-    : line.productLink === "new"
-      ? t("purchaseEdit.productNew", { name: line.name.trim() || "…" })
-      : line.pendingMatch ? t("purchaseEdit.productPending") : t("purchaseEdit.productAuto");
-  const pending = line.pendingMatch && line.productLink === "auto";
-  return (
-    <div className={styles.product}>
-      <div className={styles.productStatus}>
-        <span className={styles.fieldLabel}>{t("purchaseEdit.product")}</span>
-        <span className={pending ? styles.warningText : undefined}>{status}</span>
-      </div>
-      <button
-        id={id}
-        type="button"
-        className={styles.link}
-        aria-expanded={open}
-        aria-controls={panelId}
-        aria-label={t("purchaseEdit.chooseProduct", { number })}
-        onClick={onToggle}
-      >
-        {t("purchaseEdit.changeProduct")}
-      </button>
-      {open && <ProductPicker id={panelId} number={number} line={line} onChoose={onChoose} onClose={onToggle} />}
-    </div>
-  );
-}
-
-function ProductPicker({ id, number, line, onChoose, onClose }: { id: string; number: number; line: EditLine; onChoose: (choice: LinkChoice) => void; onClose: () => void }) {
-  const { t } = useTranslation();
-  const searchId = useId();
-  const [text, setText] = useState("");
-  const debounced = useDebounced(text.trim(), 250);
-  const search = useQuery({
-    queryKey: ["products", "catalog", "picker", debounced],
-    queryFn: () => getProductCatalog({ query: debounced, pageSize: 8 }),
-    enabled: debounced.length >= 2
-  });
-  const results = useMemo(() => search.data?.items ?? [], [search.data]);
-  const choose = (productId: string, productName: string) => onChoose({ productLink: "existing", productId, productName });
-
-  return (
-    <div id={id} className={styles.picker} role="group" aria-label={t("purchaseEdit.chooseProduct", { number })}>
-      {line.candidates.length > 0 && (
-        <div>
-          <p className={styles.fieldLabel}>{t("purchaseEdit.candidates")}</p>
-          <ul className={styles.options}>
-            {line.candidates.map((candidate) => (
-              <li key={candidate.productId}>
-                <button type="button" aria-pressed={line.productId === candidate.productId} onClick={() => choose(candidate.productId, candidate.name)}>
-                  {t("purchaseEdit.useProduct", { name: candidate.name })}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-      <label className={styles.fieldLabel} htmlFor={searchId}>{t("purchaseEdit.searchProduct")}</label>
-      <input id={searchId} className={styles.input} type="search" value={text} placeholder={t("purchaseEdit.searchPlaceholder")} onChange={(event) => setText(event.target.value)} />
-      <div aria-live="polite">
-        {search.isFetching && <p className={styles.muted}>{t("purchaseEdit.searching")}</p>}
-        {search.isError && <p className={styles.warningText}>{t("purchaseEdit.searchError")}</p>}
-        {search.isSuccess && results.length === 0 && <p className={styles.muted}>{t("purchaseEdit.noResults")}</p>}
-      </div>
-      {results.length > 0 && (
-        <ul className={styles.options}>
-          {results.map((product) => (
-            <li key={product.id}>
-              <button type="button" aria-pressed={line.productId === product.id} onClick={() => choose(product.id, product.name)}>
-                {t("purchaseEdit.useProduct", { name: product.name })}
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-      <div className={styles.pickerActions}>
-        <Button type="button" intent="secondary" onClick={() => onChoose({ productLink: "new", productId: null, productName: null })}>{t("purchaseEdit.createProduct")}</Button>
-        <Button type="button" intent="quiet" onClick={() => onChoose({ productLink: "auto", productId: null, productName: null })}>{t("purchaseEdit.autoProduct")}</Button>
-        <Button type="button" intent="quiet" onClick={onClose}>{t("purchaseEdit.closeProduct")}</Button>
-      </div>
-    </div>
-  );
-}
-
-function TextInput({ id, label, value, onChange, type = "text", required, maxLength }: {
-  id: string; label: string; value: string; onChange: (value: string) => void; type?: string; required?: boolean; maxLength?: number;
-}) {
-  return (
-    <label className={styles.field} htmlFor={id}>
-      <span className={styles.fieldLabel}>{label}</span>
-      <input id={id} className={styles.input} type={type} value={value} required={required} maxLength={maxLength}
-        aria-invalid={required && !value.trim() ? true : undefined} onChange={(event) => onChange(event.target.value)} />
-    </label>
-  );
-}
-
-function NumberInput({ id, label, value, onChange, step = "0.01", invalid }: {
-  id: string; label: string; value: number | null; onChange: (value: number | null) => void; step?: string; invalid?: boolean;
-}) {
-  return (
-    <label className={styles.field} htmlFor={id}>
-      <span className={styles.fieldLabel}>{label}</span>
-      <input id={id} className={styles.input} inputMode="decimal" type="number" min="0" step={step} value={value ?? ""}
-        aria-invalid={invalid || undefined}
-        onChange={(event) => onChange(event.target.value === "" ? null : Number(event.target.value))} />
-    </label>
-  );
-}
-
-function useDebounced<T>(value: T, delayMs: number): T {
-  const [debounced, setDebounced] = useState(value);
-  useEffect(() => {
-    const timer = setTimeout(() => setDebounced(value), delayMs);
-    return () => clearTimeout(timer);
-  }, [value, delayMs]);
-  return debounced;
 }
 
 function parseFocus(focus: string | null): { kind: "total" } | { kind: "price" | "product"; line: number } | null {

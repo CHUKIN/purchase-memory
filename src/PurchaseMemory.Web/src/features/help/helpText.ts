@@ -15,8 +15,6 @@ export interface HelpTopicText {
 
 export interface HelpText {
   ui: {
-    navLabel: string;
-    eyebrow: string;
     title: string;
     intro: string;
     contentsLabel: string;
@@ -44,8 +42,6 @@ export interface HelpText {
 
 export const helpRu: HelpText = {
   ui: {
-    navLabel: "Подсказки",
-    eyebrow: "Гид по приложению",
     title: "Подсказки",
     intro: "Как пользоваться историей покупок: от фото чека до вопросов к аналитике. Темы сгруппированы по задачам, в каждой — шаги, что вы увидите и что делать, если что-то пошло не так.",
     contentsLabel: "Содержание подсказок",
@@ -94,7 +90,7 @@ export const helpRu: HelpText = {
         "В приложении на экране «Домой» iPhone: введите почту, нажмите «Получить код на почту», скопируйте цифры из письма и вставьте их в поле «Код из письма». Ссылку в письме здесь не нажимайте — она откроется в браузере, а не в приложении.",
         "Если владелец включил вход через Google, можно нажать «Продолжить через Google».",
         "При первом входе появится экран «Заявка отправлена». Когда владелец подтвердит доступ, нажмите «Проверить снова».",
-        "Язык интерфейса переключается кнопками RU / EN, выйти можно кнопкой «Выйти»."
+        "На экране входа язык переключается кнопками RU / EN вверху справа. После входа язык, «Подсказки» и «Выйти» — на «Главной» под кнопкой «Ещё» (кружок с тремя точками вверху справа)."
       ],
       see: [
         "Покупки, товары и аналитика общие для всей семьи.",
@@ -120,7 +116,7 @@ export const helpRu: HelpText = {
         "Нажмите «Поделиться» (квадрат со стрелкой; в Safari на iOS 26 он спрятан под кнопкой «…»), затем «На экран «Домой»». Если есть переключатель «Открыть как веб-приложение», оставьте его включённым, и нажмите «Добавить».",
         "Откройте приложение значком «Покупки» на экране «Домой».",
         "Войдите внутри приложения по коду из письма: введите почту, нажмите «Получить код на почту» и вставьте цифры из письма. iPhone часто сам предлагает код над клавиатурой.",
-        "Дальше приложение помнит вход и продлевает его само, пока вы не нажмёте «Выйти» или не удалите значок."
+        "Дальше приложение помнит вход и продлевает его само, пока вы не нажмёте «Выйти» («Ещё» на «Главной») или не удалите значок."
       ],
       see: [
         "Вход в браузере и вход в приложении на экране «Домой» — разные: если вы вошли в Safari или Chrome, в приложении всё равно нужно войти один раз.",
@@ -136,10 +132,10 @@ export const helpRu: HelpText = {
       title: "Фото чека",
       summary: "Чек можно снять камерой или выбрать из галереи. Длинный чек снимайте частями — до 8 фото на один чек.",
       steps: [
-        "Нажмите «Добавить чек» (на телефоне — «Сфотографировать чек» на главной).",
+        "На «Главной» нажмите «Сфотографировать чек».",
         "«Сфотографировать» открывает камеру и добавляет одно фото. «Выбрать из галереи» позволяет выбрать сразу несколько.",
         "Если выбрали несколько фото, отметьте «Части одного чека» (так выбрано сразу). Несколько разных чеков — см. тему «Несколько чеков за раз».",
-        "Расставьте части по порядку стрелками вверх и вниз: в этом порядке чек будет прочитан. Лишнюю часть удалите корзиной.",
+        "Части стоят в списке по порядку — в этом порядке чек будет прочитан. Нажмите на часть, чтобы переставить её («Переместить часть N выше» или «…ниже») или удалить («Удалить часть N»).",
         "Нажмите «Загрузить и распознать»."
       ],
       see: [
@@ -150,7 +146,7 @@ export const helpRu: HelpText = {
         "Подходят только JPEG, PNG и WebP, до 15 МБ на часть и 60 МБ на весь чек.",
         "Приложение пока не обрезает, не выравнивает и не упорядочивает фото само — снимайте чек ровно и при хорошем свете.",
         "«Этот чек уже загружен» — тот же набор фото в том же порядке уже есть. Откройте существующий чек.",
-        "Если распознавание недоступно (индикатор в меню), кнопка загрузки не работает. История покупок при этом доступна."
+        "Если распознавание недоступно (об этом написано под кнопкой «Сфотографировать чек» на «Главной»), кнопка «Загрузить и распознать» не работает. История покупок при этом доступна."
       ]
     },
     "capture-batch": {
@@ -174,7 +170,7 @@ export const helpRu: HelpText = {
         "«Лимит загрузок» — за короткое время загружено слишком много чеков. Загрузка останавливается; когда пройдёт указанное время, нажмите «Загрузить оставшиеся».",
         "«Уже был загружен» — такое же фото уже есть, новый чек не создан. Его можно открыть кнопкой «Открыть чек».",
         "Каждое фото — до 15 МБ, JPEG, PNG или WebP.",
-        "Страница перезагрузилась, приложение закрылось или вы ушли с экрана посреди загрузки — снова откройте «Добавить чек» (на телефоне — «Сфотографировать чек» на главной). Появится «Загрузка прервалась»: «Продолжить загрузку» отправит оставшиеся фото, «Не продолжать» забудет их. Пока этот блок на экране, новые фото выбрать нельзя — сначала решите, что делать с прерванной загрузкой.",
+        "Страница перезагрузилась, приложение закрылось или вы ушли с экрана посреди загрузки — снова нажмите «Сфотографировать чек» на «Главной». Появится «Загрузка прервалась»: «Продолжить загрузку» отправит оставшиеся фото, «Не продолжать» забудет их. Пока этот блок на экране, новые фото выбрать нельзя — сначала решите, что делать с прерванной загрузкой.",
         "«Уже был загружен» после продолжения означает, что фото дошло до сервера, но ответ потерялся при перезагрузке. Второй чек не создаётся — откройте существующий кнопкой «Открыть чек».",
         "Если устройство не смогло сохранить какие-то фото (не хватило места или это приватный режим браузера), они будут перечислены по имени — выберите их в галерее заново. Если устройство не сохранило ни одного фото, нажмите «Понятно» и выберите фото заново.",
         "Фото, которое сервер отклонил (например, неподдерживаемый формат или слишком большой файл), после перезагрузки не предлагается снова — выберите другое фото."
@@ -203,7 +199,7 @@ export const helpRu: HelpText = {
       summary: "Перед сохранением вы проверяете черновик: магазин, дату, итог и строки. Сомнительные места приложение показывает само.",
       steps: [
         "Если есть неточности, открывается «Нужно уточнить»: карточка на каждую проблему с фрагментом фото чека (если место строки на фото не найдено — со всем фото). Исправьте значение или нажмите «Взять сумму строк».",
-        "Если нужно поправить что-то ещё, нажмите «Открыть полный редактор»: там можно менять любые поля, добавлять позиции («Добавить позицию») и удалять лишние кнопкой с корзиной.",
+        "Если нужно поправить что-то ещё, нажмите «Открыть полный редактор»: магазин, дата, валюта и итог — сверху, ниже — строки чека списком. Нажмите на строку, чтобы изменить название, количество, цену и сумму. «Добавить строку» добавляет новую; лишнюю проведите влево и нажмите «Удалить» (или «Удалить строку N» внутри строки).",
         "Нажмите «Сохранить покупку». После сохранения откроется история покупок."
       ],
       see: [
@@ -218,16 +214,16 @@ export const helpRu: HelpText = {
     },
     feed: {
       title: "Лента и поиск",
-      summary: "Все сохранённые покупки — от новых к старым, на главной и в разделе «Покупки».",
+      summary: "Все сохранённые покупки — от новых к старым, в разделе «Покупки». На «Главной» — пять последних («Последние покупки», «Смотреть все» открывает весь список).",
       steps: [
-        "В поле «Поиск» введите магазин или название позиции так, как оно напечатано на чеке.",
-        "Задайте «Дата с» и «Дата по», чтобы ограничить период.",
-        "В «Проверка» выберите «Нужно проверить» или «Проверено».",
-        "Нажмите на название магазина в карточке, чтобы открыть покупку. «Показать ещё» догружает следующие покупки."
+        "Вверху «Покупок» в поле поиска введите магазин или название позиции так, как оно напечатано на чеке.",
+        "Нажмите кнопку фильтров вверху справа (на ней число выбранных фильтров) и задайте «Дата с» и «Дата по», чтобы ограничить период.",
+        "Там же в «Проверка» выберите «Нужно проверить» или «Проверено». «Готово» закрывает окно фильтров.",
+        "Нажмите на покупку в списке, чтобы открыть её. «Показать ещё» догружает следующие покупки."
       ],
       see: [
-        "Карточка покупки: магазин, дата, сумма, число позиций и статус проверки.",
-        "Фильтры складываются друг с другом; «Сбросить фильтры» убирает всё сразу."
+        "Строка покупки: магазин, дата, число позиций, статус проверки и сумма справа.",
+        "Фильтры складываются друг с другом; «Сбросить» в окне фильтров убирает всё, кроме поиска, а «Сбросить фильтры» под пустым результатом — всё сразу."
       ],
       trouble: [
         "Когда задан период, покупки без распознанной даты в выборку не попадают.",
@@ -239,10 +235,10 @@ export const helpRu: HelpText = {
       title: "Фильтры по категории, бренду и тегу",
       summary: "В «Покупках» и «Товарах» можно оставить только нужную категорию, бренд или тег.",
       steps: [
-        "В «Категория» выберите группу (например, «Молочное и яйца — вся группа») — будет всё из неё, или подкатегорию — только она.",
+        "Нажмите кнопку фильтров вверху справа в «Покупках» или «Товарах», затем «Категория». В списке группы идут заголовками: «Вся группа» — всё из неё, подкатегория — только она. Выбранное отмечено галочкой.",
         "«Без категории» показывает то, что ещё не разложено по категориям.",
-        "В «Бренд» выберите подсказку или начните печатать: регистр и польские буквы неважны, «laciate» найдёт «Łaciate».",
-        "В «Тег» выберите один из своих тегов. Поле появляется, когда создан хотя бы один тег."
+        "В «Бренд» выберите бренд из списка или начните печатать в поиске: регистр и польские буквы неважны, «laciate» найдёт «Łaciate». «Бренд содержит «…»» ищет по части названия.",
+        "В «Тег» выберите один из своих тегов. Строка появляется, когда создан хотя бы один тег."
       ],
       see: [
         "В карточке покупки строка «Подходит: …» — позиции, из-за которых чек попал в выборку.",
@@ -251,7 +247,7 @@ export const helpRu: HelpText = {
       trouble: [
         "Фильтры хранятся в адресе страницы: ссылку можно отправить, а после «Назад» выборка сохранится.",
         "Товар без категории не найдётся по фильтру категории — сначала задайте ему категорию.",
-        "Фильтры складываются: «Категория» + «Тег» покажет только товары, у которых есть и то и другое. «Сбросить фильтры» в «Истории покупок» и «Сбросить поиск» в «Товарах» убирают всё сразу, включая тег."
+        "Фильтры складываются: «Категория» + «Тег» покажет только товары, у которых есть и то и другое. «Сбросить» в окне фильтров убирает категорию, бренд, тег (и в «Покупках» — период и проверку); «Сбросить фильтры» в «Покупках» и «Сбросить поиск» в «Товарах» под пустым результатом убирают всё, включая поиск."
       ]
     },
     "purchase-edit": {
@@ -259,9 +255,9 @@ export const helpRu: HelpText = {
       summary: "Сохранённую покупку можно поправить в любой момент — ошибки в истории не навсегда.",
       steps: [
         "Откройте покупку: нажмите на магазин в ленте, «Открыть и исправить покупку» на странице чека или пункт в «Нужно проверить».",
-        "Нажмите «Исправить». Меняйте магазин, дату, итог, строки, цены и скидки, добавляйте строки, а лишнюю убирайте кнопкой с корзиной в её правом верхнем углу.",
-        "У строки можно выбрать товар: из похожих, через поиск, создать новый или оставить автоматический подбор.",
-        "Сохраните правку."
+        "Нажмите «Исправить» вверху справа. Сверху меняйте магазин, дату, валюту и итог. Нажмите на строку, чтобы изменить название, количество, цену и сумму; «Добавить строку» и «Добавить скидку» добавляют новые. Лишнюю строку проведите влево и нажмите «Удалить» (или «Удалить строку N» внутри строки).",
+        "Товар строки выбирается внутри строки: «Изменить товар» — из похожих, через поиск, «Создать новый товар» или «Подобрать автоматически».",
+        "Нажмите «Сохранить» вверху справа. «Отмена» закрывает правку без изменений."
       ],
       see: [
         "Сверху видно, сходятся ли строки с итогом чека и какая разница. Строки без цены подсвечены.",
@@ -270,7 +266,7 @@ export const helpRu: HelpText = {
       ],
       trouble: [
         "Если покупку уже поменяли в другом окне или на другом устройстве, ваша правка не затрёт чужую: приложение предложит загрузить свежую версию.",
-        "Пункты «Сумма не сходится», «Нет цены» и «Товар не сопоставлен» из «Нужно проверить» открывают правку сразу на нужном месте и пропадают после сохранения. После «Сохранить исправления» вы вернётесь в «Нужно проверить» с теми же фильтрами."
+        "Пункты «Сумма не сходится», «Нет цены» и «Товар не сопоставлен» из «Нужно проверить» открывают правку сразу на нужном месте (итог, цену строки или выбор товара) и пропадают после сохранения. После «Сохранить» вы вернётесь в «Нужно проверить» с теми же фильтрами."
       ]
     },
     products: {
@@ -295,8 +291,8 @@ export const helpRu: HelpText = {
       summary: "У каждого товара одна категория из двухуровневого дерева (группа → подкатегория) и бренд. Ваше решение всегда главнее подсказки AI.",
       steps: [
         "После сохранения покупки AI в фоне предлагает категорию и бренд новым товарам. Такие значения отмечены «предложено».",
-        "В блоке «Категория и бренд» на странице товара нажмите «Подтвердить» или кнопку с карандашом справа от заголовка блока («Изменить»; на телефоне видна только иконка).",
-        "Свои категории добавляйте в «Управление категориями» внизу страницы «Товары»; переименовать — кнопка с карандашом, удалить — с корзиной."
+        "В блоке «Категория и бренд» на странице товара нажмите «Подтвердить», чтобы принять подсказку. Чтобы выбрать другую категорию, нажмите строку «Категория» и выберите её в списке; бренд — строка «Бренд», введите название и нажмите «Сохранить». Выбор сохраняется сразу.",
+        "Свои категории добавляйте внизу «Товаров»: «Справочники» → «Управление категориями». Нажмите на категорию, чтобы переименовать или удалить её."
       ],
       see: [
         "Исправление применяется ко всем покупкам этого товара — прошлым и будущим.",
@@ -313,15 +309,15 @@ export const helpRu: HelpText = {
       title: "Теги товаров",
       summary: "Теги — ваши дополнительные срезы: «для ребёнка», «к празднику», «акция», «веган». У товара одна категория, а тегов может быть сколько угодно.",
       steps: [
-        "Откройте карточку товара и в блоке «Теги» нажмите кнопку с карандашом справа от заголовка («Изменить теги»; на телефоне видна только иконка).",
-        "Нажмите на тег, чтобы добавить или убрать его. Нового тега нет в списке — введите его в «Новый тег» и нажмите «Создать тег»: он сразу отметится.",
-        "Нажмите «Сохранить».",
-        "Не знаете, какие теги подходят? В блоке «Теги» нажмите «Предложить теги»: ИИ посмотрит на название, бренд, категорию и текст из чеков и предложит теги из ваших. У каждой подсказки есть короткое объяснение. Нажмите «Добавить» у подходящей (на телефоне — кнопка с галочкой), крестик («Скрыть») у лишней или «Добавить все», если подходят все.",
-        "Переименовать (карандаш) или удалить (корзина) тег можно в «Управление тегами» внизу страницы «Товары»."
+        "Откройте карточку товара и в блоке «Теги» нажмите «Изменить теги».",
+        "Отметьте нужные теги галочкой, снимите лишние. Нового тега нет в списке — введите его в «Новый тег» и нажмите «Создать тег»: он сразу отметится.",
+        "Нажмите «Сохранить» вверху справа.",
+        "Не знаете, какие теги подходят? В блоке «Теги» нажмите «Предложить теги»: ИИ посмотрит на название, бренд, категорию и текст из чеков и предложит теги из ваших. У каждой подсказки есть короткое объяснение. Нажмите «Добавить» у подходящей, крестик у лишней или «Добавить все», если подходят все.",
+        "Переименовать или удалить тег можно внизу «Товаров»: «Справочники» → «Управление тегами», нажмите на тег."
       ],
       see: [
         "Теги видны в списке «Товары» и на карточке товара.",
-        "Фильтр «Тег» есть в «Истории покупок», в «Товарах» и в «Нужно проверить»; на карточке товара — ссылка «Покупки с тегом «…»».",
+        "Фильтр «Тег» есть в окне фильтров «Покупок», «Товаров» и «Нужно проверить»; на карточке товара — ссылка «Покупки с тегом «…»».",
         "В «Аналитике» можно спросить про тег («Сколько потратили на детское?») или выбрать поле «Тег» и разбивку «По тегам».",
         "Теги придумывает только человек: приложение само теги не создаёт и не расставляет.",
         "«Предложить теги» только подсказывает: ИИ выбирает лишь из уже созданных вами тегов и ничего не добавляет сам — тег появится у товара, только когда вы нажмёте «Добавить» или «Добавить все». Кнопка видна, когда у вас есть теги, которых у товара ещё нет."
@@ -330,7 +326,7 @@ export const helpRu: HelpText = {
         "Одинаковые теги не создаются: регистр, лишние пробелы и польские буквы не учитываются («Акция» и «акция» — один тег).",
         "Длина тега — до 40 символов, у одного товара — не больше 20 тегов.",
         "Удалённый тег пропадает у всех товаров, а сами товары и покупки остаются.",
-        "«Подходящих тегов не нашлось» — ИИ не увидел среди ваших тегов подходящего. Это нормально: выберите теги вручную через карандаш.",
+        "«Подходящих тегов не нашлось» — ИИ не увидел среди ваших тегов подходящего. Это нормально: выберите теги вручную в «Изменить теги».",
         "«Подсказки тегов сейчас недоступны» — ИИ не ответил или выключен на сервере. Всё остальное работает, теги можно выбрать вручную.",
         "«Слишком много подсказок подряд» — у каждого участника не больше примерно 30 подсказок в час. Подождите указанное время."
       ]
@@ -340,7 +336,7 @@ export const helpRu: HelpText = {
       summary: "Отметьте, понравился ли товар, — необязательно и в любой момент. Потом легко вспомнить, что брать снова, а что нет.",
       steps: [
         "На главной в блоке «Оценить недавнее» нажмите «Не нравится», «Средне» или «Нравится».",
-        "На странице покупки у строки нажмите «Оценить» — там можно добавить заметку и фото.",
+        "На странице покупки у строки нажмите «Оценить» — откроется окно с оценкой, заметкой и фото.",
         "На странице товара в «Впечатления» выберите, какую покупку оцениваете (магазин, дата, цена)."
       ],
       see: [
@@ -348,7 +344,7 @@ export const helpRu: HelpText = {
         "«Сравнение по магазинам» показывает, где товар понравился, а где нет (появляется, когда есть впечатления из двух магазинов)."
       ],
       trouble: [
-        "Своё впечатление можно удалить кнопкой с корзиной («Удалить») на его карточке, чужое — нельзя.",
+        "Своё впечатление можно удалить кнопкой с корзиной рядом с ним и подтверждением «Да, удалить», чужое — нельзя.",
         "Оценённая позиция пропадает из «Оценить недавнее»."
       ]
     },
@@ -356,16 +352,16 @@ export const helpRu: HelpText = {
       title: "Нужно проверить",
       summary: "Очередь того, что стоит поправить или подтвердить, чтобы история и аналитика оставались точными.",
       steps: [
-        "Откройте «Нужно проверить» в боковом меню (на телефоне — с главной, блок «Разделы»).",
+        "Откройте «Нужно проверить» на «Главной»: строка с числом пунктов. То же число стоит на вкладке «Главная».",
         "Предложенную категорию подтвердите одной кнопкой «Подтвердить» или выберите другую.",
         "«Товар не сопоставлен»: под строкой чека показаны до трёх похожих товаров из каталога (название, бренд и категория, если они есть). Если это он — нажмите «Да, это он» рядом с ним. Если такого товара ещё нет — «Создать новый товар». Если это другой товар из каталога — «Другой товар» откроет покупку с поиском товара.",
         "Остальное открывается по кнопке — «Открыть чек», «Исправить», «Выбрать товар» — сразу на нужном месте. Если сохранить чек или покупку, открытые отсюда, вы вернётесь в «Нужно проверить» с теми же фильтрами.",
-        "Чтобы разобрать только часть, выберите категорию в поле «Категория» (например, «Молоко» или «Без категории») и/или тег в поле «Тег» (например, «Для ребёнка»). «Все категории», «Все теги» или «Сбросить фильтр» возвращают всю очередь. Поле «Тег» есть, когда у вас есть хотя бы один тег."
+        "Чтобы разобрать только часть, нажмите кнопку фильтров вверху справа и выберите «Категория» (например, «Молоко» или «Без категории») и/или «Тег» (например, «Для ребёнка»). «Все категории», «Все теги», «Сбросить» в окне фильтров или «Сбросить фильтр» на экране возвращают всю очередь. Строка «Тег» есть, когда у вас есть хотя бы один тег."
       ],
       see: [
         "Группы: чек не распознан, чек ждёт сохранения, сумма не сходится, нет цены, товар не сопоставлен, категория не подтверждена, без категории.",
-        "«Да, это он» и «Создать новый товар» сохраняют покупку так же, как выбор товара в редакторе покупки: магазин запомнит связь, и в следующий раз такая строка свяжется сама. Пункт сразу исчезает из очереди, счётчик в меню уменьшается.",
-        "Счётчик рядом с пунктом меню показывает, сколько пунктов осталось во всей очереди — даже когда на экране выбраны категория или тег.",
+        "«Да, это он» и «Создать новый товар» сохраняют покупку так же, как выбор товара в редакторе покупки: магазин запомнит связь, и в следующий раз такая строка свяжется сама. Пункт сразу исчезает из очереди, число на вкладке «Главная» уменьшается.",
+        "Число на вкладке «Главная» и в строке «Нужно проверить» показывает, сколько пунктов осталось во всей очереди — даже когда на экране выбраны категория или тег.",
         "Категория и тег берутся у товара. С фильтром остаются товары, которые под него подходят (категория не подтверждена, без категории), и покупки, где хотя бы одна строка — такой товар (сумма не сходится, нет цены). Категория-группа включает свои подкатегории; предложенная AI категория тоже считается.",
         "Когда всё разобрано — «Всё проверено»."
       ],
@@ -444,8 +440,6 @@ export const helpRu: HelpText = {
 
 export const helpEn: HelpText = {
   ui: {
-    navLabel: "Help",
-    eyebrow: "App guide",
     title: "Help",
     intro: "How to use Purchase Memory: from a receipt photo to questions about spending. Topics are grouped by task; each has steps, what you'll see, and what to do if something goes wrong.",
     contentsLabel: "Help contents",
@@ -494,7 +488,7 @@ export const helpEn: HelpText = {
         "In the app on the iPhone Home Screen: enter your email, press “Email me a sign-in code”, copy the digits from the email and paste them into “Code from the email”. Do not tap the link in the email there: it opens in the browser, not in the app.",
         "If the owner enabled Google sign-in, you can press “Continue with Google”.",
         "On your first sign-in you will see “Request sent”. Once the owner approves you, press “Check again”.",
-        "Switch the interface language with RU / EN; leave with “Sign out”."
+        "On the sign-in screen, switch the language with RU / EN at the top right. Once signed in, the language, “Help” and “Sign out” are on Home under the “More” button (the circle with three dots at the top right)."
       ],
       see: [
         "Purchases, products and analytics are shared by the whole household.",
@@ -520,7 +514,7 @@ export const helpEn: HelpText = {
         "Tap “Share” (the square with an arrow; in Safari on iOS 26 it is under the “…” button), then “Add to Home Screen”. If there is an “Open as Web App” switch, leave it on, and tap “Add”.",
         "Open the app with the “Покупки” icon on the Home Screen.",
         "Sign in inside the app with the code from the email: enter your email, press “Email me a sign-in code” and paste the digits from the email. iPhone often offers the code above the keyboard.",
-        "After that the app remembers you and renews the sign-in itself until you press “Sign out” or remove the icon."
+        "After that the app remembers you and renews the sign-in itself until you press “Sign out” (“More” on Home) or remove the icon."
       ],
       see: [
         "Signing in in the browser and in the Home Screen app are separate: even if you signed in in Safari or Chrome, sign in once more inside the app.",
@@ -536,10 +530,10 @@ export const helpEn: HelpText = {
       title: "Receipt photo",
       summary: "Take a receipt with the camera or pick it from the gallery. Shoot a long receipt in parts — up to 8 photos per receipt.",
       steps: [
-        "Press “Add receipt” (on a phone — “Photograph a receipt” on Home).",
+        "On Home, press “Photograph a receipt”.",
         "“Take a photo” opens the camera and adds one photo. “Choose from gallery” lets you pick several at once.",
         "If you picked several photos, keep “Parts of one receipt” selected (it is the default). For several different receipts, see “Several receipts at once”.",
-        "Put the parts in order with the up and down arrows: the receipt is read in this order. Remove an extra part with the bin.",
+        "The parts are listed in order — the receipt is read in this order. Tap a part to move it (“Move part N up” or “…down”) or remove it (“Remove part N”).",
         "Press “Upload and recognize”."
       ],
       see: [
@@ -550,7 +544,7 @@ export const helpEn: HelpText = {
         "Only JPEG, PNG and WebP are accepted, up to 15 MB per part and 60 MB per receipt.",
         "The app does not crop, straighten or reorder photos yet — shoot the receipt straight and in good light.",
         "“This receipt is already uploaded” — the same photos in the same order already exist. Open the existing receipt.",
-        "If recognition is unavailable (see the indicator in the menu), upload does not work. Purchase history stays available."
+        "If recognition is unavailable (Home says so under “Photograph a receipt”), “Upload and recognize” does not work. Purchase history stays available."
       ]
     },
     "capture-batch": {
@@ -574,7 +568,7 @@ export const helpEn: HelpText = {
         "“Upload limit” — too many receipts in a short time. The upload stops; once the stated time has passed, press “Upload the rest”.",
         "“Already uploaded” — the same photo already exists and no new receipt was created. Open it with “Open receipt”.",
         "Each photo can be up to 15 MB, JPEG, PNG or WebP.",
-        "The page reloaded, the app was closed or you left the screen in the middle of an upload — open “Add receipt” again (on a phone — “Photograph a receipt” on Home). “The upload was interrupted” appears: “Continue upload” sends the remaining photos, “Don't continue” forgets them. While it is on screen you cannot choose new photos — first decide what to do with the interrupted upload.",
+        "The page reloaded, the app was closed or you left the screen in the middle of an upload — press “Photograph a receipt” on Home again. “The upload was interrupted” appears: “Continue upload” sends the remaining photos, “Don't continue” forgets them. While it is on screen you cannot choose new photos — first decide what to do with the interrupted upload.",
         "“Already uploaded” after continuing means the photo had reached the server but its answer was lost in the reload. No second receipt is created — open the existing one with “Open receipt”.",
         "If the device could not keep some photos (not enough space, or a private browser window), they are listed by name — pick them again in the gallery. If the device kept none of the photos, press “Got it” and choose the photos again.",
         "A photo the server refused (for example, an unsupported format or a file that is too large) is not offered again after a reload — choose another photo."
@@ -603,7 +597,7 @@ export const helpEn: HelpText = {
       summary: "Before saving you check the draft: store, date, total and lines. The app points out doubtful places itself.",
       steps: [
         "If there are problems, “Needs a closer look” opens: one card per problem with a crop of the receipt photo (or the whole photo when the line could not be located). Fix the value or press “Use the line sum”.",
-        "To change anything else, press “Open full editor”: every field can be edited there, lines added with “Add item” and removed with the bin button.",
+        "To change anything else, press “Open full editor”: store, date, currency and total at the top, the receipt lines as a list below. Tap a line to change its name, quantity, price and sum. “Add line” adds a new one; swipe an extra line left and press “Delete” (or “Remove line N” inside the line).",
         "Press “Save purchase”. Purchase history opens after saving."
       ],
       see: [
@@ -618,16 +612,16 @@ export const helpEn: HelpText = {
     },
     feed: {
       title: "Feed and search",
-      summary: "All saved purchases, newest first, on Home and in “Purchases”.",
+      summary: "All saved purchases, newest first, in “Purchases”. Home shows the last five (“Recent purchases”; “View all” opens the whole list).",
       steps: [
-        "Type a store or a line name into “Search” as it is printed on the receipt.",
-        "Set “Date from” and “Date to” to limit the period.",
-        "In “Review” choose “Needs attention” or “Reviewed”.",
-        "Press the store name on a card to open the purchase. “Show more” loads the next purchases."
+        "At the top of “Purchases”, type a store or a line name into the search field as it is printed on the receipt.",
+        "Press the filter button at the top right (it shows how many filters are set) and set “Date from” and “Date to” to limit the period.",
+        "In the same sheet, under “Review”, choose “Needs attention” or “Reviewed”. “Done” closes the filters.",
+        "Tap a purchase in the list to open it. “Show more” loads the next purchases."
       ],
       see: [
-        "A purchase card: store, date, total, number of lines and review status.",
-        "Filters combine; “Reset filters” clears everything at once."
+        "A purchase row: store, date, number of lines, review status and the total on the right.",
+        "Filters combine; “Reset” in the filter sheet clears everything but the search, and “Reset filters” under an empty result clears everything at once."
       ],
       trouble: [
         "Once a period is set, purchases without a recognized date are left out.",
@@ -639,10 +633,10 @@ export const helpEn: HelpText = {
       title: "Category, brand and tag filters",
       summary: "In “Purchases” and “Products” you can keep only one category, brand or tag.",
       steps: [
-        "In “Category” choose a group (for example “Dairy & eggs — whole group”) to see all of it, or a subcategory to see only that.",
+        "Press the filter button at the top right in “Purchases” or “Products”, then “Category”. Groups are section headers in the list: “Whole group” takes all of it, a subcategory only itself. The current choice has a check mark.",
         "“No category” shows what has not been sorted into categories yet.",
-        "In “Brand” pick a suggestion or start typing: case and Polish letters don't matter, “laciate” finds “Łaciate”.",
-        "In “Tag” choose one of your tags. The field appears once at least one tag exists."
+        "In “Brand” pick a brand from the list or start typing in its search: case and Polish letters don't matter, “laciate” finds “Łaciate”. “Brand contains “…”” searches by part of the name.",
+        "In “Tag” choose one of your tags. The row appears once at least one tag exists."
       ],
       see: [
         "A purchase card shows a “Matches: …” line — the lines that brought the receipt into the results.",
@@ -651,7 +645,7 @@ export const helpEn: HelpText = {
       trouble: [
         "Filters live in the page address: you can send the link, and “Back” keeps the results.",
         "A product without a category won't match a category filter — give it a category first.",
-        "Filters combine: “Category” + “Tag” shows only products that have both. “Reset filters” in “Purchase history” and “Clear search” in “Products” clear everything at once, the tag included."
+        "Filters combine: “Category” + “Tag” shows only products that have both. “Reset” in the filter sheet clears category, brand and tag (and in “Purchases” the period and review too); “Reset filters” in “Purchases” and “Clear search” in “Products” under an empty result clear everything, the search included."
       ]
     },
     "purchase-edit": {
@@ -659,9 +653,9 @@ export const helpEn: HelpText = {
       summary: "A saved purchase can be fixed at any time — mistakes in history are not permanent.",
       steps: [
         "Open the purchase: press the store in the feed, “Open and correct the purchase” on the receipt page, or an item in “Needs attention”.",
-        "Press “Correct”. Change store, date, total, lines, prices and discounts; add lines, and remove one with the bin button in its top right corner.",
-        "For each line you can choose a product: from similar ones, by search, create a new one, or keep automatic matching.",
-        "Save the change."
+        "Press “Correct” at the top right. Change store, date, currency and total at the top. Tap a line to change its name, quantity, price and sum; “Add line” and “Add discount” add new ones. Swipe an extra line left and press “Delete” (or “Remove line N” inside the line).",
+        "A line's product is chosen inside the line: “Change product” — from similar ones, by search, “Create a new product” or “Match automatically”.",
+        "Press “Save” at the top right. “Cancel” leaves without changes."
       ],
       see: [
         "The top shows whether the lines add up to the receipt total and by how much they differ. Lines without a price are highlighted.",
@@ -670,7 +664,7 @@ export const helpEn: HelpText = {
       ],
       trouble: [
         "If the purchase was already changed in another window or device, your edit won't overwrite it: the app offers to load the fresh version.",
-        "“Total does not match”, “Missing price” and “Product not matched” items in “Needs attention” open the editor right at the spot and disappear after saving. After “Save corrections” you come back to “Needs attention” with the same filters."
+        "“Total does not match”, “Missing price” and “Product not matched” items in “Needs attention” open the editor right at the spot (the total, the line price or the product choice) and disappear after saving. After “Save” you come back to “Needs attention” with the same filters."
       ]
     },
     products: {
@@ -695,8 +689,8 @@ export const helpEn: HelpText = {
       summary: "Each product has one category from a two-level tree (group → subcategory) and a brand. Your decision always wins over the AI suggestion.",
       steps: [
         "After a purchase is saved, AI suggests a category and brand for new products in the background. Such values are marked “suggested”.",
-        "In “Category and brand” on the product page press “Confirm” or the pencil button next to the block title (“Change”; on a phone only the icon is shown).",
-        "Add your own categories in “Manage categories” at the bottom of “Products”; rename with the pencil button, delete with the bin."
+        "In “Category and brand” on the product page press “Confirm” to accept a suggestion. To pick another category, tap the “Category” row and choose it in the list; for the brand, tap the “Brand” row, type the name and press “Save”. The choice is saved at once.",
+        "Add your own categories at the bottom of “Products”: “Lists” → “Manage categories”. Tap a category to rename or delete it."
       ],
       see: [
         "A fix applies to every purchase of that product, past and future.",
@@ -713,15 +707,15 @@ export const helpEn: HelpText = {
       title: "Product tags",
       summary: "Tags are your own extra slices: “for the kids”, “for the holidays”, “on sale”, “vegan”. A product has one category but can have any number of tags.",
       steps: [
-        "Open a product page and press the pencil button next to the “Tags” title (“Edit tags”; on a phone only the icon is shown).",
-        "Tap a tag to add or remove it. If the tag isn't there yet, type it into “New tag” and press “Create tag”: it gets selected right away.",
-        "Press “Save”.",
-        "Not sure which tags fit? In the “Tags” block press “Suggest tags”: the AI looks at the name, brand, category and receipt text and suggests some of your tags, each with a short reason. Press “Add” on a good one (on a phone, the check-mark button), the cross (“Dismiss”) on a wrong one, or “Add all” if they all fit.",
-        "Rename (pencil) or delete (bin) tags in “Manage tags” at the bottom of “Products”."
+        "Open a product page and in the “Tags” block press “Edit tags”.",
+        "Check the tags you want and uncheck the rest. If the tag isn't there yet, type it into “New tag” and press “Create tag”: it gets checked right away.",
+        "Press “Save” at the top right.",
+        "Not sure which tags fit? In the “Tags” block press “Suggest tags”: the AI looks at the name, brand, category and receipt text and suggests some of your tags, each with a short reason. Press “Add” on a good one, the cross on a wrong one, or “Add all” if they all fit.",
+        "Rename or delete tags at the bottom of “Products”: “Lists” → “Manage tags”, then tap the tag."
       ],
       see: [
         "Tags are shown in the “Products” list and on the product page.",
-        "The “Tag” filter is in “Purchase history”, “Products” and “Needs attention”; the product page has a “Purchases tagged “…”” link.",
+        "The “Tag” filter is in the filter sheet of “Purchases”, “Products” and “Needs attention”; the product page has a “Purchases tagged “…”” link.",
         "In “Insights” you can ask about a tag (“How much did we spend on kids' stuff?”) or pick the “Tag” field and the “By tag” breakdown.",
         "Only people create tags: the app never makes up or assigns tags by itself.",
         "“Suggest tags” only suggests: the AI picks only from tags you already created and adds nothing by itself — a tag lands on the product only when you press “Add” or “Add all”. The button is shown when you have tags the product doesn't have yet."
@@ -730,7 +724,7 @@ export const helpEn: HelpText = {
         "Duplicate tags aren't created: case, extra spaces and Polish letters are ignored (“Sale” and “sale” are one tag).",
         "A tag is up to 40 characters, and one product can have at most 20 tags.",
         "A deleted tag disappears from every product; the products and purchases stay.",
-        "“No matching tags found” — the AI saw nothing fitting among your tags. That's fine: pick tags by hand with the pencil.",
+        "“No matching tags found” — the AI saw nothing fitting among your tags. That's fine: pick tags by hand in “Edit tags”.",
         "“Tag suggestions are unavailable right now” — the AI didn't answer or is switched off on the server. Everything else works; pick tags by hand.",
         "“Too many suggestions in a row” — each member gets about 30 suggestions an hour. Wait the time shown."
       ]
@@ -740,7 +734,7 @@ export const helpEn: HelpText = {
       summary: "Mark whether you liked a product — optional and any time. Later it's easy to remember what to buy again.",
       steps: [
         "On Home, in “Rate recent purchases”, press “Dislike”, “So-so” or “Like”.",
-        "On a purchase page press “Rate” on a line — you can add a note and a photo there.",
+        "On a purchase page press “Rate” on a line — a sheet opens with the rating, a note and a photo.",
         "On a product page, in “Impressions”, choose which purchase you're rating (store, date, price)."
       ],
       see: [
@@ -748,7 +742,7 @@ export const helpEn: HelpText = {
         "“Compare by store” shows where the product was liked and where not (it appears once there are impressions from two stores)."
       ],
       trouble: [
-        "You can delete your own impression with the bin button (“Delete”) on its card, not someone else's.",
+        "You can delete your own impression with the bin button next to it and “Yes, delete”, not someone else's.",
         "A rated line disappears from “Rate recent purchases”."
       ]
     },
@@ -756,16 +750,16 @@ export const helpEn: HelpText = {
       title: "Needs attention",
       summary: "A queue of what's worth fixing or confirming so history and analytics stay accurate.",
       steps: [
-        "Open “Needs attention” in the side menu (on a phone — from Home, “Sections”).",
+        "Open “Needs attention” on Home: the row with the number of items. The same number is on the “Home” tab.",
         "Confirm a suggested category with one “Confirm” press, or choose another one.",
         "“Product not matched”: up to three similar catalog products are shown under the receipt line (name, brand and category when known). If it's one of them, press “Yes, this one” next to it. If the product isn't in the catalog yet — “Create a new product”. If it's a different catalog product — “Another product” opens the purchase with the product search.",
         "Everything else opens with a button — “Open receipt”, “Correct”, “Choose product” — right at the spot. When you save a receipt or purchase opened from here, you come back to “Needs attention” with the same filters.",
-        "To work through just part of it, pick a category in the “Category” field (for example, “Milk” or “No category”) and/or a tag in the “Tag” field (for example, “For the kids”). “All categories”, “All tags” or “Reset filter” bring back the whole queue. The “Tag” field appears once you have at least one tag."
+        "To work through just part of it, press the filter button at the top right and pick a “Category” (for example, “Milk” or “No category”) and/or a “Tag” (for example, “For the kids”). “All categories”, “All tags”, “Reset” in the filter sheet or “Reset filter” on the screen bring back the whole queue. The “Tag” row appears once you have at least one tag."
       ],
       see: [
         "Groups: receipt not recognized, receipt waiting to be saved, total does not match, missing price, product not matched, category not confirmed, no category.",
-        "“Yes, this one” and “Create a new product” save the purchase just like picking a product in the purchase editor: the store remembers the link, so next time such a line is matched by itself. The item leaves the queue right away and the menu counter goes down.",
-        "The counter next to the menu item shows how many items are left in the whole queue — even while a category or tag is picked on the screen.",
+        "“Yes, this one” and “Create a new product” save the purchase just like picking a product in the purchase editor: the store remembers the link, so next time such a line is matched by itself. The item leaves the queue right away and the number on the “Home” tab goes down.",
+        "The number on the “Home” tab and in the “Needs attention” row shows how many items are left in the whole queue — even while a category or tag is picked on the screen.",
         "Category and tag come from the product. With a filter you see products that match it (category not confirmed, no category) and purchases where at least one line is such a product (total does not match, missing price). A category group includes its subcategories; an AI-suggested category counts too.",
         "When everything is done — “All checked”."
       ],
