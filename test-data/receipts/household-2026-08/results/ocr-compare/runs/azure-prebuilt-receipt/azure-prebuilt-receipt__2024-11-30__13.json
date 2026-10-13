@@ -1,0 +1,51 @@
+{
+ "receiptId": "13",
+ "configuration": "azure-prebuilt-receipt",
+ "model": "2024-11-30",
+ "seconds": 6.24,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": 0.01,
+ "usage": null,
+ "parsed": {
+  "merchant": "WIKTORIA SPÓŁKA Z OGRANICZONĄ\nODPOWIEDZIALNOŚCIĄ",
+  "date": "2025-08-20",
+  "currency": null,
+  "total": 54.8,
+  "totalBox": [
+   0.3880208333333333,
+   0.5927734375,
+   0.35937499999999994,
+   0.0341796875
+  ],
+  "items": [
+   {
+    "name": "Pijana Wiśnia (d)",
+    "quantity": 1,
+    "unitPrice": 22.9,
+    "lineTotal": 22.9,
+    "box": [
+     0.2955729166666667,
+     0.4365234375,
+     0.46093750000000006,
+     0.0400390625
+    ]
+   },
+   {
+    "name": "Królewski (d) śmietankowy",
+    "quantity": 1,
+    "unitPrice": 25.9,
+    "lineTotal": 25.908,
+    "box": [
+     0.296875,
+     0.466796875,
+     0.46223958333333326,
+     0.05859375
+    ]
+   }
+  ]
+ },
+ "source": "fresh call",
+ "locale": null
+}

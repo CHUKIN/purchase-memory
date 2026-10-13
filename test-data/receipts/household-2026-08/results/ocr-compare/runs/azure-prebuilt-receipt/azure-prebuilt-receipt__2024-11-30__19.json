@@ -1,0 +1,75 @@
+{
+ "receiptId": "19",
+ "configuration": "azure-prebuilt-receipt",
+ "model": "2024-11-30",
+ "seconds": 8.91,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": 0.01,
+ "usage": null,
+ "parsed": {
+  "merchant": "WIKTORIA SPÓŁKA Z OGRANICZONĄ\nODPOWIEDZIALNOŚCIĄ",
+  "date": "2023-06-21",
+  "currency": null,
+  "total": 71.6,
+  "totalBox": [
+   0.3307291666666667,
+   0.673828125,
+   0.43750000000000006,
+   0.0478515625
+  ],
+  "items": [
+   {
+    "name": "Cezar z Kurczakiem",
+    "quantity": 1,
+    "unitPrice": 16.9,
+    "lineTotal": 16.9,
+    "box": [
+     0.234375,
+     0.54296875,
+     0.5364583333333334,
+     0.0244140625
+    ]
+   },
+   {
+    "name": "Śmietankowo-Truskawkowy",
+    "quantity": 1,
+    "unitPrice": 16.9,
+    "lineTotal": 16.9,
+    "box": [
+     0.234375,
+     0.5625,
+     0.5364583333333334,
+     0.0234375
+    ]
+   },
+   {
+    "name": "Włoski",
+    "quantity": 1,
+    "unitPrice": 24.9,
+    "lineTotal": 24.9,
+    "box": [
+     0.23177083333333334,
+     0.578125,
+     0.5377604166666666,
+     0.0283203125
+    ]
+   },
+   {
+    "name": "Z Kremem Waniliowym",
+    "quantity": 1,
+    "unitPrice": 12.9,
+    "lineTotal": 12.9,
+    "box": [
+     0.23177083333333334,
+     0.6005859375,
+     0.5377604166666666,
+     0.0224609375
+    ]
+   }
+  ]
+ },
+ "source": "fresh call",
+ "locale": null
+}

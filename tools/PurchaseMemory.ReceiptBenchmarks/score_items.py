@@ -113,7 +113,10 @@ def adapt(path, label):
 def score_receipt(gt, parsed):
     res = {"gt_items": len(gt["items"]), "correct": 0, "wrong_price": 0, "missing": 0,
            "extra": 0, "disc_total": len(gt["discounts"]), "disc_ok": 0,
-           "total_ok": False, "problems": []}
+           "total_ok": False, "problems": [],
+           # (gt item index, predicted item index) for every name match; used by
+           # ocr_compare to check the box of the matched line. Not printed.
+           "pairs": []}
     if parsed is None:
         res["missing"] = len(gt["items"])
         res["problems"].append("no result")
@@ -135,7 +138,7 @@ def score_receipt(gt, parsed):
             net_by_item.setdefault(d["appliesTo"], []).append(d)
 
     # Items: best name match, preferring a candidate with the right price.
-    for g in gt["items"]:
+    for gt_index, g in enumerate(gt["items"]):
         expected = g["lineTotal"]
         discounts = [d for d in net_by_item.get(g["name"], [])
                      if not d.get("_claimed") and not (STRICT and d.get("_ok"))]
@@ -153,6 +156,7 @@ def score_receipt(gt, parsed):
 
         sim, index, pred = max(candidates, key=rank)
         used.add(index)
+        res["pairs"].append((gt_index, index))
         if close(pred["lineTotal"], expected):
             res["correct"] += 1
         elif net is not None and close(pred["lineTotal"], net):

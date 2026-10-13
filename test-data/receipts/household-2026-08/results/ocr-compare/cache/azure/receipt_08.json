@@ -1,0 +1,3530 @@
+{
+ "meta": {
+  "apiVersion": "2024-11-30",
+  "modelId": "prebuilt-receipt",
+  "locale": null,
+  "seconds": 4.52,
+  "httpCalls": 2,
+  "fetchedAt": "2026-10-14T00:07:50+0200"
+ },
+ "response": {
+  "status": "succeeded",
+  "createdDateTime": "2026-10-13T22:07:47Z",
+  "lastUpdatedDateTime": "2026-10-13T22:07:49Z",
+  "analyzeResult": {
+   "apiVersion": "2024-11-30",
+   "modelId": "prebuilt-receipt",
+   "stringIndexType": "textElements",
+   "content": "SKLEP ŻABKA ZB031\nJOANBO JOANNA BORZEWSKA\nul. Nałęczowska 33 lok. US\n02-922 Warszawa\nNIP 1130585643\nnr :565444\nPARAGON FISKALNY\nPIERS PIECZ 75g-C\n1szt. x5,50 5,50C\nSER EDAMSKI PLASTRY 150g-C\niszt. x6,50 6,50C\nJOGURT SKYR PITNY 330ml-C\n1szt. x5,99 5,99C\nJOG SKYR JAGO 330ml-C\n1szt. x5,99 5,99C\nCROISSANT CZEKOLAD-C\n2szt. x3,99 7,98C\nOPUST CROISSANT CZEKOLAD-C\n-2,00C\nSPRZEDAŻ OPODATKOWANA C\n29,96\nPTU C 5%\n1,43\nSUMA PTU\n1,43\nSUMA PLN\n29,96\nROZLICZENIE PŁATNOŚCI\nINNA Karta kred.\n00015 #zB031-2 kasjer_30\n29,96 PLN\nA8F362698C28619AE94890C4CA2068C3589E7C58\n2025-08-17 12:23\nF EAZ 1901844314\nNr sys. 71934",
+   "pages": [
+    {
+     "pageNumber": 1,
+     "angle": -1.0820000171661377,
+     "width": 768,
+     "height": 1024,
+     "unit": "pixel",
+     "words": [
+      {
+       "content": "SKLEP",
+       "polygon": [
+        260,
+        305,
+        341,
+        301,
+        341,
+        323,
+        261,
+        327
+       ],
+       "confidence": 0.993,
+       "span": {
+        "offset": 0,
+        "length": 5
+       }
+      },
+      {
+       "content": "ŻABKA",
+       "polygon": [
+        363,
+        300,
+        445,
+        298,
+        446,
+        321,
+        363,
+        323
+       ],
+       "confidence": 0.982,
+       "span": {
+        "offset": 6,
+        "length": 5
+       }
+      },
+      {
+       "content": "ZB031",
+       "polygon": [
+        471,
+        298,
+        555,
+        296,
+        555,
+        319,
+        472,
+        321
+       ],
+       "confidence": 0.974,
+       "span": {
+        "offset": 12,
+        "length": 5
+       }
+      },
+      {
+       "content": "JOANBO",
+       "polygon": [
+        302,
+        325,
+        352,
+        323,
+        353,
+        345,
+        302,
+        345
+       ],
+       "confidence": 0.64,
+       "span": {
+        "offset": 18,
+        "length": 6
+       }
+      },
+      {
+       "content": "JOANNA",
+       "polygon": [
+        362,
+        323,
+        414,
+        323,
+        414,
+        344,
+        362,
+        345
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 25,
+        "length": 6
+       }
+      },
+      {
+       "content": "BORZEWSKA",
+       "polygon": [
+        424,
+        322,
+        504,
+        322,
+        504,
+        343,
+        424,
+        344
+       ],
+       "confidence": 0.993,
+       "span": {
+        "offset": 32,
+        "length": 9
+       }
+      },
+      {
+       "content": "ul.",
+       "polygon": [
+        290,
+        348,
+        318,
+        348,
+        318,
+        369,
+        290,
+        370
+       ],
+       "confidence": 0.906,
+       "span": {
+        "offset": 42,
+        "length": 3
+       }
+      },
+      {
+       "content": "Nałęczowska",
+       "polygon": [
+        326,
+        347,
+        423,
+        346,
+        423,
+        368,
+        326,
+        369
+       ],
+       "confidence": 0.991,
+       "span": {
+        "offset": 46,
+        "length": 11
+       }
+      },
+      {
+       "content": "33",
+       "polygon": [
+        433,
+        346,
+        450,
+        346,
+        450,
+        367,
+        433,
+        368
+       ],
+       "confidence": 0.998,
+       "span": {
+        "offset": 58,
+        "length": 2
+       }
+      },
+      {
+       "content": "lok.",
+       "polygon": [
+        461,
+        346,
+        491,
+        345,
+        492,
+        367,
+        461,
+        367
+       ],
+       "confidence": 0.955,
+       "span": {
+        "offset": 61,
+        "length": 4
+       }
+      },
+      {
+       "content": "US",
+       "polygon": [
+        504,
+        345,
+        522,
+        345,
+        523,
+        366,
+        504,
+        366
+       ],
+       "confidence": 0.826,
+       "span": {
+        "offset": 66,
+        "length": 2
+       }
+      },
+      {
+       "content": "02-922",
+       "polygon": [
+        344,
+        371,
+        397,
+        370,
+        397,
+        392,
+        345,
+        392
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 69,
+        "length": 6
+       }
+      },
+      {
+       "content": "Warszawa",
+       "polygon": [
+        406,
+        371,
+        478,
+        370,
+        478,
+        390,
+        406,
+        391
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 76,
+        "length": 8
+       }
+      },
+      {
+       "content": "NIP",
+       "polygon": [
+        168,
+        402,
+        194,
+        400,
+        195,
+        422,
+        169,
+        423
+       ],
+       "confidence": 0.985,
+       "span": {
+        "offset": 85,
+        "length": 3
+       }
+      },
+      {
+       "content": "1130585643",
+       "polygon": [
+        203,
+        399,
+        283,
+        393,
+        283,
+        415,
+        204,
+        421
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 89,
+        "length": 10
+       }
+      },
+      {
+       "content": "nr",
+       "polygon": [
+        576,
+        389,
+        592,
+        388,
+        592,
+        408,
+        577,
+        409
+       ],
+       "confidence": 0.935,
+       "span": {
+        "offset": 100,
+        "length": 2
+       }
+      },
+      {
+       "content": ":565444",
+       "polygon": [
+        596,
+        387,
+        663,
+        384,
+        663,
+        406,
+        596,
+        408
+       ],
+       "confidence": 0.99,
+       "span": {
+        "offset": 103,
+        "length": 7
+       }
+      },
+      {
+       "content": "PARAGON",
+       "polygon": [
+        264,
+        418,
+        388,
+        415,
+        388,
+        437,
+        264,
+        439
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 111,
+        "length": 7
+       }
+      },
+      {
+       "content": "FISKALNY",
+       "polygon": [
+        408,
+        415,
+        549,
+        412,
+        549,
+        433,
+        408,
+        437
+       ],
+       "confidence": 0.994,
+       "span": {
+        "offset": 119,
+        "length": 8
+       }
+      },
+      {
+       "content": "PIERS",
+       "polygon": [
+        168,
+        444,
+        203,
+        443,
+        204,
+        464,
+        169,
+        465
+       ],
+       "confidence": 0.859,
+       "span": {
+        "offset": 128,
+        "length": 5
+       }
+      },
+      {
+       "content": "PIECZ",
+       "polygon": [
+        207,
+        442,
+        255,
+        441,
+        256,
+        463,
+        208,
+        464
+       ],
+       "confidence": 0.975,
+       "span": {
+        "offset": 134,
+        "length": 5
+       }
+      },
+      {
+       "content": "75g-C",
+       "polygon": [
+        266,
+        441,
+        311,
+        441,
+        311,
+        462,
+        266,
+        462
+       ],
+       "confidence": 0.994,
+       "span": {
+        "offset": 140,
+        "length": 5
+       }
+      },
+      {
+       "content": "1szt.",
+       "polygon": [
+        506,
+        437,
+        547,
+        435,
+        547,
+        456,
+        507,
+        457
+       ],
+       "confidence": 0.687,
+       "span": {
+        "offset": 146,
+        "length": 5
+       }
+      },
+      {
+       "content": "x5,50",
+       "polygon": [
+        559,
+        435,
+        605,
+        433,
+        606,
+        454,
+        560,
+        456
+       ],
+       "confidence": 0.935,
+       "span": {
+        "offset": 152,
+        "length": 5
+       }
+      },
+      {
+       "content": "5,50C",
+       "polygon": [
+        616,
+        433,
+        663,
+        431,
+        663,
+        453,
+        616,
+        454
+       ],
+       "confidence": 0.929,
+       "span": {
+        "offset": 158,
+        "length": 5
+       }
+      },
+      {
+       "content": "SER",
+       "polygon": [
+        164,
+        466,
+        184,
+        465,
+        184,
+        486,
+        164,
+        486
+       ],
+       "confidence": 0.855,
+       "span": {
+        "offset": 164,
+        "length": 3
+       }
+      },
+      {
+       "content": "EDAMSKI",
+       "polygon": [
+        193,
+        465,
+        254,
+        463,
+        254,
+        485,
+        193,
+        486
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 168,
+        "length": 7
+       }
+      },
+      {
+       "content": "PLASTRY",
+       "polygon": [
+        266,
+        463,
+        328,
+        462,
+        328,
+        484,
+        266,
+        485
+       ],
+       "confidence": 0.861,
+       "span": {
+        "offset": 176,
+        "length": 7
+       }
+      },
+      {
+       "content": "150g-C",
+       "polygon": [
+        339,
+        462,
+        391,
+        462,
+        391,
+        483,
+        339,
+        484
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 184,
+        "length": 6
+       }
+      },
+      {
+       "content": "iszt.",
+       "polygon": [
+        507,
+        459,
+        547,
+        458,
+        548,
+        479,
+        507,
+        480
+       ],
+       "confidence": 0.652,
+       "span": {
+        "offset": 191,
+        "length": 5
+       }
+      },
+      {
+       "content": "x6,50",
+       "polygon": [
+        560,
+        457,
+        606,
+        456,
+        606,
+        477,
+        561,
+        478
+       ],
+       "confidence": 0.917,
+       "span": {
+        "offset": 197,
+        "length": 5
+       }
+      },
+      {
+       "content": "6,50C",
+       "polygon": [
+        616,
+        456,
+        663,
+        455,
+        663,
+        476,
+        616,
+        477
+       ],
+       "confidence": 0.965,
+       "span": {
+        "offset": 203,
+        "length": 5
+       }
+      },
+      {
+       "content": "JOGURT",
+       "polygon": [
+        161,
+        487,
+        211,
+        486,
+        211,
+        508,
+        161,
+        508
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 209,
+        "length": 6
+       }
+      },
+      {
+       "content": "SKYR",
+       "polygon": [
+        221,
+        486,
+        257,
+        486,
+        257,
+        507,
+        221,
+        507
+       ],
+       "confidence": 0.989,
+       "span": {
+        "offset": 216,
+        "length": 4
+       }
+      },
+      {
+       "content": "PITNY",
+       "polygon": [
+        266,
+        486,
+        310,
+        485,
+        311,
+        506,
+        267,
+        507
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 221,
+        "length": 5
+       }
+      },
+      {
+       "content": "330ml-C",
+       "polygon": [
+        320,
+        485,
+        383,
+        484,
+        383,
+        504,
+        321,
+        506
+       ],
+       "confidence": 0.989,
+       "span": {
+        "offset": 227,
+        "length": 7
+       }
+      },
+      {
+       "content": "1szt.",
+       "polygon": [
+        508,
+        482,
+        548,
+        481,
+        548,
+        501,
+        508,
+        502
+       ],
+       "confidence": 0.636,
+       "span": {
+        "offset": 235,
+        "length": 5
+       }
+      },
+      {
+       "content": "x5,99",
+       "polygon": [
+        561,
+        480,
+        606,
+        479,
+        606,
+        500,
+        561,
+        501
+       ],
+       "confidence": 0.649,
+       "span": {
+        "offset": 241,
+        "length": 5
+       }
+      },
+      {
+       "content": "5,99C",
+       "polygon": [
+        616,
+        479,
+        662,
+        478,
+        662,
+        499,
+        617,
+        500
+       ],
+       "confidence": 0.95,
+       "span": {
+        "offset": 247,
+        "length": 5
+       }
+      },
+      {
+       "content": "JOG",
+       "polygon": [
+        160,
+        510,
+        184,
+        509,
+        184,
+        531,
+        160,
+        531
+       ],
+       "confidence": 0.957,
+       "span": {
+        "offset": 253,
+        "length": 3
+       }
+      },
+      {
+       "content": "SKYR",
+       "polygon": [
+        194,
+        509,
+        229,
+        509,
+        230,
+        530,
+        194,
+        530
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 257,
+        "length": 4
+       }
+      },
+      {
+       "content": "JAGO",
+       "polygon": [
+        240,
+        508,
+        275,
+        508,
+        275,
+        529,
+        240,
+        529
+       ],
+       "confidence": 0.989,
+       "span": {
+        "offset": 262,
+        "length": 4
+       }
+      },
+      {
+       "content": "330ml-C",
+       "polygon": [
+        285,
+        508,
+        347,
+        507,
+        347,
+        527,
+        285,
+        529
+       ],
+       "confidence": 0.988,
+       "span": {
+        "offset": 267,
+        "length": 7
+       }
+      },
+      {
+       "content": "1szt.",
+       "polygon": [
+        507,
+        504,
+        548,
+        503,
+        549,
+        524,
+        508,
+        525
+       ],
+       "confidence": 0.963,
+       "span": {
+        "offset": 275,
+        "length": 5
+       }
+      },
+      {
+       "content": "x5,99",
+       "polygon": [
+        561,
+        503,
+        606,
+        502,
+        607,
+        523,
+        561,
+        524
+       ],
+       "confidence": 0.947,
+       "span": {
+        "offset": 281,
+        "length": 5
+       }
+      },
+      {
+       "content": "5,99C",
+       "polygon": [
+        617,
+        502,
+        662,
+        501,
+        662,
+        522,
+        617,
+        523
+       ],
+       "confidence": 0.912,
+       "span": {
+        "offset": 287,
+        "length": 5
+       }
+      },
+      {
+       "content": "CROISSANT",
+       "polygon": [
+        159,
+        533,
+        239,
+        531,
+        239,
+        552,
+        160,
+        554
+       ],
+       "confidence": 0.993,
+       "span": {
+        "offset": 293,
+        "length": 9
+       }
+      },
+      {
+       "content": "CZEKOLAD-C",
+       "polygon": [
+        249,
+        531,
+        340,
+        529,
+        340,
+        550,
+        249,
+        552
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 303,
+        "length": 10
+       }
+      },
+      {
+       "content": "2szt.",
+       "polygon": [
+        506,
+        527,
+        549,
+        526,
+        549,
+        547,
+        507,
+        548
+       ],
+       "confidence": 0.977,
+       "span": {
+        "offset": 314,
+        "length": 5
+       }
+      },
+      {
+       "content": "x3,99",
+       "polygon": [
+        561,
+        526,
+        607,
+        525,
+        607,
+        546,
+        562,
+        547
+       ],
+       "confidence": 0.907,
+       "span": {
+        "offset": 320,
+        "length": 5
+       }
+      },
+      {
+       "content": "7,98C",
+       "polygon": [
+        617,
+        525,
+        662,
+        524,
+        662,
+        545,
+        617,
+        546
+       ],
+       "confidence": 0.989,
+       "span": {
+        "offset": 326,
+        "length": 5
+       }
+      },
+      {
+       "content": "OPUST",
+       "polygon": [
+        160,
+        556,
+        203,
+        555,
+        203,
+        576,
+        160,
+        577
+       ],
+       "confidence": 0.993,
+       "span": {
+        "offset": 332,
+        "length": 5
+       }
+      },
+      {
+       "content": "CROISSANT",
+       "polygon": [
+        213,
+        555,
+        294,
+        553,
+        294,
+        574,
+        213,
+        576
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 338,
+        "length": 9
+       }
+      },
+      {
+       "content": "CZEKOLAD-C",
+       "polygon": [
+        303,
+        552,
+        392,
+        550,
+        393,
+        571,
+        304,
+        573
+       ],
+       "confidence": 0.989,
+       "span": {
+        "offset": 348,
+        "length": 10
+       }
+      },
+      {
+       "content": "-2,00C",
+       "polygon": [
+        609,
+        549,
+        662,
+        547,
+        662,
+        568,
+        610,
+        570
+       ],
+       "confidence": 0.888,
+       "span": {
+        "offset": 359,
+        "length": 6
+       }
+      },
+      {
+       "content": "SPRZEDAŻ",
+       "polygon": [
+        162,
+        589,
+        231,
+        587,
+        231,
+        609,
+        162,
+        610
+       ],
+       "confidence": 0.907,
+       "span": {
+        "offset": 366,
+        "length": 8
+       }
+      },
+      {
+       "content": "OPODATKOWANA",
+       "polygon": [
+        241,
+        587,
+        348,
+        584,
+        348,
+        606,
+        241,
+        608
+       ],
+       "confidence": 0.987,
+       "span": {
+        "offset": 375,
+        "length": 12
+       }
+      },
+      {
+       "content": "C",
+       "polygon": [
+        357,
+        584,
+        367,
+        584,
+        367,
+        605,
+        357,
+        605
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 388,
+        "length": 1
+       }
+      },
+      {
+       "content": "29,96",
+       "polygon": [
+        618,
+        582,
+        663,
+        581,
+        663,
+        602,
+        618,
+        602
+       ],
+       "confidence": 0.994,
+       "span": {
+        "offset": 390,
+        "length": 5
+       }
+      },
+      {
+       "content": "PTU",
+       "polygon": [
+        162,
+        612,
+        187,
+        612,
+        187,
+        632,
+        162,
+        632
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 396,
+        "length": 3
+       }
+      },
+      {
+       "content": "C",
+       "polygon": [
+        196,
+        611,
+        205,
+        611,
+        205,
+        632,
+        196,
+        632
+       ],
+       "confidence": 0.977,
+       "span": {
+        "offset": 400,
+        "length": 1
+       }
+      },
+      {
+       "content": "5%",
+       "polygon": [
+        214,
+        611,
+        233,
+        611,
+        233,
+        632,
+        214,
+        632
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 402,
+        "length": 2
+       }
+      },
+      {
+       "content": "1,43",
+       "polygon": [
+        628,
+        605,
+        663,
+        604,
+        663,
+        624,
+        628,
+        625
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 405,
+        "length": 4
+       }
+      },
+      {
+       "content": "SUMA",
+       "polygon": [
+        163,
+        634,
+        196,
+        634,
+        196,
+        655,
+        163,
+        655
+       ],
+       "confidence": 0.989,
+       "span": {
+        "offset": 410,
+        "length": 4
+       }
+      },
+      {
+       "content": "PTU",
+       "polygon": [
+        206,
+        634,
+        233,
+        633,
+        233,
+        654,
+        206,
+        654
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 415,
+        "length": 3
+       }
+      },
+      {
+       "content": "1,43",
+       "polygon": [
+        628,
+        627,
+        663,
+        626,
+        663,
+        647,
+        628,
+        647
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 419,
+        "length": 4
+       }
+      },
+      {
+       "content": "SUMA",
+       "polygon": [
+        164,
+        659,
+        233,
+        658,
+        233,
+        697,
+        164,
+        698
+       ],
+       "confidence": 0.991,
+       "span": {
+        "offset": 424,
+        "length": 4
+       }
+      },
+      {
+       "content": "PLN",
+       "polygon": [
+        252,
+        658,
+        307,
+        656,
+        307,
+        695,
+        253,
+        697
+       ],
+       "confidence": 0.99,
+       "span": {
+        "offset": 429,
+        "length": 3
+       }
+      },
+      {
+       "content": "29,96",
+       "polygon": [
+        574,
+        652,
+        662,
+        651,
+        662,
+        692,
+        574,
+        693
+       ],
+       "confidence": 0.996,
+       "span": {
+        "offset": 433,
+        "length": 5
+       }
+      },
+      {
+       "content": "ROZLICZENIE",
+       "polygon": [
+        164,
+        712,
+        261,
+        710,
+        261,
+        732,
+        164,
+        733
+       ],
+       "confidence": 0.977,
+       "span": {
+        "offset": 439,
+        "length": 11
+       }
+      },
+      {
+       "content": "PŁATNOŚCI",
+       "polygon": [
+        271,
+        710,
+        350,
+        708,
+        350,
+        730,
+        271,
+        731
+       ],
+       "confidence": 0.977,
+       "span": {
+        "offset": 451,
+        "length": 9
+       }
+      },
+      {
+       "content": "INNA",
+       "polygon": [
+        167,
+        735,
+        201,
+        734,
+        201,
+        754,
+        168,
+        754
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 461,
+        "length": 4
+       }
+      },
+      {
+       "content": "Karta",
+       "polygon": [
+        209,
+        734,
+        253,
+        734,
+        254,
+        753,
+        209,
+        754
+       ],
+       "confidence": 0.993,
+       "span": {
+        "offset": 466,
+        "length": 5
+       }
+      },
+      {
+       "content": "kred.",
+       "polygon": [
+        263,
+        734,
+        305,
+        733,
+        305,
+        753,
+        263,
+        753
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 472,
+        "length": 5
+       }
+      },
+      {
+       "content": "00015",
+       "polygon": [
+        169,
+        755,
+        211,
+        754,
+        211,
+        775,
+        169,
+        775
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 478,
+        "length": 5
+       }
+      },
+      {
+       "content": "#zB031-2",
+       "polygon": [
+        219,
+        754,
+        290,
+        754,
+        290,
+        775,
+        220,
+        775
+       ],
+       "confidence": 0.96,
+       "span": {
+        "offset": 484,
+        "length": 8
+       }
+      },
+      {
+       "content": "kasjer_30",
+       "polygon": [
+        299,
+        754,
+        378,
+        753,
+        378,
+        774,
+        299,
+        775
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 493,
+        "length": 9
+       }
+      },
+      {
+       "content": "29,96",
+       "polygon": [
+        583,
+        730,
+        627,
+        729,
+        627,
+        750,
+        583,
+        751
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 503,
+        "length": 5
+       }
+      },
+      {
+       "content": "PLN",
+       "polygon": [
+        636,
+        728,
+        664,
+        728,
+        664,
+        749,
+        637,
+        750
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 509,
+        "length": 3
+       }
+      },
+      {
+       "content": "A8F362698C28619AE94890C4CA2068C3589E7C58",
+       "polygon": [
+        238,
+        776,
+        593,
+        775,
+        593,
+        796,
+        238,
+        797
+       ],
+       "confidence": 0.911,
+       "span": {
+        "offset": 513,
+        "length": 40
+       }
+      },
+      {
+       "content": "2025-08-17",
+       "polygon": [
+        520,
+        752,
+        609,
+        751,
+        610,
+        773,
+        519,
+        773
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 554,
+        "length": 10
+       }
+      },
+      {
+       "content": "12:23",
+       "polygon": [
+        620,
+        751,
+        664,
+        751,
+        664,
+        772,
+        620,
+        773
+       ],
+       "confidence": 0.996,
+       "span": {
+        "offset": 565,
+        "length": 5
+       }
+      },
+      {
+       "content": "F",
+       "polygon": [
+        328,
+        798,
+        358,
+        798,
+        358,
+        820,
+        328,
+        820
+       ],
+       "confidence": 0.114,
+       "span": {
+        "offset": 571,
+        "length": 1
+       }
+      },
+      {
+       "content": "EAZ",
+       "polygon": [
+        369,
+        798,
+        395,
+        797,
+        396,
+        819,
+        370,
+        820
+       ],
+       "confidence": 0.991,
+       "span": {
+        "offset": 573,
+        "length": 3
+       }
+      },
+      {
+       "content": "1901844314",
+       "polygon": [
+        406,
+        797,
+        494,
+        797,
+        494,
+        818,
+        407,
+        819
+       ],
+       "confidence": 0.994,
+       "span": {
+        "offset": 577,
+        "length": 10
+       }
+      },
+      {
+       "content": "Nr",
+       "polygon": [
+        351,
+        823,
+        369,
+        823,
+        369,
+        843,
+        352,
+        843
+       ],
+       "confidence": 0.987,
+       "span": {
+        "offset": 588,
+        "length": 2
+       }
+      },
+      {
+       "content": "sys.",
+       "polygon": [
+        379,
+        822,
+        411,
+        821,
+        411,
+        842,
+        379,
+        843
+       ],
+       "confidence": 0.985,
+       "span": {
+        "offset": 591,
+        "length": 4
+       }
+      },
+      {
+       "content": "71934",
+       "polygon": [
+        425,
+        821,
+        468,
+        819,
+        468,
+        840,
+        425,
+        841
+       ],
+       "confidence": 0.997,
+       "span": {
+        "offset": 596,
+        "length": 5
+       }
+      }
+     ],
+     "lines": [
+      {
+       "content": "SKLEP ŻABKA ZB031",
+       "polygon": [
+        260,
+        303,
+        553,
+        295,
+        554,
+        318,
+        261,
+        327
+       ],
+       "spans": [
+        {
+         "offset": 0,
+         "length": 17
+        }
+       ]
+      },
+      {
+       "content": "JOANBO JOANNA BORZEWSKA",
+       "polygon": [
+        302,
+        324,
+        504,
+        322,
+        504,
+        343,
+        302,
+        345
+       ],
+       "spans": [
+        {
+         "offset": 18,
+         "length": 23
+        }
+       ]
+      },
+      {
+       "content": "ul. Nałęczowska 33 lok. US",
+       "polygon": [
+        290,
+        348,
+        522,
+        345,
+        522,
+        366,
+        290,
+        370
+       ],
+       "spans": [
+        {
+         "offset": 42,
+         "length": 26
+        }
+       ]
+      },
+      {
+       "content": "02-922 Warszawa",
+       "polygon": [
+        344,
+        371,
+        478,
+        370,
+        478,
+        391,
+        345,
+        392
+       ],
+       "spans": [
+        {
+         "offset": 69,
+         "length": 15
+        }
+       ]
+      },
+      {
+       "content": "NIP 1130585643",
+       "polygon": [
+        168,
+        401,
+        281,
+        393,
+        283,
+        415,
+        169,
+        423
+       ],
+       "spans": [
+        {
+         "offset": 85,
+         "length": 14
+        }
+       ]
+      },
+      {
+       "content": "nr :565444",
+       "polygon": [
+        576,
+        388,
+        662,
+        384,
+        663,
+        405,
+        577,
+        409
+       ],
+       "spans": [
+        {
+         "offset": 100,
+         "length": 10
+        }
+       ]
+      },
+      {
+       "content": "PARAGON FISKALNY",
+       "polygon": [
+        264,
+        418,
+        549,
+        412,
+        549,
+        433,
+        265,
+        439
+       ],
+       "spans": [
+        {
+         "offset": 111,
+         "length": 16
+        }
+       ]
+      },
+      {
+       "content": "PIERS PIECZ 75g-C",
+       "polygon": [
+        168,
+        443,
+        310,
+        440,
+        311,
+        462,
+        169,
+        465
+       ],
+       "spans": [
+        {
+         "offset": 128,
+         "length": 17
+        }
+       ]
+      },
+      {
+       "content": "1szt. x5,50 5,50C",
+       "polygon": [
+        506,
+        436,
+        662,
+        431,
+        662,
+        452,
+        507,
+        457
+       ],
+       "spans": [
+        {
+         "offset": 146,
+         "length": 17
+        }
+       ]
+      },
+      {
+       "content": "SER EDAMSKI PLASTRY 150g-C",
+       "polygon": [
+        164,
+        464,
+        390,
+        461,
+        391,
+        483,
+        164,
+        486
+       ],
+       "spans": [
+        {
+         "offset": 164,
+         "length": 26
+        }
+       ]
+      },
+      {
+       "content": "iszt. x6,50 6,50C",
+       "polygon": [
+        507,
+        459,
+        662,
+        455,
+        662,
+        476,
+        507,
+        480
+       ],
+       "spans": [
+        {
+         "offset": 191,
+         "length": 17
+        }
+       ]
+      },
+      {
+       "content": "JOGURT SKYR PITNY 330ml-C",
+       "polygon": [
+        160,
+        487,
+        382,
+        483,
+        383,
+        504,
+        161,
+        508
+       ],
+       "spans": [
+        {
+         "offset": 209,
+         "length": 25
+        }
+       ]
+      },
+      {
+       "content": "1szt. x5,99 5,99C",
+       "polygon": [
+        507,
+        482,
+        662,
+        478,
+        662,
+        499,
+        508,
+        502
+       ],
+       "spans": [
+        {
+         "offset": 235,
+         "length": 17
+        }
+       ]
+      },
+      {
+       "content": "JOG SKYR JAGO 330ml-C",
+       "polygon": [
+        160,
+        510,
+        347,
+        506,
+        347,
+        527,
+        160,
+        531
+       ],
+       "spans": [
+        {
+         "offset": 253,
+         "length": 21
+        }
+       ]
+      },
+      {
+       "content": "1szt. x5,99 5,99C",
+       "polygon": [
+        507,
+        504,
+        661,
+        501,
+        662,
+        522,
+        508,
+        525
+       ],
+       "spans": [
+        {
+         "offset": 275,
+         "length": 17
+        }
+       ]
+      },
+      {
+       "content": "CROISSANT CZEKOLAD-C",
+       "polygon": [
+        159,
+        533,
+        339,
+        529,
+        340,
+        550,
+        160,
+        554
+       ],
+       "spans": [
+        {
+         "offset": 293,
+         "length": 20
+        }
+       ]
+      },
+      {
+       "content": "2szt. x3,99 7,98C",
+       "polygon": [
+        506,
+        526,
+        662,
+        524,
+        662,
+        545,
+        507,
+        547
+       ],
+       "spans": [
+        {
+         "offset": 314,
+         "length": 17
+        }
+       ]
+      },
+      {
+       "content": "OPUST CROISSANT CZEKOLAD-C",
+       "polygon": [
+        160,
+        556,
+        392,
+        550,
+        392,
+        571,
+        160,
+        577
+       ],
+       "spans": [
+        {
+         "offset": 332,
+         "length": 26
+        }
+       ]
+      },
+      {
+       "content": "-2,00C",
+       "polygon": [
+        609,
+        549,
+        662,
+        547,
+        662,
+        568,
+        610,
+        569
+       ],
+       "spans": [
+        {
+         "offset": 359,
+         "length": 6
+        }
+       ]
+      },
+      {
+       "content": "SPRZEDAŻ OPODATKOWANA C",
+       "polygon": [
+        161,
+        589,
+        366,
+        583,
+        367,
+        605,
+        162,
+        610
+       ],
+       "spans": [
+        {
+         "offset": 366,
+         "length": 23
+        }
+       ]
+      },
+      {
+       "content": "29,96",
+       "polygon": [
+        618,
+        582,
+        662,
+        581,
+        662,
+        601,
+        618,
+        602
+       ],
+       "spans": [
+        {
+         "offset": 390,
+         "length": 5
+        }
+       ]
+      },
+      {
+       "content": "PTU C 5%",
+       "polygon": [
+        162,
+        611,
+        232,
+        611,
+        232,
+        632,
+        162,
+        632
+       ],
+       "spans": [
+        {
+         "offset": 396,
+         "length": 8
+        }
+       ]
+      },
+      {
+       "content": "1,43",
+       "polygon": [
+        628,
+        604,
+        662,
+        604,
+        663,
+        624,
+        628,
+        625
+       ],
+       "spans": [
+        {
+         "offset": 405,
+         "length": 4
+        }
+       ]
+      },
+      {
+       "content": "SUMA PTU",
+       "polygon": [
+        163,
+        634,
+        233,
+        633,
+        233,
+        654,
+        163,
+        655
+       ],
+       "spans": [
+        {
+         "offset": 410,
+         "length": 8
+        }
+       ]
+      },
+      {
+       "content": "1,43",
+       "polygon": [
+        628,
+        627,
+        662,
+        626,
+        663,
+        647,
+        628,
+        647
+       ],
+       "spans": [
+        {
+         "offset": 419,
+         "length": 4
+        }
+       ]
+      },
+      {
+       "content": "SUMA PLN",
+       "polygon": [
+        163,
+        659,
+        306,
+        656,
+        307,
+        695,
+        164,
+        698
+       ],
+       "spans": [
+        {
+         "offset": 424,
+         "length": 8
+        }
+       ]
+      },
+      {
+       "content": "29,96",
+       "polygon": [
+        573,
+        652,
+        662,
+        651,
+        662,
+        691,
+        574,
+        693
+       ],
+       "spans": [
+        {
+         "offset": 433,
+         "length": 5
+        }
+       ]
+      },
+      {
+       "content": "ROZLICZENIE PŁATNOŚCI",
+       "polygon": [
+        164,
+        712,
+        349,
+        708,
+        349,
+        730,
+        164,
+        733
+       ],
+       "spans": [
+        {
+         "offset": 439,
+         "length": 21
+        }
+       ]
+      },
+      {
+       "content": "INNA Karta kred.",
+       "polygon": [
+        167,
+        735,
+        304,
+        733,
+        304,
+        752,
+        168,
+        754
+       ],
+       "spans": [
+        {
+         "offset": 461,
+         "length": 16
+        }
+       ]
+      },
+      {
+       "content": "00015 #zB031-2 kasjer_30",
+       "polygon": [
+        169,
+        754,
+        378,
+        753,
+        378,
+        774,
+        169,
+        775
+       ],
+       "spans": [
+        {
+         "offset": 478,
+         "length": 24
+        }
+       ]
+      },
+      {
+       "content": "29,96 PLN",
+       "polygon": [
+        583,
+        729,
+        664,
+        728,
+        664,
+        749,
+        583,
+        751
+       ],
+       "spans": [
+        {
+         "offset": 503,
+         "length": 9
+        }
+       ]
+      },
+      {
+       "content": "A8F362698C28619AE94890C4CA2068C3589E7C58",
+       "polygon": [
+        238,
+        775,
+        593,
+        774,
+        593,
+        795,
+        238,
+        796
+       ],
+       "spans": [
+        {
+         "offset": 513,
+         "length": 40
+        }
+       ]
+      },
+      {
+       "content": "2025-08-17 12:23",
+       "polygon": [
+        519,
+        752,
+        664,
+        751,
+        664,
+        772,
+        519,
+        773
+       ],
+       "spans": [
+        {
+         "offset": 554,
+         "length": 16
+        }
+       ]
+      },
+      {
+       "content": "F EAZ 1901844314",
+       "polygon": [
+        328,
+        798,
+        494,
+        796,
+        494,
+        818,
+        328,
+        820
+       ],
+       "spans": [
+        {
+         "offset": 571,
+         "length": 16
+        }
+       ]
+      },
+      {
+       "content": "Nr sys. 71934",
+       "polygon": [
+        351,
+        823,
+        467,
+        819,
+        468,
+        840,
+        352,
+        843
+       ],
+       "spans": [
+        {
+         "offset": 588,
+         "length": 13
+        }
+       ]
+      }
+     ],
+     "spans": [
+      {
+       "offset": 0,
+       "length": 601
+      }
+     ]
+    }
+   ],
+   "styles": [],
+   "documents": [
+    {
+     "docType": "receipt.retailMeal",
+     "boundingRegions": [
+      {
+       "pageNumber": 1,
+       "polygon": [
+        0,
+        0,
+        768,
+        0,
+        768,
+        1024,
+        0,
+        1024
+       ]
+      }
+     ],
+     "fields": {
+      "CountryRegion": {
+       "type": "countryRegion",
+       "valueCountryRegion": "USA",
+       "confidence": 0.995
+      },
+      "Items": {
+       "type": "array",
+       "valueArray": [
+        {
+         "type": "object",
+         "valueObject": {
+          "Description": {
+           "type": "string",
+           "valueString": "PIERS PIECZ 75g-C",
+           "content": "PIERS PIECZ 75g-C",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              168,
+              443,
+              311,
+              440,
+              311,
+              462,
+              168,
+              465
+             ]
+            }
+           ],
+           "confidence": 0.98,
+           "spans": [
+            {
+             "offset": 128,
+             "length": 17
+            }
+           ]
+          },
+          "Price": {
+           "type": "currency",
+           "valueCurrency": {
+            "amount": 5.5,
+            "currencyCode": "USD"
+           },
+           "content": "x5,50",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              559,
+              435,
+              605,
+              433,
+              606,
+              454,
+              560,
+              456
+             ]
+            }
+           ],
+           "confidence": 0.986,
+           "spans": [
+            {
+             "offset": 152,
+             "length": 5
+            }
+           ]
+          },
+          "Quantity": {
+           "type": "number",
+           "valueNumber": 1,
+           "content": "1szt.",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              506,
+              437,
+              547,
+              435,
+              547,
+              456,
+              507,
+              457
+             ]
+            }
+           ],
+           "confidence": 0.985,
+           "spans": [
+            {
+             "offset": 146,
+             "length": 5
+            }
+           ]
+          },
+          "QuantityUnit": {
+           "type": "string",
+           "valueString": "szt",
+           "content": "1szt.",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              506,
+              437,
+              547,
+              435,
+              547,
+              456,
+              507,
+              457
+             ]
+            }
+           ],
+           "confidence": 0.985,
+           "spans": [
+            {
+             "offset": 146,
+             "length": 5
+            }
+           ]
+          },
+          "TotalPrice": {
+           "type": "currency",
+           "valueCurrency": {
+            "amount": 5.5,
+            "currencyCode": "USD"
+           },
+           "content": "5,50C",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              616,
+              433,
+              663,
+              431,
+              663,
+              453,
+              616,
+              454
+             ]
+            }
+           ],
+           "confidence": 0.987,
+           "spans": [
+            {
+             "offset": 158,
+             "length": 5
+            }
+           ]
+          }
+         },
+         "content": "PIERS PIECZ 75g-C\n1szt. x5,50 5,50C",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            168,
+            443,
+            663,
+            429,
+            664,
+            453,
+            169,
+            467
+           ]
+          }
+         ],
+         "confidence": 0.975,
+         "spans": [
+          {
+           "offset": 128,
+           "length": 35
+          }
+         ]
+        },
+        {
+         "type": "object",
+         "valueObject": {
+          "Description": {
+           "type": "string",
+           "valueString": "SER EDAMSKI PLASTRY 150g-C",
+           "content": "SER EDAMSKI PLASTRY 150g-C",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              164,
+              464,
+              391,
+              461,
+              391,
+              483,
+              164,
+              487
+             ]
+            }
+           ],
+           "confidence": 0.98,
+           "spans": [
+            {
+             "offset": 164,
+             "length": 26
+            }
+           ]
+          },
+          "Price": {
+           "type": "currency",
+           "valueCurrency": {
+            "amount": 6.5,
+            "currencyCode": "USD"
+           },
+           "content": "x6,50",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              560,
+              457,
+              606,
+              456,
+              606,
+              477,
+              561,
+              478
+             ]
+            }
+           ],
+           "confidence": 0.986,
+           "spans": [
+            {
+             "offset": 197,
+             "length": 5
+            }
+           ]
+          },
+          "Quantity": {
+           "type": "number",
+           "content": "iszt.",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              507,
+              459,
+              547,
+              458,
+              548,
+              479,
+              507,
+              480
+             ]
+            }
+           ],
+           "confidence": 0.985,
+           "spans": [
+            {
+             "offset": 191,
+             "length": 5
+            }
+           ]
+          },
+          "TotalPrice": {
+           "type": "currency",
+           "valueCurrency": {
+            "amount": 6.5,
+            "currencyCode": "USD"
+           },
+           "content": "6,50C",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              616,
+              456,
+              663,
+              455,
+              663,
+              476,
+              616,
+              477
+             ]
+            }
+           ],
+           "confidence": 0.987,
+           "spans": [
+            {
+             "offset": 203,
+             "length": 5
+            }
+           ]
+          }
+         },
+         "content": "SER EDAMSKI PLASTRY 150g-C\niszt. x6,50 6,50C",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            164,
+            465,
+            663,
+            454,
+            663,
+            477,
+            164,
+            488
+           ]
+          }
+         ],
+         "confidence": 0.972,
+         "spans": [
+          {
+           "offset": 164,
+           "length": 44
+          }
+         ]
+        },
+        {
+         "type": "object",
+         "valueObject": {
+          "Description": {
+           "type": "string",
+           "valueString": "JOGURT SKYR PITNY 330ml-C",
+           "content": "JOGURT SKYR PITNY 330ml-C",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              161,
+              486,
+              383,
+              484,
+              383,
+              506,
+              161,
+              508
+             ]
+            }
+           ],
+           "confidence": 0.98,
+           "spans": [
+            {
+             "offset": 209,
+             "length": 25
+            }
+           ]
+          },
+          "Price": {
+           "type": "currency",
+           "valueCurrency": {
+            "amount": 5.99,
+            "currencyCode": "USD"
+           },
+           "content": "x5,99",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              561,
+              480,
+              606,
+              479,
+              606,
+              500,
+              561,
+              501
+             ]
+            }
+           ],
+           "confidence": 0.985,
+           "spans": [
+            {
+             "offset": 241,
+             "length": 5
+            }
+           ]
+          },
+          "Quantity": {
+           "type": "number",
+           "valueNumber": 1,
+           "content": "1szt.",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              508,
+              482,
+              548,
+              481,
+              548,
+              501,
+              508,
+              502
+             ]
+            }
+           ],
+           "confidence": 0.984,
+           "spans": [
+            {
+             "offset": 235,
+             "length": 5
+            }
+           ]
+          },
+          "QuantityUnit": {
+           "type": "string",
+           "valueString": "szt",
+           "content": "1szt.",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              508,
+              482,
+              548,
+              481,
+              548,
+              501,
+              508,
+              502
+             ]
+            }
+           ],
+           "confidence": 0.984,
+           "spans": [
+            {
+             "offset": 235,
+             "length": 5
+            }
+           ]
+          },
+          "TotalPrice": {
+           "type": "currency",
+           "valueCurrency": {
+            "amount": 5.99,
+            "currencyCode": "USD"
+           },
+           "content": "5,99C",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              616,
+              479,
+              662,
+              478,
+              662,
+              499,
+              617,
+              500
+             ]
+            }
+           ],
+           "confidence": 0.987,
+           "spans": [
+            {
+             "offset": 247,
+             "length": 5
+            }
+           ]
+          }
+         },
+         "content": "JOGURT SKYR PITNY 330ml-C\n1szt. x5,99 5,99C",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            161,
+            487,
+            662,
+            476,
+            662,
+            499,
+            161,
+            510
+           ]
+          }
+         ],
+         "confidence": 0.972,
+         "spans": [
+          {
+           "offset": 209,
+           "length": 43
+          }
+         ]
+        },
+        {
+         "type": "object",
+         "valueObject": {
+          "Description": {
+           "type": "string",
+           "valueString": "JOG SKYR JAGO 330ml-C",
+           "content": "JOG SKYR JAGO 330ml-C",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              160,
+              507,
+              347,
+              507,
+              347,
+              531,
+              160,
+              531
+             ]
+            }
+           ],
+           "confidence": 0.98,
+           "spans": [
+            {
+             "offset": 253,
+             "length": 21
+            }
+           ]
+          },
+          "Price": {
+           "type": "currency",
+           "valueCurrency": {
+            "amount": 5.99,
+            "currencyCode": "USD"
+           },
+           "content": "x5,99",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              561,
+              503,
+              606,
+              502,
+              607,
+              523,
+              561,
+              524
+             ]
+            }
+           ],
+           "confidence": 0.986,
+           "spans": [
+            {
+             "offset": 281,
+             "length": 5
+            }
+           ]
+          },
+          "Quantity": {
+           "type": "number",
+           "valueNumber": 1,
+           "content": "1szt.",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              507,
+              504,
+              548,
+              503,
+              549,
+              524,
+              508,
+              525
+             ]
+            }
+           ],
+           "confidence": 0.986,
+           "spans": [
+            {
+             "offset": 275,
+             "length": 5
+            }
+           ]
+          },
+          "QuantityUnit": {
+           "type": "string",
+           "valueString": "szt",
+           "content": "1szt.",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              507,
+              504,
+              548,
+              503,
+              549,
+              524,
+              508,
+              525
+             ]
+            }
+           ],
+           "confidence": 0.986,
+           "spans": [
+            {
+             "offset": 275,
+             "length": 5
+            }
+           ]
+          },
+          "TotalPrice": {
+           "type": "currency",
+           "valueCurrency": {
+            "amount": 5.99,
+            "currencyCode": "USD"
+           },
+           "content": "5,99C",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              617,
+              502,
+              662,
+              501,
+              662,
+              522,
+              617,
+              523
+             ]
+            }
+           ],
+           "confidence": 0.987,
+           "spans": [
+            {
+             "offset": 287,
+             "length": 5
+            }
+           ]
+          }
+         },
+         "content": "JOG SKYR JAGO 330ml-C\n1szt. x5,99 5,99C",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            160,
+            510,
+            662,
+            498,
+            662,
+            522,
+            160,
+            533
+           ]
+          }
+         ],
+         "confidence": 0.976,
+         "spans": [
+          {
+           "offset": 253,
+           "length": 39
+          }
+         ]
+        },
+        {
+         "type": "object",
+         "valueObject": {
+          "Description": {
+           "type": "string",
+           "valueString": "CROISSANT CZEKOLAD-C",
+           "content": "CROISSANT CZEKOLAD-C",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              159,
+              533,
+              340,
+              529,
+              340,
+              550,
+              159,
+              554
+             ]
+            }
+           ],
+           "confidence": 0.98,
+           "spans": [
+            {
+             "offset": 293,
+             "length": 20
+            }
+           ]
+          },
+          "Price": {
+           "type": "currency",
+           "valueCurrency": {
+            "amount": 3.99,
+            "currencyCode": "USD"
+           },
+           "content": "x3,99",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              561,
+              526,
+              607,
+              525,
+              607,
+              546,
+              562,
+              547
+             ]
+            }
+           ],
+           "confidence": 0.986,
+           "spans": [
+            {
+             "offset": 320,
+             "length": 5
+            }
+           ]
+          },
+          "Quantity": {
+           "type": "number",
+           "valueNumber": 2,
+           "content": "2szt.",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              506,
+              527,
+              549,
+              526,
+              549,
+              547,
+              507,
+              548
+             ]
+            }
+           ],
+           "confidence": 0.986,
+           "spans": [
+            {
+             "offset": 314,
+             "length": 5
+            }
+           ]
+          },
+          "QuantityUnit": {
+           "type": "string",
+           "valueString": "szt",
+           "content": "2szt.",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              506,
+              527,
+              549,
+              526,
+              549,
+              547,
+              507,
+              548
+             ]
+            }
+           ],
+           "confidence": 0.986,
+           "spans": [
+            {
+             "offset": 314,
+             "length": 5
+            }
+           ]
+          },
+          "TotalPrice": {
+           "type": "currency",
+           "valueCurrency": {
+            "amount": 7.98,
+            "currencyCode": "USD"
+           },
+           "content": "7,98C",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              617,
+              525,
+              662,
+              524,
+              662,
+              545,
+              617,
+              546
+             ]
+            }
+           ],
+           "confidence": 0.987,
+           "spans": [
+            {
+             "offset": 326,
+             "length": 5
+            }
+           ]
+          }
+         },
+         "content": "CROISSANT CZEKOLAD-C\n2szt. x3,99 7,98C",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            159,
+            533,
+            662,
+            522,
+            662,
+            545,
+            160,
+            556
+           ]
+          }
+         ],
+         "confidence": 0.982,
+         "spans": [
+          {
+           "offset": 293,
+           "length": 38
+          }
+         ]
+        },
+        {
+         "type": "object",
+         "valueObject": {
+          "Description": {
+           "type": "string",
+           "valueString": "OPUST CROISSANT CZEKOLAD-C",
+           "content": "OPUST CROISSANT CZEKOLAD-C",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              159,
+              555,
+              393,
+              550,
+              393,
+              572,
+              160,
+              577
+             ]
+            }
+           ],
+           "confidence": 0.98,
+           "spans": [
+            {
+             "offset": 332,
+             "length": 26
+            }
+           ]
+          },
+          "TotalPrice": {
+           "type": "currency",
+           "valueCurrency": {
+            "amount": -2.0,
+            "currencyCode": "USD"
+           },
+           "content": "-2,00C",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              609,
+              549,
+              662,
+              547,
+              662,
+              568,
+              610,
+              570
+             ]
+            }
+           ],
+           "confidence": 0.987,
+           "spans": [
+            {
+             "offset": 359,
+             "length": 6
+            }
+           ]
+          }
+         },
+         "content": "OPUST CROISSANT CZEKOLAD-C\n-2,00C",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            159,
+            555,
+            662,
+            544,
+            663,
+            569,
+            160,
+            580
+           ]
+          }
+         ],
+         "confidence": 0.983,
+         "spans": [
+          {
+           "offset": 332,
+           "length": 33
+          }
+         ]
+        }
+       ]
+      },
+      "MerchantAddress": {
+       "type": "address",
+       "content": "ul. Nałęczowska 33 lok. US\n02-922 Warszawa",
+       "boundingRegions": [
+        {
+         "pageNumber": 1,
+         "polygon": [
+          290,
+          348,
+          523,
+          344,
+          523,
+          390,
+          290,
+          393
+         ]
+        }
+       ],
+       "confidence": 0.982,
+       "spans": [
+        {
+         "offset": 42,
+         "length": 42
+        }
+       ],
+       "valueAddress": {
+        "houseNumber": "33",
+        "road": "ul. Nałęczowska",
+        "postalCode": "02-922",
+        "city": "lok.",
+        "countryRegion": "US",
+        "streetAddress": "33 ul. Nałęczowska"
+       }
+      },
+      "MerchantName": {
+       "type": "string",
+       "valueString": "JOANBO JOANNA BORZEWSKA",
+       "content": "JOANBO JOANNA BORZEWSKA",
+       "boundingRegions": [
+        {
+         "pageNumber": 1,
+         "polygon": [
+          302,
+          323,
+          504,
+          321,
+          504,
+          344,
+          302,
+          346
+         ]
+        }
+       ],
+       "confidence": 0.942,
+       "spans": [
+        {
+         "offset": 18,
+         "length": 23
+        }
+       ]
+      },
+      "ReceiptType": {
+       "type": "string",
+       "valueString": "Meal",
+       "confidence": 0.97
+      },
+      "TaxDetails": {
+       "type": "array",
+       "valueArray": [
+        {
+         "type": "object",
+         "valueObject": {
+          "Amount": {
+           "type": "currency",
+           "valueCurrency": {
+            "amount": 1.43,
+            "currencyCode": "USD"
+           },
+           "content": "1,43",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              628,
+              605,
+              663,
+              604,
+              663,
+              624,
+              628,
+              625
+             ]
+            }
+           ],
+           "confidence": 0.975,
+           "spans": [
+            {
+             "offset": 405,
+             "length": 4
+            }
+           ]
+          },
+          "Description": {
+           "type": "string",
+           "valueString": "PTU C",
+           "content": "PTU C",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              162,
+              611,
+              205,
+              611,
+              205,
+              632,
+              162,
+              632
+             ]
+            }
+           ],
+           "confidence": 0.971,
+           "spans": [
+            {
+             "offset": 396,
+             "length": 5
+            }
+           ]
+          },
+          "Rate": {
+           "type": "number",
+           "valueNumber": 0.05,
+           "content": "5%",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              214,
+              611,
+              233,
+              611,
+              233,
+              632,
+              214,
+              632
+             ]
+            }
+           ],
+           "confidence": 0.975,
+           "spans": [
+            {
+             "offset": 402,
+             "length": 2
+            }
+           ]
+          }
+         },
+         "content": "PTU C 5%\n1,43",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            162,
+            604,
+            663,
+            604,
+            663,
+            632,
+            162,
+            632
+           ]
+          }
+         ],
+         "confidence": 0.982,
+         "spans": [
+          {
+           "offset": 396,
+           "length": 13
+          }
+         ]
+        }
+       ]
+      },
+      "Total": {
+       "type": "currency",
+       "valueCurrency": {
+        "currencySymbol": "PLN",
+        "amount": 29.96,
+        "currencyCode": "PLN"
+       },
+       "content": "PLN\n29,96",
+       "boundingRegions": [
+        {
+         "pageNumber": 1,
+         "polygon": [
+          252,
+          656,
+          662,
+          651,
+          662,
+          692,
+          252,
+          697
+         ]
+        }
+       ],
+       "confidence": 0.983,
+       "spans": [
+        {
+         "offset": 429,
+         "length": 9
+        }
+       ]
+      },
+      "TotalTax": {
+       "type": "currency",
+       "valueCurrency": {
+        "amount": 1.43,
+        "currencyCode": "USD"
+       },
+       "content": "1,43",
+       "boundingRegions": [
+        {
+         "pageNumber": 1,
+         "polygon": [
+          628,
+          627,
+          663,
+          626,
+          663,
+          647,
+          628,
+          647
+         ]
+        }
+       ],
+       "confidence": 0.984,
+       "spans": [
+        {
+         "offset": 419,
+         "length": 4
+        }
+       ]
+      },
+      "TransactionDate": {
+       "type": "date",
+       "valueDate": "2025-08-17",
+       "content": "2025-08-17",
+       "boundingRegions": [
+        {
+         "pageNumber": 1,
+         "polygon": [
+          520,
+          752,
+          609,
+          751,
+          610,
+          773,
+          519,
+          773
+         ]
+        }
+       ],
+       "confidence": 0.985,
+       "spans": [
+        {
+         "offset": 554,
+         "length": 10
+        }
+       ]
+      },
+      "TransactionTime": {
+       "type": "time",
+       "valueTime": "12:23:00",
+       "content": "12:23",
+       "boundingRegions": [
+        {
+         "pageNumber": 1,
+         "polygon": [
+          620,
+          751,
+          664,
+          751,
+          664,
+          772,
+          620,
+          773
+         ]
+        }
+       ],
+       "confidence": 0.979,
+       "spans": [
+        {
+         "offset": 565,
+         "length": 5
+        }
+       ]
+      }
+     },
+     "confidence": 0.97,
+     "spans": [
+      {
+       "offset": 0,
+       "length": 601
+      }
+     ]
+    }
+   ],
+   "contentFormat": "text"
+  }
+ }
+}

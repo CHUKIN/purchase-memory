@@ -1,0 +1,87 @@
+{
+ "receiptId": "01",
+ "configuration": "azure-prebuilt-receipt",
+ "model": "2024-11-30",
+ "seconds": 3.63,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": 0.01,
+ "usage": null,
+ "parsed": {
+  "merchant": "Dodo Pizza Poland Sp. z o. o.",
+  "date": "2026-03-21",
+  "currency": null,
+  "total": 56.38,
+  "totalBox": [
+   0.3528645833333333,
+   0.568359375,
+   0.3854166666666667,
+   0.02734375
+  ],
+  "items": [
+   {
+    "name": "Dostawy 1 szt",
+    "quantity": 1,
+    "unitPrice": 5.98,
+    "lineTotal": 5.98,
+    "box": [
+     0.3255208333333333,
+     0.3486328125,
+     0.4205729166666667,
+     0.0263671875
+    ]
+   },
+   {
+    "name": "Placki ziemniaczane 8 szt.",
+    "quantity": 1,
+    "unitPrice": 17.99,
+    "lineTotal": 17.99,
+    "box": [
+     0.26953125,
+     0.3642578125,
+     0.47786458333333326,
+     0.0244140625
+    ]
+   },
+   {
+    "name": "4 pory roku Średnia",
+    "quantity": 1,
+    "unitPrice": 53.99,
+    "lineTotal": 53.99,
+    "box": [
+     0.2682291666666667,
+     0.3759765625,
+     0.48437500000000006,
+     0.0322265625
+    ]
+   },
+   {
+    "name": "Pudełko na pizzę 30 1 szt",
+    "quantity": 1,
+    "unitPrice": 2.01,
+    "lineTotal": 2.01,
+    "box": [
+     0.2682291666666667,
+     0.396484375,
+     0.4830729166666667,
+     0.0244140625
+    ]
+   },
+   {
+    "name": "OPUST",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": -2.0,
+    "box": [
+     0.2864583333333333,
+     0.412109375,
+     0.4622395833333333,
+     0.025390625
+    ]
+   }
+  ]
+ },
+ "source": "cache",
+ "locale": null
+}

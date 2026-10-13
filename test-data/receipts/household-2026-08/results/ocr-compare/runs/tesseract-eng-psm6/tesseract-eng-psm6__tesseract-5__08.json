@@ -1,0 +1,116 @@
+{
+ "receiptId": "08",
+ "configuration": "tesseract-eng-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.25,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "Se SKLEP. ZABKa, ZB031",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "SSeS em fee jszt. x5,50",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.5,
+    "box": [
+     0.0078125,
+     0.4228515625,
+     0.8528645833333333,
+     0.048828125
+    ]
+   },
+   {
+    "name": "eos Se x EDAMSKI PLASTRY 1509-C iszt, x6,50",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 6.5,
+    "box": [
+     0.010416666666666666,
+     0.4453125,
+     0.8502604166666666,
+     0.03125
+    ]
+   },
+   {
+    "name": "; JOGURT SKYR PITRY 33Gqt=C {szt, x5,99",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.99,
+    "box": [
+     0.10026041666666667,
+     0.4677734375,
+     0.7604166666666667,
+     0.02734375
+    ]
+   },
+   {
+    "name": "Z JOG SKVR JAGO 336nl-C {szt. x5,99",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.99,
+    "box": [
+     0.040364583333333336,
+     0.490234375,
+     0.8203125,
+     0.0322265625
+    ]
+   },
+   {
+    "name": "S ees CROISSANT CZEKOLAD-C_ dszt. x3,99",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 7.98,
+    "box": [
+     0.006510416666666667,
+     0.5126953125,
+     0.8541666666666667,
+     0.029296875
+    ]
+   },
+   {
+    "name": "ts OPUST CROISSANT CZEKOLAB-C ~",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": -2.0,
+    "box": [
+     0.015625,
+     0.53515625,
+     0.8450520833333334,
+     0.0390625
+    ]
+   },
+   {
+    "name": "PIU C 5%",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 4.43,
+    "box": [
+     0.21223958333333334,
+     0.5908203125,
+     0.6497395833333333,
+     0.025390625
+    ]
+   },
+   {
+    "name": "ima PLN =",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 29.98,
+    "box": [
+     0.21354166666666666,
+     0.63671875,
+     0.6471354166666666,
+     0.0546875
+    ]
+   }
+  ]
+ },
+ "source": "langs eng; installed eng,osd,snum; pol MISSING"
+}

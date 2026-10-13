@@ -1,0 +1,87 @@
+{
+ "receiptId": "05",
+ "configuration": "azure-prebuilt-receipt",
+ "model": "2024-11-30",
+ "seconds": 4.48,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": 0.01,
+ "usage": null,
+ "parsed": {
+  "merchant": "Krakowiracja McDonald'S",
+  "date": "2026-03-26",
+  "currency": null,
+  "total": 0.8,
+  "totalBox": [
+   0.390625,
+   0.177734375,
+   0.21484375,
+   0.048828125
+  ],
+  "items": [
+   {
+    "name": "ARAGON Big Arch",
+    "quantity": 1,
+    "unitPrice": 33.0,
+    "lineTotal": 33.006,
+    "box": [
+     0.2994791666666667,
+     0.0498046875,
+     0.3111979166666667,
+     0.0654296875
+    ]
+   },
+   {
+    "name": "-Wrap Chtup Klas",
+    "quantity": 1,
+    "unitPrice": 13.2,
+    "lineTotal": 13.2,
+    "box": [
+     0.3020833333333333,
+     0.072265625,
+     0.31249999999999994,
+     0.0634765625
+    ]
+   },
+   {
+    "name": "\"Wrap Chrup Klas",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 13.2,
+    "box": [
+     0.3033854166666667,
+     0.09765625,
+     0.30859375000000006,
+     0.02734375
+    ]
+   },
+   {
+    "name": "Hrutki Średnie",
+    "quantity": 1,
+    "unitPrice": 13.2,
+    "lineTotal": 5.7,
+    "box": [
+     0.3020833333333333,
+     0.083984375,
+     0.3111979166666667,
+     0.0751953125
+    ]
+   },
+   {
+    "name": "*Frytki Srednje",
+    "quantity": null,
+    "unitPrice": 5.7,
+    "lineTotal": 5.7,
+    "box": [
+     0.3033854166666667,
+     0.1181640625,
+     0.3072916666666667,
+     0.025390625
+    ]
+   }
+  ]
+ },
+ "source": "fresh call",
+ "locale": null
+}

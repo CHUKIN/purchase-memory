@@ -1,0 +1,32 @@
+{
+ "receiptId": "04",
+ "configuration": "tesseract-eng-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.12,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "’ “baracon FISKALNY",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "UNA PLN",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 436.98,
+    "box": [
+     0.3190104166666667,
+     0.384765625,
+     0.30859374999999994,
+     0.0478515625
+    ]
+   }
+  ]
+ },
+ "source": "langs eng; installed eng,osd,snum; pol MISSING"
+}

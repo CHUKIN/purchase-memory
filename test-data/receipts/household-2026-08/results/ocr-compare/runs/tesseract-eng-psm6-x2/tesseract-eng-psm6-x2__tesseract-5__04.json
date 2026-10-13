@@ -1,0 +1,19 @@
+{
+ "receiptId": "04",
+ "configuration": "tesseract-eng-psm6-x2",
+ "model": "tesseract-5",
+ "seconds": 0.51,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "ne ae PARAGON F 1SKAL NY og 4",
+  "date": null,
+  "currency": null,
+  "total": 436.99,
+  "items": []
+ },
+ "source": "langs eng; installed eng,osd,snum; pol MISSING"
+}

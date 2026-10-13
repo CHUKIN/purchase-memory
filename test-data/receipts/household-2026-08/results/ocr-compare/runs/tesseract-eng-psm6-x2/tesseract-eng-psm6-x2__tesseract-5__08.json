@@ -1,0 +1,80 @@
+{
+ "receiptId": "08",
+ "configuration": "tesseract-eng-psm6-x2",
+ "model": "tesseract-5",
+ "seconds": 0.42,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "Se SKLEP. ZABKA» ZB031",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "Se ee 0/8 pPLECE iat Aszt. x5,50",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.5,
+    "box": [
+     0.0013020833333333333,
+     0.4228515625,
+     0.859375,
+     0.04833984375
+    ]
+   },
+   {
+    "name": "cme |. CUAMSKT PLASTRY 150g-C iszt. x6,50",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 6.5,
+    "box": [
+     0.004557291666666667,
+     0.4453125,
+     0.8561197916666667,
+     0.03515625
+    ]
+   },
+   {
+    "name": "eremeemees J0GURT SKYR PITNY 330mt-C iszt, x5,99",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.99,
+    "box": [
+     0.047526041666666664,
+     0.4677734375,
+     0.8131510416666666,
+     0.03271484375
+    ]
+   },
+   {
+    "name": "Sica J0G SKYR JAGO 338ql-C {szt. x5,99",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.99,
+    "box": [
+     0.033854166666666664,
+     0.490234375,
+     0.826171875,
+     0.033203125
+    ]
+   },
+   {
+    "name": "were PIU C 5%",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 1.43,
+    "box": [
+     0.061848958333333336,
+     0.59033203125,
+     0.8001302083333333,
+     0.03369140625
+    ]
+   }
+  ]
+ },
+ "source": "langs eng; installed eng,osd,snum; pol MISSING"
+}

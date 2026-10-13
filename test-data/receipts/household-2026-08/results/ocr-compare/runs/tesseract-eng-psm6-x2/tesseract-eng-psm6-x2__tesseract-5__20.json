@@ -1,0 +1,44 @@
+{
+ "receiptId": "20",
+ "configuration": "tesseract-eng-psm6-x2",
+ "model": "tesseract-5",
+ "seconds": 0.37,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "sf",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "Woda NieGaz, H+",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 8.09,
+    "box": [
+     0.21875,
+     0.3095703125,
+     0.42838541666666674,
+     0.03662109375
+    ]
+   },
+   {
+    "name": "Cheeseburger",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 7.9,
+    "box": [
+     0.22135416666666666,
+     0.3291015625,
+     0.42838541666666674,
+     0.03515625
+    ]
+   }
+  ]
+ },
+ "source": "langs eng; installed eng,osd,snum; pol MISSING"
+}

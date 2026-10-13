@@ -1,0 +1,159 @@
+{
+ "receiptId": "09",
+ "configuration": "azure-prebuilt-receipt",
+ "model": "2024-11-30",
+ "seconds": 4.41,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": 0.01,
+ "usage": null,
+ "parsed": {
+  "merchant": "Carrefour MARKET Warszawa",
+  "date": "2025-08-06",
+  "currency": null,
+  "total": 177.48,
+  "totalBox": [
+   0.2981770833333333,
+   0.6357421875,
+   0.4596354166666667,
+   0.06640625
+  ],
+  "items": [
+   {
+    "name": "C_SZPINAK BABY 125G",
+    "quantity": null,
+    "unitPrice": 5.99,
+    "lineTotal": 5.99,
+    "box": [
+     0.14973958333333334,
+     0.2939453125,
+     0.6263020833333334,
+     0.0244140625
+    ]
+   },
+   {
+    "name": "A_WODA MINER BORJOM",
+    "quantity": null,
+    "unitPrice": 7.49,
+    "lineTotal": 7.49,
+    "box": [
+     0.15234375,
+     0.3125,
+     0.6223958333333334,
+     0.0283203125
+    ]
+   },
+   {
+    "name": "C_MAŚLANKA 420G BUT",
+    "quantity": null,
+    "unitPrice": 2.89,
+    "lineTotal": 2.89,
+    "box": [
+     0.15364583333333334,
+     0.3349609375,
+     0.62109375,
+     0.0244140625
+    ]
+   },
+   {
+    "name": "B_WILKIN RASPBERRY",
+    "quantity": null,
+    "unitPrice": 35.99,
+    "lineTotal": 35.99,
+    "box": [
+     0.15494791666666666,
+     0.353515625,
+     0.6171875,
+     0.0263671875
+    ]
+   },
+   {
+    "name": "C_KEDYMEX-RZODKIEWE",
+    "quantity": null,
+    "unitPrice": 0.392,
+    "lineTotal": 15.28,
+    "box": [
+     0.15755208333333334,
+     0.3759765625,
+     0.6145833333333334,
+     0.0224609375
+    ]
+   },
+   {
+    "name": "C_MIÓD PSZCZ. WIELO",
+    "quantity": null,
+    "unitPrice": 13.99,
+    "lineTotal": 13.99,
+    "box": [
+     0.15885416666666666,
+     0.396484375,
+     0.6119791666666666,
+     0.0224609375
+    ]
+   },
+   {
+    "name": "A_CHUST DO HIG INT",
+    "quantity": null,
+    "unitPrice": 9.99,
+    "lineTotal": 9.99,
+    "box": [
+     0.16015625,
+     0.416015625,
+     0.6106770833333334,
+     0.021484375
+    ]
+   },
+   {
+    "name": "A_KAWA O SMAKU ORZE",
+    "quantity": null,
+    "unitPrice": 35.99,
+    "lineTotal": 35.99,
+    "box": [
+     0.16145833333333334,
+     0.4287109375,
+     0.6067708333333334,
+     0.0361328125
+    ]
+   },
+   {
+    "name": "C_MOWI ŁOSOŚ WĘDZ.",
+    "quantity": null,
+    "unitPrice": 25.99,
+    "lineTotal": 25.99,
+    "box": [
+     0.16276041666666666,
+     0.4541015625,
+     0.60546875,
+     0.0224609375
+    ]
+   },
+   {
+    "name": "C_KUKURYDZA ŚWIEŻA",
+    "quantity": null,
+    "unitPrice": 6.99,
+    "lineTotal": 13.98,
+    "box": [
+     0.1640625,
+     0.4716796875,
+     0.6028645833333334,
+     0.0234375
+    ]
+   },
+   {
+    "name": "C_SER CHEDDAR WHITE",
+    "quantity": null,
+    "unitPrice": 0.132,
+    "lineTotal": 9.9,
+    "box": [
+     0.16536458333333334,
+     0.4912109375,
+     0.5989583333333334,
+     0.0244140625
+    ]
+   }
+  ]
+ },
+ "source": "fresh call",
+ "locale": null
+}

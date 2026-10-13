@@ -1,0 +1,56 @@
+{
+ "receiptId": "07",
+ "configuration": "tesseract-eng-psm6-x2",
+ "model": "tesseract-5",
+ "seconds": 0.27,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "y",
+  "date": null,
+  "currency": null,
+  "total": 108.09,
+  "items": [
+   {
+    "name": "DANIE BUFET GR",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 27.36,
+    "box": [
+     0.3372395833333333,
+     0.4677734375,
+     0.43359374999999994,
+     0.02197265625
+    ]
+   },
+   {
+    "name": "DANIE BUFET GR",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 50.73,
+    "box": [
+     0.3372395833333333,
+     0.490234375,
+     0.4348958333333333,
+     0.02099609375
+    ]
+   },
+   {
+    "name": "WYPOZYCZENTE RECZNIKA",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 30.0,
+    "box": [
+     0.337890625,
+     0.5126953125,
+     0.43489583333333337,
+     0.02685546875
+    ]
+   }
+  ]
+ },
+ "source": "langs eng; installed eng,osd,snum; pol MISSING"
+}

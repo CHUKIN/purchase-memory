@@ -1,0 +1,3585 @@
+{
+ "meta": {
+  "apiVersion": "2024-11-30",
+  "modelId": "prebuilt-receipt",
+  "locale": null,
+  "seconds": 3.65,
+  "httpCalls": 3,
+  "fetchedAt": "2026-10-14T00:08:43+0200"
+ },
+ "response": {
+  "status": "succeeded",
+  "createdDateTime": "2026-10-13T22:08:39Z",
+  "lastUpdatedDateTime": "2026-10-13T22:08:41Z",
+  "analyzeResult": {
+   "apiVersion": "2024-11-30",
+   "modelId": "prebuilt-receipt",
+   "stringIndexType": "textElements",
+   "content": "-------\nAMERICAN\nBilly's\nRESTAURANTS\nBILLY'S AMERICAN RESTAURANTS SP Z 0.0.\n80-838 GDAŃSK, UL. WAWRZYNICZA 10 A/E\nBILLY'S AMERICAN RESTAURANTS\nGDAŃSK WYSPA SPICHRZÓW\n80-748 GDAŃSK; CHMIELNA 3/8\nBD0000239564\nNIP 5833191989\nnr : 146045\nPARAGON FISKALNY\nAMERICAN SALAD\n1 ×49,00 49,00B\nAMERYKAŃSKIE ŻEBERKA\n1 ×79,00 79,00B\nGRILLOWANY PSTRĄG\n1 ×69,00 69,00B\nDOMOWA MROŻONA HERBATA\n1 ×22,00 22,00A\nSPRZEDAŻ OPODATKOWANA A\nSPRZEDAŻ OPODATKOWANA B\n22,00\nPTU A 23%\n197,00\nPTU B 8%\n4,11\nSUMA PTU\n14,59\nSUMA PLN\n18,70\n219,00\nROZLICZENIE PŁATNOŚCI\nKARTA Karta\n00026 #POS1 Piotr R.\n219,00 PLN\n2025-05-20 18:17\n6F5DCD249493C6D2B5BAEF76ACB8395258FD6D70\nFE EAO 2001287833\nNr sys. 25438/05/CHM",
+   "pages": [
+    {
+     "pageNumber": 1,
+     "angle": -0.5521000027656555,
+     "width": 768,
+     "height": 1024,
+     "unit": "pixel",
+     "words": [
+      {
+       "content": "-------",
+       "polygon": [
+        295,
+        23,
+        582,
+        11,
+        582,
+        23,
+        295,
+        34
+       ],
+       "confidence": 0.239,
+       "span": {
+        "offset": 0,
+        "length": 7
+       }
+      },
+      {
+       "content": "AMERICAN",
+       "polygon": [
+        238,
+        151,
+        480,
+        141,
+        466,
+        162,
+        252,
+        171
+       ],
+       "confidence": 0.689,
+       "span": {
+        "offset": 8,
+        "length": 8
+       }
+      },
+      {
+       "content": "Billy's",
+       "polygon": [
+        219,
+        153,
+        502,
+        172,
+        501,
+        330,
+        217,
+        316
+       ],
+       "confidence": 0.948,
+       "span": {
+        "offset": 17,
+        "length": 7
+       }
+      },
+      {
+       "content": "RESTAURANTS",
+       "polygon": [
+        255,
+        305,
+        465,
+        302,
+        472,
+        318,
+        247,
+        321
+       ],
+       "confidence": 0.888,
+       "span": {
+        "offset": 25,
+        "length": 11
+       }
+      },
+      {
+       "content": "BILLY'S",
+       "polygon": [
+        180,
+        370,
+        246,
+        370,
+        246,
+        393,
+        180,
+        393
+       ],
+       "confidence": 0.977,
+       "span": {
+        "offset": 37,
+        "length": 7
+       }
+      },
+      {
+       "content": "AMERICAN",
+       "polygon": [
+        257,
+        369,
+        330,
+        369,
+        330,
+        392,
+        257,
+        393
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 45,
+        "length": 8
+       }
+      },
+      {
+       "content": "RESTAURANTS",
+       "polygon": [
+        340,
+        369,
+        441,
+        366,
+        442,
+        390,
+        340,
+        392
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 54,
+        "length": 11
+       }
+      },
+      {
+       "content": "SP",
+       "polygon": [
+        452,
+        366,
+        470,
+        366,
+        470,
+        389,
+        453,
+        389
+       ],
+       "confidence": 0.994,
+       "span": {
+        "offset": 66,
+        "length": 2
+       }
+      },
+      {
+       "content": "Z",
+       "polygon": [
+        480,
+        365,
+        489,
+        365,
+        490,
+        388,
+        481,
+        388
+       ],
+       "confidence": 0.991,
+       "span": {
+        "offset": 69,
+        "length": 1
+       }
+      },
+      {
+       "content": "0.0.",
+       "polygon": [
+        500,
+        365,
+        536,
+        364,
+        536,
+        387,
+        501,
+        388
+       ],
+       "confidence": 0.794,
+       "span": {
+        "offset": 71,
+        "length": 4
+       }
+      },
+      {
+       "content": "80-838",
+       "polygon": [
+        180,
+        395,
+        237,
+        394,
+        237,
+        418,
+        180,
+        418
+       ],
+       "confidence": 0.997,
+       "span": {
+        "offset": 76,
+        "length": 6
+       }
+      },
+      {
+       "content": "GDAŃSK,",
+       "polygon": [
+        247,
+        394,
+        308,
+        393,
+        309,
+        417,
+        247,
+        417
+       ],
+       "confidence": 0.978,
+       "span": {
+        "offset": 83,
+        "length": 7
+       }
+      },
+      {
+       "content": "UL.",
+       "polygon": [
+        321,
+        393,
+        346,
+        393,
+        346,
+        416,
+        322,
+        416
+       ],
+       "confidence": 0.994,
+       "span": {
+        "offset": 91,
+        "length": 3
+       }
+      },
+      {
+       "content": "WAWRZYNICZA",
+       "polygon": [
+        358,
+        393,
+        461,
+        390,
+        461,
+        413,
+        359,
+        416
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 95,
+        "length": 11
+       }
+      },
+      {
+       "content": "10",
+       "polygon": [
+        472,
+        390,
+        490,
+        389,
+        490,
+        412,
+        473,
+        413
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 107,
+        "length": 2
+       }
+      },
+      {
+       "content": "A/E",
+       "polygon": [
+        500,
+        389,
+        530,
+        388,
+        530,
+        411,
+        500,
+        412
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 110,
+        "length": 3
+       }
+      },
+      {
+       "content": "BILLY'S",
+       "polygon": [
+        218,
+        419,
+        284,
+        418,
+        284,
+        441,
+        218,
+        441
+       ],
+       "confidence": 0.989,
+       "span": {
+        "offset": 114,
+        "length": 7
+       }
+      },
+      {
+       "content": "AMERICAN",
+       "polygon": [
+        294,
+        418,
+        367,
+        417,
+        367,
+        439,
+        294,
+        440
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 122,
+        "length": 8
+       }
+      },
+      {
+       "content": "RESTAURANTS",
+       "polygon": [
+        377,
+        417,
+        482,
+        415,
+        482,
+        437,
+        378,
+        439
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 131,
+        "length": 11
+       }
+      },
+      {
+       "content": "GDAŃSK",
+       "polygon": [
+        247,
+        443,
+        303,
+        442,
+        303,
+        465,
+        247,
+        465
+       ],
+       "confidence": 0.993,
+       "span": {
+        "offset": 143,
+        "length": 6
+       }
+      },
+      {
+       "content": "WYSPA",
+       "polygon": [
+        313,
+        442,
+        358,
+        441,
+        358,
+        464,
+        313,
+        465
+       ],
+       "confidence": 0.996,
+       "span": {
+        "offset": 150,
+        "length": 5
+       }
+      },
+      {
+       "content": "SPICHRZÓW",
+       "polygon": [
+        368,
+        441,
+        454,
+        439,
+        454,
+        462,
+        369,
+        463
+       ],
+       "confidence": 0.977,
+       "span": {
+        "offset": 156,
+        "length": 9
+       }
+      },
+      {
+       "content": "80-748",
+       "polygon": [
+        228,
+        467,
+        284,
+        466,
+        284,
+        489,
+        228,
+        489
+       ],
+       "confidence": 0.998,
+       "span": {
+        "offset": 166,
+        "length": 6
+       }
+      },
+      {
+       "content": "GDAŃSK;",
+       "polygon": [
+        294,
+        466,
+        355,
+        466,
+        356,
+        488,
+        295,
+        489
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 173,
+        "length": 7
+       }
+      },
+      {
+       "content": "CHMIELNA",
+       "polygon": [
+        368,
+        465,
+        442,
+        464,
+        443,
+        487,
+        368,
+        488
+       ],
+       "confidence": 0.993,
+       "span": {
+        "offset": 181,
+        "length": 8
+       }
+      },
+      {
+       "content": "3/8",
+       "polygon": [
+        453,
+        464,
+        482,
+        463,
+        482,
+        486,
+        453,
+        487
+       ],
+       "confidence": 0.997,
+       "span": {
+        "offset": 190,
+        "length": 3
+       }
+      },
+      {
+       "content": "BD0000239564",
+       "polygon": [
+        170,
+        491,
+        286,
+        491,
+        286,
+        513,
+        170,
+        514
+       ],
+       "confidence": 0.977,
+       "span": {
+        "offset": 194,
+        "length": 12
+       }
+      },
+      {
+       "content": "NIP",
+       "polygon": [
+        169,
+        516,
+        199,
+        516,
+        199,
+        538,
+        169,
+        538
+       ],
+       "confidence": 0.994,
+       "span": {
+        "offset": 207,
+        "length": 3
+       }
+      },
+      {
+       "content": "5833191989",
+       "polygon": [
+        209,
+        516,
+        305,
+        515,
+        305,
+        537,
+        209,
+        538
+       ],
+       "confidence": 0.994,
+       "span": {
+        "offset": 211,
+        "length": 10
+       }
+      },
+      {
+       "content": "nr",
+       "polygon": [
+        462,
+        514,
+        476,
+        514,
+        477,
+        536,
+        462,
+        536
+       ],
+       "confidence": 0.962,
+       "span": {
+        "offset": 222,
+        "length": 2
+       }
+      },
+      {
+       "content": ":",
+       "polygon": [
+        481,
+        514,
+        488,
+        514,
+        489,
+        536,
+        481,
+        536
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 225,
+        "length": 1
+       }
+      },
+      {
+       "content": "146045",
+       "polygon": [
+        493,
+        514,
+        552,
+        512,
+        552,
+        535,
+        494,
+        535
+       ],
+       "confidence": 0.996,
+       "span": {
+        "offset": 227,
+        "length": 6
+       }
+      },
+      {
+       "content": "PARAGON",
+       "polygon": [
+        209,
+        540,
+        339,
+        538,
+        339,
+        562,
+        209,
+        562
+       ],
+       "confidence": 0.997,
+       "span": {
+        "offset": 234,
+        "length": 7
+       }
+      },
+      {
+       "content": "FISKALNY",
+       "polygon": [
+        360,
+        538,
+        511,
+        538,
+        511,
+        560,
+        360,
+        561
+       ],
+       "confidence": 0.993,
+       "span": {
+        "offset": 242,
+        "length": 8
+       }
+      },
+      {
+       "content": "AMERICAN",
+       "polygon": [
+        170,
+        565,
+        247,
+        564,
+        247,
+        586,
+        170,
+        587
+       ],
+       "confidence": 0.993,
+       "span": {
+        "offset": 251,
+        "length": 8
+       }
+      },
+      {
+       "content": "SALAD",
+       "polygon": [
+        257,
+        564,
+        304,
+        564,
+        304,
+        586,
+        257,
+        586
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 260,
+        "length": 5
+       }
+      },
+      {
+       "content": "1",
+       "polygon": [
+        407,
+        563,
+        413,
+        563,
+        413,
+        586,
+        407,
+        586
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 266,
+        "length": 1
+       }
+      },
+      {
+       "content": "×49,00",
+       "polygon": [
+        425,
+        563,
+        482,
+        562,
+        482,
+        586,
+        425,
+        586
+       ],
+       "confidence": 0.535,
+       "span": {
+        "offset": 268,
+        "length": 6
+       }
+      },
+      {
+       "content": "49,00B",
+       "polygon": [
+        493,
+        562,
+        553,
+        562,
+        553,
+        586,
+        493,
+        586
+       ],
+       "confidence": 0.993,
+       "span": {
+        "offset": 275,
+        "length": 6
+       }
+      },
+      {
+       "content": "AMERYKAŃSKIE",
+       "polygon": [
+        174,
+        590,
+        294,
+        588,
+        294,
+        610,
+        174,
+        612
+       ],
+       "confidence": 0.972,
+       "span": {
+        "offset": 282,
+        "length": 12
+       }
+      },
+      {
+       "content": "ŻEBERKA",
+       "polygon": [
+        304,
+        588,
+        370,
+        587,
+        370,
+        610,
+        304,
+        610
+       ],
+       "confidence": 0.988,
+       "span": {
+        "offset": 295,
+        "length": 7
+       }
+      },
+      {
+       "content": "1",
+       "polygon": [
+        407,
+        588,
+        414,
+        588,
+        414,
+        611,
+        407,
+        611
+       ],
+       "confidence": 0.996,
+       "span": {
+        "offset": 303,
+        "length": 1
+       }
+      },
+      {
+       "content": "×79,00",
+       "polygon": [
+        426,
+        588,
+        483,
+        588,
+        483,
+        611,
+        426,
+        611
+       ],
+       "confidence": 0.639,
+       "span": {
+        "offset": 305,
+        "length": 6
+       }
+      },
+      {
+       "content": "79,00B",
+       "polygon": [
+        493,
+        588,
+        553,
+        588,
+        553,
+        611,
+        493,
+        611
+       ],
+       "confidence": 0.989,
+       "span": {
+        "offset": 312,
+        "length": 6
+       }
+      },
+      {
+       "content": "GRILLOWANY",
+       "polygon": [
+        170,
+        614,
+        266,
+        613,
+        266,
+        635,
+        170,
+        637
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 319,
+        "length": 10
+       }
+      },
+      {
+       "content": "PSTRĄG",
+       "polygon": [
+        276,
+        612,
+        333,
+        612,
+        333,
+        635,
+        276,
+        635
+       ],
+       "confidence": 0.988,
+       "span": {
+        "offset": 330,
+        "length": 6
+       }
+      },
+      {
+       "content": "1",
+       "polygon": [
+        408,
+        613,
+        414,
+        613,
+        414,
+        636,
+        408,
+        636
+       ],
+       "confidence": 0.996,
+       "span": {
+        "offset": 337,
+        "length": 1
+       }
+      },
+      {
+       "content": "×69,00",
+       "polygon": [
+        426,
+        612,
+        483,
+        612,
+        483,
+        636,
+        426,
+        636
+       ],
+       "confidence": 0.559,
+       "span": {
+        "offset": 339,
+        "length": 6
+       }
+      },
+      {
+       "content": "69,00B",
+       "polygon": [
+        494,
+        613,
+        554,
+        613,
+        554,
+        637,
+        494,
+        637
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 346,
+        "length": 6
+       }
+      },
+      {
+       "content": "DOMOWA",
+       "polygon": [
+        169,
+        640,
+        227,
+        638,
+        227,
+        661,
+        170,
+        663
+       ],
+       "confidence": 0.994,
+       "span": {
+        "offset": 353,
+        "length": 6
+       }
+      },
+      {
+       "content": "MROŻONA",
+       "polygon": [
+        238,
+        638,
+        303,
+        637,
+        303,
+        660,
+        238,
+        661
+       ],
+       "confidence": 0.956,
+       "span": {
+        "offset": 360,
+        "length": 7
+       }
+      },
+      {
+       "content": "HERBATA",
+       "polygon": [
+        314,
+        637,
+        380,
+        636,
+        380,
+        659,
+        314,
+        660
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 368,
+        "length": 7
+       }
+      },
+      {
+       "content": "1",
+       "polygon": [
+        408,
+        638,
+        414,
+        638,
+        414,
+        661,
+        408,
+        661
+       ],
+       "confidence": 0.996,
+       "span": {
+        "offset": 376,
+        "length": 1
+       }
+      },
+      {
+       "content": "×22,00",
+       "polygon": [
+        427,
+        638,
+        483,
+        638,
+        483,
+        662,
+        427,
+        661
+       ],
+       "confidence": 0.668,
+       "span": {
+        "offset": 378,
+        "length": 6
+       }
+      },
+      {
+       "content": "22,00A",
+       "polygon": [
+        494,
+        638,
+        554,
+        639,
+        554,
+        662,
+        494,
+        662
+       ],
+       "confidence": 0.997,
+       "span": {
+        "offset": 385,
+        "length": 6
+       }
+      },
+      {
+       "content": "SPRZEDAŻ",
+       "polygon": [
+        169,
+        675,
+        247,
+        674,
+        247,
+        697,
+        170,
+        699
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 392,
+        "length": 8
+       }
+      },
+      {
+       "content": "OPODATKOWANA",
+       "polygon": [
+        257,
+        673,
+        369,
+        673,
+        369,
+        696,
+        257,
+        697
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 401,
+        "length": 12
+       }
+      },
+      {
+       "content": "A",
+       "polygon": [
+        379,
+        673,
+        389,
+        673,
+        389,
+        696,
+        380,
+        696
+       ],
+       "confidence": 0.993,
+       "span": {
+        "offset": 414,
+        "length": 1
+       }
+      },
+      {
+       "content": "SPRZEDAŻ",
+       "polygon": [
+        170,
+        701,
+        247,
+        699,
+        247,
+        722,
+        170,
+        724
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 416,
+        "length": 8
+       }
+      },
+      {
+       "content": "OPODATKOWANA",
+       "polygon": [
+        257,
+        699,
+        369,
+        698,
+        369,
+        721,
+        257,
+        722
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 425,
+        "length": 12
+       }
+      },
+      {
+       "content": "B",
+       "polygon": [
+        380,
+        698,
+        389,
+        698,
+        389,
+        721,
+        380,
+        721
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 438,
+        "length": 1
+       }
+      },
+      {
+       "content": "22,00",
+       "polygon": [
+        504,
+        676,
+        555,
+        676,
+        555,
+        700,
+        504,
+        700
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 440,
+        "length": 5
+       }
+      },
+      {
+       "content": "PTU",
+       "polygon": [
+        169,
+        726,
+        198,
+        725,
+        199,
+        748,
+        169,
+        749
+       ],
+       "confidence": 0.993,
+       "span": {
+        "offset": 446,
+        "length": 3
+       }
+      },
+      {
+       "content": "A",
+       "polygon": [
+        209,
+        725,
+        217,
+        725,
+        218,
+        747,
+        209,
+        748
+       ],
+       "confidence": 0.994,
+       "span": {
+        "offset": 450,
+        "length": 1
+       }
+      },
+      {
+       "content": "23%",
+       "polygon": [
+        228,
+        724,
+        258,
+        724,
+        258,
+        746,
+        228,
+        747
+       ],
+       "confidence": 0.996,
+       "span": {
+        "offset": 452,
+        "length": 3
+       }
+      },
+      {
+       "content": "197,00",
+       "polygon": [
+        496,
+        701,
+        555,
+        702,
+        555,
+        726,
+        496,
+        725
+       ],
+       "confidence": 0.993,
+       "span": {
+        "offset": 456,
+        "length": 6
+       }
+      },
+      {
+       "content": "PTU",
+       "polygon": [
+        169,
+        751,
+        198,
+        750,
+        199,
+        773,
+        169,
+        774
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 463,
+        "length": 3
+       }
+      },
+      {
+       "content": "B",
+       "polygon": [
+        209,
+        750,
+        218,
+        749,
+        218,
+        772,
+        209,
+        772
+       ],
+       "confidence": 0.994,
+       "span": {
+        "offset": 467,
+        "length": 1
+       }
+      },
+      {
+       "content": "8%",
+       "polygon": [
+        228,
+        749,
+        249,
+        749,
+        249,
+        771,
+        229,
+        772
+       ],
+       "confidence": 0.99,
+       "span": {
+        "offset": 469,
+        "length": 2
+       }
+      },
+      {
+       "content": "4,11",
+       "polygon": [
+        515,
+        728,
+        555,
+        729,
+        555,
+        752,
+        515,
+        751
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 472,
+        "length": 4
+       }
+      },
+      {
+       "content": "SUMA",
+       "polygon": [
+        169,
+        776,
+        208,
+        774,
+        208,
+        797,
+        170,
+        799
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 477,
+        "length": 4
+       }
+      },
+      {
+       "content": "PTU",
+       "polygon": [
+        218,
+        774,
+        249,
+        772,
+        249,
+        795,
+        219,
+        797
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 482,
+        "length": 3
+       }
+      },
+      {
+       "content": "14,59",
+       "polygon": [
+        506,
+        753,
+        556,
+        754,
+        556,
+        778,
+        506,
+        777
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 486,
+        "length": 5
+       }
+      },
+      {
+       "content": "SUMA",
+       "polygon": [
+        170,
+        801,
+        246,
+        798,
+        247,
+        831,
+        170,
+        835
+       ],
+       "confidence": 0.989,
+       "span": {
+        "offset": 492,
+        "length": 4
+       }
+      },
+      {
+       "content": "PLN",
+       "polygon": [
+        268,
+        797,
+        325,
+        795,
+        325,
+        829,
+        268,
+        831
+       ],
+       "confidence": 0.996,
+       "span": {
+        "offset": 497,
+        "length": 3
+       }
+      },
+      {
+       "content": "18,70",
+       "polygon": [
+        507,
+        779,
+        556,
+        780,
+        556,
+        804,
+        507,
+        803
+       ],
+       "confidence": 0.997,
+       "span": {
+        "offset": 501,
+        "length": 5
+       }
+      },
+      {
+       "content": "219,00",
+       "polygon": [
+        438,
+        801,
+        555,
+        805,
+        555,
+        841,
+        437,
+        837
+       ],
+       "confidence": 0.998,
+       "span": {
+        "offset": 507,
+        "length": 6
+       }
+      },
+      {
+       "content": "ROZLICZENIE",
+       "polygon": [
+        169,
+        849,
+        276,
+        844,
+        276,
+        869,
+        170,
+        873
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 514,
+        "length": 11
+       }
+      },
+      {
+       "content": "PŁATNOŚCI",
+       "polygon": [
+        286,
+        844,
+        370,
+        843,
+        370,
+        867,
+        287,
+        868
+       ],
+       "confidence": 0.985,
+       "span": {
+        "offset": 526,
+        "length": 9
+       }
+      },
+      {
+       "content": "KARTA",
+       "polygon": [
+        169,
+        877,
+        218,
+        873,
+        218,
+        896,
+        170,
+        899
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 536,
+        "length": 5
+       }
+      },
+      {
+       "content": "Karta",
+       "polygon": [
+        229,
+        872,
+        278,
+        870,
+        278,
+        892,
+        229,
+        895
+       ],
+       "confidence": 0.997,
+       "span": {
+        "offset": 542,
+        "length": 5
+       }
+      },
+      {
+       "content": "00026",
+       "polygon": [
+        169,
+        901,
+        218,
+        897,
+        219,
+        920,
+        170,
+        924
+       ],
+       "confidence": 0.994,
+       "span": {
+        "offset": 548,
+        "length": 5
+       }
+      },
+      {
+       "content": "#POS1",
+       "polygon": [
+        229,
+        897,
+        274,
+        894,
+        275,
+        918,
+        230,
+        920
+       ],
+       "confidence": 0.901,
+       "span": {
+        "offset": 554,
+        "length": 5
+       }
+      },
+      {
+       "content": "Piotr",
+       "polygon": [
+        286,
+        893,
+        333,
+        892,
+        333,
+        916,
+        287,
+        917
+       ],
+       "confidence": 0.993,
+       "span": {
+        "offset": 560,
+        "length": 5
+       }
+      },
+      {
+       "content": "R.",
+       "polygon": [
+        344,
+        892,
+        359,
+        892,
+        359,
+        915,
+        344,
+        916
+       ],
+       "confidence": 0.936,
+       "span": {
+        "offset": 566,
+        "length": 2
+       }
+      },
+      {
+       "content": "219,00",
+       "polygon": [
+        458,
+        876,
+        516,
+        879,
+        516,
+        903,
+        457,
+        899
+       ],
+       "confidence": 0.998,
+       "span": {
+        "offset": 569,
+        "length": 6
+       }
+      },
+      {
+       "content": "PLN",
+       "polygon": [
+        527,
+        880,
+        559,
+        881,
+        559,
+        905,
+        526,
+        903
+       ],
+       "confidence": 0.996,
+       "span": {
+        "offset": 576,
+        "length": 3
+       }
+      },
+      {
+       "content": "2025-05-20",
+       "polygon": [
+        400,
+        895,
+        497,
+        902,
+        496,
+        925,
+        400,
+        918
+       ],
+       "confidence": 0.993,
+       "span": {
+        "offset": 580,
+        "length": 10
+       }
+      },
+      {
+       "content": "18:17",
+       "polygon": [
+        509,
+        903,
+        558,
+        906,
+        558,
+        929,
+        508,
+        926
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 591,
+        "length": 5
+       }
+      },
+      {
+       "content": "6F5DCD249493C6D2B5BAEF76ACB8395258FD6D70",
+       "polygon": [
+        169,
+        927,
+        559,
+        933,
+        559,
+        957,
+        170,
+        951
+       ],
+       "confidence": 0.952,
+       "span": {
+        "offset": 597,
+        "length": 40
+       }
+      },
+      {
+       "content": "FE",
+       "polygon": [
+        271,
+        942,
+        303,
+        943,
+        303,
+        968,
+        271,
+        968
+       ],
+       "confidence": 0.262,
+       "span": {
+        "offset": 638,
+        "length": 2
+       }
+      },
+      {
+       "content": "EAO",
+       "polygon": [
+        316,
+        943,
+        343,
+        944,
+        343,
+        969,
+        315,
+        969
+       ],
+       "confidence": 0.949,
+       "span": {
+        "offset": 641,
+        "length": 3
+       }
+      },
+      {
+       "content": "2001287833",
+       "polygon": [
+        354,
+        945,
+        450,
+        949,
+        450,
+        973,
+        354,
+        970
+       ],
+       "confidence": 0.994,
+       "span": {
+        "offset": 645,
+        "length": 10
+       }
+      },
+      {
+       "content": "Nr",
+       "polygon": [
+        268,
+        971,
+        286,
+        971,
+        286,
+        993,
+        267,
+        993
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 656,
+        "length": 2
+       }
+      },
+      {
+       "content": "sys.",
+       "polygon": [
+        297,
+        971,
+        331,
+        971,
+        331,
+        994,
+        297,
+        994
+       ],
+       "confidence": 0.988,
+       "span": {
+        "offset": 659,
+        "length": 4
+       }
+      },
+      {
+       "content": "25438/05/CHM",
+       "polygon": [
+        344,
+        972,
+        460,
+        976,
+        460,
+        999,
+        344,
+        995
+       ],
+       "confidence": 0.993,
+       "span": {
+        "offset": 664,
+        "length": 12
+       }
+      }
+     ],
+     "lines": [
+      {
+       "content": "-------",
+       "polygon": [
+        293,
+        21,
+        581,
+        11,
+        581,
+        23,
+        294,
+        34
+       ],
+       "spans": [
+        {
+         "offset": 0,
+         "length": 7
+        }
+       ]
+      },
+      {
+       "content": "AMERICAN",
+       "polygon": [
+        238,
+        102,
+        477,
+        96,
+        480,
+        160,
+        239,
+        171
+       ],
+       "spans": [
+        {
+         "offset": 8,
+         "length": 8
+        }
+       ]
+      },
+      {
+       "content": "Billy's",
+       "polygon": [
+        219,
+        151,
+        502,
+        164,
+        499,
+        330,
+        217,
+        316
+       ],
+       "spans": [
+        {
+         "offset": 17,
+         "length": 7
+        }
+       ]
+      },
+      {
+       "content": "RESTAURANTS",
+       "polygon": [
+        242,
+        301,
+        471,
+        303,
+        471,
+        371,
+        241,
+        370
+       ],
+       "spans": [
+        {
+         "offset": 25,
+         "length": 11
+        }
+       ]
+      },
+      {
+       "content": "BILLY'S AMERICAN RESTAURANTS SP Z 0.0.",
+       "polygon": [
+        180,
+        370,
+        535,
+        364,
+        536,
+        388,
+        180,
+        393
+       ],
+       "spans": [
+        {
+         "offset": 37,
+         "length": 38
+        }
+       ]
+      },
+      {
+       "content": "80-838 GDAŃSK, UL. WAWRZYNICZA 10 A/E",
+       "polygon": [
+        180,
+        395,
+        529,
+        388,
+        530,
+        412,
+        180,
+        418
+       ],
+       "spans": [
+        {
+         "offset": 76,
+         "length": 37
+        }
+       ]
+      },
+      {
+       "content": "BILLY'S AMERICAN RESTAURANTS",
+       "polygon": [
+        218,
+        419,
+        481,
+        415,
+        482,
+        437,
+        218,
+        442
+       ],
+       "spans": [
+        {
+         "offset": 114,
+         "length": 28
+        }
+       ]
+      },
+      {
+       "content": "GDAŃSK WYSPA SPICHRZÓW",
+       "polygon": [
+        247,
+        443,
+        453,
+        439,
+        453,
+        462,
+        247,
+        465
+       ],
+       "spans": [
+        {
+         "offset": 143,
+         "length": 22
+        }
+       ]
+      },
+      {
+       "content": "80-748 GDAŃSK; CHMIELNA 3/8",
+       "polygon": [
+        228,
+        467,
+        481,
+        463,
+        482,
+        486,
+        228,
+        489
+       ],
+       "spans": [
+        {
+         "offset": 166,
+         "length": 27
+        }
+       ]
+      },
+      {
+       "content": "BD0000239564",
+       "polygon": [
+        170,
+        491,
+        286,
+        491,
+        286,
+        513,
+        170,
+        513
+       ],
+       "spans": [
+        {
+         "offset": 194,
+         "length": 12
+        }
+       ]
+      },
+      {
+       "content": "NIP 5833191989",
+       "polygon": [
+        169,
+        516,
+        304,
+        515,
+        304,
+        537,
+        169,
+        538
+       ],
+       "spans": [
+        {
+         "offset": 207,
+         "length": 14
+        }
+       ]
+      },
+      {
+       "content": "nr : 146045",
+       "polygon": [
+        462,
+        513,
+        551,
+        512,
+        551,
+        535,
+        462,
+        536
+       ],
+       "spans": [
+        {
+         "offset": 222,
+         "length": 11
+        }
+       ]
+      },
+      {
+       "content": "PARAGON FISKALNY",
+       "polygon": [
+        209,
+        539,
+        510,
+        537,
+        511,
+        560,
+        209,
+        562
+       ],
+       "spans": [
+        {
+         "offset": 234,
+         "length": 16
+        }
+       ]
+      },
+      {
+       "content": "AMERICAN SALAD",
+       "polygon": [
+        170,
+        565,
+        304,
+        563,
+        304,
+        585,
+        170,
+        587
+       ],
+       "spans": [
+        {
+         "offset": 251,
+         "length": 14
+        }
+       ]
+      },
+      {
+       "content": "1 ×49,00 49,00B",
+       "polygon": [
+        407,
+        563,
+        552,
+        562,
+        553,
+        585,
+        407,
+        586
+       ],
+       "spans": [
+        {
+         "offset": 266,
+         "length": 15
+        }
+       ]
+      },
+      {
+       "content": "AMERYKAŃSKIE ŻEBERKA",
+       "polygon": [
+        174,
+        589,
+        369,
+        587,
+        370,
+        609,
+        174,
+        611
+       ],
+       "spans": [
+        {
+         "offset": 282,
+         "length": 20
+        }
+       ]
+      },
+      {
+       "content": "1 ×79,00 79,00B",
+       "polygon": [
+        407,
+        587,
+        553,
+        588,
+        553,
+        611,
+        407,
+        610
+       ],
+       "spans": [
+        {
+         "offset": 303,
+         "length": 15
+        }
+       ]
+      },
+      {
+       "content": "GRILLOWANY PSTRĄG",
+       "polygon": [
+        170,
+        614,
+        332,
+        612,
+        333,
+        634,
+        170,
+        637
+       ],
+       "spans": [
+        {
+         "offset": 319,
+         "length": 17
+        }
+       ]
+      },
+      {
+       "content": "1 ×69,00 69,00B",
+       "polygon": [
+        408,
+        612,
+        554,
+        613,
+        554,
+        636,
+        408,
+        636
+       ],
+       "spans": [
+        {
+         "offset": 337,
+         "length": 15
+        }
+       ]
+      },
+      {
+       "content": "DOMOWA MROŻONA HERBATA",
+       "polygon": [
+        169,
+        638,
+        380,
+        636,
+        380,
+        659,
+        170,
+        662
+       ],
+       "spans": [
+        {
+         "offset": 353,
+         "length": 22
+        }
+       ]
+      },
+      {
+       "content": "1 ×22,00 22,00A",
+       "polygon": [
+        408,
+        637,
+        554,
+        638,
+        554,
+        662,
+        408,
+        661
+       ],
+       "spans": [
+        {
+         "offset": 376,
+         "length": 15
+        }
+       ]
+      },
+      {
+       "content": "SPRZEDAŻ OPODATKOWANA A",
+       "polygon": [
+        169,
+        675,
+        389,
+        672,
+        389,
+        695,
+        170,
+        698
+       ],
+       "spans": [
+        {
+         "offset": 392,
+         "length": 23
+        }
+       ]
+      },
+      {
+       "content": "SPRZEDAŻ OPODATKOWANA B",
+       "polygon": [
+        169,
+        700,
+        389,
+        697,
+        389,
+        720,
+        170,
+        723
+       ],
+       "spans": [
+        {
+         "offset": 416,
+         "length": 23
+        }
+       ]
+      },
+      {
+       "content": "22,00",
+       "polygon": [
+        504,
+        675,
+        555,
+        676,
+        554,
+        700,
+        504,
+        699
+       ],
+       "spans": [
+        {
+         "offset": 440,
+         "length": 5
+        }
+       ]
+      },
+      {
+       "content": "PTU A 23%",
+       "polygon": [
+        169,
+        726,
+        257,
+        724,
+        258,
+        746,
+        169,
+        749
+       ],
+       "spans": [
+        {
+         "offset": 446,
+         "length": 9
+        }
+       ]
+      },
+      {
+       "content": "197,00",
+       "polygon": [
+        496,
+        701,
+        555,
+        702,
+        555,
+        726,
+        496,
+        725
+       ],
+       "spans": [
+        {
+         "offset": 456,
+         "length": 6
+        }
+       ]
+      },
+      {
+       "content": "PTU B 8%",
+       "polygon": [
+        168,
+        751,
+        248,
+        748,
+        249,
+        771,
+        169,
+        774
+       ],
+       "spans": [
+        {
+         "offset": 463,
+         "length": 8
+        }
+       ]
+      },
+      {
+       "content": "4,11",
+       "polygon": [
+        515,
+        728,
+        554,
+        729,
+        554,
+        752,
+        514,
+        751
+       ],
+       "spans": [
+        {
+         "offset": 472,
+         "length": 4
+        }
+       ]
+      },
+      {
+       "content": "SUMA PTU",
+       "polygon": [
+        169,
+        776,
+        248,
+        772,
+        249,
+        795,
+        170,
+        799
+       ],
+       "spans": [
+        {
+         "offset": 477,
+         "length": 8
+        }
+       ]
+      },
+      {
+       "content": "14,59",
+       "polygon": [
+        506,
+        753,
+        556,
+        754,
+        555,
+        778,
+        506,
+        777
+       ],
+       "spans": [
+        {
+         "offset": 486,
+         "length": 5
+        }
+       ]
+      },
+      {
+       "content": "SUMA PLN",
+       "polygon": [
+        169,
+        801,
+        324,
+        795,
+        325,
+        828,
+        170,
+        834
+       ],
+       "spans": [
+        {
+         "offset": 492,
+         "length": 8
+        }
+       ]
+      },
+      {
+       "content": "18,70",
+       "polygon": [
+        507,
+        779,
+        556,
+        780,
+        556,
+        803,
+        506,
+        802
+       ],
+       "spans": [
+        {
+         "offset": 501,
+         "length": 5
+        }
+       ]
+      },
+      {
+       "content": "219,00",
+       "polygon": [
+        438,
+        801,
+        555,
+        805,
+        554,
+        840,
+        437,
+        836
+       ],
+       "spans": [
+        {
+         "offset": 507,
+         "length": 6
+        }
+       ]
+      },
+      {
+       "content": "ROZLICZENIE PŁATNOŚCI",
+       "polygon": [
+        169,
+        848,
+        370,
+        842,
+        370,
+        867,
+        170,
+        873
+       ],
+       "spans": [
+        {
+         "offset": 514,
+         "length": 21
+        }
+       ]
+      },
+      {
+       "content": "KARTA Karta",
+       "polygon": [
+        168,
+        877,
+        277,
+        869,
+        278,
+        891,
+        170,
+        899
+       ],
+       "spans": [
+        {
+         "offset": 536,
+         "length": 11
+        }
+       ]
+      },
+      {
+       "content": "00026 #POS1 Piotr R.",
+       "polygon": [
+        169,
+        899,
+        359,
+        891,
+        359,
+        915,
+        170,
+        923
+       ],
+       "spans": [
+        {
+         "offset": 548,
+         "length": 20
+        }
+       ]
+      },
+      {
+       "content": "219,00 PLN",
+       "polygon": [
+        458,
+        875,
+        559,
+        881,
+        558,
+        905,
+        456,
+        899
+       ],
+       "spans": [
+        {
+         "offset": 569,
+         "length": 10
+        }
+       ]
+      },
+      {
+       "content": "2025-05-20 18:17",
+       "polygon": [
+        400,
+        895,
+        558,
+        906,
+        557,
+        929,
+        399,
+        918
+       ],
+       "spans": [
+        {
+         "offset": 580,
+         "length": 16
+        }
+       ]
+      },
+      {
+       "content": "6F5DCD249493C6D2B5BAEF76ACB8395258FD6D70",
+       "polygon": [
+        169,
+        918,
+        559,
+        921,
+        558,
+        956,
+        169,
+        951
+       ],
+       "spans": [
+        {
+         "offset": 597,
+         "length": 40
+        }
+       ]
+      },
+      {
+       "content": "FE EAO 2001287833",
+       "polygon": [
+        271,
+        942,
+        450,
+        947,
+        449,
+        973,
+        270,
+        967
+       ],
+       "spans": [
+        {
+         "offset": 638,
+         "length": 17
+        }
+       ]
+      },
+      {
+       "content": "Nr sys. 25438/05/CHM",
+       "polygon": [
+        268,
+        970,
+        460,
+        975,
+        459,
+        999,
+        267,
+        993
+       ],
+       "spans": [
+        {
+         "offset": 656,
+         "length": 20
+        }
+       ]
+      }
+     ],
+     "spans": [
+      {
+       "offset": 0,
+       "length": 676
+      }
+     ]
+    }
+   ],
+   "styles": [],
+   "documents": [
+    {
+     "docType": "receipt.retailMeal",
+     "boundingRegions": [
+      {
+       "pageNumber": 1,
+       "polygon": [
+        0,
+        0,
+        768,
+        0,
+        768,
+        1024,
+        0,
+        1024
+       ]
+      }
+     ],
+     "fields": {
+      "CountryRegion": {
+       "type": "countryRegion",
+       "valueCountryRegion": "POL",
+       "confidence": 0.995
+      },
+      "Items": {
+       "type": "array",
+       "valueArray": [
+        {
+         "type": "object",
+         "valueObject": {
+          "Description": {
+           "type": "string",
+           "valueString": "AMERICAN SALAD",
+           "content": "AMERICAN SALAD",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              170,
+              564,
+              304,
+              564,
+              304,
+              587,
+              170,
+              587
+             ]
+            }
+           ],
+           "confidence": 0.98,
+           "spans": [
+            {
+             "offset": 251,
+             "length": 14
+            }
+           ]
+          },
+          "Price": {
+           "type": "currency",
+           "valueCurrency": {
+            "amount": 49.0,
+            "currencyCode": "PLN"
+           },
+           "content": "×49,00",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              425,
+              563,
+              482,
+              562,
+              482,
+              586,
+              425,
+              586
+             ]
+            }
+           ],
+           "confidence": 0.982,
+           "spans": [
+            {
+             "offset": 268,
+             "length": 6
+            }
+           ]
+          },
+          "Quantity": {
+           "type": "number",
+           "valueNumber": 1,
+           "content": "1",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              407,
+              563,
+              413,
+              563,
+              413,
+              586,
+              407,
+              586
+             ]
+            }
+           ],
+           "confidence": 0.985,
+           "spans": [
+            {
+             "offset": 266,
+             "length": 1
+            }
+           ]
+          },
+          "TotalPrice": {
+           "type": "currency",
+           "valueCurrency": {
+            "amount": 49.0,
+            "currencyCode": "PLN"
+           },
+           "content": "49,00B",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              493,
+              562,
+              553,
+              562,
+              553,
+              586,
+              493,
+              586
+             ]
+            }
+           ],
+           "confidence": 0.988,
+           "spans": [
+            {
+             "offset": 275,
+             "length": 6
+            }
+           ]
+          }
+         },
+         "content": "AMERICAN SALAD\n1 ×49,00 49,00B",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            170,
+            562,
+            553,
+            562,
+            553,
+            587,
+            170,
+            587
+           ]
+          }
+         ],
+         "confidence": 0.962,
+         "spans": [
+          {
+           "offset": 251,
+           "length": 30
+          }
+         ]
+        },
+        {
+         "type": "object",
+         "valueObject": {
+          "Description": {
+           "type": "string",
+           "valueString": "AMERYKAŃSKIE ŻEBERKA",
+           "content": "AMERYKAŃSKIE ŻEBERKA",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              174,
+              588,
+              370,
+              587,
+              370,
+              611,
+              174,
+              612
+             ]
+            }
+           ],
+           "confidence": 0.98,
+           "spans": [
+            {
+             "offset": 282,
+             "length": 20
+            }
+           ]
+          },
+          "Price": {
+           "type": "currency",
+           "valueCurrency": {
+            "amount": 79.0,
+            "currencyCode": "PLN"
+           },
+           "content": "×79,00",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              426,
+              588,
+              483,
+              588,
+              483,
+              611,
+              426,
+              611
+             ]
+            }
+           ],
+           "confidence": 0.983,
+           "spans": [
+            {
+             "offset": 305,
+             "length": 6
+            }
+           ]
+          },
+          "Quantity": {
+           "type": "number",
+           "valueNumber": 1,
+           "content": "1",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              407,
+              588,
+              414,
+              588,
+              414,
+              611,
+              407,
+              611
+             ]
+            }
+           ],
+           "confidence": 0.986,
+           "spans": [
+            {
+             "offset": 303,
+             "length": 1
+            }
+           ]
+          },
+          "TotalPrice": {
+           "type": "currency",
+           "valueCurrency": {
+            "amount": 79.0,
+            "currencyCode": "PLN"
+           },
+           "content": "79,00B",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              493,
+              588,
+              553,
+              588,
+              553,
+              611,
+              493,
+              611
+             ]
+            }
+           ],
+           "confidence": 0.989,
+           "spans": [
+            {
+             "offset": 312,
+             "length": 6
+            }
+           ]
+          }
+         },
+         "content": "AMERYKAŃSKIE ŻEBERKA\n1 ×79,00 79,00B",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            174,
+            587,
+            553,
+            587,
+            553,
+            612,
+            174,
+            612
+           ]
+          }
+         ],
+         "confidence": 0.961,
+         "spans": [
+          {
+           "offset": 282,
+           "length": 36
+          }
+         ]
+        },
+        {
+         "type": "object",
+         "valueObject": {
+          "Description": {
+           "type": "string",
+           "valueString": "GRILLOWANY PSTRĄG",
+           "content": "GRILLOWANY PSTRĄG",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              170,
+              612,
+              333,
+              612,
+              333,
+              637,
+              170,
+              637
+             ]
+            }
+           ],
+           "confidence": 0.98,
+           "spans": [
+            {
+             "offset": 319,
+             "length": 17
+            }
+           ]
+          },
+          "Price": {
+           "type": "currency",
+           "valueCurrency": {
+            "amount": 69.0,
+            "currencyCode": "PLN"
+           },
+           "content": "×69,00",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              426,
+              612,
+              483,
+              612,
+              483,
+              636,
+              426,
+              636
+             ]
+            }
+           ],
+           "confidence": 0.982,
+           "spans": [
+            {
+             "offset": 339,
+             "length": 6
+            }
+           ]
+          },
+          "Quantity": {
+           "type": "number",
+           "valueNumber": 1,
+           "content": "1",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              408,
+              613,
+              414,
+              613,
+              414,
+              636,
+              408,
+              636
+             ]
+            }
+           ],
+           "confidence": 0.985,
+           "spans": [
+            {
+             "offset": 337,
+             "length": 1
+            }
+           ]
+          },
+          "TotalPrice": {
+           "type": "currency",
+           "valueCurrency": {
+            "amount": 69.0,
+            "currencyCode": "PLN"
+           },
+           "content": "69,00B",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              494,
+              613,
+              554,
+              613,
+              554,
+              637,
+              494,
+              637
+             ]
+            }
+           ],
+           "confidence": 0.988,
+           "spans": [
+            {
+             "offset": 346,
+             "length": 6
+            }
+           ]
+          }
+         },
+         "content": "GRILLOWANY PSTRĄG\n1 ×69,00 69,00B",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            170,
+            612,
+            554,
+            612,
+            554,
+            637,
+            170,
+            637
+           ]
+          }
+         ],
+         "confidence": 0.959,
+         "spans": [
+          {
+           "offset": 319,
+           "length": 33
+          }
+         ]
+        },
+        {
+         "type": "object",
+         "valueObject": {
+          "Description": {
+           "type": "string",
+           "valueString": "DOMOWA MROŻONA HERBATA",
+           "content": "DOMOWA MROŻONA HERBATA",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              169,
+              639,
+              380,
+              636,
+              380,
+              660,
+              169,
+              663
+             ]
+            }
+           ],
+           "confidence": 0.979,
+           "spans": [
+            {
+             "offset": 353,
+             "length": 22
+            }
+           ]
+          },
+          "Price": {
+           "type": "currency",
+           "valueCurrency": {
+            "amount": 22.0,
+            "currencyCode": "PLN"
+           },
+           "content": "×22,00",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              427,
+              638,
+              483,
+              638,
+              483,
+              662,
+              427,
+              661
+             ]
+            }
+           ],
+           "confidence": 0.983,
+           "spans": [
+            {
+             "offset": 378,
+             "length": 6
+            }
+           ]
+          },
+          "Quantity": {
+           "type": "number",
+           "valueNumber": 1,
+           "content": "1",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              408,
+              638,
+              414,
+              638,
+              414,
+              661,
+              408,
+              661
+             ]
+            }
+           ],
+           "confidence": 0.986,
+           "spans": [
+            {
+             "offset": 376,
+             "length": 1
+            }
+           ]
+          },
+          "TotalPrice": {
+           "type": "currency",
+           "valueCurrency": {
+            "amount": 22.0,
+            "currencyCode": "PLN"
+           },
+           "content": "22,00A",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              494,
+              638,
+              554,
+              639,
+              554,
+              662,
+              494,
+              662
+             ]
+            }
+           ],
+           "confidence": 0.989,
+           "spans": [
+            {
+             "offset": 385,
+             "length": 6
+            }
+           ]
+          }
+         },
+         "content": "DOMOWA MROŻONA HERBATA\n1 ×22,00 22,00A",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            169,
+            636,
+            554,
+            636,
+            554,
+            663,
+            169,
+            663
+           ]
+          }
+         ],
+         "confidence": 0.959,
+         "spans": [
+          {
+           "offset": 353,
+           "length": 38
+          }
+         ]
+        }
+       ]
+      },
+      "MerchantAddress": {
+       "type": "address",
+       "content": "80-838 GDAŃSK, UL. WAWRZYNICZA 10 A/E",
+       "boundingRegions": [
+        {
+         "pageNumber": 1,
+         "polygon": [
+          180,
+          391,
+          530,
+          388,
+          530,
+          415,
+          180,
+          418
+         ]
+        }
+       ],
+       "confidence": 0.982,
+       "spans": [
+        {
+         "offset": 76,
+         "length": 37
+        }
+       ],
+       "valueAddress": {
+        "houseNumber": "10 A/E",
+        "road": "UL. WAWRZYNICZA",
+        "postalCode": "80-838",
+        "city": "GDAŃSK",
+        "streetAddress": "10 A/E UL. WAWRZYNICZA"
+       }
+      },
+      "MerchantName": {
+       "type": "string",
+       "valueString": "BILLY'S AMERICAN RESTAURANTS SP Z 0.0.",
+       "content": "BILLY'S AMERICAN RESTAURANTS SP Z 0.0.",
+       "boundingRegions": [
+        {
+         "pageNumber": 1,
+         "polygon": [
+          180,
+          364,
+          536,
+          364,
+          536,
+          393,
+          180,
+          393
+         ]
+        }
+       ],
+       "confidence": 0.945,
+       "spans": [
+        {
+         "offset": 37,
+         "length": 38
+        }
+       ]
+      },
+      "ReceiptType": {
+       "type": "string",
+       "valueString": "Meal",
+       "confidence": 0.982
+      },
+      "TaxDetails": {
+       "type": "array",
+       "valueArray": [
+        {
+         "type": "object",
+         "valueObject": {
+          "Amount": {
+           "type": "currency",
+           "valueCurrency": {
+            "amount": 4.11,
+            "currencyCode": "PLN"
+           },
+           "content": "4,11",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              515,
+              728,
+              555,
+              729,
+              555,
+              752,
+              515,
+              751
+             ]
+            }
+           ],
+           "confidence": 0.966,
+           "spans": [
+            {
+             "offset": 472,
+             "length": 4
+            }
+           ]
+          },
+          "Description": {
+           "type": "string",
+           "valueString": "PTU A",
+           "content": "PTU A",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              168,
+              726,
+              217,
+              724,
+              218,
+              748,
+              169,
+              749
+             ]
+            }
+           ],
+           "confidence": 0.963,
+           "spans": [
+            {
+             "offset": 446,
+             "length": 5
+            }
+           ]
+          },
+          "Rate": {
+           "type": "number",
+           "valueNumber": 0.23,
+           "content": "23%",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              228,
+              724,
+              258,
+              724,
+              258,
+              746,
+              228,
+              747
+             ]
+            }
+           ],
+           "confidence": 0.966,
+           "spans": [
+            {
+             "offset": 452,
+             "length": 3
+            }
+           ]
+          }
+         },
+         "content": "SPRZEDAŻ OPODATKOWANA A\n22,00\nPTU A 23%\n4,11",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            169,
+            673,
+            555,
+            672,
+            555,
+            752,
+            169,
+            754
+           ]
+          }
+         ],
+         "confidence": 0.972,
+         "spans": [
+          {
+           "offset": 392,
+           "length": 23
+          },
+          {
+           "offset": 440,
+           "length": 15
+          },
+          {
+           "offset": 472,
+           "length": 4
+          }
+         ]
+        },
+        {
+         "type": "object",
+         "valueObject": {
+          "Amount": {
+           "type": "currency",
+           "valueCurrency": {
+            "amount": 14.59,
+            "currencyCode": "PLN"
+           },
+           "content": "14,59",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              506,
+              753,
+              556,
+              754,
+              556,
+              778,
+              506,
+              777
+             ]
+            }
+           ],
+           "confidence": 0.966,
+           "spans": [
+            {
+             "offset": 486,
+             "length": 5
+            }
+           ]
+          },
+          "Description": {
+           "type": "string",
+           "valueString": "PTU B",
+           "content": "PTU B",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              168,
+              751,
+              218,
+              749,
+              219,
+              772,
+              169,
+              774
+             ]
+            }
+           ],
+           "confidence": 0.963,
+           "spans": [
+            {
+             "offset": 463,
+             "length": 5
+            }
+           ]
+          },
+          "Rate": {
+           "type": "number",
+           "valueNumber": 0.08,
+           "content": "8%",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              228,
+              749,
+              249,
+              749,
+              249,
+              771,
+              229,
+              772
+             ]
+            }
+           ],
+           "confidence": 0.966,
+           "spans": [
+            {
+             "offset": 469,
+             "length": 2
+            }
+           ]
+          }
+         },
+         "content": "SPRZEDAŻ OPODATKOWANA B\n197,00\nPTU B 8%\n14,59",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            168,
+            700,
+            555,
+            696,
+            556,
+            778,
+            169,
+            781
+           ]
+          }
+         ],
+         "confidence": 0.976,
+         "spans": [
+          {
+           "offset": 416,
+           "length": 23
+          },
+          {
+           "offset": 456,
+           "length": 15
+          },
+          {
+           "offset": 486,
+           "length": 5
+          }
+         ]
+        }
+       ]
+      },
+      "Total": {
+       "type": "currency",
+       "valueCurrency": {
+        "currencySymbol": "PLN",
+        "amount": 219.0,
+        "currencyCode": "PLN"
+       },
+       "content": "PLN\n219,00",
+       "boundingRegions": [
+        {
+         "pageNumber": 1,
+         "polygon": [
+          268,
+          793,
+          556,
+          803,
+          555,
+          841,
+          267,
+          831
+         ]
+        }
+       ],
+       "confidence": 0.981,
+       "spans": [
+        {
+         "offset": 497,
+         "length": 3
+        },
+        {
+         "offset": 507,
+         "length": 6
+        }
+       ]
+      },
+      "TotalTax": {
+       "type": "currency",
+       "valueCurrency": {
+        "amount": 18.7,
+        "currencyCode": "PLN"
+       },
+       "content": "18,70",
+       "boundingRegions": [
+        {
+         "pageNumber": 1,
+         "polygon": [
+          507,
+          779,
+          556,
+          780,
+          556,
+          804,
+          507,
+          803
+         ]
+        }
+       ],
+       "confidence": 0.987,
+       "spans": [
+        {
+         "offset": 501,
+         "length": 5
+        }
+       ]
+      },
+      "TransactionDate": {
+       "type": "date",
+       "valueDate": "2025-05-20",
+       "content": "2025-05-20",
+       "boundingRegions": [
+        {
+         "pageNumber": 1,
+         "polygon": [
+          400,
+          895,
+          497,
+          902,
+          496,
+          925,
+          400,
+          918
+         ]
+        }
+       ],
+       "confidence": 0.983,
+       "spans": [
+        {
+         "offset": 580,
+         "length": 10
+        }
+       ]
+      },
+      "TransactionTime": {
+       "type": "time",
+       "valueTime": "18:17:00",
+       "content": "18:17",
+       "boundingRegions": [
+        {
+         "pageNumber": 1,
+         "polygon": [
+          509,
+          903,
+          558,
+          906,
+          558,
+          929,
+          508,
+          926
+         ]
+        }
+       ],
+       "confidence": 0.978,
+       "spans": [
+        {
+         "offset": 591,
+         "length": 5
+        }
+       ]
+      }
+     },
+     "confidence": 0.982,
+     "spans": [
+      {
+       "offset": 0,
+       "length": 676
+      }
+     ]
+    }
+   ],
+   "contentFormat": "text"
+  }
+ }
+}

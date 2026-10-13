@@ -1,0 +1,128 @@
+{
+ "receiptId": "12",
+ "configuration": "tesseract-eng-psm6-x2",
+ "model": "tesseract-5",
+ "seconds": 0.47,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "_ CARREFOUR HARKET A",
+  "date": null,
+  "currency": null,
+  "total": -2.37,
+  "items": [
+   {
+    "name": "CHSER RAJSKI WLOSZC",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 7.99,
+    "box": [
+     0.2591145833333333,
+     0.33203125,
+     0.4518229166666667,
+     0.01806640625
+    ]
+   },
+   {
+    "name": "CHSER TWARD.DZIUGAS",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.95,
+    "box": [
+     0.2591145833333333,
+     0.375,
+     0.4713541666666667,
+     0.01708984375
+    ]
+   },
+   {
+    "name": "CHFILET 2 KURCZAKA",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 17.05,
+    "box": [
+     0.2591145833333333,
+     0.396484375,
+     0.4733072916666667,
+     0.01220703125
+    ]
+   },
+   {
+    "name": "CHPOLEDWICA Z DORSZ",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 22.74,
+    "box": [
+     0.259765625,
+     0.4111328125,
+     0.47526041666666663,
+     0.01806640625
+    ]
+   },
+   {
+    "name": "CHIJOGURT HOVENPICK",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 11.5,
+    "box": [
+     0.259765625,
+     0.4296875,
+     0.47526041666666663,
+     0.01318359375
+    ]
+   },
+   {
+    "name": "CHDESER SATINO BAKO",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.35,
+    "box": [
+     0.259765625,
+     0.4462890625,
+     0.4765625,
+     0.013671875
+    ]
+   },
+   {
+    "name": "CHDESER SATINO BAKO",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.35,
+    "box": [
+     0.259765625,
+     0.462890625,
+     0.478515625,
+     0.0146484375
+    ]
+   },
+   {
+    "name": "ABBATONIK TWAROG HA {szt*3,25=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.25,
+    "box": [
+     0.259765625,
+     0.4794921875,
+     0.48046875,
+     0.01513671875
+    ]
+   },
+   {
+    "name": "ARTORBA RECYKLING",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 0.79,
+    "box": [
+     0.259765625,
+     0.49609375,
+     0.48177083333333326,
+     0.015625
+    ]
+   }
+  ]
+ },
+ "source": "langs eng; installed eng,osd,snum; pol MISSING"
+}

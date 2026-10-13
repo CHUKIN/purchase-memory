@@ -1,0 +1,3396 @@
+{
+ "meta": {
+  "apiVersion": "2024-11-30",
+  "modelId": "prebuilt-receipt",
+  "locale": null,
+  "seconds": 4.46,
+  "httpCalls": 2,
+  "fetchedAt": "2026-10-14T00:07:41+0200"
+ },
+ "response": {
+  "status": "succeeded",
+  "createdDateTime": "2026-10-13T22:07:38Z",
+  "lastUpdatedDateTime": "2026-10-13T22:07:41Z",
+  "analyzeResult": {
+   "apiVersion": "2024-11-30",
+   "modelId": "prebuilt-receipt",
+   "stringIndexType": "textElements",
+   "content": "eczny Mleczarnia Powsińska\nul. Powsińska 27\n02-920 Warszawa\nNIP 5222999314\nMassive Food sp. z o.o.\nwubczycka 11, 02-417 Warszawa\nB Gołąbek mięsny\n800 000491689\nnr:2660\nB Sos pomidorowy\nPARAGON FISKALNY\nB Zacierkowa\n1 ×12,01 12,01B\nSPRZEDAŻ OPODATKOWANA B\n1 ×6,76 6,76B\nPTU B 8%\n1 ×7,08 7,08B\nSUMA PTU\n25,85\nSUMA PLN\n1,91\n1,91\nROZLICZENIE PŁATNOŚCI\n25,85\nKARTA\n00025 #4 0\n25,85 PLN\n5FD702AE2CFAE898AE00ACC0311BA274708B27CB\n2025-10-11 14:10\nF& EAZ 2402511161\n3\nSystem obsługuje orgastro.pl\nNIP 5222999314\nNr sys. 40010592025101102100119\nNIEFISKALNY\nr : 2661\nDOKUMENT NIEFISKALNY\nNumer zamówienia\nK951\nNIEFISKALNY\n#4 0\n2025-10-11 14:10\n52A08950240FEDE491A1C6508B1ED4119C306896\nEAZ 2402511161",
+   "pages": [
+    {
+     "pageNumber": 1,
+     "angle": 1.0406789779663086,
+     "width": 768,
+     "height": 1024,
+     "unit": "pixel",
+     "words": [
+      {
+       "content": "eczny",
+       "polygon": [
+        345,
+        177,
+        373,
+        174,
+        373,
+        188,
+        346,
+        191
+       ],
+       "confidence": 0.963,
+       "span": {
+        "offset": 0,
+        "length": 5
+       }
+      },
+      {
+       "content": "Mleczarnia",
+       "polygon": [
+        379,
+        173,
+        437,
+        169,
+        437,
+        184,
+        379,
+        187
+       ],
+       "confidence": 0.935,
+       "span": {
+        "offset": 6,
+        "length": 10
+       }
+      },
+      {
+       "content": "Powsińska",
+       "polygon": [
+        443,
+        169,
+        497,
+        166,
+        498,
+        181,
+        443,
+        184
+       ],
+       "confidence": 0.98,
+       "span": {
+        "offset": 17,
+        "length": 9
+       }
+      },
+      {
+       "content": "ul.",
+       "polygon": [
+        350,
+        189,
+        365,
+        188,
+        366,
+        202,
+        350,
+        203
+       ],
+       "confidence": 0.973,
+       "span": {
+        "offset": 27,
+        "length": 3
+       }
+      },
+      {
+       "content": "Powsińska",
+       "polygon": [
+        372,
+        188,
+        424,
+        184,
+        425,
+        199,
+        373,
+        202
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 31,
+        "length": 9
+       }
+      },
+      {
+       "content": "27",
+       "polygon": [
+        431,
+        184,
+        443,
+        183,
+        444,
+        198,
+        431,
+        199
+       ],
+       "confidence": 0.997,
+       "span": {
+        "offset": 41,
+        "length": 2
+       }
+      },
+      {
+       "content": "02-920",
+       "polygon": [
+        355,
+        203,
+        389,
+        201,
+        390,
+        216,
+        356,
+        217
+       ],
+       "confidence": 0.994,
+       "span": {
+        "offset": 44,
+        "length": 6
+       }
+      },
+      {
+       "content": "Warszawa",
+       "polygon": [
+        395,
+        201,
+        444,
+        200,
+        444,
+        214,
+        396,
+        216
+       ],
+       "confidence": 0.993,
+       "span": {
+        "offset": 51,
+        "length": 8
+       }
+      },
+      {
+       "content": "NIP",
+       "polygon": [
+        258,
+        229,
+        271,
+        236,
+        268,
+        250,
+        255,
+        242
+       ],
+       "confidence": 0.919,
+       "span": {
+        "offset": 60,
+        "length": 3
+       }
+      },
+      {
+       "content": "5222999314",
+       "polygon": [
+        276,
+        239,
+        323,
+        265,
+        320,
+        277,
+        273,
+        253
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 64,
+        "length": 10
+       }
+      },
+      {
+       "content": "Massive",
+       "polygon": [
+        336,
+        220,
+        372,
+        218,
+        372,
+        232,
+        336,
+        234
+       ],
+       "confidence": 0.553,
+       "span": {
+        "offset": 75,
+        "length": 7
+       }
+      },
+      {
+       "content": "Food",
+       "polygon": [
+        378,
+        217,
+        401,
+        217,
+        401,
+        231,
+        378,
+        232
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 83,
+        "length": 4
+       }
+      },
+      {
+       "content": "sp.",
+       "polygon": [
+        407,
+        216,
+        422,
+        216,
+        423,
+        230,
+        408,
+        231
+       ],
+       "confidence": 0.979,
+       "span": {
+        "offset": 88,
+        "length": 3
+       }
+      },
+      {
+       "content": "z",
+       "polygon": [
+        430,
+        216,
+        436,
+        216,
+        436,
+        229,
+        431,
+        230
+       ],
+       "confidence": 0.962,
+       "span": {
+        "offset": 92,
+        "length": 1
+       }
+      },
+      {
+       "content": "o.o.",
+       "polygon": [
+        442,
+        215,
+        465,
+        214,
+        465,
+        228,
+        443,
+        229
+       ],
+       "confidence": 0.975,
+       "span": {
+        "offset": 94,
+        "length": 4
+       }
+      },
+      {
+       "content": "wubczycka",
+       "polygon": [
+        331,
+        236,
+        383,
+        231,
+        384,
+        245,
+        331,
+        250
+       ],
+       "confidence": 0.652,
+       "span": {
+        "offset": 99,
+        "length": 9
+       }
+      },
+      {
+       "content": "11,",
+       "polygon": [
+        391,
+        231,
+        405,
+        231,
+        405,
+        244,
+        391,
+        245
+       ],
+       "confidence": 0.951,
+       "span": {
+        "offset": 109,
+        "length": 3
+       }
+      },
+      {
+       "content": "02-417",
+       "polygon": [
+        413,
+        230,
+        448,
+        229,
+        448,
+        243,
+        413,
+        244
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 113,
+        "length": 6
+       }
+      },
+      {
+       "content": "Warszawa",
+       "polygon": [
+        454,
+        229,
+        503,
+        228,
+        503,
+        242,
+        454,
+        243
+       ],
+       "confidence": 0.993,
+       "span": {
+        "offset": 120,
+        "length": 8
+       }
+      },
+      {
+       "content": "B",
+       "polygon": [
+        255,
+        257,
+        260,
+        260,
+        257,
+        273,
+        252,
+        270
+       ],
+       "confidence": 0.666,
+       "span": {
+        "offset": 129,
+        "length": 1
+       }
+      },
+      {
+       "content": "Gołąbek",
+       "polygon": [
+        264,
+        262,
+        296,
+        280,
+        293,
+        293,
+        261,
+        276
+       ],
+       "confidence": 0.977,
+       "span": {
+        "offset": 131,
+        "length": 7
+       }
+      },
+      {
+       "content": "mięsny",
+       "polygon": [
+        300,
+        282,
+        333,
+        295,
+        331,
+        309,
+        298,
+        295
+       ],
+       "confidence": 0.93,
+       "span": {
+        "offset": 139,
+        "length": 6
+       }
+      },
+      {
+       "content": "800",
+       "polygon": [
+        360,
+        246,
+        377,
+        246,
+        377,
+        260,
+        360,
+        261
+       ],
+       "confidence": 0.773,
+       "span": {
+        "offset": 146,
+        "length": 3
+       }
+      },
+      {
+       "content": "000491689",
+       "polygon": [
+        383,
+        245,
+        437,
+        244,
+        437,
+        259,
+        383,
+        260
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 150,
+        "length": 9
+       }
+      },
+      {
+       "content": "nr:2660",
+       "polygon": [
+        525,
+        257,
+        569,
+        255,
+        569,
+        270,
+        525,
+        272
+       ],
+       "confidence": 0.82,
+       "span": {
+        "offset": 160,
+        "length": 7
+       }
+      },
+      {
+       "content": "B",
+       "polygon": [
+        253,
+        272,
+        258,
+        275,
+        256,
+        288,
+        250,
+        285
+       ],
+       "confidence": 0.653,
+       "span": {
+        "offset": 168,
+        "length": 1
+       }
+      },
+      {
+       "content": "Sos",
+       "polygon": [
+        262,
+        278,
+        276,
+        286,
+        273,
+        299,
+        259,
+        290
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 170,
+        "length": 3
+       }
+      },
+      {
+       "content": "pomidorowy",
+       "polygon": [
+        280,
+        288,
+        332,
+        310,
+        331,
+        322,
+        278,
+        301
+       ],
+       "confidence": 0.807,
+       "span": {
+        "offset": 174,
+        "length": 10
+       }
+      },
+      {
+       "content": "PARAGON",
+       "polygon": [
+        310,
+        275,
+        388,
+        275,
+        388,
+        290,
+        310,
+        290
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 185,
+        "length": 7
+       }
+      },
+      {
+       "content": "FISKALNY",
+       "polygon": [
+        401,
+        274,
+        496,
+        272,
+        496,
+        287,
+        401,
+        290
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 193,
+        "length": 8
+       }
+      },
+      {
+       "content": "B",
+       "polygon": [
+        251,
+        287,
+        257,
+        290,
+        254,
+        303,
+        249,
+        300
+       ],
+       "confidence": 0.911,
+       "span": {
+        "offset": 202,
+        "length": 1
+       }
+      },
+      {
+       "content": "Zacierkowa",
+       "polygon": [
+        261,
+        292,
+        310,
+        317,
+        308,
+        329,
+        258,
+        305
+       ],
+       "confidence": 0.951,
+       "span": {
+        "offset": 204,
+        "length": 10
+       }
+      },
+      {
+       "content": "1",
+       "polygon": [
+        477,
+        289,
+        481,
+        289,
+        482,
+        304,
+        477,
+        304
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 215,
+        "length": 1
+       }
+      },
+      {
+       "content": "×12,01",
+       "polygon": [
+        488,
+        289,
+        524,
+        287,
+        524,
+        303,
+        489,
+        304
+       ],
+       "confidence": 0.584,
+       "span": {
+        "offset": 217,
+        "length": 6
+       }
+      },
+      {
+       "content": "12,01B",
+       "polygon": [
+        532,
+        287,
+        569,
+        286,
+        569,
+        301,
+        532,
+        302
+       ],
+       "confidence": 0.886,
+       "span": {
+        "offset": 224,
+        "length": 6
+       }
+      },
+      {
+       "content": "SPRZEDAŻ",
+       "polygon": [
+        249,
+        309,
+        288,
+        325,
+        286,
+        339,
+        246,
+        323
+       ],
+       "confidence": 0.974,
+       "span": {
+        "offset": 231,
+        "length": 8
+       }
+      },
+      {
+       "content": "OPODATKOWANA",
+       "polygon": [
+        293,
+        327,
+        359,
+        342,
+        357,
+        357,
+        290,
+        341
+       ],
+       "confidence": 0.988,
+       "span": {
+        "offset": 240,
+        "length": 12
+       }
+      },
+      {
+       "content": "B",
+       "polygon": [
+        364,
+        343,
+        371,
+        344,
+        370,
+        359,
+        363,
+        358
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 253,
+        "length": 1
+       }
+      },
+      {
+       "content": "1",
+       "polygon": [
+        488,
+        304,
+        493,
+        304,
+        493,
+        319,
+        489,
+        319
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 255,
+        "length": 1
+       }
+      },
+      {
+       "content": "×6,76",
+       "polygon": [
+        500,
+        304,
+        531,
+        303,
+        531,
+        318,
+        501,
+        318
+       ],
+       "confidence": 0.585,
+       "span": {
+        "offset": 257,
+        "length": 5
+       }
+      },
+      {
+       "content": "6,76B",
+       "polygon": [
+        537,
+        303,
+        568,
+        302,
+        568,
+        317,
+        537,
+        317
+       ],
+       "confidence": 0.92,
+       "span": {
+        "offset": 263,
+        "length": 5
+       }
+      },
+      {
+       "content": "PTU",
+       "polygon": [
+        248,
+        323,
+        262,
+        331,
+        260,
+        344,
+        245,
+        337
+       ],
+       "confidence": 0.99,
+       "span": {
+        "offset": 269,
+        "length": 3
+       }
+      },
+      {
+       "content": "B",
+       "polygon": [
+        267,
+        332,
+        272,
+        335,
+        270,
+        348,
+        264,
+        345
+       ],
+       "confidence": 0.979,
+       "span": {
+        "offset": 273,
+        "length": 1
+       }
+      },
+      {
+       "content": "8%",
+       "polygon": [
+        277,
+        337,
+        288,
+        342,
+        285,
+        355,
+        274,
+        350
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 275,
+        "length": 2
+       }
+      },
+      {
+       "content": "1",
+       "polygon": [
+        488,
+        319,
+        493,
+        319,
+        493,
+        334,
+        488,
+        334
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 278,
+        "length": 1
+       }
+      },
+      {
+       "content": "×7,08",
+       "polygon": [
+        500,
+        319,
+        530,
+        318,
+        530,
+        333,
+        500,
+        334
+       ],
+       "confidence": 0.605,
+       "span": {
+        "offset": 280,
+        "length": 5
+       }
+      },
+      {
+       "content": "7,08B",
+       "polygon": [
+        537,
+        318,
+        568,
+        318,
+        568,
+        333,
+        537,
+        333
+       ],
+       "confidence": 0.942,
+       "span": {
+        "offset": 286,
+        "length": 5
+       }
+      },
+      {
+       "content": "SUMA",
+       "polygon": [
+        246,
+        339,
+        266,
+        347,
+        264,
+        361,
+        243,
+        353
+       ],
+       "confidence": 0.915,
+       "span": {
+        "offset": 292,
+        "length": 4
+       }
+      },
+      {
+       "content": "PTU",
+       "polygon": [
+        270,
+        348,
+        287,
+        355,
+        285,
+        369,
+        268,
+        363
+       ],
+       "confidence": 0.993,
+       "span": {
+        "offset": 297,
+        "length": 3
+       }
+      },
+      {
+       "content": "25,85",
+       "polygon": [
+        536,
+        340,
+        568,
+        340,
+        568,
+        355,
+        536,
+        355
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 301,
+        "length": 5
+       }
+      },
+      {
+       "content": "SUMA",
+       "polygon": [
+        245,
+        356,
+        287,
+        370,
+        282,
+        396,
+        240,
+        382
+       ],
+       "confidence": 0.986,
+       "span": {
+        "offset": 307,
+        "length": 4
+       }
+      },
+      {
+       "content": "PLN",
+       "polygon": [
+        296,
+        373,
+        330,
+        382,
+        327,
+        408,
+        292,
+        399
+       ],
+       "confidence": 0.993,
+       "span": {
+        "offset": 312,
+        "length": 3
+       }
+      },
+      {
+       "content": "1,91",
+       "polygon": [
+        542,
+        356,
+        567,
+        356,
+        567,
+        371,
+        542,
+        371
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 316,
+        "length": 4
+       }
+      },
+      {
+       "content": "1,91",
+       "polygon": [
+        542,
+        371,
+        567,
+        371,
+        567,
+        386,
+        542,
+        386
+       ],
+       "confidence": 0.913,
+       "span": {
+        "offset": 321,
+        "length": 4
+       }
+      },
+      {
+       "content": "ROZLICZENIE",
+       "polygon": [
+        241,
+        392,
+        300,
+        408,
+        298,
+        424,
+        238,
+        407
+       ],
+       "confidence": 0.975,
+       "span": {
+        "offset": 326,
+        "length": 11
+       }
+      },
+      {
+       "content": "PŁATNOŚCI",
+       "polygon": [
+        305,
+        409,
+        356,
+        421,
+        355,
+        436,
+        303,
+        425
+       ],
+       "confidence": 0.981,
+       "span": {
+        "offset": 338,
+        "length": 9
+       }
+      },
+      {
+       "content": "25,85",
+       "polygon": [
+        505,
+        387,
+        567,
+        388,
+        566,
+        417,
+        504,
+        416
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 348,
+        "length": 5
+       }
+      },
+      {
+       "content": "KARTA",
+       "polygon": [
+        240,
+        407,
+        268,
+        418,
+        266,
+        431,
+        237,
+        421
+       ],
+       "confidence": 0.984,
+       "span": {
+        "offset": 354,
+        "length": 5
+       }
+      },
+      {
+       "content": "00025",
+       "polygon": [
+        238,
+        424,
+        265,
+        431,
+        263,
+        446,
+        236,
+        438
+       ],
+       "confidence": 0.994,
+       "span": {
+        "offset": 360,
+        "length": 5
+       }
+      },
+      {
+       "content": "#4",
+       "polygon": [
+        271,
+        433,
+        282,
+        435,
+        280,
+        450,
+        269,
+        447
+       ],
+       "confidence": 0.951,
+       "span": {
+        "offset": 366,
+        "length": 2
+       }
+      },
+      {
+       "content": "0",
+       "polygon": [
+        287,
+        437,
+        294,
+        439,
+        292,
+        453,
+        285,
+        451
+       ],
+       "confidence": 0.922,
+       "span": {
+        "offset": 369,
+        "length": 1
+       }
+      },
+      {
+       "content": "25,85",
+       "polygon": [
+        509,
+        439,
+        540,
+        439,
+        540,
+        455,
+        509,
+        455
+       ],
+       "confidence": 0.983,
+       "span": {
+        "offset": 371,
+        "length": 5
+       }
+      },
+      {
+       "content": "PLN",
+       "polygon": [
+        547,
+        439,
+        567,
+        439,
+        566,
+        455,
+        546,
+        455
+       ],
+       "confidence": 0.994,
+       "span": {
+        "offset": 377,
+        "length": 3
+       }
+      },
+      {
+       "content": "5FD702AE2CFAE898AE00ACC0311BA274708B27CB",
+       "polygon": [
+        280,
+        452,
+        516,
+        471,
+        516,
+        487,
+        279,
+        467
+       ],
+       "confidence": 0.856,
+       "span": {
+        "offset": 381,
+        "length": 40
+       }
+      },
+      {
+       "content": "2025-10-11",
+       "polygon": [
+        466,
+        454,
+        526,
+        455,
+        526,
+        470,
+        466,
+        469
+       ],
+       "confidence": 0.994,
+       "span": {
+        "offset": 422,
+        "length": 10
+       }
+      },
+      {
+       "content": "14:10",
+       "polygon": [
+        535,
+        455,
+        566,
+        456,
+        566,
+        471,
+        535,
+        470
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 433,
+        "length": 5
+       }
+      },
+      {
+       "content": "F&",
+       "polygon": [
+        338,
+        478,
+        358,
+        480,
+        357,
+        495,
+        337,
+        494
+       ],
+       "confidence": 0.117,
+       "span": {
+        "offset": 439,
+        "length": 2
+       }
+      },
+      {
+       "content": "EAZ",
+       "polygon": [
+        365,
+        480,
+        383,
+        482,
+        382,
+        497,
+        364,
+        496
+       ],
+       "confidence": 0.99,
+       "span": {
+        "offset": 442,
+        "length": 3
+       }
+      },
+      {
+       "content": "2402511161",
+       "polygon": [
+        389,
+        482,
+        449,
+        486,
+        449,
+        501,
+        388,
+        498
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 446,
+        "length": 10
+       }
+      },
+      {
+       "content": "3",
+       "polygon": [
+        592,
+        473,
+        598,
+        474,
+        598,
+        487,
+        591,
+        486
+       ],
+       "confidence": 0.511,
+       "span": {
+        "offset": 457,
+        "length": 1
+       }
+      },
+      {
+       "content": "System",
+       "polygon": [
+        233,
+        489,
+        267,
+        495,
+        265,
+        514,
+        231,
+        507
+       ],
+       "confidence": 0.963,
+       "span": {
+        "offset": 459,
+        "length": 6
+       }
+      },
+      {
+       "content": "obsługuje",
+       "polygon": [
+        273,
+        497,
+        324,
+        505,
+        322,
+        523,
+        271,
+        515
+       ],
+       "confidence": 0.993,
+       "span": {
+        "offset": 466,
+        "length": 9
+       }
+      },
+      {
+       "content": "orgastro.pl",
+       "polygon": [
+        330,
+        506,
+        394,
+        514,
+        393,
+        531,
+        329,
+        524
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 476,
+        "length": 11
+       }
+      },
+      {
+       "content": "NIP",
+       "polygon": [
+        228,
+        539,
+        246,
+        542,
+        245,
+        559,
+        226,
+        556
+       ],
+       "confidence": 0.976,
+       "span": {
+        "offset": 488,
+        "length": 3
+       }
+      },
+      {
+       "content": "5222999314",
+       "polygon": [
+        252,
+        542,
+        312,
+        551,
+        312,
+        568,
+        251,
+        559
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 492,
+        "length": 10
+       }
+      },
+      {
+       "content": "Nr",
+       "polygon": [
+        299,
+        535,
+        310,
+        536,
+        310,
+        552,
+        298,
+        551
+       ],
+       "confidence": 0.989,
+       "span": {
+        "offset": 503,
+        "length": 2
+       }
+      },
+      {
+       "content": "sys.",
+       "polygon": [
+        317,
+        537,
+        338,
+        539,
+        338,
+        555,
+        316,
+        553
+       ],
+       "confidence": 0.989,
+       "span": {
+        "offset": 506,
+        "length": 4
+       }
+      },
+      {
+       "content": "40010592025101102100119",
+       "polygon": [
+        346,
+        539,
+        485,
+        548,
+        484,
+        564,
+        345,
+        556
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 511,
+        "length": 23
+       }
+      },
+      {
+       "content": "NIEFISKALNY",
+       "polygon": [
+        326,
+        570,
+        454,
+        578,
+        454,
+        594,
+        326,
+        585
+       ],
+       "confidence": 0.856,
+       "span": {
+        "offset": 535,
+        "length": 11
+       }
+      },
+      {
+       "content": "r",
+       "polygon": [
+        522,
+        569,
+        529,
+        568,
+        529,
+        583,
+        522,
+        584
+       ],
+       "confidence": 0.488,
+       "span": {
+        "offset": 547,
+        "length": 1
+       }
+      },
+      {
+       "content": ":",
+       "polygon": [
+        532,
+        568,
+        535,
+        568,
+        535,
+        583,
+        532,
+        583
+       ],
+       "confidence": 0.898,
+       "span": {
+        "offset": 549,
+        "length": 1
+       }
+      },
+      {
+       "content": "2661",
+       "polygon": [
+        538,
+        567,
+        565,
+        566,
+        565,
+        582,
+        538,
+        583
+       ],
+       "confidence": 0.986,
+       "span": {
+        "offset": 551,
+        "length": 4
+       }
+      },
+      {
+       "content": "DOKUMENT",
+       "polygon": [
+        309,
+        585,
+        375,
+        590,
+        374,
+        605,
+        308,
+        600
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 556,
+        "length": 8
+       }
+      },
+      {
+       "content": "NIEFISKALNY",
+       "polygon": [
+        384,
+        590,
+        477,
+        595,
+        477,
+        611,
+        383,
+        606
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 565,
+        "length": 11
+       }
+      },
+      {
+       "content": "Numer",
+       "polygon": [
+        257,
+        613,
+        339,
+        619,
+        338,
+        636,
+        256,
+        630
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 577,
+        "length": 5
+       }
+      },
+      {
+       "content": "zamówienia",
+       "polygon": [
+        359,
+        620,
+        528,
+        629,
+        528,
+        646,
+        358,
+        637
+       ],
+       "confidence": 0.991,
+       "span": {
+        "offset": 583,
+        "length": 10
+       }
+      },
+      {
+       "content": "K951",
+       "polygon": [
+        281,
+        644,
+        504,
+        652,
+        504,
+        728,
+        279,
+        725
+       ],
+       "confidence": 0.963,
+       "span": {
+        "offset": 594,
+        "length": 4
+       }
+      },
+      {
+       "content": "NIEFISKALNY",
+       "polygon": [
+        320,
+        739,
+        452,
+        740,
+        452,
+        758,
+        320,
+        756
+       ],
+       "confidence": 0.88,
+       "span": {
+        "offset": 599,
+        "length": 11
+       }
+      },
+      {
+       "content": "#4",
+       "polygon": [
+        211,
+        758,
+        224,
+        758,
+        224,
+        775,
+        211,
+        774
+       ],
+       "confidence": 0.952,
+       "span": {
+        "offset": 611,
+        "length": 2
+       }
+      },
+      {
+       "content": "0",
+       "polygon": [
+        238,
+        759,
+        246,
+        759,
+        245,
+        775,
+        237,
+        775
+       ],
+       "confidence": 0.715,
+       "span": {
+        "offset": 614,
+        "length": 1
+       }
+      },
+      {
+       "content": "2025-10-11",
+       "polygon": [
+        462,
+        758,
+        524,
+        760,
+        523,
+        776,
+        462,
+        775
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 616,
+        "length": 10
+       }
+      },
+      {
+       "content": "14:10",
+       "polygon": [
+        533,
+        760,
+        564,
+        761,
+        564,
+        778,
+        532,
+        777
+       ],
+       "confidence": 0.993,
+       "span": {
+        "offset": 627,
+        "length": 5
+       }
+      },
+      {
+       "content": "52A08950240FEDE491A1C6508B1ED4119C306896",
+       "polygon": [
+        262,
+        775,
+        513,
+        776,
+        513,
+        793,
+        262,
+        794
+       ],
+       "confidence": 0.278,
+       "span": {
+        "offset": 633,
+        "length": 40
+       }
+      },
+      {
+       "content": "EAZ",
+       "polygon": [
+        343,
+        793,
+        363,
+        793,
+        363,
+        811,
+        344,
+        811
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 674,
+        "length": 3
+       }
+      },
+      {
+       "content": "2402511161",
+       "polygon": [
+        369,
+        793,
+        432,
+        793,
+        432,
+        811,
+        369,
+        811
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 678,
+        "length": 10
+       }
+      }
+     ],
+     "lines": [
+      {
+       "content": "eczny Mleczarnia Powsińska",
+       "polygon": [
+        345,
+        175,
+        497,
+        166,
+        498,
+        181,
+        346,
+        190
+       ],
+       "spans": [
+        {
+         "offset": 0,
+         "length": 26
+        }
+       ]
+      },
+      {
+       "content": "ul. Powsińska 27",
+       "polygon": [
+        349,
+        189,
+        443,
+        183,
+        444,
+        198,
+        350,
+        203
+       ],
+       "spans": [
+        {
+         "offset": 27,
+         "length": 16
+        }
+       ]
+      },
+      {
+       "content": "02-920 Warszawa",
+       "polygon": [
+        355,
+        203,
+        443,
+        199,
+        444,
+        214,
+        356,
+        217
+       ],
+       "spans": [
+        {
+         "offset": 44,
+         "length": 15
+        }
+       ]
+      },
+      {
+       "content": "NIP 5222999314",
+       "polygon": [
+        258,
+        229,
+        323,
+        266,
+        319,
+        277,
+        254,
+        241
+       ],
+       "spans": [
+        {
+         "offset": 60,
+         "length": 14
+        }
+       ]
+      },
+      {
+       "content": "Massive Food sp. z o.o.",
+       "polygon": [
+        336,
+        219,
+        464,
+        214,
+        465,
+        228,
+        336,
+        234
+       ],
+       "spans": [
+        {
+         "offset": 75,
+         "length": 23
+        }
+       ]
+      },
+      {
+       "content": "wubczycka 11, 02-417 Warszawa",
+       "polygon": [
+        330,
+        234,
+        502,
+        227,
+        503,
+        242,
+        331,
+        249
+       ],
+       "spans": [
+        {
+         "offset": 99,
+         "length": 29
+        }
+       ]
+      },
+      {
+       "content": "B Gołąbek mięsny",
+       "polygon": [
+        255,
+        257,
+        333,
+        297,
+        329,
+        309,
+        252,
+        272
+       ],
+       "spans": [
+        {
+         "offset": 129,
+         "length": 16
+        }
+       ]
+      },
+      {
+       "content": "800 000491689",
+       "polygon": [
+        360,
+        246,
+        436,
+        244,
+        437,
+        258,
+        360,
+        261
+       ],
+       "spans": [
+        {
+         "offset": 146,
+         "length": 13
+        }
+       ]
+      },
+      {
+       "content": "nr:2660",
+       "polygon": [
+        524,
+        257,
+        569,
+        255,
+        569,
+        270,
+        525,
+        271
+       ],
+       "spans": [
+        {
+         "offset": 160,
+         "length": 7
+        }
+       ]
+      },
+      {
+       "content": "B Sos pomidorowy",
+       "polygon": [
+        253,
+        272,
+        332,
+        311,
+        328,
+        322,
+        250,
+        286
+       ],
+       "spans": [
+        {
+         "offset": 168,
+         "length": 16
+        }
+       ]
+      },
+      {
+       "content": "PARAGON FISKALNY",
+       "polygon": [
+        309,
+        275,
+        495,
+        272,
+        495,
+        289,
+        310,
+        291
+       ],
+       "spans": [
+        {
+         "offset": 185,
+         "length": 16
+        }
+       ]
+      },
+      {
+       "content": "B Zacierkowa",
+       "polygon": [
+        252,
+        287,
+        310,
+        318,
+        307,
+        329,
+        248,
+        299
+       ],
+       "spans": [
+        {
+         "offset": 202,
+         "length": 12
+        }
+       ]
+      },
+      {
+       "content": "1 ×12,01 12,01B",
+       "polygon": [
+        477,
+        289,
+        568,
+        286,
+        569,
+        301,
+        477,
+        304
+       ],
+       "spans": [
+        {
+         "offset": 215,
+         "length": 15
+        }
+       ]
+      },
+      {
+       "content": "SPRZEDAŻ OPODATKOWANA B",
+       "polygon": [
+        249,
+        309,
+        371,
+        345,
+        368,
+        359,
+        246,
+        329
+       ],
+       "spans": [
+        {
+         "offset": 231,
+         "length": 23
+        }
+       ]
+      },
+      {
+       "content": "1 ×6,76 6,76B",
+       "polygon": [
+        488,
+        304,
+        568,
+        302,
+        568,
+        316,
+        489,
+        319
+       ],
+       "spans": [
+        {
+         "offset": 255,
+         "length": 13
+        }
+       ]
+      },
+      {
+       "content": "PTU B 8%",
+       "polygon": [
+        248,
+        323,
+        288,
+        343,
+        285,
+        355,
+        244,
+        335
+       ],
+       "spans": [
+        {
+         "offset": 269,
+         "length": 8
+        }
+       ]
+      },
+      {
+       "content": "1 ×7,08 7,08B",
+       "polygon": [
+        488,
+        319,
+        568,
+        318,
+        568,
+        332,
+        488,
+        334
+       ],
+       "spans": [
+        {
+         "offset": 278,
+         "length": 13
+        }
+       ]
+      },
+      {
+       "content": "SUMA PTU",
+       "polygon": [
+        246,
+        339,
+        287,
+        356,
+        284,
+        369,
+        243,
+        352
+       ],
+       "spans": [
+        {
+         "offset": 292,
+         "length": 8
+        }
+       ]
+      },
+      {
+       "content": "25,85",
+       "polygon": [
+        536,
+        340,
+        567,
+        340,
+        567,
+        355,
+        536,
+        355
+       ],
+       "spans": [
+        {
+         "offset": 301,
+         "length": 5
+        }
+       ]
+      },
+      {
+       "content": "SUMA PLN",
+       "polygon": [
+        245,
+        356,
+        330,
+        383,
+        326,
+        408,
+        240,
+        382
+       ],
+       "spans": [
+        {
+         "offset": 307,
+         "length": 8
+        }
+       ]
+      },
+      {
+       "content": "1,91",
+       "polygon": [
+        542,
+        356,
+        567,
+        356,
+        567,
+        370,
+        542,
+        370
+       ],
+       "spans": [
+        {
+         "offset": 316,
+         "length": 4
+        }
+       ]
+      },
+      {
+       "content": "1,91",
+       "polygon": [
+        542,
+        371,
+        566,
+        371,
+        566,
+        386,
+        542,
+        386
+       ],
+       "spans": [
+        {
+         "offset": 321,
+         "length": 4
+        }
+       ]
+      },
+      {
+       "content": "ROZLICZENIE PŁATNOŚCI",
+       "polygon": [
+        241,
+        392,
+        356,
+        421,
+        354,
+        436,
+        238,
+        408
+       ],
+       "spans": [
+        {
+         "offset": 326,
+         "length": 21
+        }
+       ]
+      },
+      {
+       "content": "25,85",
+       "polygon": [
+        505,
+        387,
+        566,
+        388,
+        566,
+        416,
+        504,
+        416
+       ],
+       "spans": [
+        {
+         "offset": 348,
+         "length": 5
+        }
+       ]
+      },
+      {
+       "content": "KARTA",
+       "polygon": [
+        240,
+        407,
+        268,
+        418,
+        265,
+        431,
+        237,
+        420
+       ],
+       "spans": [
+        {
+         "offset": 354,
+         "length": 5
+        }
+       ]
+      },
+      {
+       "content": "00025 #4 0",
+       "polygon": [
+        238,
+        424,
+        294,
+        439,
+        292,
+        453,
+        235,
+        438
+       ],
+       "spans": [
+        {
+         "offset": 360,
+         "length": 10
+        }
+       ]
+      },
+      {
+       "content": "25,85 PLN",
+       "polygon": [
+        509,
+        439,
+        566,
+        439,
+        566,
+        455,
+        509,
+        454
+       ],
+       "spans": [
+        {
+         "offset": 371,
+         "length": 9
+        }
+       ]
+      },
+      {
+       "content": "5FD702AE2CFAE898AE00ACC0311BA274708B27CB",
+       "polygon": [
+        280,
+        452,
+        517,
+        471,
+        515,
+        487,
+        278,
+        472
+       ],
+       "spans": [
+        {
+         "offset": 381,
+         "length": 40
+        }
+       ]
+      },
+      {
+       "content": "2025-10-11 14:10",
+       "polygon": [
+        466,
+        454,
+        566,
+        456,
+        565,
+        471,
+        466,
+        469
+       ],
+       "spans": [
+        {
+         "offset": 422,
+         "length": 16
+        }
+       ]
+      },
+      {
+       "content": "F& EAZ 2402511161",
+       "polygon": [
+        338,
+        478,
+        449,
+        486,
+        448,
+        501,
+        337,
+        494
+       ],
+       "spans": [
+        {
+         "offset": 439,
+         "length": 17
+        }
+       ]
+      },
+      {
+       "content": "3",
+       "polygon": [
+        592,
+        473,
+        598,
+        473,
+        598,
+        487,
+        591,
+        487
+       ],
+       "spans": [
+        {
+         "offset": 457,
+         "length": 1
+        }
+       ]
+      },
+      {
+       "content": "System obsługuje orgastro.pl",
+       "polygon": [
+        233,
+        489,
+        394,
+        514,
+        392,
+        532,
+        230,
+        508
+       ],
+       "spans": [
+        {
+         "offset": 459,
+         "length": 28
+        }
+       ]
+      },
+      {
+       "content": "NIP 5222999314",
+       "polygon": [
+        228,
+        539,
+        312,
+        551,
+        310,
+        568,
+        226,
+        556
+       ],
+       "spans": [
+        {
+         "offset": 488,
+         "length": 14
+        }
+       ]
+      },
+      {
+       "content": "Nr sys. 40010592025101102100119",
+       "polygon": [
+        299,
+        535,
+        485,
+        548,
+        484,
+        564,
+        298,
+        552
+       ],
+       "spans": [
+        {
+         "offset": 503,
+         "length": 31
+        }
+       ]
+      },
+      {
+       "content": "NIEFISKALNY",
+       "polygon": [
+        326,
+        570,
+        454,
+        578,
+        453,
+        594,
+        325,
+        586
+       ],
+       "spans": [
+        {
+         "offset": 535,
+         "length": 11
+        }
+       ]
+      },
+      {
+       "content": "r : 2661",
+       "polygon": [
+        521,
+        567,
+        595,
+        565,
+        596,
+        582,
+        522,
+        584
+       ],
+       "spans": [
+        {
+         "offset": 547,
+         "length": 8
+        }
+       ]
+      },
+      {
+       "content": "DOKUMENT NIEFISKALNY",
+       "polygon": [
+        309,
+        585,
+        478,
+        595,
+        477,
+        611,
+        308,
+        601
+       ],
+       "spans": [
+        {
+         "offset": 556,
+         "length": 20
+        }
+       ]
+      },
+      {
+       "content": "Numer zamówienia",
+       "polygon": [
+        257,
+        613,
+        528,
+        629,
+        527,
+        646,
+        256,
+        631
+       ],
+       "spans": [
+        {
+         "offset": 577,
+         "length": 16
+        }
+       ]
+      },
+      {
+       "content": "K951",
+       "polygon": [
+        281,
+        644,
+        504,
+        651,
+        502,
+        728,
+        279,
+        724
+       ],
+       "spans": [
+        {
+         "offset": 594,
+         "length": 4
+        }
+       ]
+      },
+      {
+       "content": "NIEFISKALNY",
+       "polygon": [
+        320,
+        739,
+        452,
+        740,
+        451,
+        758,
+        320,
+        756
+       ],
+       "spans": [
+        {
+         "offset": 599,
+         "length": 11
+        }
+       ]
+      },
+      {
+       "content": "#4 0",
+       "polygon": [
+        211,
+        758,
+        245,
+        759,
+        245,
+        775,
+        211,
+        775
+       ],
+       "spans": [
+        {
+         "offset": 611,
+         "length": 4
+        }
+       ]
+      },
+      {
+       "content": "2025-10-11 14:10",
+       "polygon": [
+        462,
+        758,
+        564,
+        761,
+        563,
+        777,
+        462,
+        775
+       ],
+       "spans": [
+        {
+         "offset": 616,
+         "length": 16
+        }
+       ]
+      },
+      {
+       "content": "52A08950240FEDE491A1C6508B1ED4119C306896",
+       "polygon": [
+        262,
+        775,
+        513,
+        775,
+        513,
+        793,
+        262,
+        794
+       ],
+       "spans": [
+        {
+         "offset": 633,
+         "length": 40
+        }
+       ]
+      },
+      {
+       "content": "EAZ 2402511161",
+       "polygon": [
+        343,
+        793,
+        431,
+        793,
+        431,
+        810,
+        343,
+        811
+       ],
+       "spans": [
+        {
+         "offset": 674,
+         "length": 14
+        }
+       ]
+      }
+     ],
+     "spans": [
+      {
+       "offset": 0,
+       "length": 688
+      }
+     ]
+    }
+   ],
+   "styles": [],
+   "documents": [
+    {
+     "docType": "receipt.retailMeal",
+     "boundingRegions": [
+      {
+       "pageNumber": 1,
+       "polygon": [
+        0,
+        0,
+        768,
+        0,
+        768,
+        1024,
+        0,
+        1024
+       ]
+      }
+     ],
+     "fields": {
+      "CountryRegion": {
+       "type": "countryRegion",
+       "valueCountryRegion": "POL",
+       "confidence": 0.995
+      },
+      "Items": {
+       "type": "array",
+       "valueArray": [
+        {
+         "type": "object",
+         "valueObject": {
+          "Description": {
+           "type": "string",
+           "valueString": "Gołąbek mięsny",
+           "content": "Gołąbek mięsny",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              266,
+              258,
+              337,
+              297,
+              329,
+              313,
+              257,
+              274
+             ]
+            }
+           ],
+           "confidence": 0.971,
+           "spans": [
+            {
+             "offset": 131,
+             "length": 14
+            }
+           ]
+          },
+          "Price": {
+           "type": "currency",
+           "valueCurrency": {
+            "amount": 12.01,
+            "currencyCode": "PLN"
+           },
+           "content": "×12,01",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              488,
+              289,
+              524,
+              287,
+              524,
+              303,
+              489,
+              304
+             ]
+            }
+           ],
+           "confidence": 0.984,
+           "spans": [
+            {
+             "offset": 217,
+             "length": 6
+            }
+           ]
+          },
+          "Quantity": {
+           "type": "number",
+           "valueNumber": 1,
+           "content": "1",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              477,
+              289,
+              481,
+              289,
+              482,
+              304,
+              477,
+              304
+             ]
+            }
+           ],
+           "confidence": 0.987,
+           "spans": [
+            {
+             "offset": 215,
+             "length": 1
+            }
+           ]
+          },
+          "TotalPrice": {
+           "type": "currency",
+           "valueCurrency": {
+            "amount": 12.01,
+            "currencyCode": "PLN"
+           },
+           "content": "12,01B",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              532,
+              287,
+              569,
+              286,
+              569,
+              301,
+              532,
+              302
+             ]
+            }
+           ],
+           "confidence": 0.986,
+           "spans": [
+            {
+             "offset": 224,
+             "length": 6
+            }
+           ]
+          }
+         },
+         "content": "B Gołąbek mięsny\n1 ×12,01 12,01B",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            290,
+            172,
+            574,
+            288,
+            532,
+            391,
+            248,
+            275
+           ]
+          }
+         ],
+         "confidence": 0.953,
+         "spans": [
+          {
+           "offset": 129,
+           "length": 16
+          },
+          {
+           "offset": 215,
+           "length": 15
+          }
+         ]
+        },
+        {
+         "type": "object",
+         "valueObject": {
+          "Description": {
+           "type": "string",
+           "valueString": "Sos pomidorowy",
+           "content": "Sos pomidorowy",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              267,
+              270,
+              337,
+              313,
+              326,
+              331,
+              256,
+              288
+             ]
+            }
+           ],
+           "confidence": 0.965,
+           "spans": [
+            {
+             "offset": 170,
+             "length": 14
+            }
+           ]
+          },
+          "Price": {
+           "type": "currency",
+           "valueCurrency": {
+            "amount": 6.76,
+            "currencyCode": "PLN"
+           },
+           "content": "×6,76",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              500,
+              304,
+              531,
+              303,
+              531,
+              318,
+              501,
+              318
+             ]
+            }
+           ],
+           "confidence": 0.984,
+           "spans": [
+            {
+             "offset": 257,
+             "length": 5
+            }
+           ]
+          },
+          "Quantity": {
+           "type": "number",
+           "valueNumber": 1,
+           "content": "1",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              488,
+              304,
+              493,
+              304,
+              493,
+              319,
+              489,
+              319
+             ]
+            }
+           ],
+           "confidence": 0.987,
+           "spans": [
+            {
+             "offset": 255,
+             "length": 1
+            }
+           ]
+          },
+          "TotalPrice": {
+           "type": "currency",
+           "valueCurrency": {
+            "amount": 6.76,
+            "currencyCode": "PLN"
+           },
+           "content": "6,76B",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              537,
+              303,
+              568,
+              302,
+              568,
+              317,
+              537,
+              317
+             ]
+            }
+           ],
+           "confidence": 0.986,
+           "spans": [
+            {
+             "offset": 263,
+             "length": 5
+            }
+           ]
+          }
+         },
+         "content": "B Sos pomidorowy\n1 ×6,76 6,76B",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            288,
+            187,
+            573,
+            304,
+            532,
+            405,
+            246,
+            288
+           ]
+          }
+         ],
+         "confidence": 0.675,
+         "spans": [
+          {
+           "offset": 168,
+           "length": 16
+          },
+          {
+           "offset": 255,
+           "length": 13
+          }
+         ]
+        },
+        {
+         "type": "object",
+         "valueObject": {
+          "Description": {
+           "type": "string",
+           "valueString": "Zacierkowa",
+           "content": "Zacierkowa",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              261,
+              292,
+              310,
+              317,
+              308,
+              329,
+              258,
+              305
+             ]
+            }
+           ],
+           "confidence": 0.977,
+           "spans": [
+            {
+             "offset": 204,
+             "length": 10
+            }
+           ]
+          },
+          "Price": {
+           "type": "currency",
+           "valueCurrency": {
+            "amount": 7.08,
+            "currencyCode": "PLN"
+           },
+           "content": "×7,08",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              500,
+              319,
+              530,
+              318,
+              530,
+              333,
+              500,
+              334
+             ]
+            }
+           ],
+           "confidence": 0.984,
+           "spans": [
+            {
+             "offset": 280,
+             "length": 5
+            }
+           ]
+          },
+          "Quantity": {
+           "type": "number",
+           "valueNumber": 1,
+           "content": "1",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              488,
+              319,
+              493,
+              319,
+              493,
+              334,
+              488,
+              334
+             ]
+            }
+           ],
+           "confidence": 0.987,
+           "spans": [
+            {
+             "offset": 278,
+             "length": 1
+            }
+           ]
+          },
+          "TotalPrice": {
+           "type": "currency",
+           "valueCurrency": {
+            "amount": 7.08,
+            "currencyCode": "PLN"
+           },
+           "content": "7,08B",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              537,
+              318,
+              568,
+              318,
+              568,
+              333,
+              537,
+              333
+             ]
+            }
+           ],
+           "confidence": 0.987,
+           "spans": [
+            {
+             "offset": 286,
+             "length": 5
+            }
+           ]
+          }
+         },
+         "content": "B Zacierkowa\n1 ×7,08 7,08B",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            249,
+            287,
+            568,
+            287,
+            568,
+            334,
+            249,
+            334
+           ]
+          }
+         ],
+         "confidence": 0.953,
+         "spans": [
+          {
+           "offset": 202,
+           "length": 12
+          },
+          {
+           "offset": 278,
+           "length": 13
+          }
+         ]
+        }
+       ]
+      },
+      "MerchantAddress": {
+       "type": "address",
+       "content": "ul. Powsińska 27\n02-920 Warszawa",
+       "boundingRegions": [
+        {
+         "pageNumber": 1,
+         "polygon": [
+          349,
+          189,
+          443,
+          183,
+          445,
+          214,
+          351,
+          220
+         ]
+        }
+       ],
+       "confidence": 0.965,
+       "spans": [
+        {
+         "offset": 27,
+         "length": 32
+        }
+       ],
+       "valueAddress": {
+        "houseNumber": "27",
+        "road": "ul. Powsińska",
+        "postalCode": "02-920",
+        "city": "Warszawa",
+        "streetAddress": "27 ul. Powsińska"
+       }
+      },
+      "MerchantName": {
+       "type": "string",
+       "valueString": "Massive Food sp. z o.o.",
+       "content": "Massive Food sp. z o.o.",
+       "boundingRegions": [
+        {
+         "pageNumber": 1,
+         "polygon": [
+          335,
+          219,
+          465,
+          213,
+          466,
+          228,
+          336,
+          234
+         ]
+        }
+       ],
+       "confidence": 0.93,
+       "spans": [
+        {
+         "offset": 75,
+         "length": 23
+        }
+       ]
+      },
+      "MerchantPhoneNumber": {
+       "type": "phoneNumber",
+       "content": "800 000491689",
+       "boundingRegions": [
+        {
+         "pageNumber": 1,
+         "polygon": [
+          360,
+          245,
+          437,
+          244,
+          437,
+          260,
+          360,
+          261
+         ]
+        }
+       ],
+       "confidence": 0.977,
+       "spans": [
+        {
+         "offset": 146,
+         "length": 13
+        }
+       ]
+      },
+      "ReceiptType": {
+       "type": "string",
+       "valueString": "Meal",
+       "confidence": 0.988
+      },
+      "TaxDetails": {
+       "type": "array",
+       "valueArray": [
+        {
+         "type": "object",
+         "valueObject": {
+          "Amount": {
+           "type": "currency",
+           "valueCurrency": {
+            "amount": 1.91,
+            "currencyCode": "PLN"
+           },
+           "content": "1,91",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              542,
+              371,
+              567,
+              371,
+              567,
+              386,
+              542,
+              386
+             ]
+            }
+           ],
+           "confidence": 0.97,
+           "spans": [
+            {
+             "offset": 321,
+             "length": 4
+            }
+           ]
+          },
+          "Description": {
+           "type": "string",
+           "valueString": "PTU B",
+           "content": "PTU B",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              249,
+              322,
+              276,
+              337,
+              269,
+              350,
+              241,
+              335
+             ]
+            }
+           ],
+           "confidence": 0.54,
+           "spans": [
+            {
+             "offset": 269,
+             "length": 5
+            }
+           ]
+          },
+          "Rate": {
+           "type": "number",
+           "valueNumber": 0.08,
+           "content": "8%",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              277,
+              337,
+              288,
+              342,
+              285,
+              355,
+              274,
+              350
+             ]
+            }
+           ],
+           "confidence": 0.974,
+           "spans": [
+            {
+             "offset": 275,
+             "length": 2
+            }
+           ]
+          }
+         },
+         "content": "PTU B 8%\n1,91",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            296,
+            231,
+            573,
+            374,
+            519,
+            479,
+            242,
+            335
+           ]
+          }
+         ],
+         "confidence": 0.659,
+         "spans": [
+          {
+           "offset": 269,
+           "length": 8
+          },
+          {
+           "offset": 321,
+           "length": 4
+          }
+         ]
+        }
+       ]
+      },
+      "Total": {
+       "type": "currency",
+       "valueCurrency": {
+        "currencySymbol": "PLN",
+        "amount": 25.85,
+        "currencyCode": "PLN"
+       },
+       "content": "PLN\n25,85",
+       "boundingRegions": [
+        {
+         "pageNumber": 1,
+         "polygon": [
+          310,
+          321,
+          573,
+          390,
+          553,
+          467,
+          289,
+          398
+         ]
+        }
+       ],
+       "confidence": 0.976,
+       "spans": [
+        {
+         "offset": 312,
+         "length": 3
+        },
+        {
+         "offset": 348,
+         "length": 5
+        }
+       ]
+      },
+      "TotalTax": {
+       "type": "currency",
+       "valueCurrency": {
+        "amount": 1.91,
+        "currencyCode": "PLN"
+       },
+       "content": "1,91",
+       "boundingRegions": [
+        {
+         "pageNumber": 1,
+         "polygon": [
+          542,
+          371,
+          567,
+          371,
+          567,
+          386,
+          542,
+          386
+         ]
+        }
+       ],
+       "confidence": 0.97,
+       "spans": [
+        {
+         "offset": 321,
+         "length": 4
+        }
+       ]
+      },
+      "TransactionDate": {
+       "type": "date",
+       "valueDate": "2025-10-11",
+       "content": "2025-10-11",
+       "boundingRegions": [
+        {
+         "pageNumber": 1,
+         "polygon": [
+          462,
+          758,
+          524,
+          760,
+          523,
+          776,
+          462,
+          775
+         ]
+        }
+       ],
+       "confidence": 0.976,
+       "spans": [
+        {
+         "offset": 616,
+         "length": 10
+        }
+       ]
+      },
+      "TransactionTime": {
+       "type": "time",
+       "valueTime": "14:10:00",
+       "content": "14:10",
+       "boundingRegions": [
+        {
+         "pageNumber": 1,
+         "polygon": [
+          533,
+          760,
+          564,
+          761,
+          564,
+          778,
+          532,
+          777
+         ]
+        }
+       ],
+       "confidence": 0.976,
+       "spans": [
+        {
+         "offset": 627,
+         "length": 5
+        }
+       ]
+      }
+     },
+     "confidence": 0.987,
+     "spans": [
+      {
+       "offset": 0,
+       "length": 688
+      }
+     ]
+    }
+   ],
+   "contentFormat": "text"
+  }
+ }
+}

@@ -1,0 +1,147 @@
+{
+ "receiptId": "10",
+ "configuration": "azure-prebuilt-receipt",
+ "model": "2024-11-30",
+ "seconds": 10.85,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": 0.01,
+ "usage": null,
+ "parsed": {
+  "merchant": "AUCHAN POLSKA SP.Z O.O.",
+  "date": "2025-08-05",
+  "currency": null,
+  "total": 85.69,
+  "totalBox": [
+   0.2942708333333333,
+   0.626953125,
+   0.5390625,
+   0.0361328125
+  ],
+  "items": [
+   {
+    "name": "GUMA ROZP.",
+    "quantity": 1,
+    "unitPrice": 7.44,
+    "lineTotal": 7.44,
+    "box": [
+     0.16276041666666666,
+     0.3173828125,
+     0.6953125,
+     0.0322265625
+    ]
+   },
+   {
+    "name": "TOST PEŁNO",
+    "quantity": 1,
+    "unitPrice": 3.18,
+    "lineTotal": 3.18,
+    "box": [
+     0.16536458333333334,
+     0.33984375,
+     0.6888020833333334,
+     0.0322265625
+    ]
+   },
+   {
+    "name": "FILET Z KU",
+    "quantity": 0.555,
+    "unitPrice": 28.98,
+    "lineTotal": 16.08,
+    "box": [
+     0.171875,
+     0.361328125,
+     0.6770833333333334,
+     0.033203125
+    ]
+   },
+   {
+    "name": "BANAN",
+    "quantity": 0.414,
+    "unitPrice": 6.99,
+    "lineTotal": 2.89,
+    "box": [
+     0.17708333333333334,
+     0.3828125,
+     0.6666666666666666,
+     0.0322265625
+    ]
+   },
+   {
+    "name": "SZYNKA Z P",
+    "quantity": 1,
+    "unitPrice": 6.19,
+    "lineTotal": 6.19,
+    "box": [
+     0.18359375,
+     0.4033203125,
+     0.6549479166666666,
+     0.0302734375
+    ]
+   },
+   {
+    "name": "SER SZWAJC",
+    "quantity": 1,
+    "unitPrice": 5.89,
+    "lineTotal": 5.89,
+    "box": [
+     0.18880208333333334,
+     0.4228515625,
+     0.64453125,
+     0.029296875
+    ]
+   },
+   {
+    "name": "CEBULA",
+    "quantity": 0.184,
+    "unitPrice": 4.39,
+    "lineTotal": 0.81,
+    "box": [
+     0.19401041666666666,
+     0.44140625,
+     0.6341145833333334,
+     0.0302734375
+    ]
+   },
+   {
+    "name": "DORSZ ATLA",
+    "quantity": 0.302,
+    "unitPrice": 104.9,
+    "lineTotal": 31.68,
+    "box": [
+     0.19791666666666666,
+     0.4580078125,
+     0.625,
+     0.03125
+    ]
+   },
+   {
+    "name": "JOGURT OWC",
+    "quantity": 1,
+    "unitPrice": 7.64,
+    "lineTotal": 7.64,
+    "box": [
+     0.203125,
+     0.478515625,
+     0.6158854166666666,
+     0.02734375
+    ]
+   },
+   {
+    "name": "ZIEMNIAK W",
+    "quantity": 1,
+    "unitPrice": 3.89,
+    "lineTotal": 3.89,
+    "box": [
+     0.20442708333333334,
+     0.4970703125,
+     0.6106770833333334,
+     0.02734375
+    ]
+   }
+  ]
+ },
+ "source": "fresh call",
+ "locale": null
+}

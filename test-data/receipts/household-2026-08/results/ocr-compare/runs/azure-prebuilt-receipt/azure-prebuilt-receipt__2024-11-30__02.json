@@ -1,0 +1,183 @@
+{
+ "receiptId": "02",
+ "configuration": "azure-prebuilt-receipt",
+ "model": "2024-11-30",
+ "seconds": 3.73,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": 0.01,
+ "usage": null,
+ "parsed": {
+  "merchant": "ROSSIA Betriebsgesellschaft Gmbh",
+  "date": "2025-07-10",
+  "currency": null,
+  "total": 24.3,
+  "totalBox": [
+   0.609375,
+   0.6591796875,
+   0.1640625,
+   0.0341796875
+  ],
+  "items": [
+   {
+    "name": "Kekse Uschki",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.49,
+    "box": [
+     0.3424479166666667,
+     0.3271484375,
+     0.4283854166666667,
+     0.0224609375
+    ]
+   },
+   {
+    "name": "Tulskij prjanik",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 1.49,
+    "box": [
+     0.34375,
+     0.3515625,
+     0.42578125,
+     0.021484375
+    ]
+   },
+   {
+    "name": "Tulskij prjanik",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 1.49,
+    "box": [
+     0.34375,
+     0.376953125,
+     0.42578125,
+     0.01953125
+    ]
+   },
+   {
+    "name": "Tulskij prjanik",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 1.49,
+    "box": [
+     0.34375,
+     0.4013671875,
+     0.42447916666666674,
+     0.0185546875
+    ]
+   },
+   {
+    "name": "Tulskij prjanik",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 1.49,
+    "box": [
+     0.34375,
+     0.42578125,
+     0.42447916666666674,
+     0.0166015625
+    ]
+   },
+   {
+    "name": "geback",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.49,
+    "box": [
+     0.34375,
+     0.44921875,
+     0.42317708333333326,
+     0.0166015625
+    ]
+   },
+   {
+    "name": "Gebäck mit Minzgeschmack",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 1.99,
+    "box": [
+     0.34375,
+     0.4716796875,
+     0.421875,
+     0.0166015625
+    ]
+   },
+   {
+    "name": "Lebensmittel 7%",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 0.99,
+    "box": [
+     0.34375,
+     0.4931640625,
+     0.42057291666666674,
+     0.015625
+    ]
+   },
+   {
+    "name": "Tafelschokolade",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 1.49,
+    "box": [
+     0.3463541666666667,
+     0.5146484375,
+     0.4166666666666667,
+     0.015625
+    ]
+   },
+   {
+    "name": "Schokolade",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 1.19,
+    "box": [
+     0.3450520833333333,
+     0.5341796875,
+     0.4153645833333333,
+     0.0146484375
+    ]
+   },
+   {
+    "name": "Lebensmittel 7%",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 1.99,
+    "box": [
+     0.3463541666666667,
+     0.552734375,
+     0.41406250000000006,
+     0.0166015625
+    ]
+   },
+   {
+    "name": "Schokolade Babaevskij",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 1.49,
+    "box": [
+     0.34765625,
+     0.5712890625,
+     0.41536458333333326,
+     0.0205078125
+    ]
+   },
+   {
+    "name": "Sefir",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.99,
+    "box": [
+     0.3502604166666667,
+     0.5927734375,
+     0.4192708333333333,
+     0.01953125
+    ]
+   }
+  ]
+ },
+ "source": "fresh call",
+ "locale": null
+}

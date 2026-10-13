@@ -1,0 +1,19 @@
+{
+ "receiptId": "03",
+ "configuration": "tesseract-eng-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.07,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "E.Leclerc ® iisvisw",
+  "date": null,
+  "currency": null,
+  "total": 247.26,
+  "items": []
+ },
+ "source": "langs eng; installed eng,osd,snum; pol MISSING"
+}

@@ -1,0 +1,5184 @@
+{
+ "meta": {
+  "apiVersion": "2024-11-30",
+  "modelId": "prebuilt-receipt",
+  "locale": null,
+  "seconds": 3.73,
+  "httpCalls": 2,
+  "fetchedAt": "2026-10-14T00:07:21+0200"
+ },
+ "response": {
+  "status": "succeeded",
+  "createdDateTime": "2026-10-13T22:07:18Z",
+  "lastUpdatedDateTime": "2026-10-13T22:07:21Z",
+  "analyzeResult": {
+   "apiVersion": "2024-11-30",
+   "modelId": "prebuilt-receipt",
+   "stringIndexType": "textElements",
+   "content": "ROSSIA Betriebsgesellschaft Gmbh\nGF Rüdiger, Frank Eckhard\nStuttgarter Platz 36 / 10627 Berlin\nTel. : +49-30-32 76 59 45\nSt.Nr .: 27/497/31300\nÖffnungszeiten:\nMontag bis Sonntag\n24 Stunden geöffnet\nRechnungsnummer :9425\nKekse Uschki\n3,49 € B\nTulskij prjanik\n1,49 € B\nTulskij prjanik\n1,49 € B\nTulskij prjanik\n1,49 € B\nTulskij prjanik\n1,49 € B\ngeback\n2,49 € B\nGebäck mit Minzgeschmack\n1,99 € B\nLebensmittel 7%\n0,99 € B\nTafelschokolade\n1,49 € B\nSchokolade\nLebensmittel 7%\n1,19 € B\nSchokolade Babaevskij\n1,99 € B\nSefir\n1,49 € B\nSonstige 19%\n2,99 € B\n0,23 € A\nTotal\n24,30 €\nNettoumsatz\n22,69 €\nM>\nMwst 19%\n0,04 €\nA\nMwst 7%\n1,57 €\nB\nKARTE\n24,30\n€\nWek\n18:27 10.7.2025 2 KASSIERER 2\n9425\nROSSIA 8 K-2\nHerzlichen Dank für Ihren Einkauf\nIhr ROSSIA TEAM.",
+   "pages": [
+    {
+     "pageNumber": 1,
+     "angle": -1.135599970817566,
+     "width": 768,
+     "height": 1024,
+     "unit": "pixel",
+     "words": [
+      {
+       "content": "ROSSIA",
+       "polygon": [
+        300,
+        103,
+        347,
+        98,
+        348,
+        117,
+        302,
+        121
+       ],
+       "confidence": 0.973,
+       "span": {
+        "offset": 0,
+        "length": 6
+       }
+      },
+      {
+       "content": "Betriebsgesellschaft",
+       "polygon": [
+        355,
+        97,
+        513,
+        80,
+        514,
+        99,
+        356,
+        116
+       ],
+       "confidence": 0.963,
+       "span": {
+        "offset": 7,
+        "length": 20
+       }
+      },
+      {
+       "content": "Gmbh",
+       "polygon": [
+        522,
+        79,
+        557,
+        76,
+        558,
+        95,
+        523,
+        98
+       ],
+       "confidence": 0.896,
+       "span": {
+        "offset": 28,
+        "length": 4
+       }
+      },
+      {
+       "content": "GF",
+       "polygon": [
+        332,
+        122,
+        348,
+        121,
+        349,
+        139,
+        333,
+        140
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 33,
+        "length": 2
+       }
+      },
+      {
+       "content": "Rüdiger,",
+       "polygon": [
+        356,
+        120,
+        413,
+        114,
+        415,
+        133,
+        357,
+        138
+       ],
+       "confidence": 0.993,
+       "span": {
+        "offset": 36,
+        "length": 8
+       }
+      },
+      {
+       "content": "Frank",
+       "polygon": [
+        417,
+        114,
+        457,
+        109,
+        458,
+        128,
+        419,
+        132
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 45,
+        "length": 5
+       }
+      },
+      {
+       "content": "Eckhard",
+       "polygon": [
+        465,
+        109,
+        527,
+        102,
+        528,
+        121,
+        467,
+        127
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 51,
+        "length": 7
+       }
+      },
+      {
+       "content": "Stuttgarter",
+       "polygon": [
+        286,
+        146,
+        371,
+        139,
+        372,
+        158,
+        286,
+        164
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 59,
+        "length": 11
+       }
+      },
+      {
+       "content": "Platz",
+       "polygon": [
+        380,
+        139,
+        419,
+        135,
+        420,
+        154,
+        381,
+        157
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 71,
+        "length": 5
+       }
+      },
+      {
+       "content": "36",
+       "polygon": [
+        427,
+        134,
+        442,
+        133,
+        444,
+        152,
+        428,
+        153
+       ],
+       "confidence": 0.989,
+       "span": {
+        "offset": 77,
+        "length": 2
+       }
+      },
+      {
+       "content": "/",
+       "polygon": [
+        450,
+        132,
+        459,
+        132,
+        460,
+        150,
+        451,
+        151
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 80,
+        "length": 1
+       }
+      },
+      {
+       "content": "10627",
+       "polygon": [
+        468,
+        131,
+        509,
+        127,
+        510,
+        146,
+        469,
+        150
+       ],
+       "confidence": 0.996,
+       "span": {
+        "offset": 82,
+        "length": 5
+       }
+      },
+      {
+       "content": "Berlin",
+       "polygon": [
+        517,
+        126,
+        570,
+        122,
+        571,
+        140,
+        518,
+        145
+       ],
+       "confidence": 0.994,
+       "span": {
+        "offset": 88,
+        "length": 6
+       }
+      },
+      {
+       "content": "Tel.",
+       "polygon": [
+        333,
+        163,
+        360,
+        161,
+        361,
+        179,
+        334,
+        181
+       ],
+       "confidence": 0.983,
+       "span": {
+        "offset": 95,
+        "length": 4
+       }
+      },
+      {
+       "content": ":",
+       "polygon": [
+        366,
+        161,
+        370,
+        160,
+        371,
+        178,
+        367,
+        179
+       ],
+       "confidence": 0.984,
+       "span": {
+        "offset": 100,
+        "length": 1
+       }
+      },
+      {
+       "content": "+49-30-32",
+       "polygon": [
+        380,
+        160,
+        452,
+        154,
+        453,
+        173,
+        381,
+        178
+       ],
+       "confidence": 0.994,
+       "span": {
+        "offset": 102,
+        "length": 9
+       }
+      },
+      {
+       "content": "76",
+       "polygon": [
+        460,
+        153,
+        476,
+        152,
+        477,
+        171,
+        461,
+        172
+       ],
+       "confidence": 0.997,
+       "span": {
+        "offset": 112,
+        "length": 2
+       }
+      },
+      {
+       "content": "59",
+       "polygon": [
+        483,
+        151,
+        500,
+        150,
+        502,
+        169,
+        485,
+        170
+       ],
+       "confidence": 0.997,
+       "span": {
+        "offset": 115,
+        "length": 2
+       }
+      },
+      {
+       "content": "45",
+       "polygon": [
+        508,
+        149,
+        527,
+        148,
+        528,
+        166,
+        509,
+        168
+       ],
+       "confidence": 0.998,
+       "span": {
+        "offset": 118,
+        "length": 2
+       }
+      },
+      {
+       "content": "St.Nr",
+       "polygon": [
+        348,
+        183,
+        382,
+        180,
+        383,
+        198,
+        349,
+        200
+       ],
+       "confidence": 0.991,
+       "span": {
+        "offset": 121,
+        "length": 5
+       }
+      },
+      {
+       "content": ".:",
+       "polygon": [
+        386,
+        180,
+        401,
+        179,
+        402,
+        197,
+        386,
+        197
+       ],
+       "confidence": 0.896,
+       "span": {
+        "offset": 127,
+        "length": 2
+       }
+      },
+      {
+       "content": "27/497/31300",
+       "polygon": [
+        411,
+        178,
+        511,
+        172,
+        511,
+        189,
+        412,
+        196
+       ],
+       "confidence": 0.994,
+       "span": {
+        "offset": 130,
+        "length": 12
+       }
+      },
+      {
+       "content": "Öffnungszeiten:",
+       "polygon": [
+        364,
+        223,
+        482,
+        217,
+        483,
+        234,
+        364,
+        239
+       ],
+       "confidence": 0.963,
+       "span": {
+        "offset": 143,
+        "length": 15
+       }
+      },
+      {
+       "content": "Montag",
+       "polygon": [
+        356,
+        243,
+        403,
+        241,
+        404,
+        258,
+        356,
+        260
+       ],
+       "confidence": 0.996,
+       "span": {
+        "offset": 159,
+        "length": 6
+       }
+      },
+      {
+       "content": "bis",
+       "polygon": [
+        411,
+        240,
+        435,
+        239,
+        435,
+        257,
+        412,
+        258
+       ],
+       "confidence": 0.998,
+       "span": {
+        "offset": 166,
+        "length": 3
+       }
+      },
+      {
+       "content": "Sonntag",
+       "polygon": [
+        443,
+        239,
+        501,
+        237,
+        501,
+        254,
+        444,
+        256
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 170,
+        "length": 7
+       }
+      },
+      {
+       "content": "24",
+       "polygon": [
+        349,
+        263,
+        364,
+        262,
+        365,
+        279,
+        349,
+        280
+       ],
+       "confidence": 0.996,
+       "span": {
+        "offset": 178,
+        "length": 2
+       }
+      },
+      {
+       "content": "Stunden",
+       "polygon": [
+        372,
+        262,
+        427,
+        260,
+        428,
+        277,
+        373,
+        279
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 181,
+        "length": 7
+       }
+      },
+      {
+       "content": "geöffnet",
+       "polygon": [
+        435,
+        260,
+        500,
+        257,
+        500,
+        274,
+        435,
+        277
+       ],
+       "confidence": 0.941,
+       "span": {
+        "offset": 189,
+        "length": 8
+       }
+      },
+      {
+       "content": "Rechnungsnummer",
+       "polygon": [
+        348,
+        303,
+        463,
+        299,
+        464,
+        316,
+        349,
+        320
+       ],
+       "confidence": 0.83,
+       "span": {
+        "offset": 198,
+        "length": 15
+       }
+      },
+      {
+       "content": ":9425",
+       "polygon": [
+        467,
+        299,
+        508,
+        297,
+        508,
+        314,
+        467,
+        316
+       ],
+       "confidence": 0.977,
+       "span": {
+        "offset": 214,
+        "length": 5
+       }
+      },
+      {
+       "content": "Kekse",
+       "polygon": [
+        263,
+        341,
+        303,
+        341,
+        303,
+        358,
+        263,
+        357
+       ],
+       "confidence": 0.996,
+       "span": {
+        "offset": 220,
+        "length": 5
+       }
+      },
+      {
+       "content": "Uschki",
+       "polygon": [
+        310,
+        341,
+        357,
+        341,
+        357,
+        358,
+        310,
+        358
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 226,
+        "length": 6
+       }
+      },
+      {
+       "content": "3,49",
+       "polygon": [
+        520,
+        337,
+        554,
+        336,
+        554,
+        353,
+        521,
+        354
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 233,
+        "length": 4
+       }
+      },
+      {
+       "content": "€",
+       "polygon": [
+        570,
+        335,
+        579,
+        335,
+        579,
+        352,
+        570,
+        352
+       ],
+       "confidence": 0.985,
+       "span": {
+        "offset": 238,
+        "length": 1
+       }
+      },
+      {
+       "content": "B",
+       "polygon": [
+        584,
+        335,
+        592,
+        335,
+        592,
+        352,
+        585,
+        352
+       ],
+       "confidence": 0.761,
+       "span": {
+        "offset": 240,
+        "length": 1
+       }
+      },
+      {
+       "content": "Tulskij",
+       "polygon": [
+        265,
+        364,
+        317,
+        365,
+        317,
+        382,
+        264,
+        381
+       ],
+       "confidence": 0.975,
+       "span": {
+        "offset": 242,
+        "length": 7
+       }
+      },
+      {
+       "content": "prjanik",
+       "polygon": [
+        326,
+        365,
+        382,
+        365,
+        382,
+        382,
+        326,
+        382
+       ],
+       "confidence": 0.994,
+       "span": {
+        "offset": 250,
+        "length": 7
+       }
+      },
+      {
+       "content": "1,49",
+       "polygon": [
+        520,
+        362,
+        553,
+        361,
+        553,
+        377,
+        521,
+        378
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 258,
+        "length": 4
+       }
+      },
+      {
+       "content": "€",
+       "polygon": [
+        569,
+        361,
+        579,
+        361,
+        579,
+        377,
+        570,
+        377
+       ],
+       "confidence": 0.977,
+       "span": {
+        "offset": 263,
+        "length": 1
+       }
+      },
+      {
+       "content": "B",
+       "polygon": [
+        584,
+        361,
+        591,
+        360,
+        591,
+        377,
+        584,
+        377
+       ],
+       "confidence": 0.95,
+       "span": {
+        "offset": 265,
+        "length": 1
+       }
+      },
+      {
+       "content": "Tulskij",
+       "polygon": [
+        264,
+        388,
+        317,
+        389,
+        317,
+        405,
+        264,
+        404
+       ],
+       "confidence": 0.993,
+       "span": {
+        "offset": 267,
+        "length": 7
+       }
+      },
+      {
+       "content": "prjanik",
+       "polygon": [
+        326,
+        389,
+        381,
+        389,
+        381,
+        406,
+        326,
+        406
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 275,
+        "length": 7
+       }
+      },
+      {
+       "content": "1,49",
+       "polygon": [
+        520,
+        387,
+        552,
+        386,
+        552,
+        403,
+        520,
+        403
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 283,
+        "length": 4
+       }
+      },
+      {
+       "content": "€",
+       "polygon": [
+        569,
+        386,
+        578,
+        386,
+        578,
+        403,
+        569,
+        403
+       ],
+       "confidence": 0.974,
+       "span": {
+        "offset": 288,
+        "length": 1
+       }
+      },
+      {
+       "content": "B",
+       "polygon": [
+        583,
+        386,
+        591,
+        386,
+        591,
+        402,
+        584,
+        402
+       ],
+       "confidence": 0.977,
+       "span": {
+        "offset": 290,
+        "length": 1
+       }
+      },
+      {
+       "content": "Tulskij",
+       "polygon": [
+        264,
+        411,
+        317,
+        412,
+        317,
+        429,
+        264,
+        428
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 292,
+        "length": 7
+       }
+      },
+      {
+       "content": "prjanik",
+       "polygon": [
+        326,
+        412,
+        381,
+        413,
+        381,
+        430,
+        326,
+        429
+       ],
+       "confidence": 0.993,
+       "span": {
+        "offset": 300,
+        "length": 7
+       }
+      },
+      {
+       "content": "1,49",
+       "polygon": [
+        519,
+        412,
+        552,
+        412,
+        552,
+        428,
+        519,
+        429
+       ],
+       "confidence": 0.993,
+       "span": {
+        "offset": 308,
+        "length": 4
+       }
+      },
+      {
+       "content": "€",
+       "polygon": [
+        568,
+        412,
+        577,
+        412,
+        577,
+        428,
+        568,
+        428
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 313,
+        "length": 1
+       }
+      },
+      {
+       "content": "B",
+       "polygon": [
+        583,
+        412,
+        590,
+        412,
+        590,
+        428,
+        583,
+        428
+       ],
+       "confidence": 0.667,
+       "span": {
+        "offset": 315,
+        "length": 1
+       }
+      },
+      {
+       "content": "Tulskij",
+       "polygon": [
+        264,
+        436,
+        317,
+        436,
+        317,
+        453,
+        264,
+        452
+       ],
+       "confidence": 0.993,
+       "span": {
+        "offset": 317,
+        "length": 7
+       }
+      },
+      {
+       "content": "prjanik",
+       "polygon": [
+        326,
+        436,
+        381,
+        436,
+        381,
+        453,
+        326,
+        453
+       ],
+       "confidence": 0.994,
+       "span": {
+        "offset": 325,
+        "length": 7
+       }
+      },
+      {
+       "content": "1,49",
+       "polygon": [
+        519,
+        437,
+        551,
+        437,
+        551,
+        453,
+        519,
+        453
+       ],
+       "confidence": 0.989,
+       "span": {
+        "offset": 333,
+        "length": 4
+       }
+      },
+      {
+       "content": "€",
+       "polygon": [
+        568,
+        437,
+        577,
+        437,
+        577,
+        453,
+        568,
+        453
+       ],
+       "confidence": 0.999,
+       "span": {
+        "offset": 338,
+        "length": 1
+       }
+      },
+      {
+       "content": "B",
+       "polygon": [
+        582,
+        437,
+        590,
+        436,
+        590,
+        453,
+        582,
+        453
+       ],
+       "confidence": 0.868,
+       "span": {
+        "offset": 340,
+        "length": 1
+       }
+      },
+      {
+       "content": "geback",
+       "polygon": [
+        264,
+        461,
+        312,
+        460,
+        312,
+        476,
+        264,
+        476
+       ],
+       "confidence": 0.997,
+       "span": {
+        "offset": 342,
+        "length": 6
+       }
+      },
+      {
+       "content": "2,49",
+       "polygon": [
+        517,
+        461,
+        551,
+        461,
+        551,
+        477,
+        517,
+        477
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 349,
+        "length": 4
+       }
+      },
+      {
+       "content": "€",
+       "polygon": [
+        567,
+        461,
+        576,
+        461,
+        576,
+        476,
+        567,
+        476
+       ],
+       "confidence": 0.99,
+       "span": {
+        "offset": 354,
+        "length": 1
+       }
+      },
+      {
+       "content": "B",
+       "polygon": [
+        581,
+        461,
+        589,
+        461,
+        589,
+        476,
+        581,
+        476
+       ],
+       "confidence": 0.899,
+       "span": {
+        "offset": 356,
+        "length": 1
+       }
+      },
+      {
+       "content": "Gebäck",
+       "polygon": [
+        264,
+        483,
+        310,
+        483,
+        310,
+        499,
+        264,
+        499
+       ],
+       "confidence": 0.996,
+       "span": {
+        "offset": 358,
+        "length": 6
+       }
+      },
+      {
+       "content": "mit",
+       "polygon": [
+        319,
+        483,
+        341,
+        483,
+        341,
+        499,
+        319,
+        499
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 365,
+        "length": 3
+       }
+      },
+      {
+       "content": "Minzgeschmack",
+       "polygon": [
+        349,
+        483,
+        440,
+        484,
+        440,
+        500,
+        349,
+        499
+       ],
+       "confidence": 0.213,
+       "span": {
+        "offset": 369,
+        "length": 13
+       }
+      },
+      {
+       "content": "1,99",
+       "polygon": [
+        518,
+        485,
+        550,
+        484,
+        551,
+        499,
+        518,
+        499
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 383,
+        "length": 4
+       }
+      },
+      {
+       "content": "€",
+       "polygon": [
+        567,
+        484,
+        575,
+        484,
+        575,
+        499,
+        567,
+        499
+       ],
+       "confidence": 0.989,
+       "span": {
+        "offset": 388,
+        "length": 1
+       }
+      },
+      {
+       "content": "B",
+       "polygon": [
+        581,
+        484,
+        588,
+        484,
+        588,
+        498,
+        581,
+        499
+       ],
+       "confidence": 0.973,
+       "span": {
+        "offset": 390,
+        "length": 1
+       }
+      },
+      {
+       "content": "Lebensmittel",
+       "polygon": [
+        264,
+        506,
+        354,
+        505,
+        355,
+        521,
+        264,
+        521
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 392,
+        "length": 12
+       }
+      },
+      {
+       "content": "7%",
+       "polygon": [
+        365,
+        505,
+        381,
+        506,
+        381,
+        521,
+        365,
+        521
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 405,
+        "length": 2
+       }
+      },
+      {
+       "content": "0,99",
+       "polygon": [
+        517,
+        506,
+        550,
+        506,
+        550,
+        521,
+        518,
+        521
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 408,
+        "length": 4
+       }
+      },
+      {
+       "content": "€",
+       "polygon": [
+        566,
+        506,
+        575,
+        506,
+        575,
+        521,
+        566,
+        521
+       ],
+       "confidence": 0.984,
+       "span": {
+        "offset": 413,
+        "length": 1
+       }
+      },
+      {
+       "content": "B",
+       "polygon": [
+        580,
+        506,
+        587,
+        506,
+        587,
+        520,
+        580,
+        520
+       ],
+       "confidence": 0.99,
+       "span": {
+        "offset": 415,
+        "length": 1
+       }
+      },
+      {
+       "content": "Tafelschokolade",
+       "polygon": [
+        266,
+        527,
+        381,
+        528,
+        381,
+        543,
+        266,
+        542
+       ],
+       "confidence": 0.946,
+       "span": {
+        "offset": 417,
+        "length": 15
+       }
+      },
+      {
+       "content": "1,49",
+       "polygon": [
+        518,
+        528,
+        550,
+        528,
+        550,
+        542,
+        519,
+        542
+       ],
+       "confidence": 0.962,
+       "span": {
+        "offset": 433,
+        "length": 4
+       }
+      },
+      {
+       "content": "€",
+       "polygon": [
+        566,
+        527,
+        574,
+        527,
+        574,
+        541,
+        566,
+        541
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 438,
+        "length": 1
+       }
+      },
+      {
+       "content": "B",
+       "polygon": [
+        579,
+        527,
+        586,
+        527,
+        586,
+        541,
+        579,
+        541
+       ],
+       "confidence": 0.962,
+       "span": {
+        "offset": 440,
+        "length": 1
+       }
+      },
+      {
+       "content": "Schokolade",
+       "polygon": [
+        265,
+        548,
+        347,
+        547,
+        347,
+        561,
+        266,
+        561
+       ],
+       "confidence": 0.994,
+       "span": {
+        "offset": 442,
+        "length": 10
+       }
+      },
+      {
+       "content": "Lebensmittel",
+       "polygon": [
+        266,
+        566,
+        361,
+        566,
+        361,
+        581,
+        266,
+        581
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 453,
+        "length": 12
+       }
+      },
+      {
+       "content": "7%",
+       "polygon": [
+        369,
+        566,
+        387,
+        567,
+        387,
+        581,
+        369,
+        581
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 466,
+        "length": 2
+       }
+      },
+      {
+       "content": "1,19",
+       "polygon": [
+        519,
+        548,
+        549,
+        547,
+        549,
+        561,
+        519,
+        562
+       ],
+       "confidence": 0.933,
+       "span": {
+        "offset": 469,
+        "length": 4
+       }
+      },
+      {
+       "content": "€",
+       "polygon": [
+        565,
+        547,
+        573,
+        547,
+        573,
+        560,
+        565,
+        560
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 474,
+        "length": 1
+       }
+      },
+      {
+       "content": "B",
+       "polygon": [
+        577,
+        547,
+        584,
+        547,
+        584,
+        560,
+        578,
+        560
+       ],
+       "confidence": 0.9,
+       "span": {
+        "offset": 476,
+        "length": 1
+       }
+      },
+      {
+       "content": "Schokolade",
+       "polygon": [
+        268,
+        585,
+        349,
+        587,
+        349,
+        603,
+        267,
+        601
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 478,
+        "length": 10
+       }
+      },
+      {
+       "content": "Babaevskij",
+       "polygon": [
+        357,
+        587,
+        432,
+        590,
+        432,
+        606,
+        356,
+        603
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 489,
+        "length": 10
+       }
+      },
+      {
+       "content": "1,99",
+       "polygon": [
+        520,
+        568,
+        549,
+        567,
+        549,
+        581,
+        520,
+        583
+       ],
+       "confidence": 0.989,
+       "span": {
+        "offset": 500,
+        "length": 4
+       }
+      },
+      {
+       "content": "€",
+       "polygon": [
+        564,
+        566,
+        572,
+        566,
+        572,
+        581,
+        565,
+        581
+       ],
+       "confidence": 0.973,
+       "span": {
+        "offset": 505,
+        "length": 1
+       }
+      },
+      {
+       "content": "B",
+       "polygon": [
+        577,
+        566,
+        584,
+        566,
+        584,
+        580,
+        577,
+        581
+       ],
+       "confidence": 0.955,
+       "span": {
+        "offset": 507,
+        "length": 1
+       }
+      },
+      {
+       "content": "Sefir",
+       "polygon": [
+        269,
+        607,
+        311,
+        607,
+        311,
+        623,
+        269,
+        622
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 509,
+        "length": 5
+       }
+      },
+      {
+       "content": "1,49",
+       "polygon": [
+        523,
+        589,
+        552,
+        589,
+        553,
+        604,
+        523,
+        604
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 515,
+        "length": 4
+       }
+      },
+      {
+       "content": "€",
+       "polygon": [
+        567,
+        588,
+        575,
+        588,
+        575,
+        603,
+        567,
+        603
+       ],
+       "confidence": 0.973,
+       "span": {
+        "offset": 520,
+        "length": 1
+       }
+      },
+      {
+       "content": "B",
+       "polygon": [
+        579,
+        588,
+        586,
+        588,
+        586,
+        603,
+        579,
+        603
+       ],
+       "confidence": 0.584,
+       "span": {
+        "offset": 522,
+        "length": 1
+       }
+      },
+      {
+       "content": "Sonstige",
+       "polygon": [
+        270,
+        630,
+        337,
+        631,
+        337,
+        648,
+        270,
+        647
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 524,
+        "length": 8
+       }
+      },
+      {
+       "content": "19%",
+       "polygon": [
+        346,
+        631,
+        371,
+        631,
+        371,
+        648,
+        345,
+        648
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 533,
+        "length": 3
+       }
+      },
+      {
+       "content": "2,99",
+       "polygon": [
+        526,
+        612,
+        556,
+        611,
+        557,
+        626,
+        526,
+        627
+       ],
+       "confidence": 0.989,
+       "span": {
+        "offset": 537,
+        "length": 4
+       }
+      },
+      {
+       "content": "€",
+       "polygon": [
+        571,
+        610,
+        579,
+        610,
+        580,
+        625,
+        571,
+        626
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 542,
+        "length": 1
+       }
+      },
+      {
+       "content": "B",
+       "polygon": [
+        583,
+        610,
+        591,
+        610,
+        591,
+        625,
+        584,
+        625
+       ],
+       "confidence": 0.647,
+       "span": {
+        "offset": 544,
+        "length": 1
+       }
+      },
+      {
+       "content": "0,23",
+       "polygon": [
+        529,
+        635,
+        561,
+        633,
+        561,
+        649,
+        530,
+        650
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 546,
+        "length": 4
+       }
+      },
+      {
+       "content": "€",
+       "polygon": [
+        575,
+        633,
+        583,
+        633,
+        584,
+        648,
+        576,
+        648
+       ],
+       "confidence": 0.988,
+       "span": {
+        "offset": 551,
+        "length": 1
+       }
+      },
+      {
+       "content": "A",
+       "polygon": [
+        588,
+        632,
+        596,
+        632,
+        596,
+        647,
+        588,
+        648
+       ],
+       "confidence": 0.963,
+       "span": {
+        "offset": 553,
+        "length": 1
+       }
+      },
+      {
+       "content": "Total",
+       "polygon": [
+        272,
+        676,
+        354,
+        676,
+        354,
+        707,
+        272,
+        707
+       ],
+       "confidence": 0.994,
+       "span": {
+        "offset": 555,
+        "length": 5
+       }
+      },
+      {
+       "content": "24,30",
+       "polygon": [
+        468,
+        679,
+        546,
+        676,
+        547,
+        707,
+        469,
+        710
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 561,
+        "length": 5
+       }
+      },
+      {
+       "content": "€",
+       "polygon": [
+        576,
+        676,
+        593,
+        675,
+        593,
+        706,
+        577,
+        706
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 567,
+        "length": 1
+       }
+      },
+      {
+       "content": "Nettoumsatz",
+       "polygon": [
+        270,
+        719,
+        371,
+        719,
+        371,
+        736,
+        270,
+        737
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 569,
+        "length": 11
+       }
+      },
+      {
+       "content": "22,69",
+       "polygon": [
+        489,
+        718,
+        529,
+        717,
+        531,
+        734,
+        490,
+        736
+       ],
+       "confidence": 0.994,
+       "span": {
+        "offset": 581,
+        "length": 5
+       }
+      },
+      {
+       "content": "€",
+       "polygon": [
+        545,
+        716,
+        554,
+        716,
+        555,
+        733,
+        546,
+        733
+       ],
+       "confidence": 0.989,
+       "span": {
+        "offset": 587,
+        "length": 1
+       }
+      },
+      {
+       "content": "M>",
+       "polygon": [
+        16,
+        750,
+        92,
+        813,
+        76,
+        845,
+        0,
+        788
+       ],
+       "confidence": 0.801,
+       "span": {
+        "offset": 589,
+        "length": 2
+       }
+      },
+      {
+       "content": "Mwst",
+       "polygon": [
+        270,
+        747,
+        308,
+        747,
+        308,
+        765,
+        271,
+        766
+       ],
+       "confidence": 0.989,
+       "span": {
+        "offset": 592,
+        "length": 4
+       }
+      },
+      {
+       "content": "19%",
+       "polygon": [
+        318,
+        747,
+        346,
+        746,
+        346,
+        765,
+        318,
+        765
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 597,
+        "length": 3
+       }
+      },
+      {
+       "content": "0,04",
+       "polygon": [
+        502,
+        744,
+        534,
+        742,
+        536,
+        759,
+        503,
+        761
+       ],
+       "confidence": 0.977,
+       "span": {
+        "offset": 601,
+        "length": 4
+       }
+      },
+      {
+       "content": "€",
+       "polygon": [
+        550,
+        741,
+        559,
+        740,
+        561,
+        758,
+        551,
+        758
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 606,
+        "length": 1
+       }
+      },
+      {
+       "content": "A",
+       "polygon": [
+        608,
+        742,
+        616,
+        741,
+        618,
+        755,
+        610,
+        755
+       ],
+       "confidence": 0.977,
+       "span": {
+        "offset": 608,
+        "length": 1
+       }
+      },
+      {
+       "content": "Mwst",
+       "polygon": [
+        271,
+        776,
+        309,
+        775,
+        309,
+        794,
+        271,
+        795
+       ],
+       "confidence": 0.897,
+       "span": {
+        "offset": 610,
+        "length": 4
+       }
+      },
+      {
+       "content": "7%",
+       "polygon": [
+        318,
+        775,
+        339,
+        774,
+        339,
+        794,
+        318,
+        794
+       ],
+       "confidence": 0.973,
+       "span": {
+        "offset": 615,
+        "length": 2
+       }
+      },
+      {
+       "content": "1,57",
+       "polygon": [
+        507,
+        769,
+        539,
+        767,
+        540,
+        786,
+        509,
+        788
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 618,
+        "length": 4
+       }
+      },
+      {
+       "content": "€",
+       "polygon": [
+        555,
+        766,
+        565,
+        766,
+        566,
+        784,
+        557,
+        784
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 623,
+        "length": 1
+       }
+      },
+      {
+       "content": "B",
+       "polygon": [
+        614,
+        767,
+        622,
+        767,
+        623,
+        781,
+        615,
+        781
+       ],
+       "confidence": 0.767,
+       "span": {
+        "offset": 625,
+        "length": 1
+       }
+      },
+      {
+       "content": "KARTE",
+       "polygon": [
+        271,
+        805,
+        342,
+        803,
+        343,
+        832,
+        271,
+        835
+       ],
+       "confidence": 0.996,
+       "span": {
+        "offset": 627,
+        "length": 5
+       }
+      },
+      {
+       "content": "24,30",
+       "polygon": [
+        523,
+        795,
+        585,
+        791,
+        586,
+        819,
+        525,
+        823
+       ],
+       "confidence": 0.998,
+       "span": {
+        "offset": 633,
+        "length": 5
+       }
+      },
+      {
+       "content": "€",
+       "polygon": [
+        606,
+        791,
+        618,
+        791,
+        618,
+        816,
+        607,
+        816
+       ],
+       "confidence": 0.926,
+       "span": {
+        "offset": 639,
+        "length": 1
+       }
+      },
+      {
+       "content": "Wek",
+       "polygon": [
+        140,
+        844,
+        196,
+        860,
+        187,
+        894,
+        129,
+        879
+       ],
+       "confidence": 0.558,
+       "span": {
+        "offset": 641,
+        "length": 3
+       }
+      },
+      {
+       "content": "18:27",
+       "polygon": [
+        273,
+        846,
+        322,
+        843,
+        323,
+        863,
+        274,
+        866
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 645,
+        "length": 5
+       }
+      },
+      {
+       "content": "10.7.2025",
+       "polygon": [
+        332,
+        842,
+        415,
+        837,
+        416,
+        858,
+        333,
+        862
+       ],
+       "confidence": 0.825,
+       "span": {
+        "offset": 651,
+        "length": 9
+       }
+      },
+      {
+       "content": "2",
+       "polygon": [
+        423,
+        837,
+        432,
+        836,
+        433,
+        857,
+        425,
+        857
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 661,
+        "length": 1
+       }
+      },
+      {
+       "content": "KASSIERER",
+       "polygon": [
+        441,
+        836,
+        518,
+        831,
+        519,
+        852,
+        442,
+        856
+       ],
+       "confidence": 0.946,
+       "span": {
+        "offset": 663,
+        "length": 9
+       }
+      },
+      {
+       "content": "2",
+       "polygon": [
+        526,
+        831,
+        536,
+        830,
+        537,
+        851,
+        527,
+        851
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 673,
+        "length": 1
+       }
+      },
+      {
+       "content": "9425",
+       "polygon": [
+        599,
+        826,
+        627,
+        824,
+        628,
+        840,
+        600,
+        842
+       ],
+       "confidence": 0.988,
+       "span": {
+        "offset": 675,
+        "length": 4
+       }
+      },
+      {
+       "content": "ROSSIA",
+       "polygon": [
+        272,
+        871,
+        332,
+        867,
+        334,
+        889,
+        273,
+        892
+       ],
+       "confidence": 0.994,
+       "span": {
+        "offset": 680,
+        "length": 6
+       }
+      },
+      {
+       "content": "8",
+       "polygon": [
+        342,
+        867,
+        352,
+        866,
+        353,
+        887,
+        343,
+        888
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 687,
+        "length": 1
+       }
+      },
+      {
+       "content": "K-2",
+       "polygon": [
+        361,
+        865,
+        391,
+        864,
+        393,
+        885,
+        363,
+        887
+       ],
+       "confidence": 0.995,
+       "span": {
+        "offset": 689,
+        "length": 3
+       }
+      },
+      {
+       "content": "Herzlichen",
+       "polygon": [
+        313,
+        924,
+        407,
+        913,
+        409,
+        932,
+        314,
+        942
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 693,
+        "length": 10
+       }
+      },
+      {
+       "content": "Dank",
+       "polygon": [
+        415,
+        912,
+        448,
+        907,
+        450,
+        925,
+        416,
+        930
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 704,
+        "length": 4
+       }
+      },
+      {
+       "content": "für",
+       "polygon": [
+        457,
+        905,
+        477,
+        901,
+        479,
+        919,
+        459,
+        923
+       ],
+       "confidence": 0.992,
+       "span": {
+        "offset": 709,
+        "length": 3
+       }
+      },
+      {
+       "content": "Ihren",
+       "polygon": [
+        485,
+        899,
+        522,
+        892,
+        524,
+        910,
+        487,
+        917
+       ],
+       "confidence": 0.934,
+       "span": {
+        "offset": 713,
+        "length": 5
+       }
+      },
+      {
+       "content": "Einkauf",
+       "polygon": [
+        526,
+        891,
+        577,
+        881,
+        580,
+        899,
+        529,
+        909
+       ],
+       "confidence": 0.64,
+       "span": {
+        "offset": 719,
+        "length": 7
+       }
+      },
+      {
+       "content": "Ihr",
+       "polygon": [
+        395,
+        939,
+        419,
+        934,
+        422,
+        950,
+        397,
+        956
+       ],
+       "confidence": 0.988,
+       "span": {
+        "offset": 727,
+        "length": 3
+       }
+      },
+      {
+       "content": "ROSSIA",
+       "polygon": [
+        426,
+        932,
+        472,
+        921,
+        475,
+        937,
+        428,
+        949
+       ],
+       "confidence": 0.981,
+       "span": {
+        "offset": 731,
+        "length": 6
+       }
+      },
+      {
+       "content": "TEAM.",
+       "polygon": [
+        480,
+        919,
+        512,
+        911,
+        513,
+        927,
+        482,
+        935
+       ],
+       "confidence": 0.646,
+       "span": {
+        "offset": 738,
+        "length": 5
+       }
+      }
+     ],
+     "lines": [
+      {
+       "content": "ROSSIA Betriebsgesellschaft Gmbh",
+       "polygon": [
+        300,
+        102,
+        556,
+        76,
+        558,
+        95,
+        302,
+        121
+       ],
+       "spans": [
+        {
+         "offset": 0,
+         "length": 32
+        }
+       ]
+      },
+      {
+       "content": "GF Rüdiger, Frank Eckhard",
+       "polygon": [
+        331,
+        122,
+        526,
+        102,
+        528,
+        121,
+        333,
+        140
+       ],
+       "spans": [
+        {
+         "offset": 33,
+         "length": 25
+        }
+       ]
+      },
+      {
+       "content": "Stuttgarter Platz 36 / 10627 Berlin",
+       "polygon": [
+        285,
+        146,
+        569,
+        122,
+        571,
+        141,
+        287,
+        164
+       ],
+       "spans": [
+        {
+         "offset": 59,
+         "length": 35
+        }
+       ]
+      },
+      {
+       "content": "Tel. : +49-30-32 76 59 45",
+       "polygon": [
+        332,
+        163,
+        526,
+        148,
+        528,
+        166,
+        334,
+        181
+       ],
+       "spans": [
+        {
+         "offset": 95,
+         "length": 25
+        }
+       ]
+      },
+      {
+       "content": "St.Nr .: 27/497/31300",
+       "polygon": [
+        347,
+        183,
+        510,
+        172,
+        511,
+        189,
+        349,
+        200
+       ],
+       "spans": [
+        {
+         "offset": 121,
+         "length": 21
+        }
+       ]
+      },
+      {
+       "content": "Öffnungszeiten:",
+       "polygon": [
+        364,
+        223,
+        482,
+        217,
+        482,
+        234,
+        364,
+        239
+       ],
+       "spans": [
+        {
+         "offset": 143,
+         "length": 15
+        }
+       ]
+      },
+      {
+       "content": "Montag bis Sonntag",
+       "polygon": [
+        355,
+        242,
+        500,
+        237,
+        501,
+        254,
+        356,
+        260
+       ],
+       "spans": [
+        {
+         "offset": 159,
+         "length": 18
+        }
+       ]
+      },
+      {
+       "content": "24 Stunden geöffnet",
+       "polygon": [
+        348,
+        263,
+        499,
+        257,
+        499,
+        274,
+        349,
+        280
+       ],
+       "spans": [
+        {
+         "offset": 178,
+         "length": 19
+        }
+       ]
+      },
+      {
+       "content": "Rechnungsnummer :9425",
+       "polygon": [
+        348,
+        303,
+        507,
+        297,
+        508,
+        314,
+        349,
+        320
+       ],
+       "spans": [
+        {
+         "offset": 198,
+         "length": 21
+        }
+       ]
+      },
+      {
+       "content": "Kekse Uschki",
+       "polygon": [
+        263,
+        341,
+        356,
+        341,
+        356,
+        358,
+        262,
+        357
+       ],
+       "spans": [
+        {
+         "offset": 220,
+         "length": 12
+        }
+       ]
+      },
+      {
+       "content": "3,49 € B",
+       "polygon": [
+        520,
+        336,
+        592,
+        335,
+        592,
+        352,
+        521,
+        354
+       ],
+       "spans": [
+        {
+         "offset": 233,
+         "length": 8
+        }
+       ]
+      },
+      {
+       "content": "Tulskij prjanik",
+       "polygon": [
+        265,
+        364,
+        381,
+        365,
+        381,
+        382,
+        264,
+        381
+       ],
+       "spans": [
+        {
+         "offset": 242,
+         "length": 15
+        }
+       ]
+      },
+      {
+       "content": "1,49 € B",
+       "polygon": [
+        520,
+        361,
+        591,
+        360,
+        591,
+        377,
+        521,
+        378
+       ],
+       "spans": [
+        {
+         "offset": 258,
+         "length": 8
+        }
+       ]
+      },
+      {
+       "content": "Tulskij prjanik",
+       "polygon": [
+        264,
+        388,
+        381,
+        389,
+        381,
+        406,
+        264,
+        405
+       ],
+       "spans": [
+        {
+         "offset": 267,
+         "length": 15
+        }
+       ]
+      },
+      {
+       "content": "1,49 € B",
+       "polygon": [
+        520,
+        386,
+        590,
+        386,
+        590,
+        402,
+        520,
+        403
+       ],
+       "spans": [
+        {
+         "offset": 283,
+         "length": 8
+        }
+       ]
+      },
+      {
+       "content": "Tulskij prjanik",
+       "polygon": [
+        264,
+        411,
+        381,
+        413,
+        381,
+        430,
+        264,
+        428
+       ],
+       "spans": [
+        {
+         "offset": 292,
+         "length": 15
+        }
+       ]
+      },
+      {
+       "content": "1,49 € B",
+       "polygon": [
+        519,
+        411,
+        590,
+        412,
+        590,
+        428,
+        519,
+        428
+       ],
+       "spans": [
+        {
+         "offset": 308,
+         "length": 8
+        }
+       ]
+      },
+      {
+       "content": "Tulskij prjanik",
+       "polygon": [
+        264,
+        436,
+        381,
+        436,
+        381,
+        453,
+        264,
+        452
+       ],
+       "spans": [
+        {
+         "offset": 317,
+         "length": 15
+        }
+       ]
+      },
+      {
+       "content": "1,49 € B",
+       "polygon": [
+        519,
+        437,
+        589,
+        436,
+        589,
+        453,
+        519,
+        453
+       ],
+       "spans": [
+        {
+         "offset": 333,
+         "length": 8
+        }
+       ]
+      },
+      {
+       "content": "geback",
+       "polygon": [
+        264,
+        461,
+        311,
+        460,
+        312,
+        476,
+        264,
+        476
+       ],
+       "spans": [
+        {
+         "offset": 342,
+         "length": 6
+        }
+       ]
+      },
+      {
+       "content": "2,49 € B",
+       "polygon": [
+        517,
+        461,
+        588,
+        461,
+        588,
+        476,
+        517,
+        477
+       ],
+       "spans": [
+        {
+         "offset": 349,
+         "length": 8
+        }
+       ]
+      },
+      {
+       "content": "Gebäck mit Minzgeschmack",
+       "polygon": [
+        264,
+        483,
+        439,
+        483,
+        439,
+        499,
+        264,
+        499
+       ],
+       "spans": [
+        {
+         "offset": 358,
+         "length": 24
+        }
+       ]
+      },
+      {
+       "content": "1,99 € B",
+       "polygon": [
+        518,
+        485,
+        587,
+        484,
+        587,
+        499,
+        518,
+        499
+       ],
+       "spans": [
+        {
+         "offset": 383,
+         "length": 8
+        }
+       ]
+      },
+      {
+       "content": "Lebensmittel 7%",
+       "polygon": [
+        264,
+        506,
+        381,
+        505,
+        381,
+        521,
+        264,
+        521
+       ],
+       "spans": [
+        {
+         "offset": 392,
+         "length": 15
+        }
+       ]
+      },
+      {
+       "content": "0,99 € B",
+       "polygon": [
+        517,
+        506,
+        587,
+        506,
+        587,
+        520,
+        518,
+        521
+       ],
+       "spans": [
+        {
+         "offset": 408,
+         "length": 8
+        }
+       ]
+      },
+      {
+       "content": "Tafelschokolade",
+       "polygon": [
+        266,
+        527,
+        381,
+        528,
+        381,
+        543,
+        266,
+        542
+       ],
+       "spans": [
+        {
+         "offset": 417,
+         "length": 15
+        }
+       ]
+      },
+      {
+       "content": "1,49 € B",
+       "polygon": [
+        518,
+        528,
+        585,
+        527,
+        586,
+        541,
+        519,
+        542
+       ],
+       "spans": [
+        {
+         "offset": 433,
+         "length": 8
+        }
+       ]
+      },
+      {
+       "content": "Schokolade",
+       "polygon": [
+        265,
+        547,
+        346,
+        546,
+        346,
+        560,
+        266,
+        561
+       ],
+       "spans": [
+        {
+         "offset": 442,
+         "length": 10
+        }
+       ]
+      },
+      {
+       "content": "Lebensmittel 7%",
+       "polygon": [
+        266,
+        566,
+        387,
+        566,
+        387,
+        581,
+        266,
+        581
+       ],
+       "spans": [
+        {
+         "offset": 453,
+         "length": 15
+        }
+       ]
+      },
+      {
+       "content": "1,19 € B",
+       "polygon": [
+        519,
+        548,
+        584,
+        546,
+        584,
+        559,
+        519,
+        562
+       ],
+       "spans": [
+        {
+         "offset": 469,
+         "length": 8
+        }
+       ]
+      },
+      {
+       "content": "Schokolade Babaevskij",
+       "polygon": [
+        268,
+        585,
+        432,
+        590,
+        432,
+        606,
+        267,
+        601
+       ],
+       "spans": [
+        {
+         "offset": 478,
+         "length": 21
+        }
+       ]
+      },
+      {
+       "content": "1,99 € B",
+       "polygon": [
+        519,
+        567,
+        583,
+        566,
+        584,
+        580,
+        520,
+        582
+       ],
+       "spans": [
+        {
+         "offset": 500,
+         "length": 8
+        }
+       ]
+      },
+      {
+       "content": "Sefir",
+       "polygon": [
+        269,
+        607,
+        311,
+        607,
+        311,
+        622,
+        269,
+        622
+       ],
+       "spans": [
+        {
+         "offset": 509,
+         "length": 5
+        }
+       ]
+      },
+      {
+       "content": "1,49 € B",
+       "polygon": [
+        523,
+        589,
+        586,
+        588,
+        586,
+        603,
+        523,
+        604
+       ],
+       "spans": [
+        {
+         "offset": 515,
+         "length": 8
+        }
+       ]
+      },
+      {
+       "content": "Sonstige 19%",
+       "polygon": [
+        270,
+        630,
+        371,
+        631,
+        371,
+        648,
+        270,
+        647
+       ],
+       "spans": [
+        {
+         "offset": 524,
+         "length": 12
+        }
+       ]
+      },
+      {
+       "content": "2,99 € B",
+       "polygon": [
+        526,
+        611,
+        590,
+        610,
+        591,
+        625,
+        526,
+        627
+       ],
+       "spans": [
+        {
+         "offset": 537,
+         "length": 8
+        }
+       ]
+      },
+      {
+       "content": "0,23 € A",
+       "polygon": [
+        529,
+        634,
+        595,
+        632,
+        596,
+        648,
+        530,
+        650
+       ],
+       "spans": [
+        {
+         "offset": 546,
+         "length": 8
+        }
+       ]
+      },
+      {
+       "content": "Total",
+       "polygon": [
+        272,
+        676,
+        353,
+        676,
+        353,
+        707,
+        272,
+        707
+       ],
+       "spans": [
+        {
+         "offset": 555,
+         "length": 5
+        }
+       ]
+      },
+      {
+       "content": "24,30 €",
+       "polygon": [
+        468,
+        679,
+        592,
+        674,
+        593,
+        706,
+        469,
+        710
+       ],
+       "spans": [
+        {
+         "offset": 561,
+         "length": 7
+        }
+       ]
+      },
+      {
+       "content": "Nettoumsatz",
+       "polygon": [
+        270,
+        719,
+        370,
+        719,
+        370,
+        736,
+        270,
+        737
+       ],
+       "spans": [
+        {
+         "offset": 569,
+         "length": 11
+        }
+       ]
+      },
+      {
+       "content": "22,69 €",
+       "polygon": [
+        489,
+        718,
+        554,
+        716,
+        554,
+        733,
+        490,
+        735
+       ],
+       "spans": [
+        {
+         "offset": 581,
+         "length": 7
+        }
+       ]
+      },
+      {
+       "content": "M>",
+       "polygon": [
+        16,
+        750,
+        92,
+        816,
+        70,
+        845,
+        0,
+        783
+       ],
+       "spans": [
+        {
+         "offset": 589,
+         "length": 2
+        }
+       ]
+      },
+      {
+       "content": "Mwst 19%",
+       "polygon": [
+        270,
+        747,
+        345,
+        746,
+        345,
+        765,
+        270,
+        766
+       ],
+       "spans": [
+        {
+         "offset": 592,
+         "length": 8
+        }
+       ]
+      },
+      {
+       "content": "0,04 €",
+       "polygon": [
+        502,
+        743,
+        559,
+        740,
+        560,
+        758,
+        503,
+        761
+       ],
+       "spans": [
+        {
+         "offset": 601,
+         "length": 6
+        }
+       ]
+      },
+      {
+       "content": "A",
+       "polygon": [
+        608,
+        742,
+        615,
+        741,
+        617,
+        754,
+        610,
+        755
+       ],
+       "spans": [
+        {
+         "offset": 608,
+         "length": 1
+        }
+       ]
+      },
+      {
+       "content": "Mwst 7%",
+       "polygon": [
+        271,
+        776,
+        339,
+        774,
+        339,
+        793,
+        271,
+        795
+       ],
+       "spans": [
+        {
+         "offset": 610,
+         "length": 7
+        }
+       ]
+      },
+      {
+       "content": "1,57 €",
+       "polygon": [
+        507,
+        769,
+        565,
+        766,
+        566,
+        784,
+        508,
+        788
+       ],
+       "spans": [
+        {
+         "offset": 618,
+         "length": 6
+        }
+       ]
+      },
+      {
+       "content": "B",
+       "polygon": [
+        614,
+        767,
+        621,
+        766,
+        622,
+        781,
+        615,
+        781
+       ],
+       "spans": [
+        {
+         "offset": 625,
+         "length": 1
+        }
+       ]
+      },
+      {
+       "content": "KARTE",
+       "polygon": [
+        270,
+        805,
+        341,
+        802,
+        342,
+        832,
+        271,
+        834
+       ],
+       "spans": [
+        {
+         "offset": 627,
+         "length": 5
+        }
+       ]
+      },
+      {
+       "content": "24,30",
+       "polygon": [
+        523,
+        795,
+        584,
+        791,
+        586,
+        819,
+        524,
+        823
+       ],
+       "spans": [
+        {
+         "offset": 633,
+         "length": 5
+        }
+       ]
+      },
+      {
+       "content": "€",
+       "polygon": [
+        606,
+        791,
+        617,
+        791,
+        617,
+        816,
+        607,
+        816
+       ],
+       "spans": [
+        {
+         "offset": 639,
+         "length": 1
+        }
+       ]
+      },
+      {
+       "content": "Wek",
+       "polygon": [
+        139,
+        844,
+        196,
+        859,
+        185,
+        894,
+        129,
+        879
+       ],
+       "spans": [
+        {
+         "offset": 641,
+         "length": 3
+        }
+       ]
+      },
+      {
+       "content": "18:27 10.7.2025 2 KASSIERER 2",
+       "polygon": [
+        273,
+        845,
+        535,
+        830,
+        537,
+        850,
+        274,
+        866
+       ],
+       "spans": [
+        {
+         "offset": 645,
+         "length": 29
+        }
+       ]
+      },
+      {
+       "content": "9425",
+       "polygon": [
+        599,
+        826,
+        627,
+        824,
+        628,
+        840,
+        600,
+        842
+       ],
+       "spans": [
+        {
+         "offset": 675,
+         "length": 4
+        }
+       ]
+      },
+      {
+       "content": "ROSSIA 8 K-2",
+       "polygon": [
+        272,
+        871,
+        391,
+        863,
+        392,
+        885,
+        273,
+        892
+       ],
+       "spans": [
+        {
+         "offset": 680,
+         "length": 12
+        }
+       ]
+      },
+      {
+       "content": "Herzlichen Dank für Ihren Einkauf",
+       "polygon": [
+        312,
+        924,
+        576,
+        882,
+        580,
+        904,
+        315,
+        943
+       ],
+       "spans": [
+        {
+         "offset": 693,
+         "length": 33
+        }
+       ]
+      },
+      {
+       "content": "Ihr ROSSIA TEAM.",
+       "polygon": [
+        394,
+        939,
+        511,
+        911,
+        513,
+        928,
+        397,
+        956
+       ],
+       "spans": [
+        {
+         "offset": 727,
+         "length": 16
+        }
+       ]
+      }
+     ],
+     "spans": [
+      {
+       "offset": 0,
+       "length": 743
+      }
+     ]
+    }
+   ],
+   "styles": [],
+   "documents": [
+    {
+     "docType": "receipt.retailMeal",
+     "boundingRegions": [
+      {
+       "pageNumber": 1,
+       "polygon": [
+        0,
+        0,
+        768,
+        0,
+        768,
+        1024,
+        0,
+        1024
+       ]
+      }
+     ],
+     "fields": {
+      "CountryRegion": {
+       "type": "countryRegion",
+       "valueCountryRegion": "DEU",
+       "confidence": 0.995
+      },
+      "Items": {
+       "type": "array",
+       "valueArray": [
+        {
+         "type": "object",
+         "valueObject": {
+          "Description": {
+           "type": "string",
+           "valueString": "Kekse Uschki",
+           "content": "Kekse Uschki",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              263,
+              340,
+              357,
+              341,
+              357,
+              359,
+              263,
+              357
+             ]
+            }
+           ],
+           "confidence": 0.981,
+           "spans": [
+            {
+             "offset": 220,
+             "length": 12
+            }
+           ]
+          },
+          "TotalPrice": {
+           "type": "currency",
+           "valueCurrency": {
+            "currencySymbol": "€",
+            "amount": 3.49,
+            "currencyCode": "EUR"
+           },
+           "content": "3,49 €",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              520,
+              335,
+              579,
+              335,
+              579,
+              354,
+              520,
+              354
+             ]
+            }
+           ],
+           "confidence": 0.985,
+           "spans": [
+            {
+             "offset": 233,
+             "length": 6
+            }
+           ]
+          }
+         },
+         "content": "Kekse Uschki\n3,49 € B",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            263,
+            335,
+            592,
+            335,
+            592,
+            358,
+            263,
+            358
+           ]
+          }
+         ],
+         "confidence": 0.972,
+         "spans": [
+          {
+           "offset": 220,
+           "length": 21
+          }
+         ]
+        },
+        {
+         "type": "object",
+         "valueObject": {
+          "Description": {
+           "type": "string",
+           "valueString": "Tulskij prjanik",
+           "content": "Tulskij prjanik",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              264,
+              363,
+              382,
+              365,
+              382,
+              383,
+              264,
+              381
+             ]
+            }
+           ],
+           "confidence": 0.981,
+           "spans": [
+            {
+             "offset": 242,
+             "length": 15
+            }
+           ]
+          },
+          "TotalPrice": {
+           "type": "currency",
+           "valueCurrency": {
+            "currencySymbol": "€",
+            "amount": 1.49,
+            "currencyCode": "EUR"
+           },
+           "content": "1,49 €",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              520,
+              361,
+              579,
+              361,
+              579,
+              378,
+              520,
+              378
+             ]
+            }
+           ],
+           "confidence": 0.985,
+           "spans": [
+            {
+             "offset": 258,
+             "length": 6
+            }
+           ]
+          }
+         },
+         "content": "Tulskij prjanik\n1,49 € B",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            264,
+            360,
+            591,
+            360,
+            591,
+            382,
+            264,
+            382
+           ]
+          }
+         ],
+         "confidence": 0.975,
+         "spans": [
+          {
+           "offset": 242,
+           "length": 24
+          }
+         ]
+        },
+        {
+         "type": "object",
+         "valueObject": {
+          "Description": {
+           "type": "string",
+           "valueString": "Tulskij prjanik",
+           "content": "Tulskij prjanik",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              264,
+              387,
+              381,
+              389,
+              381,
+              407,
+              264,
+              405
+             ]
+            }
+           ],
+           "confidence": 0.981,
+           "spans": [
+            {
+             "offset": 267,
+             "length": 15
+            }
+           ]
+          },
+          "TotalPrice": {
+           "type": "currency",
+           "valueCurrency": {
+            "currencySymbol": "€",
+            "amount": 1.49,
+            "currencyCode": "EUR"
+           },
+           "content": "1,49 €",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              520,
+              386,
+              578,
+              386,
+              578,
+              403,
+              520,
+              403
+             ]
+            }
+           ],
+           "confidence": 0.985,
+           "spans": [
+            {
+             "offset": 283,
+             "length": 6
+            }
+           ]
+          }
+         },
+         "content": "Tulskij prjanik\n1,49 € B",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            264,
+            386,
+            591,
+            386,
+            591,
+            406,
+            264,
+            406
+           ]
+          }
+         ],
+         "confidence": 0.978,
+         "spans": [
+          {
+           "offset": 267,
+           "length": 24
+          }
+         ]
+        },
+        {
+         "type": "object",
+         "valueObject": {
+          "Description": {
+           "type": "string",
+           "valueString": "Tulskij prjanik",
+           "content": "Tulskij prjanik",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              264,
+              411,
+              381,
+              413,
+              381,
+              430,
+              264,
+              428
+             ]
+            }
+           ],
+           "confidence": 0.981,
+           "spans": [
+            {
+             "offset": 292,
+             "length": 15
+            }
+           ]
+          },
+          "TotalPrice": {
+           "type": "currency",
+           "valueCurrency": {
+            "currencySymbol": "€",
+            "amount": 1.49,
+            "currencyCode": "EUR"
+           },
+           "content": "1,49 €",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              519,
+              412,
+              577,
+              412,
+              577,
+              429,
+              519,
+              429
+             ]
+            }
+           ],
+           "confidence": 0.985,
+           "spans": [
+            {
+             "offset": 308,
+             "length": 6
+            }
+           ]
+          }
+         },
+         "content": "Tulskij prjanik\n1,49 € B",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            264,
+            411,
+            590,
+            411,
+            590,
+            430,
+            264,
+            430
+           ]
+          }
+         ],
+         "confidence": 0.97,
+         "spans": [
+          {
+           "offset": 292,
+           "length": 24
+          }
+         ]
+        },
+        {
+         "type": "object",
+         "valueObject": {
+          "Description": {
+           "type": "string",
+           "valueString": "Tulskij prjanik",
+           "content": "Tulskij prjanik",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              264,
+              435,
+              381,
+              436,
+              381,
+              454,
+              264,
+              452
+             ]
+            }
+           ],
+           "confidence": 0.981,
+           "spans": [
+            {
+             "offset": 317,
+             "length": 15
+            }
+           ]
+          },
+          "TotalPrice": {
+           "type": "currency",
+           "valueCurrency": {
+            "currencySymbol": "€",
+            "amount": 1.49,
+            "currencyCode": "EUR"
+           },
+           "content": "1,49 €",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              519,
+              437,
+              577,
+              437,
+              577,
+              453,
+              519,
+              453
+             ]
+            }
+           ],
+           "confidence": 0.985,
+           "spans": [
+            {
+             "offset": 333,
+             "length": 6
+            }
+           ]
+          }
+         },
+         "content": "Tulskij prjanik\n1,49 € B",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            264,
+            436,
+            590,
+            436,
+            590,
+            453,
+            264,
+            453
+           ]
+          }
+         ],
+         "confidence": 0.972,
+         "spans": [
+          {
+           "offset": 317,
+           "length": 24
+          }
+         ]
+        },
+        {
+         "type": "object",
+         "valueObject": {
+          "Description": {
+           "type": "string",
+           "valueString": "geback",
+           "content": "geback",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              264,
+              461,
+              312,
+              460,
+              312,
+              476,
+              264,
+              476
+             ]
+            }
+           ],
+           "confidence": 0.981,
+           "spans": [
+            {
+             "offset": 342,
+             "length": 6
+            }
+           ]
+          },
+          "TotalPrice": {
+           "type": "currency",
+           "valueCurrency": {
+            "currencySymbol": "€",
+            "amount": 2.49,
+            "currencyCode": "EUR"
+           },
+           "content": "2,49 €",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              517,
+              461,
+              576,
+              461,
+              576,
+              477,
+              517,
+              477
+             ]
+            }
+           ],
+           "confidence": 0.985,
+           "spans": [
+            {
+             "offset": 349,
+             "length": 6
+            }
+           ]
+          }
+         },
+         "content": "geback\n2,49 € B",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            264,
+            460,
+            589,
+            460,
+            589,
+            477,
+            264,
+            477
+           ]
+          }
+         ],
+         "confidence": 0.976,
+         "spans": [
+          {
+           "offset": 342,
+           "length": 15
+          }
+         ]
+        },
+        {
+         "type": "object",
+         "valueObject": {
+          "Description": {
+           "type": "string",
+           "valueString": "Gebäck mit Minzgeschmack",
+           "content": "Gebäck mit Minzgeschmack",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              264,
+              483,
+              440,
+              483,
+              440,
+              500,
+              264,
+              500
+             ]
+            }
+           ],
+           "confidence": 0.973,
+           "spans": [
+            {
+             "offset": 358,
+             "length": 24
+            }
+           ]
+          },
+          "TotalPrice": {
+           "type": "currency",
+           "valueCurrency": {
+            "currencySymbol": "€",
+            "amount": 1.99,
+            "currencyCode": "EUR"
+           },
+           "content": "1,99 €",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              518,
+              484,
+              575,
+              484,
+              575,
+              499,
+              518,
+              499
+             ]
+            }
+           ],
+           "confidence": 0.984,
+           "spans": [
+            {
+             "offset": 383,
+             "length": 6
+            }
+           ]
+          }
+         },
+         "content": "Gebäck mit Minzgeschmack\n1,99 € B",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            264,
+            483,
+            588,
+            483,
+            588,
+            500,
+            264,
+            500
+           ]
+          }
+         ],
+         "confidence": 0.944,
+         "spans": [
+          {
+           "offset": 358,
+           "length": 33
+          }
+         ]
+        },
+        {
+         "type": "object",
+         "valueObject": {
+          "Description": {
+           "type": "string",
+           "valueString": "Lebensmittel 7%",
+           "content": "Lebensmittel 7%",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              264,
+              502,
+              381,
+              506,
+              381,
+              525,
+              264,
+              521
+             ]
+            }
+           ],
+           "confidence": 0.981,
+           "spans": [
+            {
+             "offset": 392,
+             "length": 15
+            }
+           ]
+          },
+          "TotalPrice": {
+           "type": "currency",
+           "valueCurrency": {
+            "currencySymbol": "€",
+            "amount": 0.99,
+            "currencyCode": "EUR"
+           },
+           "content": "0,99 €",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              517,
+              506,
+              575,
+              506,
+              575,
+              521,
+              517,
+              521
+             ]
+            }
+           ],
+           "confidence": 0.985,
+           "spans": [
+            {
+             "offset": 408,
+             "length": 6
+            }
+           ]
+          }
+         },
+         "content": "Lebensmittel 7%\n0,99 € B",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            264,
+            505,
+            587,
+            505,
+            587,
+            521,
+            264,
+            521
+           ]
+          }
+         ],
+         "confidence": 0.978,
+         "spans": [
+          {
+           "offset": 392,
+           "length": 24
+          }
+         ]
+        },
+        {
+         "type": "object",
+         "valueObject": {
+          "Description": {
+           "type": "string",
+           "valueString": "Tafelschokolade",
+           "content": "Tafelschokolade",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              266,
+              527,
+              381,
+              528,
+              381,
+              543,
+              266,
+              542
+             ]
+            }
+           ],
+           "confidence": 0.981,
+           "spans": [
+            {
+             "offset": 417,
+             "length": 15
+            }
+           ]
+          },
+          "TotalPrice": {
+           "type": "currency",
+           "valueCurrency": {
+            "currencySymbol": "€",
+            "amount": 1.49,
+            "currencyCode": "EUR"
+           },
+           "content": "1,49 €",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              518,
+              527,
+              574,
+              527,
+              574,
+              542,
+              518,
+              542
+             ]
+            }
+           ],
+           "confidence": 0.985,
+           "spans": [
+            {
+             "offset": 433,
+             "length": 6
+            }
+           ]
+          }
+         },
+         "content": "Tafelschokolade\n1,49 € B",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            266,
+            527,
+            586,
+            527,
+            586,
+            543,
+            266,
+            543
+           ]
+          }
+         ],
+         "confidence": 0.978,
+         "spans": [
+          {
+           "offset": 417,
+           "length": 24
+          }
+         ]
+        },
+        {
+         "type": "object",
+         "valueObject": {
+          "Description": {
+           "type": "string",
+           "valueString": "Schokolade",
+           "content": "Schokolade",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              265,
+              548,
+              347,
+              547,
+              347,
+              561,
+              266,
+              561
+             ]
+            }
+           ],
+           "confidence": 0.981,
+           "spans": [
+            {
+             "offset": 442,
+             "length": 10
+            }
+           ]
+          },
+          "TotalPrice": {
+           "type": "currency",
+           "valueCurrency": {
+            "currencySymbol": "€",
+            "amount": 1.19,
+            "currencyCode": "EUR"
+           },
+           "content": "1,19 €",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              519,
+              547,
+              573,
+              547,
+              573,
+              562,
+              519,
+              562
+             ]
+            }
+           ],
+           "confidence": 0.985,
+           "spans": [
+            {
+             "offset": 469,
+             "length": 6
+            }
+           ]
+          }
+         },
+         "content": "Schokolade\n1,19 € B",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            265,
+            547,
+            584,
+            547,
+            584,
+            562,
+            265,
+            562
+           ]
+          }
+         ],
+         "confidence": 0.978,
+         "spans": [
+          {
+           "offset": 442,
+           "length": 10
+          },
+          {
+           "offset": 469,
+           "length": 8
+          }
+         ]
+        },
+        {
+         "type": "object",
+         "valueObject": {
+          "Description": {
+           "type": "string",
+           "valueString": "Lebensmittel 7%",
+           "content": "Lebensmittel 7%",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              266,
+              563,
+              387,
+              567,
+              387,
+              584,
+              266,
+              581
+             ]
+            }
+           ],
+           "confidence": 0.981,
+           "spans": [
+            {
+             "offset": 453,
+             "length": 15
+            }
+           ]
+          },
+          "TotalPrice": {
+           "type": "currency",
+           "valueCurrency": {
+            "currencySymbol": "€",
+            "amount": 1.99,
+            "currencyCode": "EUR"
+           },
+           "content": "1,99 €",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              520,
+              566,
+              572,
+              566,
+              572,
+              583,
+              520,
+              583
+             ]
+            }
+           ],
+           "confidence": 0.985,
+           "spans": [
+            {
+             "offset": 500,
+             "length": 6
+            }
+           ]
+          }
+         },
+         "content": "Lebensmittel 7%\n1,99 € B",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            266,
+            566,
+            584,
+            566,
+            584,
+            583,
+            266,
+            583
+           ]
+          }
+         ],
+         "confidence": 0.977,
+         "spans": [
+          {
+           "offset": 453,
+           "length": 15
+          },
+          {
+           "offset": 500,
+           "length": 8
+          }
+         ]
+        },
+        {
+         "type": "object",
+         "valueObject": {
+          "Description": {
+           "type": "string",
+           "valueString": "Schokolade Babaevskij",
+           "content": "Schokolade Babaevskij",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              268,
+              583,
+              433,
+              590,
+              432,
+              608,
+              267,
+              601
+             ]
+            }
+           ],
+           "confidence": 0.981,
+           "spans": [
+            {
+             "offset": 478,
+             "length": 21
+            }
+           ]
+          },
+          "TotalPrice": {
+           "type": "currency",
+           "valueCurrency": {
+            "currencySymbol": "€",
+            "amount": 1.49,
+            "currencyCode": "EUR"
+           },
+           "content": "1,49 €",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              523,
+              588,
+              575,
+              588,
+              575,
+              604,
+              523,
+              604
+             ]
+            }
+           ],
+           "confidence": 0.984,
+           "spans": [
+            {
+             "offset": 515,
+             "length": 6
+            }
+           ]
+          }
+         },
+         "content": "Schokolade Babaevskij\n1,49 € B",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            267,
+            585,
+            586,
+            585,
+            586,
+            606,
+            267,
+            606
+           ]
+          }
+         ],
+         "confidence": 0.965,
+         "spans": [
+          {
+           "offset": 478,
+           "length": 21
+          },
+          {
+           "offset": 515,
+           "length": 8
+          }
+         ]
+        },
+        {
+         "type": "object",
+         "valueObject": {
+          "Description": {
+           "type": "string",
+           "valueString": "Sefir",
+           "content": "Sefir",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              269,
+              607,
+              311,
+              607,
+              311,
+              623,
+              269,
+              622
+             ]
+            }
+           ],
+           "confidence": 0.981,
+           "spans": [
+            {
+             "offset": 509,
+             "length": 5
+            }
+           ]
+          },
+          "TotalPrice": {
+           "type": "currency",
+           "valueCurrency": {
+            "currencySymbol": "€",
+            "amount": 2.99,
+            "currencyCode": "EUR"
+           },
+           "content": "2,99 €",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              525,
+              611,
+              579,
+              610,
+              580,
+              626,
+              526,
+              627
+             ]
+            }
+           ],
+           "confidence": 0.984,
+           "spans": [
+            {
+             "offset": 537,
+             "length": 6
+            }
+           ]
+          }
+         },
+         "content": "Sefir\n2,99 € B",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            269,
+            607,
+            591,
+            607,
+            591,
+            627,
+            269,
+            627
+           ]
+          }
+         ],
+         "confidence": 0.962,
+         "spans": [
+          {
+           "offset": 509,
+           "length": 5
+          },
+          {
+           "offset": 537,
+           "length": 8
+          }
+         ]
+        }
+       ]
+      },
+      "MerchantAddress": {
+       "type": "address",
+       "content": "Stuttgarter Platz 36 / 10627 Berlin",
+       "boundingRegions": [
+        {
+         "pageNumber": 1,
+         "polygon": [
+          284,
+          144,
+          570,
+          122,
+          572,
+          143,
+          286,
+          165
+         ]
+        }
+       ],
+       "confidence": 0.981,
+       "spans": [
+        {
+         "offset": 59,
+         "length": 35
+        }
+       ],
+       "valueAddress": {
+        "houseNumber": "36 / 10627",
+        "road": "Stuttgarter Platz",
+        "city": "Berlin",
+        "streetAddress": "36 / 10627 Stuttgarter Platz"
+       }
+      },
+      "MerchantName": {
+       "type": "string",
+       "valueString": "ROSSIA Betriebsgesellschaft Gmbh",
+       "content": "ROSSIA Betriebsgesellschaft Gmbh",
+       "boundingRegions": [
+        {
+         "pageNumber": 1,
+         "polygon": [
+          300,
+          101,
+          557,
+          76,
+          559,
+          97,
+          302,
+          121
+         ]
+        }
+       ],
+       "confidence": 0.961,
+       "spans": [
+        {
+         "offset": 0,
+         "length": 32
+        }
+       ]
+      },
+      "MerchantPhoneNumber": {
+       "type": "phoneNumber",
+       "valuePhoneNumber": "+493032765945",
+       "content": "+49-30-32 76 59 45",
+       "boundingRegions": [
+        {
+         "pageNumber": 1,
+         "polygon": [
+          380,
+          157,
+          527,
+          148,
+          528,
+          169,
+          381,
+          178
+         ]
+        }
+       ],
+       "confidence": 0.979,
+       "spans": [
+        {
+         "offset": 102,
+         "length": 18
+        }
+       ]
+      },
+      "ReceiptType": {
+       "type": "string",
+       "valueString": "Supplies",
+       "confidence": 0.98
+      },
+      "Subtotal": {
+       "type": "currency",
+       "valueCurrency": {
+        "currencySymbol": "€",
+        "amount": 22.69,
+        "currencyCode": "EUR"
+       },
+       "content": "22,69 €",
+       "boundingRegions": [
+        {
+         "pageNumber": 1,
+         "polygon": [
+          489,
+          716,
+          555,
+          716,
+          555,
+          736,
+          489,
+          736
+         ]
+        }
+       ],
+       "confidence": 0.972,
+       "spans": [
+        {
+         "offset": 581,
+         "length": 7
+        }
+       ]
+      },
+      "TaxDetails": {
+       "type": "array",
+       "valueArray": [
+        {
+         "type": "object",
+         "valueObject": {
+          "Amount": {
+           "type": "currency",
+           "valueCurrency": {
+            "currencySymbol": "€",
+            "amount": 0.04,
+            "currencyCode": "EUR"
+           },
+           "content": "0,04 €",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              502,
+              743,
+              560,
+              740,
+              561,
+              758,
+              503,
+              761
+             ]
+            }
+           ],
+           "confidence": 0.975,
+           "spans": [
+            {
+             "offset": 601,
+             "length": 6
+            }
+           ]
+          },
+          "Description": {
+           "type": "string",
+           "valueString": "Mwst",
+           "content": "Mwst",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              270,
+              747,
+              308,
+              747,
+              308,
+              765,
+              271,
+              766
+             ]
+            }
+           ],
+           "confidence": 0.978,
+           "spans": [
+            {
+             "offset": 592,
+             "length": 4
+            }
+           ]
+          },
+          "Rate": {
+           "type": "number",
+           "valueNumber": 0.19,
+           "content": "19%",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              318,
+              747,
+              346,
+              746,
+              346,
+              765,
+              318,
+              765
+             ]
+            }
+           ],
+           "confidence": 0.978,
+           "spans": [
+            {
+             "offset": 597,
+             "length": 3
+            }
+           ]
+          }
+         },
+         "content": "Mwst 19%\n0,04 €\nA",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            270,
+            747,
+            617,
+            729,
+            618,
+            755,
+            271,
+            773
+           ]
+          }
+         ],
+         "confidence": 0.975,
+         "spans": [
+          {
+           "offset": 592,
+           "length": 17
+          }
+         ]
+        },
+        {
+         "type": "object",
+         "valueObject": {
+          "Amount": {
+           "type": "currency",
+           "valueCurrency": {
+            "currencySymbol": "€",
+            "amount": 1.57,
+            "currencyCode": "EUR"
+           },
+           "content": "1,57 €",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              507,
+              766,
+              566,
+              766,
+              566,
+              788,
+              507,
+              788
+             ]
+            }
+           ],
+           "confidence": 0.977,
+           "spans": [
+            {
+             "offset": 618,
+             "length": 6
+            }
+           ]
+          },
+          "Description": {
+           "type": "string",
+           "valueString": "Mwst",
+           "content": "Mwst",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              271,
+              776,
+              309,
+              775,
+              309,
+              794,
+              271,
+              795
+             ]
+            }
+           ],
+           "confidence": 0.977,
+           "spans": [
+            {
+             "offset": 610,
+             "length": 4
+            }
+           ]
+          },
+          "Rate": {
+           "type": "number",
+           "valueNumber": 0.07,
+           "content": "7%",
+           "boundingRegions": [
+            {
+             "pageNumber": 1,
+             "polygon": [
+              318,
+              775,
+              339,
+              774,
+              339,
+              794,
+              318,
+              794
+             ]
+            }
+           ],
+           "confidence": 0.978,
+           "spans": [
+            {
+             "offset": 615,
+             "length": 2
+            }
+           ]
+          }
+         },
+         "content": "Mwst 7%\n1,57 €\nB",
+         "boundingRegions": [
+          {
+           "pageNumber": 1,
+           "polygon": [
+            270,
+            773,
+            623,
+            764,
+            623,
+            787,
+            271,
+            796
+           ]
+          }
+         ],
+         "confidence": 0.974,
+         "spans": [
+          {
+           "offset": 610,
+           "length": 16
+          }
+         ]
+        }
+       ]
+      },
+      "Total": {
+       "type": "currency",
+       "valueCurrency": {
+        "currencySymbol": "€",
+        "amount": 24.3,
+        "currencyCode": "EUR"
+       },
+       "content": "24,30 €",
+       "boundingRegions": [
+        {
+         "pageNumber": 1,
+         "polygon": [
+          468,
+          678,
+          593,
+          675,
+          594,
+          706,
+          469,
+          710
+         ]
+        }
+       ],
+       "confidence": 0.979,
+       "spans": [
+        {
+         "offset": 561,
+         "length": 7
+        }
+       ]
+      },
+      "TransactionDate": {
+       "type": "date",
+       "valueDate": "2025-07-10",
+       "content": "10.7.2025",
+       "boundingRegions": [
+        {
+         "pageNumber": 1,
+         "polygon": [
+          332,
+          842,
+          415,
+          837,
+          416,
+          858,
+          333,
+          862
+         ]
+        }
+       ],
+       "confidence": 0.98,
+       "spans": [
+        {
+         "offset": 651,
+         "length": 9
+        }
+       ]
+      },
+      "TransactionTime": {
+       "type": "time",
+       "valueTime": "18:27:00",
+       "content": "18:27",
+       "boundingRegions": [
+        {
+         "pageNumber": 1,
+         "polygon": [
+          273,
+          846,
+          322,
+          843,
+          323,
+          863,
+          274,
+          866
+         ]
+        }
+       ],
+       "confidence": 0.982,
+       "spans": [
+        {
+         "offset": 645,
+         "length": 5
+        }
+       ]
+      }
+     },
+     "confidence": 0.98,
+     "spans": [
+      {
+       "offset": 0,
+       "length": 743
+      }
+     ]
+    }
+   ],
+   "contentFormat": "text"
+  }
+ }
+}

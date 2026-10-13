@@ -1,0 +1,44 @@
+{
+ "receiptId": "07",
+ "configuration": "tesseract-eng-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.19,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "baa . fe,",
+  "date": null,
+  "currency": null,
+  "total": 108.09,
+  "items": [
+   {
+    "name": "DANIE BUFET GR",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 50.73,
+    "box": [
+     0.3372395833333333,
+     0.490234375,
+     0.4348958333333333,
+     0.0205078125
+    ]
+   },
+   {
+    "name": "WYPOZVCZENIE RECZNIKA",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 30.0,
+    "box": [
+     0.3372395833333333,
+     0.5126953125,
+     0.4361979166666667,
+     0.025390625
+    ]
+   }
+  ]
+ },
+ "source": "langs eng; installed eng,osd,snum; pol MISSING"
+}

@@ -1,0 +1,99 @@
+{
+ "receiptId": "08",
+ "configuration": "azure-prebuilt-receipt",
+ "model": "2024-11-30",
+ "seconds": 4.52,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": 0.01,
+ "usage": null,
+ "parsed": {
+  "merchant": "JOANBO JOANNA BORZEWSKA",
+  "date": "2025-08-17",
+  "currency": null,
+  "total": 29.96,
+  "totalBox": [
+   0.328125,
+   0.6357421875,
+   0.5338541666666666,
+   0.044921875
+  ],
+  "items": [
+   {
+    "name": "PIERS PIECZ 75g-C",
+    "quantity": 1,
+    "unitPrice": 5.5,
+    "lineTotal": 5.5,
+    "box": [
+     0.21875,
+     0.4189453125,
+     0.6458333333333334,
+     0.037109375
+    ]
+   },
+   {
+    "name": "SER EDAMSKI PLASTRY 150g-C",
+    "quantity": null,
+    "unitPrice": 6.5,
+    "lineTotal": 6.5,
+    "box": [
+     0.21354166666666666,
+     0.443359375,
+     0.6497395833333334,
+     0.033203125
+    ]
+   },
+   {
+    "name": "JOGURT SKYR PITNY 330ml-C",
+    "quantity": 1,
+    "unitPrice": 5.99,
+    "lineTotal": 5.99,
+    "box": [
+     0.20963541666666666,
+     0.46484375,
+     0.65234375,
+     0.033203125
+    ]
+   },
+   {
+    "name": "JOG SKYR JAGO 330ml-C",
+    "quantity": 1,
+    "unitPrice": 5.99,
+    "lineTotal": 5.99,
+    "box": [
+     0.20833333333333334,
+     0.486328125,
+     0.6536458333333334,
+     0.0341796875
+    ]
+   },
+   {
+    "name": "CROISSANT CZEKOLAD-C",
+    "quantity": 2,
+    "unitPrice": 3.99,
+    "lineTotal": 7.98,
+    "box": [
+     0.20703125,
+     0.509765625,
+     0.6549479166666666,
+     0.033203125
+    ]
+   },
+   {
+    "name": "OPUST CROISSANT CZEKOLAD-C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": -2.0,
+    "box": [
+     0.20703125,
+     0.53125,
+     0.65625,
+     0.03515625
+    ]
+   }
+  ]
+ },
+ "source": "fresh call",
+ "locale": null
+}

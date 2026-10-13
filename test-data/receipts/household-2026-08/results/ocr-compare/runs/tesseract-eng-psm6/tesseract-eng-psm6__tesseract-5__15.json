@@ -1,0 +1,56 @@
+{
+ "receiptId": "15",
+ "configuration": "tesseract-eng-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.23,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "& ye Ee \\",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "“AMERYKANGKTE ZEBERKA",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 79.0,
+    "box": [
+     0.2265625,
+     0.5751953125,
+     0.4921875,
+     0.021484375
+    ]
+   },
+   {
+    "name": "GRILLOWANY. PSTRAG { x69,00",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 89.0,
+    "box": [
+     0.22265625,
+     0.5986328125,
+     0.49609375,
+     0.0234375
+    ]
+   },
+   {
+    "name": "DOMOWA HROZONA RERBATA",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 22.0,
+    "box": [
+     0.22265625,
+     0.623046875,
+     0.49739583333333337,
+     0.0322265625
+    ]
+   }
+  ]
+ },
+ "source": "langs eng; installed eng,osd,snum; pol MISSING"
+}

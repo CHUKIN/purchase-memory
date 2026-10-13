@@ -1,0 +1,80 @@
+{
+ "receiptId": "13",
+ "configuration": "tesseract-eng-psm6-x2",
+ "model": "tesseract-5",
+ "seconds": 0.31,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "'",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "Pijana Wisnia (d) { x22,90",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 22.9,
+    "box": [
+     0.296875,
+     0.43798828125,
+     0.45638020833333326,
+     0.0224609375
+    ]
+   },
+   {
+    "name": "+Pudetko papierowe (d)",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.0,
+    "box": [
+     0.2994791666666667,
+     0.45361328125,
+     0.45507812500000006,
+     0.02197265625
+    ]
+   },
+   {
+    "name": "Kroleuski (d)",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 25.9,
+    "box": [
+     0.2981770833333333,
+     0.46875,
+     0.45703125000000006,
+     0.02197265625
+    ]
+   },
+   {
+    "name": "+Serek Snietankouy (dodatek) { x2,00",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.0,
+    "box": [
+     0.3001302083333333,
+     0.48388671875,
+     0.4557291666666667,
+     0.02294921875
+    ]
+   },
+   {
+    "name": "PIU A 23%",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 9.79,
+    "box": [
+     0.302734375,
+     0.5517578125,
+     0.44986979166666663,
+     0.0263671875
+    ]
+   }
+  ]
+ },
+ "source": "langs eng; installed eng,osd,snum; pol MISSING"
+}

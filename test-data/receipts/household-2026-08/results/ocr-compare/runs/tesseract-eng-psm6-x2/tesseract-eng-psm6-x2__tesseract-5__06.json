@@ -1,0 +1,80 @@
+{
+ "receiptId": "06",
+ "configuration": "tesseract-eng-psm6-x2",
+ "model": "tesseract-5",
+ "seconds": 0.35,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "4",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "8 2 Pon gl sny { x12,01",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 12.01,
+    "box": [
+     0.3255208333333333,
+     0.2763671875,
+     0.4134114583333334,
+     0.03173828125
+    ]
+   },
+   {
+    "name": "ssl Oy",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 6.76,
+    "box": [
+     0.3372395833333333,
+     0.2958984375,
+     0.4010416666666667,
+     0.02197265625
+    ]
+   },
+   {
+    "name": "Ua oft ATKOKANA 8",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 25.85,
+    "box": [
+     0.3190104166666667,
+     0.32763671875,
+     0.4186197916666667,
+     0.033203125
+    ]
+   },
+   {
+    "name": "SUy",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 1.91,
+    "box": [
+     0.3170572916666667,
+     0.34814453125,
+     0.4192708333333333,
+     0.0341796875
+    ]
+   },
+   {
+    "name": "mai PLN",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 25.85,
+    "box": [
+     0.3131510416666667,
+     0.361328125,
+     0.4231770833333333,
+     0.04248046875
+    ]
+   }
+  ]
+ },
+ "source": "langs eng; installed eng,osd,snum; pol MISSING"
+}

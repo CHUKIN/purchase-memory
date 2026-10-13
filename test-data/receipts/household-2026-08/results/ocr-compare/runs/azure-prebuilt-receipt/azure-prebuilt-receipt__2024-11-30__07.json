@@ -1,0 +1,63 @@
+{
+ "receiptId": "07",
+ "configuration": "azure-prebuilt-receipt",
+ "model": "2024-11-30",
+ "seconds": 4.52,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": 0.01,
+ "usage": null,
+ "parsed": {
+  "merchant": "Sun TAGO",
+  "date": "2025-08-18",
+  "currency": null,
+  "total": 108.09,
+  "totalBox": [
+   0.4479166666666667,
+   0.646484375,
+   0.3294270833333333,
+   0.0361328125
+  ],
+  "items": [
+   {
+    "name": "DANIE BUFET GR",
+    "quantity": 0.288,
+    "unitPrice": 95.0,
+    "lineTotal": 27.36,
+    "box": [
+     0.3346354166666667,
+     0.4658203125,
+     0.4388020833333333,
+     0.025390625
+    ]
+   },
+   {
+    "name": "DANIE BUFET GR",
+    "quantity": 0.534,
+    "unitPrice": 95.0,
+    "lineTotal": 50.73,
+    "box": [
+     0.3346354166666667,
+     0.4873046875,
+     0.4388020833333333,
+     0.02734375
+    ]
+   },
+   {
+    "name": "WYPOŻYCZENIE RĘCZNIKA",
+    "quantity": 2,
+    "unitPrice": 15.0,
+    "lineTotal": 30.0,
+    "box": [
+     0.3346354166666667,
+     0.5107421875,
+     0.4401041666666667,
+     0.0244140625
+    ]
+   }
+  ]
+ },
+ "source": "fresh call",
+ "locale": null
+}

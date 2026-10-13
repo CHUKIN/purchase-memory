@@ -1,0 +1,32 @@
+{
+ "receiptId": "05",
+ "configuration": "tesseract-eng-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.1,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "ie aot",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "UMA Pi",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 9.86,
+    "box": [
+     0.0026041666666666665,
+     0.1240234375,
+     0.6002604166666666,
+     0.0859375
+    ]
+   }
+  ]
+ },
+ "source": "langs eng; installed eng,osd,snum; pol MISSING"
+}

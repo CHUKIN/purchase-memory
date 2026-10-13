@@ -1,0 +1,56 @@
+{
+ "receiptId": "17",
+ "configuration": "tesseract-eng-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.43,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "SUPERHARKET. AUCHAN 1 j",
+  "date": null,
+  "currency": null,
+  "total": 165.36,
+  "items": [
+   {
+    "name": "PIECZARKI 196443C 4 ¥5,69",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.69,
+    "box": [
+     0.10807291666666667,
+     0.3564453125,
+     0.5234375000000001,
+     0.021484375
+    ]
+   },
+   {
+    "name": "SER KROLEW 643509C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 7.04,
+    "box": [
+     0.10807291666666667,
+     0.3740234375,
+     0.5234375000000001,
+     0.021484375
+    ]
+   },
+   {
+    "name": "ag PICS",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 6.8,
+    "box": [
+     0.022135416666666668,
+     0.6357421875,
+     0.6223958333333334,
+     0.03125
+    ]
+   }
+  ]
+ },
+ "source": "langs eng; installed eng,osd,snum; pol MISSING"
+}

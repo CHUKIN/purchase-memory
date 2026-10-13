@@ -1,0 +1,68 @@
+{
+ "receiptId": "19",
+ "configuration": "tesseract-eng-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.31,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "SAS USE SCE a Sa one ek Raman a Mae YD oeital) 2 p8y",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "Cezar z Kurczakien",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 16.9,
+    "box": [
+     0.23567708333333334,
+     0.5458984375,
+     0.5338541666666666,
+     0.01953125
+    ]
+   },
+   {
+    "name": "Snietankowo-Truskaukouy",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 16.9,
+    "box": [
+     0.23567708333333334,
+     0.5625,
+     0.5338541666666666,
+     0.0224609375
+    ]
+   },
+   {
+    "name": "Wosk",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 24.9,
+    "box": [
+     0.234375,
+     0.5830078125,
+     0.5338541666666666,
+     0.0205078125
+    ]
+   },
+   {
+    "name": "Z Krenen Waniliouyn",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 12.9,
+    "box": [
+     0.23307291666666666,
+     0.6015625,
+     0.53515625,
+     0.021484375
+    ]
+   }
+  ]
+ },
+ "source": "langs eng; installed eng,osd,snum; pol MISSING"
+}

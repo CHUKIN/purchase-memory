@@ -1,0 +1,116 @@
+{
+ "receiptId": "14",
+ "configuration": "tesseract-eng-psm6-x2",
+ "model": "tesseract-5",
+ "seconds": 0.43,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "' ”",
+  "date": null,
+  "currency": null,
+  "total": 192.4,
+  "items": [
+   {
+    "name": "ARUODA HINER BORJON Iszt10,59=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 10.59,
+    "box": [
+     0.310546875,
+     0.39697265625,
+     0.46809895833333337,
+     0.0166015625
+    ]
+   },
+   {
+    "name": "C#HC TOST HASLANY 5 » Asztx3, 79=°",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.79,
+    "box": [
+     0.3098958333333333,
+     0.41259765625,
+     0.4674479166666667,
+     0.0166015625
+    ]
+   },
+   {
+    "name": "ARVKEAD HAXTRA PRO © tszt#74,99=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 74.99,
+    "box": [
+     0.3098958333333333,
+     0.4287109375,
+     0.4674479166666667,
+     0.017578125
+    ]
+   },
+   {
+    "name": "CAHOI £0SOS SWIEZY tszt*19,49=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 19.49,
+    "box": [
+     0.3111979166666667,
+     0.47509765625,
+     0.4635416666666667,
+     0.0146484375
+    ]
+   },
+   {
+    "name": "CeRJOGURT HOVENPICK",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.39,
+    "box": [
+     0.3118489583333333,
+     0.49169921875,
+     0.4622395833333333,
+     0.01416015625
+    ]
+   },
+   {
+    "name": "CRSHAKIJA KASZKA",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.45,
+    "box": [
+     0.3125,
+     0.50732421875,
+     0.4609375,
+     0.01416015625
+    ]
+   },
+   {
+    "name": "CBPAPRYKA. CZERUONA",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 7.09,
+    "box": [
+     0.3138020833333333,
+     0.52197265625,
+     0.5729166666666667,
+     0.01416015625
+    ]
+   },
+   {
+    "name": "Kuota C 05,00%",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.09,
+    "box": [
+     0.3170572916666667,
+     0.61474609375,
+     0.4348958333333333,
+     0.01611328125
+    ]
+   }
+  ]
+ },
+ "source": "langs eng; installed eng,osd,snum; pol MISSING"
+}

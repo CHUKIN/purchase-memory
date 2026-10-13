@@ -1,0 +1,243 @@
+{
+ "receiptId": "18",
+ "configuration": "azure-prebuilt-receipt",
+ "model": "2024-11-30",
+ "seconds": 10.52,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": 0.01,
+ "usage": null,
+ "parsed": {
+  "merchant": "CARREFOUR Polska Sp. z o. O.",
+  "date": null,
+  "currency": null,
+  "total": 166.69,
+  "totalBox": [
+   0.3854166666666667,
+   0.7646484375,
+   0.28515625000000006,
+   0.0283203125
+  ],
+  "items": [
+   {
+    "name": "A_PAKOWANIE",
+    "quantity": null,
+    "unitPrice": 2.0,
+    "lineTotal": 2.0,
+    "box": [
+     0.2955729166666667,
+     0.37109375,
+     0.3763020833333333,
+     0.0146484375
+    ]
+   },
+   {
+    "name": "C_PODUDZIE Z KURCZ.",
+    "quantity": null,
+    "unitPrice": 26.0,
+    "lineTotal": 13.0,
+    "box": [
+     0.2955729166666667,
+     0.3876953125,
+     0.3763020833333333,
+     0.015625
+    ]
+   },
+   {
+    "name": "C_SMIETANA 18% 200G",
+    "quantity": null,
+    "unitPrice": 2.59,
+    "lineTotal": 2.59,
+    "box": [
+     0.2942708333333333,
+     0.404296875,
+     0.3776041666666667,
+     0.0146484375
+    ]
+   },
+   {
+    "name": "C_MC POMARAŃCZE LUZ",
+    "quantity": null,
+    "unitPrice": 7.0,
+    "lineTotal": 7.0,
+    "box": [
+     0.2942708333333333,
+     0.4208984375,
+     0.3776041666666667,
+     0.0146484375
+    ]
+   },
+   {
+    "name": "C_MC SOCZEWICA 500G",
+    "quantity": null,
+    "unitPrice": 6.65,
+    "lineTotal": 6.65,
+    "box": [
+     0.2942708333333333,
+     0.4375,
+     0.3776041666666667,
+     0.0146484375
+    ]
+   },
+   {
+    "name": "C_SER KROLEWSKI SIE",
+    "quantity": null,
+    "unitPrice": 7.15,
+    "lineTotal": 14.3,
+    "box": [
+     0.2942708333333333,
+     0.453125,
+     0.3776041666666667,
+     0.015625
+    ]
+   },
+   {
+    "name": "A_MYDŁO W PŁ DOVE 5",
+    "quantity": null,
+    "unitPrice": 10.99,
+    "lineTotal": 10.99,
+    "box": [
+     0.2955729166666667,
+     0.4697265625,
+     0.3763020833333333,
+     0.0146484375
+    ]
+   },
+   {
+    "name": "C_MC JAJA ZIELONÓŻK",
+    "quantity": null,
+    "unitPrice": 11.79,
+    "lineTotal": 11.79,
+    "box": [
+     0.2955729166666667,
+     0.486328125,
+     0.3763020833333333,
+     0.0146484375
+    ]
+   },
+   {
+    "name": "C_MOWI ŁOSOŚ WĘDZ.",
+    "quantity": null,
+    "unitPrice": 30.89,
+    "lineTotal": 30.89,
+    "box": [
+     0.2955729166666667,
+     0.5029296875,
+     0.3763020833333333,
+     0.0146484375
+    ]
+   },
+   {
+    "name": "C_SZYNKA KRAKUS 100",
+    "quantity": null,
+    "unitPrice": 7.25,
+    "lineTotal": 14.5,
+    "box": [
+     0.296875,
+     0.5185546875,
+     0.375,
+     0.0146484375
+    ]
+   },
+   {
+    "name": "C_KAPUSTA BIAŁA LUZ",
+    "quantity": null,
+    "unitPrice": 3.49,
+    "lineTotal": 8.73,
+    "box": [
+     0.296875,
+     0.53515625,
+     0.375,
+     0.0146484375
+    ]
+   },
+   {
+    "name": "C_MC MIX SAŁAT Z SA",
+    "quantity": null,
+    "unitPrice": 4.45,
+    "lineTotal": 4.45,
+    "box": [
+     0.296875,
+     0.5517578125,
+     0.375,
+     0.0146484375
+    ]
+   },
+   {
+    "name": "C_JZN ZIEMNIAK JADA",
+    "quantity": null,
+    "unitPrice": 6.99,
+    "lineTotal": 6.99,
+    "box": [
+     0.296875,
+     0.5673828125,
+     0.375,
+     0.015625
+    ]
+   },
+   {
+    "name": "C_NAPOJ ALPRO 1L MI",
+    "quantity": null,
+    "unitPrice": 11.99,
+    "lineTotal": 11.99,
+    "box": [
+     0.296875,
+     0.583984375,
+     0.375,
+     0.015625
+    ]
+   },
+   {
+    "name": "C_MARCHEW LUZ",
+    "quantity": null,
+    "unitPrice": 0.25,
+    "lineTotal": 0.94,
+    "box": [
+     0.296875,
+     0.6005859375,
+     0.375,
+     0.015625
+    ]
+   },
+   {
+    "name": "C_ZUPA VIFON 70G KU",
+    "quantity": null,
+    "unitPrice": 1.95,
+    "lineTotal": 3.9,
+    "box": [
+     0.2955729166666667,
+     0.6171875,
+     0.3763020833333333,
+     0.015625
+    ]
+   },
+   {
+    "name": "C_CHLEB TOSTOWY PEŁ",
+    "quantity": null,
+    "unitPrice": 6.49,
+    "lineTotal": 6.49,
+    "box": [
+     0.2955729166666667,
+     0.6337890625,
+     0.37500000000000006,
+     0.015625
+    ]
+   },
+   {
+    "name": "C_MASLO EKSTRA MAZU",
+    "quantity": null,
+    "unitPrice": 9.49,
+    "lineTotal": 9.49,
+    "box": [
+     0.2955729166666667,
+     0.650390625,
+     0.37500000000000006,
+     0.015625
+    ]
+   }
+  ]
+ },
+ "source": "fresh call",
+ "locale": null
+}

@@ -72,3 +72,7 @@ pm-data/
 
 # Agent worktrees (Claude Code)
 .claude/worktrees/
+
+# Python bytecode (benchmark helper scripts)
+__pycache__/
+*.pyc

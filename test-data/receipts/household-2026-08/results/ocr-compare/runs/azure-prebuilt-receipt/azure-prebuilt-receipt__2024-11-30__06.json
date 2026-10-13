@@ -1,0 +1,63 @@
+{
+ "receiptId": "06",
+ "configuration": "azure-prebuilt-receipt",
+ "model": "2024-11-30",
+ "seconds": 4.46,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": 0.01,
+ "usage": null,
+ "parsed": {
+  "merchant": "Massive Food sp. z o.o.",
+  "date": "2025-10-11",
+  "currency": null,
+  "total": 25.85,
+  "totalBox": [
+   0.3763020833333333,
+   0.3134765625,
+   0.3697916666666667,
+   0.142578125
+  ],
+  "items": [
+   {
+    "name": "Gołąbek mięsny",
+    "quantity": 1,
+    "unitPrice": 12.01,
+    "lineTotal": 12.01,
+    "box": [
+     0.3229166666666667,
+     0.16796875,
+     0.4244791666666667,
+     0.2138671875
+    ]
+   },
+   {
+    "name": "Sos pomidorowy",
+    "quantity": 1,
+    "unitPrice": 6.76,
+    "lineTotal": 6.76,
+    "box": [
+     0.3203125,
+     0.1826171875,
+     0.42578125,
+     0.212890625
+    ]
+   },
+   {
+    "name": "Zacierkowa",
+    "quantity": 1,
+    "unitPrice": 7.08,
+    "lineTotal": 7.08,
+    "box": [
+     0.32421875,
+     0.2802734375,
+     0.41536458333333326,
+     0.0458984375
+    ]
+   }
+  ]
+ },
+ "source": "fresh call",
+ "locale": null
+}

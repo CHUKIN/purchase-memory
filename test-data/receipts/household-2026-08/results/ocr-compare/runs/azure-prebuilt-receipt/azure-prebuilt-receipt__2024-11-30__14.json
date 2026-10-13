@@ -1,0 +1,147 @@
+{
+ "receiptId": "14",
+ "configuration": "azure-prebuilt-receipt",
+ "model": "2024-11-30",
+ "seconds": 4.4,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": 0.01,
+ "usage": null,
+ "parsed": {
+  "merchant": "CARREFOUR Polska Sp. z o. O.",
+  "date": "2025-06-10",
+  "currency": null,
+  "total": 192.4,
+  "totalBox": [
+   0.3984375,
+   0.630859375,
+   0.36979166666666674,
+   0.052734375
+  ],
+  "items": [
+   {
+    "name": "A#WODA MINER BORJOM",
+    "quantity": null,
+    "unitPrice": 10.59,
+    "lineTotal": 10.59,
+    "box": [
+     0.30859375,
+     0.3955078125,
+     0.47265625,
+     0.0185546875
+    ]
+   },
+   {
+    "name": "C#MC TOST MAŚLANY 5",
+    "quantity": null,
+    "unitPrice": 3.79,
+    "lineTotal": 3.79,
+    "box": [
+     0.30859375,
+     0.4111328125,
+     0.47135416666666674,
+     0.0185546875
+    ]
+   },
+   {
+    "name": "A#WKŁAD MAXTRA PRO",
+    "quantity": null,
+    "unitPrice": 74.99,
+    "lineTotal": 74.99,
+    "box": [
+     0.30859375,
+     0.427734375,
+     0.47135416666666674,
+     0.0166015625
+    ]
+   },
+   {
+    "name": "C#FILET Z KURCZ. ZA",
+    "quantity": null,
+    "unitPrice": 0.412,
+    "lineTotal": 21.83,
+    "box": [
+     0.30859375,
+     0.443359375,
+     0.47005208333333326,
+     0.0166015625
+    ]
+   },
+   {
+    "name": "C#SALAME VILCANI 80",
+    "quantity": null,
+    "unitPrice": 30.79,
+    "lineTotal": 30.79,
+    "box": [
+     0.30859375,
+     0.458984375,
+     0.46875,
+     0.015625
+    ]
+   },
+   {
+    "name": "C#MOWI ŁOSOŚ ŚWIEŻY",
+    "quantity": null,
+    "unitPrice": 19.49,
+    "lineTotal": 19.49,
+    "box": [
+     0.3098958333333333,
+     0.474609375,
+     0.4674479166666667,
+     0.0166015625
+    ]
+   },
+   {
+    "name": "C#JOGURT MOVENPICK",
+    "quantity": null,
+    "unitPrice": 5.39,
+    "lineTotal": 5.39,
+    "box": [
+     0.3111979166666667,
+     0.490234375,
+     0.46484375000000006,
+     0.0166015625
+    ]
+   },
+   {
+    "name": "C#SMAKIJA KASZKA 13",
+    "quantity": null,
+    "unitPrice": 3.45,
+    "lineTotal": 3.45,
+    "box": [
+     0.3111979166666667,
+     0.505859375,
+     0.46484375000000006,
+     0.0166015625
+    ]
+   },
+   {
+    "name": "C#PAPRYKA CZERWONA",
+    "quantity": null,
+    "unitPrice": 0.546,
+    "lineTotal": 7.09,
+    "box": [
+     0.3125,
+     0.5205078125,
+     0.46223958333333326,
+     0.0166015625
+    ]
+   },
+   {
+    "name": "C#MC SZPARAGI ZIELO",
+    "quantity": null,
+    "unitPrice": 14.99,
+    "lineTotal": 14.99,
+    "box": [
+     0.3138020833333333,
+     0.53125,
+     0.4596354166666667,
+     0.029296875
+    ]
+   }
+  ]
+ },
+ "source": "fresh call",
+ "locale": null
+}

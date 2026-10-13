@@ -1,0 +1,152 @@
+{
+ "receiptId": "11",
+ "configuration": "tesseract-eng-psm6-x2",
+ "model": "tesseract-5",
+ "seconds": 0.56,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "CARREFOUR MARKET CH Sadyba",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "ee CHSER TUARD. DzIUGAS Iszts3,95=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.95,
+    "box": [
+     0.0026041666666666665,
+     0.31640625,
+     0.7825520833333334,
+     0.02734375
+    ]
+   },
+   {
+    "name": "oo eee = CAFILET 2 KURCZAKA",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 17.05,
+    "box": [
+     0.0078125,
+     0.330078125,
+     0.7955729166666667,
+     0.02880859375
+    ]
+   },
+   {
+    "name": "“S<o ees © CHPOLEOWICA Z DoRSZ",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 22.74,
+    "box": [
+     0.12434895833333333,
+     0.34912109375,
+     0.6783854166666666,
+     0.025390625
+    ]
+   },
+   {
+    "name": "5 CeJOGURT HOUENPICK aszt*5,75=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 11.5,
+    "box": [
+     0.12890625,
+     0.37109375,
+     0.8190104166666667,
+     0.03076171875
+    ]
+   },
+   {
+    "name": "“See CHDESER SATIN BAKO",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.35,
+    "box": [
+     0.17838541666666666,
+     0.38671875,
+     0.80859375,
+     0.02880859375
+    ]
+   },
+   {
+    "name": "2) CHDESER SATINO BAKO",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.35,
+    "box": [
+     0.17643229166666666,
+     0.4052734375,
+     0.6263020833333334,
+     0.021484375
+    ]
+   },
+   {
+    "name": "9 ABBATONIK TuAROG HA",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.25,
+    "box": [
+     0.16927083333333334,
+     0.4228515625,
+     0.6334635416666666,
+     0.0224609375
+    ]
+   },
+   {
+    "name": "5) ) — ANTORBA RECYKLING",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 0.79,
+    "box": [
+     0.1640625,
+     0.43896484375,
+     0.6380208333333334,
+     0.02734375
+    ]
+   },
+   {
+    "name": "Se. Kuota PIU C 05,002",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.41,
+    "box": [
+     0.09440104166666667,
+     0.54052734375,
+     0.685546875,
+     0.02685546875
+    ]
+   },
+   {
+    "name": "Wptacono razen",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 75.55,
+    "box": [
+     0.2877604166666667,
+     0.66064453125,
+     0.51171875,
+     0.021484375
+    ]
+   },
+   {
+    "name": "Kegiean ono —",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.37,
+    "box": [
+     0.2877604166666667,
+     0.87939453125,
+     0.5052083333333333,
+     0.03076171875
+    ]
+   }
+  ]
+ },
+ "source": "langs eng; installed eng,osd,snum; pol MISSING"
+}

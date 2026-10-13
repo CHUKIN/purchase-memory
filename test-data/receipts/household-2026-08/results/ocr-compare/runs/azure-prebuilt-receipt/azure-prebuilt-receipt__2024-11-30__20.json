@@ -1,0 +1,75 @@
+{
+ "receiptId": "20",
+ "configuration": "azure-prebuilt-receipt",
+ "model": "2024-11-30",
+ "seconds": 3.63,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": 0.01,
+ "usage": null,
+ "parsed": {
+  "merchant": "Sinisa Hristoy - Ien",
+  "date": "2023-03-25",
+  "currency": null,
+  "total": 38.1,
+  "totalBox": [
+   0.3489583333333333,
+   0.482421875,
+   0.3098958333333333,
+   0.041015625
+  ],
+  "items": [
+   {
+    "name": "*BigMac M+",
+    "quantity": 1,
+    "unitPrice": 15.3,
+    "lineTotal": 15.3,
+    "box": [
+     0.21614583333333334,
+     0.275390625,
+     0.43098958333333326,
+     0.0380859375
+    ]
+   },
+   {
+    "name": "Chrup TalarkM+",
+    "quantity": 1,
+    "unitPrice": 8.0,
+    "lineTotal": 8.0,
+    "box": [
+     0.21614583333333334,
+     0.2978515625,
+     0.43489583333333326,
+     0.0322265625
+    ]
+   },
+   {
+    "name": "Woda NieGaz. M+",
+    "quantity": 1,
+    "unitPrice": 7.9,
+    "lineTotal": 7.9,
+    "box": [
+     0.21614583333333334,
+     0.318359375,
+     0.4375,
+     0.03125
+    ]
+   },
+   {
+    "name": "*Cheeseburger",
+    "quantity": 1,
+    "unitPrice": 6.9,
+    "lineTotal": 6.9,
+    "box": [
+     0.22005208333333334,
+     0.34375,
+     0.43359375,
+     0.025390625
+    ]
+   }
+  ]
+ },
+ "source": "fresh call",
+ "locale": null
+}
