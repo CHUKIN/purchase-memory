@@ -33,13 +33,23 @@ internal sealed class OpenAiTextTransport : IOpenAiTextTransport, IDisposable
     private readonly ResponsesClient _client;
     private readonly HttpClient _httpClient;
 
-    public OpenAiTextTransport(string apiKey, string model, TimeSpan timeout)
+    /// <param name="maximumRetries">
+    /// SDK retries after the first attempt; null keeps the SDK default. Each
+    /// attempt gets the full <paramref name="timeout"/>, so a caller with its own
+    /// fallback passes 0 to bound the wait to one timeout.
+    /// </param>
+    public OpenAiTextTransport(string apiKey, string model, TimeSpan timeout, int? maximumRetries = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(apiKey);
         ArgumentException.ThrowIfNullOrWhiteSpace(model);
 
         _httpClient = new HttpClient { Timeout = timeout };
         var clientOptions = new OpenAIClientOptions { Transport = new HttpClientPipelineTransport(_httpClient) };
+        if (maximumRetries is { } retries)
+        {
+            clientOptions.RetryPolicy = new ClientRetryPolicy(retries);
+        }
+
         _client = new ResponsesClient(model, new ApiKeyCredential(apiKey), clientOptions);
     }
 
