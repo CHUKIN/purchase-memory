@@ -1,0 +1,32 @@
+{
+ "receiptId": "19",
+ "configuration": "tesseract-pol-fast-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.37,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "AAKRWR RNA ARN ONO EE A Aa Z 0",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "2 Krenen Wani liouyn 1_x12,90",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 12.9,
+    "box": [
+     0.23307291666666666,
+     0.6015625,
+     0.53515625,
+     0.021484375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

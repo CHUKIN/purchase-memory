@@ -1,0 +1,80 @@
+{
+ "receiptId": "09",
+ "configuration": "tesseract-pol-best-psm6-x2",
+ "model": "tesseract-5",
+ "seconds": 0.93,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "PE Market Sp. z 0.0. |",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "Ą_WODA MINER BORJOM",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 7.49,
+    "box": [
+     0.07161458333333333,
+     0.3154296875,
+     0.701171875,
+     0.025390625
+    ]
+   },
+   {
+    "name": "C_MAŚLANKA 420G BUT",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.89,
+    "box": [
+     0.15559895833333334,
+     0.3359375,
+     0.6165364583333333,
+     0.0263671875
+    ]
+   },
+   {
+    "name": "B_WILKIN RASPBERRY",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 35.99,
+    "box": [
+     0.15690104166666666,
+     0.3564453125,
+     0.6145833333333334,
+     0.02587890625
+    ]
+   },
+   {
+    "name": "C_MIÓD PSZCZ. WIELO 1+13,99=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 13.09,
+    "box": [
+     0.16015625,
+     0.39697265625,
+     0.5904947916666666,
+     0.021484375
+    ]
+   },
+   {
+    "name": "Q_MOWI ŁOSOŚ WĘDZ, 1 1%25799=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 25.99,
+    "box": [
+     0.1640625,
+     0.453125,
+     0.6022135416666667,
+     0.0234375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

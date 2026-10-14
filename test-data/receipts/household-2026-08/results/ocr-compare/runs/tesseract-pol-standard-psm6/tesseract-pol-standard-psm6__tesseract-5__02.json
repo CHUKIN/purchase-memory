@@ -1,0 +1,68 @@
+{
+ "receiptId": "02",
+ "configuration": "tesseract-pol-standard-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.51,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "ROSSTA Betriehsne «,Y'Ef:*' F'”b\"",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "d Kekse Uschki",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.49,
+    "box": [
+     0.21614583333333334,
+     0.328125,
+     0.5520833333333334,
+     0.0234375
+    ]
+   },
+   {
+    "name": "lotal",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 24.3,
+    "box": [
+     0.3619791666666667,
+     0.6611328125,
+     0.4088541666666667,
+     0.0302734375
+    ]
+   },
+   {
+    "name": "J Nettounsatz",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.69,
+    "box": [
+     0.3072916666666667,
+     0.701171875,
+     0.4127604166666667,
+     0.0234375
+    ]
+   },
+   {
+    "name": "KARTE",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 24.3,
+    "box": [
+     0.35546875,
+     0.7734375,
+     0.44661458333333326,
+     0.0400390625
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

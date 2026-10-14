@@ -1,0 +1,44 @@
+{
+ "receiptId": "20",
+ "configuration": "tesseract-pol-best-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.42,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "” R",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "Chrup Talarki: : a",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 15.3,
+    "box": [
+     0.21875,
+     0.2900390625,
+     0.42317708333333337,
+     0.0341796875
+    ]
+   },
+   {
+    "name": "Woda NieGaz, H+ x6,00",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.0,
+    "box": [
+     0.21875,
+     0.3125,
+     0.42708333333333337,
+     0.02734375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

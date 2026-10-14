@@ -1,0 +1,56 @@
+{
+ "receiptId": "13",
+ "configuration": "tesseract-pol-eng-fast-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.51,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "p =",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "Pijana Hisnia (d) 4 32,90",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 22.9,
+    "box": [
+     0.296875,
+     0.4384765625,
+     0.45703125,
+     0.021484375
+    ]
+   },
+   {
+    "name": "Króleuski (4) 1 x25,0",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 25.9,
+    "box": [
+     0.2981770833333333,
+     0.46875,
+     0.45703125000000006,
+     0.0224609375
+    ]
+   },
+   {
+    "name": "sPudetko papieroue (8). 12,00",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.0,
+    "box": [
+     0.296875,
+     0.4990234375,
+     0.45963541666666663,
+     0.0390625
+    ]
+   }
+  ]
+ },
+ "source": "langs pol+eng; installed eng,pol"
+}

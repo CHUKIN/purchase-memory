@@ -1,0 +1,64 @@
+{
+ "receiptId": "07",
+ "configuration": "haiku-full-structured-low",
+ "model": "claude-haiku-5-5",
+ "seconds": 5.67,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.000862,
+ "paidEquivalentUsd": 0.000862,
+ "usage": {
+  "inputTokens": 2978,
+  "outputTokens": 1129
+ },
+ "parsed": {
+  "merchant": "Suntago",
+  "date": "2025-08-18T19:59:00+02:00",
+  "currency": "PLN",
+  "total": 108.09,
+  "totalBox": [
+   0.335,
+   0.648,
+   0.45,
+   0.04
+  ],
+  "items": [
+   {
+    "name": "DANIE BUFET GR",
+    "quantity": 0.288,
+    "unitPrice": 95.0,
+    "lineTotal": 27.36,
+    "box": [
+     0.335,
+     0.475,
+     0.46,
+     0.03
+    ]
+   },
+   {
+    "name": "DANIE BUFET GR",
+    "quantity": 0.534,
+    "unitPrice": 95.0,
+    "lineTotal": 50.73,
+    "box": [
+     0.335,
+     0.493,
+     0.46,
+     0.03
+    ]
+   },
+   {
+    "name": "WYPOŻYCZENIE RĘCZNIKA",
+    "quantity": 2,
+    "unitPrice": 15.0,
+    "lineTotal": 30.0,
+    "box": [
+     0.335,
+     0.51,
+     0.46,
+     0.03
+    ]
+   }
+  ]
+ }
+}

@@ -1,0 +1,19 @@
+{
+ "receiptId": "04",
+ "configuration": "tesseract-pol-fast-psm6-x2",
+ "model": "tesseract-5",
+ "seconds": 0.58,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "sg ACZ PARAGON piskńl NY 05 84 i",
+  "date": null,
+  "currency": null,
+  "total": 436.99,
+  "items": []
+ },
+ "source": "langs pol; installed eng,pol"
+}

@@ -1,0 +1,19 @@
+{
+ "receiptId": "04",
+ "configuration": "tesseract-pol-best-psm6-x2",
+ "model": "tesseract-5",
+ "seconds": 0.97,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "riroda PARAGON p 15KA! NY s 8ł",
+  "date": null,
+  "currency": null,
+  "total": 436.99,
+  "items": []
+ },
+ "source": "langs pol; installed eng,pol"
+}

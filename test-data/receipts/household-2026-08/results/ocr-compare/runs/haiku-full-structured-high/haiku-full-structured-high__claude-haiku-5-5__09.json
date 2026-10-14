@@ -1,0 +1,160 @@
+{
+ "receiptId": "09",
+ "configuration": "haiku-full-structured-high",
+ "model": "claude-haiku-5-5",
+ "seconds": 11.0,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.00178,
+ "paidEquivalentUsd": 0.00178,
+ "usage": {
+  "inputTokens": 2978,
+  "outputTokens": 2965
+ },
+ "parsed": {
+  "merchant": "Carrefour MARKET Warszawa",
+  "date": "2025-08-06T19:39:00+02:00",
+  "currency": "PLN",
+  "total": 177.48,
+  "totalBox": [
+   0.165,
+   0.652,
+   0.59,
+   0.04
+  ],
+  "items": [
+   {
+    "name": "C_SZPINAK BABY 125G",
+    "quantity": 1,
+    "unitPrice": 5.99,
+    "lineTotal": 5.99,
+    "box": [
+     0.15,
+     0.296,
+     0.62,
+     0.03
+    ]
+   },
+   {
+    "name": "A_WODA MINER BORJOM",
+    "quantity": 1,
+    "unitPrice": 7.49,
+    "lineTotal": 7.49,
+    "box": [
+     0.15,
+     0.315,
+     0.62,
+     0.03
+    ]
+   },
+   {
+    "name": "C_MASŁANKA 420G BUT",
+    "quantity": 1,
+    "unitPrice": 2.89,
+    "lineTotal": 2.89,
+    "box": [
+     0.15,
+     0.335,
+     0.62,
+     0.03
+    ]
+   },
+   {
+    "name": "B_WILKIN RASPBERRY",
+    "quantity": 1,
+    "unitPrice": 35.99,
+    "lineTotal": 35.99,
+    "box": [
+     0.15,
+     0.354,
+     0.62,
+     0.03
+    ]
+   },
+   {
+    "name": "C_KEDYMEX-RZODKIEWE",
+    "quantity": 0.392,
+    "unitPrice": 38.99,
+    "lineTotal": 15.28,
+    "box": [
+     0.15,
+     0.374,
+     0.62,
+     0.03
+    ]
+   },
+   {
+    "name": "C_MIÓD PSZCZ. WIELO",
+    "quantity": 1,
+    "unitPrice": 13.99,
+    "lineTotal": 13.99,
+    "box": [
+     0.15,
+     0.394,
+     0.62,
+     0.03
+    ]
+   },
+   {
+    "name": "A_CHUST DO HIG INT",
+    "quantity": 1,
+    "unitPrice": 9.99,
+    "lineTotal": 9.99,
+    "box": [
+     0.15,
+     0.414,
+     0.62,
+     0.03
+    ]
+   },
+   {
+    "name": "A_KAWA O SMAKU ORZE",
+    "quantity": 1,
+    "unitPrice": 35.99,
+    "lineTotal": 35.99,
+    "box": [
+     0.15,
+     0.434,
+     0.62,
+     0.03
+    ]
+   },
+   {
+    "name": "C_MOWI ŁOSOŚ WĘDZ.",
+    "quantity": 1,
+    "unitPrice": 25.99,
+    "lineTotal": 25.99,
+    "box": [
+     0.15,
+     0.453,
+     0.62,
+     0.03
+    ]
+   },
+   {
+    "name": "C_KUKURYDZA ŚWIEŻA",
+    "quantity": 2,
+    "unitPrice": 6.99,
+    "lineTotal": 13.98,
+    "box": [
+     0.15,
+     0.472,
+     0.62,
+     0.03
+    ]
+   },
+   {
+    "name": "C_SER CHEDDAR WHITE",
+    "quantity": 0.132,
+    "unitPrice": 74.99,
+    "lineTotal": 9.9,
+    "box": [
+     0.15,
+     0.49,
+     0.62,
+     0.03
+    ]
+   }
+  ]
+ }
+}

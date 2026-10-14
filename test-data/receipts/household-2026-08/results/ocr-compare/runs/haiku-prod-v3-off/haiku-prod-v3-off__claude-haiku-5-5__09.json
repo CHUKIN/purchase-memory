@@ -1,0 +1,100 @@
+{
+ "receiptId": "09",
+ "configuration": "haiku-prod-v3-off",
+ "model": "claude-haiku-5-5",
+ "seconds": 3.95,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.000851,
+ "paidEquivalentUsd": 0.000851,
+ "usage": {
+  "inputTokens": 2843,
+  "outputTokens": 1133
+ },
+ "parsed": {
+  "merchant": "Carrefour MARKET Warszawa",
+  "date": "2025-08-06T19:39:00+02:00",
+  "currency": "PLN",
+  "total": 177.48,
+  "totalBox": null,
+  "items": [
+   {
+    "name": "C_SZPINAK BABY 125G",
+    "quantity": 1,
+    "unitPrice": 5.99,
+    "lineTotal": 5.99,
+    "box": null
+   },
+   {
+    "name": "A_WODA MINER BORJOM",
+    "quantity": 1,
+    "unitPrice": 7.49,
+    "lineTotal": 7.49,
+    "box": null
+   },
+   {
+    "name": "C_MASLANKA 420G BUT",
+    "quantity": 1,
+    "unitPrice": 2.89,
+    "lineTotal": 2.89,
+    "box": null
+   },
+   {
+    "name": "B_WILKIN RASPBERRY",
+    "quantity": 1,
+    "unitPrice": 35.99,
+    "lineTotal": 35.99,
+    "box": null
+   },
+   {
+    "name": "C_KEDYMEX-RZODKIEWE",
+    "quantity": 0.392,
+    "unitPrice": 38.99,
+    "lineTotal": 15.28,
+    "box": null
+   },
+   {
+    "name": "C_MIOD PSZCZ. WIELO",
+    "quantity": 1,
+    "unitPrice": 13.99,
+    "lineTotal": 13.99,
+    "box": null
+   },
+   {
+    "name": "A_CHUST DO HIG INT",
+    "quantity": 1,
+    "unitPrice": 9.99,
+    "lineTotal": 9.99,
+    "box": null
+   },
+   {
+    "name": "A_KAWA O SMAKU ORZE",
+    "quantity": 1,
+    "unitPrice": 35.99,
+    "lineTotal": 35.99,
+    "box": null
+   },
+   {
+    "name": "C_MOWI LOSOS WEDZ.",
+    "quantity": 1,
+    "unitPrice": 25.99,
+    "lineTotal": 25.99,
+    "box": null
+   },
+   {
+    "name": "C_KUKURYDZA SWIEZA",
+    "quantity": 2,
+    "unitPrice": 6.99,
+    "lineTotal": 13.98,
+    "box": null
+   },
+   {
+    "name": "C_SER CHEDDAR WHITE",
+    "quantity": 0.132,
+    "unitPrice": 74.99,
+    "lineTotal": 9.9,
+    "box": null
+   }
+  ]
+ }
+}

@@ -1,0 +1,220 @@
+{
+ "receiptId": "16",
+ "configuration": "haiku-bbox-required-low",
+ "model": "claude-haiku-5-5",
+ "seconds": 12.38,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.001935,
+ "paidEquivalentUsd": 0.001935,
+ "usage": {
+  "inputTokens": 2951,
+  "outputTokens": 3280
+ },
+ "parsed": {
+  "merchant": "Supermarket Auchan",
+  "date": "2025-03-14T19:35:00+01:00",
+  "currency": "PLN",
+  "total": 165.36,
+  "totalBox": [
+   0.67,
+   0.68,
+   0.17,
+   0.04
+  ],
+  "items": [
+   {
+    "name": "UDO Z KURC",
+    "quantity": 0.49,
+    "unitPrice": 22.97,
+    "lineTotal": 11.26,
+    "box": [
+     0.2,
+     0.225,
+     0.67,
+     0.022
+    ]
+   },
+   {
+    "name": "POMIDOR KO",
+    "quantity": 1,
+    "unitPrice": 11.99,
+    "lineTotal": 11.99,
+    "box": [
+     0.2,
+     0.249,
+     0.67,
+     0.022
+    ]
+   },
+   {
+    "name": "OGOREK DŁU",
+    "quantity": 1,
+    "unitPrice": 3.99,
+    "lineTotal": 3.99,
+    "box": [
+     0.2,
+     0.273,
+     0.67,
+     0.022
+    ]
+   },
+   {
+    "name": "ZIEMNIAKI W",
+    "quantity": 2.012,
+    "unitPrice": 3.69,
+    "lineTotal": 7.42,
+    "box": [
+     0.2,
+     0.298,
+     0.67,
+     0.022
+    ]
+   },
+   {
+    "name": "PIECZARKI",
+    "quantity": 1,
+    "unitPrice": 5.69,
+    "lineTotal": 5.69,
+    "box": [
+     0.2,
+     0.32,
+     0.67,
+     0.022
+    ]
+   },
+   {
+    "name": "SER KROLEW",
+    "quantity": 1,
+    "unitPrice": 7.04,
+    "lineTotal": 7.04,
+    "box": [
+     0.2,
+     0.343,
+     0.67,
+     0.022
+    ]
+   },
+   {
+    "name": "LOSOS PORCJ",
+    "quantity": 1,
+    "unitPrice": 37.9,
+    "lineTotal": 37.9,
+    "box": [
+     0.2,
+     0.365,
+     0.67,
+     0.022
+    ]
+   },
+   {
+    "name": "PłCZEK FAN",
+    "quantity": 1,
+    "unitPrice": 9.9,
+    "lineTotal": 9.9,
+    "box": [
+     0.2,
+     0.385,
+     0.67,
+     0.022
+    ]
+   },
+   {
+    "name": "BANAN",
+    "quantity": 0.614,
+    "unitPrice": 3.5,
+    "lineTotal": 2.15,
+    "box": [
+     0.2,
+     0.405,
+     0.67,
+     0.022
+    ]
+   },
+   {
+    "name": "SZPINAK",
+    "quantity": 1,
+    "unitPrice": 5.99,
+    "lineTotal": 5.99,
+    "box": [
+     0.2,
+     0.43,
+     0.67,
+     0.022
+    ]
+   },
+   {
+    "name": "KUKURYDZA",
+    "quantity": 2,
+    "unitPrice": 6.48,
+    "lineTotal": 12.96,
+    "box": [
+     0.2,
+     0.45,
+     0.67,
+     0.022
+    ]
+   },
+   {
+    "name": "SOCZEWICA",
+    "quantity": 2,
+    "unitPrice": 7.19,
+    "lineTotal": 14.38,
+    "box": [
+     0.2,
+     0.47,
+     0.67,
+     0.022
+    ]
+   },
+   {
+    "name": "PASTA PRZ",
+    "quantity": 1,
+    "unitPrice": 14.98,
+    "lineTotal": 14.98,
+    "box": [
+     0.2,
+     0.49,
+     0.67,
+     0.022
+    ]
+   },
+   {
+    "name": "SZYNKA Z P",
+    "quantity": 1,
+    "unitPrice": 6.34,
+    "lineTotal": 6.34,
+    "box": [
+     0.2,
+     0.512,
+     0.67,
+     0.022
+    ]
+   },
+   {
+    "name": "TOREBKI",
+    "quantity": 2,
+    "unitPrice": 3.79,
+    "lineTotal": 7.58,
+    "box": [
+     0.2,
+     0.534,
+     0.67,
+     0.022
+    ]
+   },
+   {
+    "name": "PIERNIKI S",
+    "quantity": 1,
+    "unitPrice": 5.79,
+    "lineTotal": 5.79,
+    "box": [
+     0.2,
+     0.555,
+     0.67,
+     0.022
+    ]
+   }
+  ]
+ }
+}

@@ -1,0 +1,19 @@
+{
+ "receiptId": "07",
+ "configuration": "tesseract-pol-standard-psm4",
+ "model": "tesseract-5",
+ "seconds": 0.2,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "y 1Y",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": []
+ },
+ "source": "langs pol; installed eng,pol"
+}

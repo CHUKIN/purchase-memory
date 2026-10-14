@@ -1,0 +1,19 @@
+{
+ "receiptId": "08",
+ "configuration": "tesseract-pol-eng-fast-psm4",
+ "model": "tesseract-5",
+ "seconds": 0.38,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "SkLEP ZABKA ZBO31",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": []
+ },
+ "source": "langs pol+eng; installed eng,pol"
+}

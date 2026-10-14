@@ -1,0 +1,68 @@
+{
+ "receiptId": "15",
+ "configuration": "tesseract-pol-best-psm4",
+ "model": "tesseract-5",
+ "seconds": 0.43,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "R",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "AMERICAN SALAD",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 49.0,
+    "box": [
+     0.22265625,
+     0.55078125,
+     0.49479166666666663,
+     0.021484375
+    ]
+   },
+   {
+    "name": "AE ZEBERKA",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 79.0,
+    "box": [
+     0.2265625,
+     0.56640625,
+     0.4921875,
+     0.052734375
+    ]
+   },
+   {
+    "name": "GRILLOMANY PSTRĄG",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 69.0,
+    "box": [
+     0.22265625,
+     0.5986328125,
+     0.49609375,
+     0.0234375
+    ]
+   },
+   {
+    "name": "DOKOWA MROZONA HERBATA —",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 22.0,
+    "box": [
+     0.22265625,
+     0.599609375,
+     0.49739583333333337,
+     0.052734375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

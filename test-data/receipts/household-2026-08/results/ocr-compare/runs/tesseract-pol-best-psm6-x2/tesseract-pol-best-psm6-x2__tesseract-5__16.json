@@ -1,0 +1,164 @@
+{
+ "receiptId": "16",
+ "configuration": "tesseract-pol-best-psm6-x2",
+ "model": "tesseract-5",
+ "seconds": 0.8,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "SUPERMARKET AUCHAN,",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "UDO Z KURC 339863C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 11.26,
+    "box": [
+     0.20182291666666666,
+     0.2275390625,
+     0.6302083333333334,
+     0.02734375
+    ]
+   },
+   {
+    "name": "POMIDOR KO 627840C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 11.99,
+    "box": [
+     0.20182291666666666,
+     0.2490234375,
+     0.62890625,
+     0.0283203125
+    ]
+   },
+   {
+    "name": "OGÓREK DŁU 306053C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.99,
+    "box": [
+     0.20247395833333334,
+     0.27197265625,
+     0.626953125,
+     0.02783203125
+    ]
+   },
+   {
+    "name": "ZIEMNIAKI W 33980C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 7.42,
+    "box": [
+     0.203125,
+     0.2939453125,
+     0.625,
+     0.0283203125
+    ]
+   },
+   {
+    "name": "PIECZARKI 196443C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.69,
+    "box": [
+     0.203125,
+     0.31640625,
+     0.6236979166666667,
+     0.02783203125
+    ]
+   },
+   {
+    "name": "a SER KROLEM 643509(",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 7.04,
+    "box": [
+     0.041666666666666664,
+     0.3388671875,
+     0.7838541666666666,
+     0.02783203125
+    ]
+   },
+   {
+    "name": "ON LOSS PORCJ",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 37.9,
+    "box": [
+     0.014322916666666666,
+     0.36181640625,
+     0.8092447916666667,
+     0.02685546875
+    ]
+   },
+   {
+    "name": "PACZEK FAN",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 9.9,
+    "box": [
+     0.20377604166666666,
+     0.38330078125,
+     0.6184895833333334,
+     0.02685546875
+    ]
+   },
+   {
+    "name": "BANAN 34044C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.15,
+    "box": [
+     0.20442708333333334,
+     0.40478515625,
+     0.6165364583333333,
+     0.02734375
+    ]
+   },
+   {
+    "name": "SOCZEMICA 979480C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 14.38,
+    "box": [
+     0.20442708333333334,
+     0.46923828125,
+     0.6119791666666666,
+     0.02783203125
+    ]
+   },
+   {
+    "name": "SZYNKA Z P 695097C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 6.34,
+    "box": [
+     0.20182291666666666,
+     0.50341796875,
+     0.6139322916666667,
+     0.03857421875
+    ]
+   },
+   {
+    "name": "DN | a",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 165.36,
+    "box": [
+     0.3203125,
+     0.68408203125,
+     0.47916666666666674,
+     0.04052734375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

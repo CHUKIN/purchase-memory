@@ -1,0 +1,56 @@
+{
+ "receiptId": "19",
+ "configuration": "tesseract-pol-standard-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.68,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": ": AŁA T SAZERR, RRA RIA AAA SA E s AWA ee",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "Cezar z Kurczakiem",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 16.9,
+    "box": [
+     0.23567708333333334,
+     0.5458984375,
+     0.5338541666666666,
+     0.01953125
+    ]
+   },
+   {
+    "name": "Śnietankowo-Truskaukowy",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 16.9,
+    "box": [
+     0.23567708333333334,
+     0.5625,
+     0.5338541666666666,
+     0.0224609375
+    ]
+   },
+   {
+    "name": "Z Krenen WaniLiowyn",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 12.9,
+    "box": [
+     0.23307291666666666,
+     0.6015625,
+     0.53515625,
+     0.021484375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

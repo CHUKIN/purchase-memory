@@ -1,0 +1,76 @@
+{
+ "receiptId": "20",
+ "configuration": "haiku-full-structured-off",
+ "model": "claude-haiku-5-5",
+ "seconds": 2.74,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.000534,
+ "paidEquivalentUsd": 0.000534,
+ "usage": {
+  "inputTokens": 2977,
+  "outputTokens": 473
+ },
+ "parsed": {
+  "merchant": "McDonald's Restauracja Warszawa Wilanów",
+  "date": "2023-03-25T12:09:00+01:00",
+  "currency": "PLN",
+  "total": 38.1,
+  "totalBox": [
+   0.23,
+   0.63,
+   0.44,
+   0.05
+  ],
+  "items": [
+   {
+    "name": "*BigMac M+",
+    "quantity": 1,
+    "unitPrice": 15.3,
+    "lineTotal": 15.3,
+    "box": [
+     0.23,
+     0.3,
+     0.44,
+     0.05
+    ]
+   },
+   {
+    "name": "Chrup TalarkM+",
+    "quantity": 1,
+    "unitPrice": 8.0,
+    "lineTotal": 8.0,
+    "box": [
+     0.23,
+     0.33,
+     0.44,
+     0.05
+    ]
+   },
+   {
+    "name": "Woda NieGaz. M+",
+    "quantity": 1,
+    "unitPrice": 7.9,
+    "lineTotal": 7.9,
+    "box": [
+     0.23,
+     0.36,
+     0.44,
+     0.05
+    ]
+   },
+   {
+    "name": "*Cheeseburger",
+    "quantity": 1,
+    "unitPrice": 6.9,
+    "lineTotal": 6.9,
+    "box": [
+     0.23,
+     0.39,
+     0.44,
+     0.05
+    ]
+   }
+  ]
+ }
+}

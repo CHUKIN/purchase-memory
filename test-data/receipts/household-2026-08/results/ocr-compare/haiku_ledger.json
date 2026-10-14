@@ -1,0 +1,1205 @@
+{
+ "spentUsd": 0.37634,
+ "calls": [
+  {
+   "variant": "haiku-prod-v3-off",
+   "receipt": "01",
+   "costUsd": 0.000634
+  },
+  {
+   "variant": "haiku-prod-v3-off",
+   "receipt": "02",
+   "costUsd": 0.000839
+  },
+  {
+   "variant": "haiku-prod-v3-off",
+   "receipt": "03",
+   "costUsd": 0.001665
+  },
+  {
+   "variant": "haiku-prod-v3-off",
+   "receipt": "04",
+   "costUsd": 0.00077
+  },
+  {
+   "variant": "haiku-prod-v3-off",
+   "receipt": "05",
+   "costUsd": 0.00054
+  },
+  {
+   "variant": "haiku-prod-v3-off",
+   "receipt": "06",
+   "costUsd": 0.000497
+  },
+  {
+   "variant": "haiku-prod-v3-off",
+   "receipt": "07",
+   "costUsd": 0.00048
+  },
+  {
+   "variant": "haiku-prod-v3-off",
+   "receipt": "08",
+   "costUsd": 0.000631
+  },
+  {
+   "variant": "haiku-prod-v3-off",
+   "receipt": "09",
+   "costUsd": 0.000851
+  },
+  {
+   "variant": "haiku-prod-v3-off",
+   "receipt": "10",
+   "costUsd": 0.000769
+  },
+  {
+   "variant": "haiku-prod-v3-off",
+   "receipt": "11",
+   "costUsd": 0.00086
+  },
+  {
+   "variant": "haiku-prod-v3-off",
+   "receipt": "12",
+   "costUsd": 0.000857
+  },
+  {
+   "variant": "haiku-prod-v3-off",
+   "receipt": "13",
+   "costUsd": 0.000547
+  },
+  {
+   "variant": "haiku-prod-v3-off",
+   "receipt": "14",
+   "costUsd": 0.000805
+  },
+  {
+   "variant": "haiku-prod-v3-off",
+   "receipt": "15",
+   "costUsd": 0.000535
+  },
+  {
+   "variant": "haiku-prod-v3-off",
+   "receipt": "16",
+   "costUsd": 0.001026
+  },
+  {
+   "variant": "haiku-prod-v3-off",
+   "receipt": "17",
+   "costUsd": 0.001028
+  },
+  {
+   "variant": "haiku-prod-v3-off",
+   "receipt": "18",
+   "costUsd": 0.001168
+  },
+  {
+   "variant": "haiku-prod-v3-off",
+   "receipt": "19",
+   "costUsd": 0.000511
+  },
+  {
+   "variant": "haiku-prod-v3-off",
+   "receipt": "20",
+   "costUsd": 0.00056
+  },
+  {
+   "variant": "haiku-prod-v3-low",
+   "receipt": "01",
+   "costUsd": 0.001225
+  },
+  {
+   "variant": "haiku-prod-v3-low",
+   "receipt": "02",
+   "costUsd": 0.001461
+  },
+  {
+   "variant": "haiku-prod-v3-low",
+   "receipt": "03",
+   "costUsd": 0.002628
+  },
+  {
+   "variant": "haiku-prod-v3-low",
+   "receipt": "04",
+   "costUsd": 0.00176
+  },
+  {
+   "variant": "haiku-prod-v3-low",
+   "receipt": "05",
+   "costUsd": 0.001038
+  },
+  {
+   "variant": "haiku-prod-v3-low",
+   "receipt": "06",
+   "costUsd": 0.000831
+  },
+  {
+   "variant": "haiku-prod-v3-low",
+   "receipt": "07",
+   "costUsd": 0.000802
+  },
+  {
+   "variant": "haiku-prod-v3-low",
+   "receipt": "08",
+   "costUsd": 0.000982
+  },
+  {
+   "variant": "haiku-prod-v3-low",
+   "receipt": "09",
+   "costUsd": 0.001209
+  },
+  {
+   "variant": "haiku-prod-v3-low",
+   "receipt": "10",
+   "costUsd": 0.001155
+  },
+  {
+   "variant": "haiku-prod-v3-low",
+   "receipt": "11",
+   "costUsd": 0.001291
+  },
+  {
+   "variant": "haiku-prod-v3-low",
+   "receipt": "12",
+   "costUsd": 0.001349
+  },
+  {
+   "variant": "haiku-prod-v3-low",
+   "receipt": "13",
+   "costUsd": 0.000938
+  },
+  {
+   "variant": "haiku-prod-v3-low",
+   "receipt": "14",
+   "costUsd": 0.001354
+  },
+  {
+   "variant": "haiku-prod-v3-low",
+   "receipt": "15",
+   "costUsd": 0.000903
+  },
+  {
+   "variant": "haiku-prod-v3-low",
+   "receipt": "16",
+   "costUsd": 0.001455
+  },
+  {
+   "variant": "haiku-prod-v3-low",
+   "receipt": "17",
+   "costUsd": 0.001527
+  },
+  {
+   "variant": "haiku-prod-v3-low",
+   "receipt": "18",
+   "costUsd": 0.00169
+  },
+  {
+   "variant": "haiku-prod-v3-low",
+   "receipt": "19",
+   "costUsd": 0.000953
+  },
+  {
+   "variant": "haiku-prod-v3-low",
+   "receipt": "20",
+   "costUsd": 0.000823
+  },
+  {
+   "variant": "haiku-prod-v3-medium",
+   "receipt": "01",
+   "costUsd": 0.001389
+  },
+  {
+   "variant": "haiku-prod-v3-medium",
+   "receipt": "02",
+   "costUsd": 0.002013
+  },
+  {
+   "variant": "haiku-prod-v3-medium",
+   "receipt": "03",
+   "costUsd": 0.004213
+  },
+  {
+   "variant": "haiku-prod-v3-medium",
+   "receipt": "04",
+   "costUsd": 0.002205
+  },
+  {
+   "variant": "haiku-prod-v3-medium",
+   "receipt": "05",
+   "costUsd": 0.000924
+  },
+  {
+   "variant": "haiku-prod-v3-medium",
+   "receipt": "06",
+   "costUsd": 0.000807
+  },
+  {
+   "variant": "haiku-prod-v3-medium",
+   "receipt": "07",
+   "costUsd": 0.001052
+  },
+  {
+   "variant": "haiku-prod-v3-medium",
+   "receipt": "08",
+   "costUsd": 0.00102
+  },
+  {
+   "variant": "haiku-prod-v3-medium",
+   "receipt": "09",
+   "costUsd": 0.001339
+  },
+  {
+   "variant": "haiku-prod-v3-medium",
+   "receipt": "10",
+   "costUsd": 0.001408
+  },
+  {
+   "variant": "haiku-prod-v3-medium",
+   "receipt": "11",
+   "costUsd": 0.001716
+  },
+  {
+   "variant": "haiku-prod-v3-medium",
+   "receipt": "12",
+   "costUsd": 0.001497
+  },
+  {
+   "variant": "haiku-prod-v3-medium",
+   "receipt": "13",
+   "costUsd": 0.000995
+  },
+  {
+   "variant": "haiku-prod-v3-medium",
+   "receipt": "14",
+   "costUsd": 0.001698
+  },
+  {
+   "variant": "haiku-prod-v3-medium",
+   "receipt": "15",
+   "costUsd": 0.001002
+  },
+  {
+   "variant": "haiku-prod-v3-medium",
+   "receipt": "16",
+   "costUsd": 0.001758
+  },
+  {
+   "variant": "haiku-prod-v3-medium",
+   "receipt": "17",
+   "costUsd": 0.001829
+  },
+  {
+   "variant": "haiku-prod-v3-medium",
+   "receipt": "18",
+   "costUsd": 0.001887
+  },
+  {
+   "variant": "haiku-prod-v3-medium",
+   "receipt": "19",
+   "costUsd": 0.000986
+  },
+  {
+   "variant": "haiku-prod-v3-medium",
+   "receipt": "20",
+   "costUsd": 0.001066
+  },
+  {
+   "variant": "haiku-prod-v3-high",
+   "receipt": "01",
+   "costUsd": 0.003023
+  },
+  {
+   "variant": "haiku-prod-v3-high",
+   "receipt": "02",
+   "costUsd": 0.002362
+  },
+  {
+   "variant": "haiku-prod-v3-high",
+   "receipt": "03",
+   "costUsd": 0.004892
+  },
+  {
+   "variant": "haiku-prod-v3-high",
+   "receipt": "04",
+   "costUsd": 0.002981
+  },
+  {
+   "variant": "haiku-prod-v3-high",
+   "receipt": "05",
+   "costUsd": 0.001684
+  },
+  {
+   "variant": "haiku-prod-v3-high",
+   "receipt": "06",
+   "costUsd": 0.001302
+  },
+  {
+   "variant": "haiku-prod-v3-high",
+   "receipt": "07",
+   "costUsd": 0.001172
+  },
+  {
+   "variant": "haiku-prod-v3-high",
+   "receipt": "08",
+   "costUsd": 0.001479
+  },
+  {
+   "variant": "haiku-prod-v3-high",
+   "receipt": "09",
+   "costUsd": 0.002132
+  },
+  {
+   "variant": "haiku-prod-v3-high",
+   "receipt": "10",
+   "costUsd": 0.001573
+  },
+  {
+   "variant": "haiku-prod-v3-high",
+   "receipt": "11",
+   "costUsd": 0.001548
+  },
+  {
+   "variant": "haiku-prod-v3-high",
+   "receipt": "12",
+   "costUsd": 0.002169
+  },
+  {
+   "variant": "haiku-prod-v3-high",
+   "receipt": "13",
+   "costUsd": 0.001641
+  },
+  {
+   "variant": "haiku-prod-v3-high",
+   "receipt": "14",
+   "costUsd": 0.001987
+  },
+  {
+   "variant": "haiku-prod-v3-high",
+   "receipt": "15",
+   "costUsd": 0.001323
+  },
+  {
+   "variant": "haiku-prod-v3-high",
+   "receipt": "16",
+   "costUsd": 0.002834
+  },
+  {
+   "variant": "haiku-prod-v3-high",
+   "receipt": "17",
+   "costUsd": 0.002872
+  },
+  {
+   "variant": "haiku-prod-v3-high",
+   "receipt": "18",
+   "costUsd": 0.002879
+  },
+  {
+   "variant": "haiku-prod-v3-high",
+   "receipt": "19",
+   "costUsd": 0.001175
+  },
+  {
+   "variant": "haiku-prod-v3-high",
+   "receipt": "20",
+   "costUsd": 0.001306
+  },
+  {
+   "variant": "haiku-bbox-required-off",
+   "receipt": "01",
+   "costUsd": 0.000696
+  },
+  {
+   "variant": "haiku-bbox-required-off",
+   "receipt": "02",
+   "costUsd": 0.001059
+  },
+  {
+   "variant": "haiku-bbox-required-off",
+   "receipt": "03",
+   "costUsd": 0.002056
+  },
+  {
+   "variant": "haiku-bbox-required-off",
+   "receipt": "04",
+   "costUsd": 0.000926
+  },
+  {
+   "variant": "haiku-bbox-required-off",
+   "receipt": "05",
+   "costUsd": 0.000623
+  },
+  {
+   "variant": "haiku-bbox-required-off",
+   "receipt": "06",
+   "costUsd": 0.000519
+  },
+  {
+   "variant": "haiku-bbox-required-off",
+   "receipt": "07",
+   "costUsd": 0.000534
+  },
+  {
+   "variant": "haiku-bbox-required-off",
+   "receipt": "08",
+   "costUsd": 0.000741
+  },
+  {
+   "variant": "haiku-bbox-required-off",
+   "receipt": "09",
+   "costUsd": 0.001029
+  },
+  {
+   "variant": "haiku-bbox-required-off",
+   "receipt": "10",
+   "costUsd": 0.000934
+  },
+  {
+   "variant": "haiku-bbox-required-off",
+   "receipt": "11",
+   "costUsd": 0.001038
+  },
+  {
+   "variant": "haiku-bbox-required-off",
+   "receipt": "12",
+   "costUsd": 0.001036
+  },
+  {
+   "variant": "haiku-bbox-required-off",
+   "receipt": "13",
+   "costUsd": 0.000641
+  },
+  {
+   "variant": "haiku-bbox-required-off",
+   "receipt": "14",
+   "costUsd": 0.00097
+  },
+  {
+   "variant": "haiku-bbox-required-off",
+   "receipt": "15",
+   "costUsd": 0.000602
+  },
+  {
+   "variant": "haiku-bbox-required-off",
+   "receipt": "16",
+   "costUsd": 0.001275
+  },
+  {
+   "variant": "haiku-bbox-required-off",
+   "receipt": "17",
+   "costUsd": 0.001273
+  },
+  {
+   "variant": "haiku-bbox-required-off",
+   "receipt": "18",
+   "costUsd": 0.001484
+  },
+  {
+   "variant": "haiku-bbox-required-off",
+   "receipt": "19",
+   "costUsd": 0.000577
+  },
+  {
+   "variant": "haiku-bbox-required-off",
+   "receipt": "20",
+   "costUsd": 0.000571
+  },
+  {
+   "variant": "haiku-bbox-required-low",
+   "receipt": "01",
+   "costUsd": 0.00146
+  },
+  {
+   "variant": "haiku-bbox-required-low",
+   "receipt": "02",
+   "costUsd": 0.001699
+  },
+  {
+   "variant": "haiku-bbox-required-low",
+   "receipt": "03",
+   "costUsd": 0.004321
+  },
+  {
+   "variant": "haiku-bbox-required-low",
+   "receipt": "04",
+   "costUsd": 0.001687
+  },
+  {
+   "variant": "haiku-bbox-required-low",
+   "receipt": "05",
+   "costUsd": 0.001169
+  },
+  {
+   "variant": "haiku-bbox-required-low",
+   "receipt": "06",
+   "costUsd": 0.000913
+  },
+  {
+   "variant": "haiku-bbox-required-low",
+   "receipt": "07",
+   "costUsd": 0.001023
+  },
+  {
+   "variant": "haiku-bbox-required-low",
+   "receipt": "08",
+   "costUsd": 0.001186
+  },
+  {
+   "variant": "haiku-bbox-required-low",
+   "receipt": "09",
+   "costUsd": 0.001655
+  },
+  {
+   "variant": "haiku-bbox-required-low",
+   "receipt": "10",
+   "costUsd": 0.001635
+  },
+  {
+   "variant": "haiku-bbox-required-low",
+   "receipt": "11",
+   "costUsd": 0.001722
+  },
+  {
+   "variant": "haiku-bbox-required-low",
+   "receipt": "12",
+   "costUsd": 0.001621
+  },
+  {
+   "variant": "haiku-bbox-required-low",
+   "receipt": "13",
+   "costUsd": 0.001242
+  },
+  {
+   "variant": "haiku-bbox-required-low",
+   "receipt": "14",
+   "costUsd": 0.001608
+  },
+  {
+   "variant": "haiku-bbox-required-low",
+   "receipt": "15",
+   "costUsd": 0.001186
+  },
+  {
+   "variant": "haiku-bbox-required-low",
+   "receipt": "16",
+   "costUsd": 0.001935
+  },
+  {
+   "variant": "haiku-bbox-required-low",
+   "receipt": "17",
+   "costUsd": 0.002087
+  },
+  {
+   "variant": "haiku-bbox-required-low",
+   "receipt": "18",
+   "costUsd": 0.00231
+  },
+  {
+   "variant": "haiku-bbox-required-low",
+   "receipt": "19",
+   "costUsd": 0.000938
+  },
+  {
+   "variant": "haiku-bbox-required-low",
+   "receipt": "20",
+   "costUsd": 0.001166
+  },
+  {
+   "variant": "haiku-bbox-required-medium",
+   "receipt": "01",
+   "costUsd": 0.002116
+  },
+  {
+   "variant": "haiku-bbox-required-medium",
+   "receipt": "02",
+   "costUsd": 0.001824
+  },
+  {
+   "variant": "haiku-bbox-required-medium",
+   "receipt": "03",
+   "costUsd": 0.005466
+  },
+  {
+   "variant": "haiku-bbox-required-medium",
+   "receipt": "04",
+   "costUsd": 0.002712
+  },
+  {
+   "variant": "haiku-bbox-required-medium",
+   "receipt": "05",
+   "costUsd": 0.001407
+  },
+  {
+   "variant": "haiku-bbox-required-medium",
+   "receipt": "06",
+   "costUsd": 0.001092
+  },
+  {
+   "variant": "haiku-bbox-required-medium",
+   "receipt": "07",
+   "costUsd": 0.001124
+  },
+  {
+   "variant": "haiku-bbox-required-medium",
+   "receipt": "08",
+   "costUsd": 0.001444
+  },
+  {
+   "variant": "haiku-bbox-required-medium",
+   "receipt": "09",
+   "costUsd": 0.001841
+  },
+  {
+   "variant": "haiku-bbox-required-medium",
+   "receipt": "10",
+   "costUsd": 0.001735
+  },
+  {
+   "variant": "haiku-bbox-required-medium",
+   "receipt": "11",
+   "costUsd": 0.001991
+  },
+  {
+   "variant": "haiku-bbox-required-medium",
+   "receipt": "12",
+   "costUsd": 0.001918
+  },
+  {
+   "variant": "haiku-bbox-required-medium",
+   "receipt": "13",
+   "costUsd": 0.001325
+  },
+  {
+   "variant": "haiku-bbox-required-medium",
+   "receipt": "14",
+   "costUsd": 0.001911
+  },
+  {
+   "variant": "haiku-bbox-required-medium",
+   "receipt": "15",
+   "costUsd": 0.001131
+  },
+  {
+   "variant": "haiku-bbox-required-medium",
+   "receipt": "16",
+   "costUsd": 0.002331
+  },
+  {
+   "variant": "haiku-bbox-required-medium",
+   "receipt": "17",
+   "costUsd": 0.002429
+  },
+  {
+   "variant": "haiku-bbox-required-medium",
+   "receipt": "18",
+   "costUsd": 0.002608
+  },
+  {
+   "variant": "haiku-bbox-required-medium",
+   "receipt": "19",
+   "costUsd": 0.001067
+  },
+  {
+   "variant": "haiku-bbox-required-medium",
+   "receipt": "20",
+   "costUsd": 0.00119
+  },
+  {
+   "variant": "haiku-bbox-required-high",
+   "receipt": "01",
+   "costUsd": 0.002577
+  },
+  {
+   "variant": "haiku-bbox-required-high",
+   "receipt": "02",
+   "costUsd": 0.002057
+  },
+  {
+   "variant": "haiku-bbox-required-high",
+   "receipt": "03",
+   "costUsd": 0.007373
+  },
+  {
+   "variant": "haiku-bbox-required-high",
+   "receipt": "04",
+   "costUsd": 0.003454
+  },
+  {
+   "variant": "haiku-bbox-required-high",
+   "receipt": "05",
+   "costUsd": 0.001873
+  },
+  {
+   "variant": "haiku-bbox-required-high",
+   "receipt": "06",
+   "costUsd": 0.001296
+  },
+  {
+   "variant": "haiku-bbox-required-high",
+   "receipt": "07",
+   "costUsd": 0.001276
+  },
+  {
+   "variant": "haiku-bbox-required-high",
+   "receipt": "08",
+   "costUsd": 0.001743
+  },
+  {
+   "variant": "haiku-bbox-required-high",
+   "receipt": "09",
+   "costUsd": 0.002103
+  },
+  {
+   "variant": "haiku-bbox-required-high",
+   "receipt": "10",
+   "costUsd": 0.002505
+  },
+  {
+   "variant": "haiku-bbox-required-high",
+   "receipt": "11",
+   "costUsd": 0.002182
+  },
+  {
+   "variant": "haiku-bbox-required-high",
+   "receipt": "12",
+   "costUsd": 0.00222
+  },
+  {
+   "variant": "haiku-bbox-required-high",
+   "receipt": "13",
+   "costUsd": 0.001659
+  },
+  {
+   "variant": "haiku-bbox-required-high",
+   "receipt": "14",
+   "costUsd": 0.002569
+  },
+  {
+   "variant": "haiku-bbox-required-high",
+   "receipt": "15",
+   "costUsd": 0.001259
+  },
+  {
+   "variant": "haiku-bbox-required-high",
+   "receipt": "16",
+   "costUsd": 0.00296
+  },
+  {
+   "variant": "haiku-bbox-required-high",
+   "receipt": "17",
+   "costUsd": 0.003239
+  },
+  {
+   "variant": "haiku-bbox-required-high",
+   "receipt": "18",
+   "costUsd": 0.0027
+  },
+  {
+   "variant": "haiku-bbox-required-high",
+   "receipt": "19",
+   "costUsd": 0.001591
+  },
+  {
+   "variant": "haiku-bbox-required-high",
+   "receipt": "20",
+   "costUsd": 0.001718
+  },
+  {
+   "variant": "haiku-full-structured-off",
+   "receipt": "01",
+   "costUsd": 0.000607
+  },
+  {
+   "variant": "haiku-full-structured-off",
+   "receipt": "02",
+   "costUsd": 0.00094
+  },
+  {
+   "variant": "haiku-full-structured-off",
+   "receipt": "03",
+   "costUsd": 0.001556
+  },
+  {
+   "variant": "haiku-full-structured-off",
+   "receipt": "04",
+   "costUsd": 0.000789
+  },
+  {
+   "variant": "haiku-full-structured-off",
+   "receipt": "05",
+   "costUsd": 0.000573
+  },
+  {
+   "variant": "haiku-full-structured-off",
+   "receipt": "06",
+   "costUsd": 0.000488
+  },
+  {
+   "variant": "haiku-full-structured-off",
+   "receipt": "07",
+   "costUsd": 0.000502
+  },
+  {
+   "variant": "haiku-full-structured-off",
+   "receipt": "08",
+   "costUsd": 0.000638
+  },
+  {
+   "variant": "haiku-full-structured-off",
+   "receipt": "09",
+   "costUsd": 0.00086
+  },
+  {
+   "variant": "haiku-full-structured-off",
+   "receipt": "10",
+   "costUsd": 0.000797
+  },
+  {
+   "variant": "haiku-full-structured-off",
+   "receipt": "11",
+   "costUsd": 0.000852
+  },
+  {
+   "variant": "haiku-full-structured-off",
+   "receipt": "12",
+   "costUsd": 0.000852
+  },
+  {
+   "variant": "haiku-full-structured-off",
+   "receipt": "13",
+   "costUsd": 0.000578
+  },
+  {
+   "variant": "haiku-full-structured-off",
+   "receipt": "14",
+   "costUsd": 0.000808
+  },
+  {
+   "variant": "haiku-full-structured-off",
+   "receipt": "15",
+   "costUsd": 0.000542
+  },
+  {
+   "variant": "haiku-full-structured-off",
+   "receipt": "16",
+   "costUsd": 0.001054
+  },
+  {
+   "variant": "haiku-full-structured-off",
+   "receipt": "17",
+   "costUsd": 0.001056
+  },
+  {
+   "variant": "haiku-full-structured-off",
+   "receipt": "18",
+   "costUsd": 0.001178
+  },
+  {
+   "variant": "haiku-full-structured-off",
+   "receipt": "19",
+   "costUsd": 0.000533
+  },
+  {
+   "variant": "haiku-full-structured-off",
+   "receipt": "20",
+   "costUsd": 0.000534
+  },
+  {
+   "variant": "haiku-full-structured-low",
+   "receipt": "01",
+   "costUsd": 0.001182
+  },
+  {
+   "variant": "haiku-full-structured-low",
+   "receipt": "02",
+   "costUsd": 0.001705
+  },
+  {
+   "variant": "haiku-full-structured-low",
+   "receipt": "03",
+   "costUsd": 0.003787
+  },
+  {
+   "variant": "haiku-full-structured-low",
+   "receipt": "04",
+   "costUsd": 0.002313
+  },
+  {
+   "variant": "haiku-full-structured-low",
+   "receipt": "05",
+   "costUsd": 0.001221
+  },
+  {
+   "variant": "haiku-full-structured-low",
+   "receipt": "06",
+   "costUsd": 0.000982
+  },
+  {
+   "variant": "haiku-full-structured-low",
+   "receipt": "07",
+   "costUsd": 0.000862
+  },
+  {
+   "variant": "haiku-full-structured-low",
+   "receipt": "08",
+   "costUsd": 0.001081
+  },
+  {
+   "variant": "haiku-full-structured-low",
+   "receipt": "09",
+   "costUsd": 0.00141
+  },
+  {
+   "variant": "haiku-full-structured-low",
+   "receipt": "10",
+   "costUsd": 0.001438
+  },
+  {
+   "variant": "haiku-full-structured-low",
+   "receipt": "11",
+   "costUsd": 0.001771
+  },
+  {
+   "variant": "haiku-full-structured-low",
+   "receipt": "12",
+   "costUsd": 0.001508
+  },
+  {
+   "variant": "haiku-full-structured-low",
+   "receipt": "13",
+   "costUsd": 0.001233
+  },
+  {
+   "variant": "haiku-full-structured-low",
+   "receipt": "14",
+   "costUsd": 0.001368
+  },
+  {
+   "variant": "haiku-full-structured-low",
+   "receipt": "15",
+   "costUsd": 0.000946
+  },
+  {
+   "variant": "haiku-full-structured-low",
+   "receipt": "16",
+   "costUsd": 0.00185
+  },
+  {
+   "variant": "haiku-full-structured-low",
+   "receipt": "17",
+   "costUsd": 0.00179
+  },
+  {
+   "variant": "haiku-full-structured-low",
+   "receipt": "18",
+   "costUsd": 0.002223
+  },
+  {
+   "variant": "haiku-full-structured-low",
+   "receipt": "19",
+   "costUsd": 0.000865
+  },
+  {
+   "variant": "haiku-full-structured-low",
+   "receipt": "20",
+   "costUsd": 0.000997
+  },
+  {
+   "variant": "haiku-full-structured-medium",
+   "receipt": "01",
+   "costUsd": 0.001505
+  },
+  {
+   "variant": "haiku-full-structured-medium",
+   "receipt": "02",
+   "costUsd": 0.001879
+  },
+  {
+   "variant": "haiku-full-structured-medium",
+   "receipt": "03",
+   "costUsd": 0.005269
+  },
+  {
+   "variant": "haiku-full-structured-medium",
+   "receipt": "04",
+   "costUsd": 0.002517
+  },
+  {
+   "variant": "haiku-full-structured-medium",
+   "receipt": "05",
+   "costUsd": 0.001175
+  },
+  {
+   "variant": "haiku-full-structured-medium",
+   "receipt": "06",
+   "costUsd": 0.001114
+  },
+  {
+   "variant": "haiku-full-structured-medium",
+   "receipt": "07",
+   "costUsd": 0.000976
+  },
+  {
+   "variant": "haiku-full-structured-medium",
+   "receipt": "08",
+   "costUsd": 0.001147
+  },
+  {
+   "variant": "haiku-full-structured-medium",
+   "receipt": "09",
+   "costUsd": 0.001667
+  },
+  {
+   "variant": "haiku-full-structured-medium",
+   "receipt": "10",
+   "costUsd": 0.001629
+  },
+  {
+   "variant": "haiku-full-structured-medium",
+   "receipt": "11",
+   "costUsd": 0.001936
+  },
+  {
+   "variant": "haiku-full-structured-medium",
+   "receipt": "12",
+   "costUsd": 0.001894
+  },
+  {
+   "variant": "haiku-full-structured-medium",
+   "receipt": "13",
+   "costUsd": 0.001593
+  },
+  {
+   "variant": "haiku-full-structured-medium",
+   "receipt": "14",
+   "costUsd": 0.002039
+  },
+  {
+   "variant": "haiku-full-structured-medium",
+   "receipt": "15",
+   "costUsd": 0.000884
+  },
+  {
+   "variant": "haiku-full-structured-medium",
+   "receipt": "16",
+   "costUsd": 0.001985
+  },
+  {
+   "variant": "haiku-full-structured-medium",
+   "receipt": "17",
+   "costUsd": 0.002051
+  },
+  {
+   "variant": "haiku-full-structured-medium",
+   "receipt": "18",
+   "costUsd": 0.002173
+  },
+  {
+   "variant": "haiku-full-structured-medium",
+   "receipt": "19",
+   "costUsd": 0.000998
+  },
+  {
+   "variant": "haiku-full-structured-medium",
+   "receipt": "20",
+   "costUsd": 0.001083
+  },
+  {
+   "variant": "haiku-full-structured-high",
+   "receipt": "01",
+   "costUsd": 0.002046
+  },
+  {
+   "variant": "haiku-full-structured-high",
+   "receipt": "02",
+   "costUsd": 0.002205
+  },
+  {
+   "variant": "haiku-full-structured-high",
+   "receipt": "03",
+   "costUsd": 0.003896
+  },
+  {
+   "variant": "haiku-full-structured-high",
+   "receipt": "04",
+   "costUsd": 0.003973
+  },
+  {
+   "variant": "haiku-full-structured-high",
+   "receipt": "05",
+   "costUsd": 0.001659
+  },
+  {
+   "variant": "haiku-full-structured-high",
+   "receipt": "06",
+   "costUsd": 0.001179
+  },
+  {
+   "variant": "haiku-full-structured-high",
+   "receipt": "07",
+   "costUsd": 0.001269
+  },
+  {
+   "variant": "haiku-full-structured-high",
+   "receipt": "08",
+   "costUsd": 0.001336
+  },
+  {
+   "variant": "haiku-full-structured-high",
+   "receipt": "09",
+   "costUsd": 0.00178
+  },
+  {
+   "variant": "haiku-full-structured-high",
+   "receipt": "10",
+   "costUsd": 0.002642
+  },
+  {
+   "variant": "haiku-full-structured-high",
+   "receipt": "11",
+   "costUsd": 0.002393
+  },
+  {
+   "variant": "haiku-full-structured-high",
+   "receipt": "12",
+   "costUsd": 0.002527
+  },
+  {
+   "variant": "haiku-full-structured-high",
+   "receipt": "13",
+   "costUsd": 0.001969
+  },
+  {
+   "variant": "haiku-full-structured-high",
+   "receipt": "14",
+   "costUsd": 0.001956
+  },
+  {
+   "variant": "haiku-full-structured-high",
+   "receipt": "15",
+   "costUsd": 0.001157
+  },
+  {
+   "variant": "haiku-full-structured-high",
+   "receipt": "16",
+   "costUsd": 0.002203
+  },
+  {
+   "variant": "haiku-full-structured-high",
+   "receipt": "17",
+   "costUsd": 0.002699
+  },
+  {
+   "variant": "haiku-full-structured-high",
+   "receipt": "18",
+   "costUsd": 0.002707
+  },
+  {
+   "variant": "haiku-full-structured-high",
+   "receipt": "19",
+   "costUsd": 0.001048
+  },
+  {
+   "variant": "haiku-full-structured-high",
+   "receipt": "20",
+   "costUsd": 0.001666
+  }
+ ]
+}

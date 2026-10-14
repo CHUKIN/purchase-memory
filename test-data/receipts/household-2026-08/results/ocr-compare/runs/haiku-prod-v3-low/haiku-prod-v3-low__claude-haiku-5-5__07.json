@@ -1,0 +1,44 @@
+{
+ "receiptId": "07",
+ "configuration": "haiku-prod-v3-low",
+ "model": "claude-haiku-5-5",
+ "seconds": 5.42,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.000802,
+ "paidEquivalentUsd": 0.000802,
+ "usage": {
+  "inputTokens": 2844,
+  "outputTokens": 1036
+ },
+ "parsed": {
+  "merchant": "Global Parks Poland Sp. z o.o.",
+  "date": "2025-08-18T19:59:00+02:00",
+  "currency": "PLN",
+  "total": 108.09,
+  "totalBox": null,
+  "items": [
+   {
+    "name": "DANIE BUFET GR",
+    "quantity": 0.288,
+    "unitPrice": 95.0,
+    "lineTotal": 27.36,
+    "box": null
+   },
+   {
+    "name": "DANIE BUFET GR",
+    "quantity": 0.534,
+    "unitPrice": 95.0,
+    "lineTotal": 50.73,
+    "box": null
+   },
+   {
+    "name": "WYPOŻYCZENIE RĘCZNIKA",
+    "quantity": 2,
+    "unitPrice": 15.0,
+    "lineTotal": 30.0,
+    "box": null
+   }
+  ]
+ }
+}

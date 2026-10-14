@@ -1,0 +1,116 @@
+{
+ "receiptId": "09",
+ "configuration": "tesseract-pol-eng-standard-psm6",
+ "model": "tesseract-5",
+ "seconds": 1.16,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "s d a YN w",
+  "date": null,
+  "currency": null,
+  "total": 177.48,
+  "items": [
+   {
+    "name": "C_SZPINAK BABY 1256 145,99=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.99,
+    "box": [
+     0.15104166666666666,
+     0.294921875,
+     0.6236979166666667,
+     0.0234375
+    ]
+   },
+   {
+    "name": "AMODA MINER BORJOM",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 7.49,
+    "box": [
+     0.15494791666666666,
+     0.3154296875,
+     0.6184895833333334,
+     0.0234375
+    ]
+   },
+   {
+    "name": "C_MASLANKA 4208 BUT",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.89,
+    "box": [
+     0.15625,
+     0.3359375,
+     0.6158854166666666,
+     0.0263671875
+    ]
+   },
+   {
+    "name": "B_WILKIN RASPBERRY",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 35.99,
+    "box": [
+     0.15625,
+     0.3564453125,
+     0.6145833333333334,
+     0.025390625
+    ]
+   },
+   {
+    "name": "C_KEDYMEX-RZODKTEWE 0,392+38,99=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 15.28,
+    "box": [
+     0.15885416666666666,
+     0.376953125,
+     0.6119791666666667,
+     0.0244140625
+    ]
+   },
+   {
+    "name": "A_CHUST DO HIG INT",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 9.99,
+    "box": [
+     0.16276041666666666,
+     0.4169921875,
+     0.6015625000000001,
+     0.0205078125
+    ]
+   },
+   {
+    "name": "©_MOWI ŁOSOŚ WĘDZ, RSE",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 25.99,
+    "box": [
+     0.1640625,
+     0.4541015625,
+     0.6028645833333334,
+     0.0224609375
+    ]
+   },
+   {
+    "name": "C_KUKURYDZA SWIEZA_",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 13.98,
+    "box": [
+     0.16536458333333334,
+     0.474609375,
+     0.5989583333333333,
+     0.021484375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol+eng; installed eng,pol"
+}

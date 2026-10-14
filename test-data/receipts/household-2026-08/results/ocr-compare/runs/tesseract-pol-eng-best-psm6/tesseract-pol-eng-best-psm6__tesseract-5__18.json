@@ -1,0 +1,19 @@
+{
+ "receiptId": "18",
+ "configuration": "tesseract-pol-eng-best-psm6",
+ "model": "tesseract-5",
+ "seconds": 3.09,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "CARREFOUR MARKET CH Sadyba 5 oe 2",
+  "date": null,
+  "currency": null,
+  "total": 166.69,
+  "items": []
+ },
+ "source": "langs pol+eng; installed eng,pol"
+}

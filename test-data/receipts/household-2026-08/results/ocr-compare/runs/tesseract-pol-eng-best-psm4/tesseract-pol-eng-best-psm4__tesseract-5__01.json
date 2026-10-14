@@ -1,0 +1,44 @@
+{
+ "receiptId": "01",
+ "configuration": "tesseract-pol-eng-best-psm4",
+ "model": "tesseract-5",
+ "seconds": 0.69,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "/",
+  "date": null,
+  "currency": null,
+  "total": 156.38,
+  "items": [
+   {
+    "name": "4 poru roku Średnia sd,",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 9993.53,
+    "box": [
+     0.26953125,
+     0.376953125,
+     0.48046875,
+     0.0244140625
+    ]
+   },
+   {
+    "name": "OPUST",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": -21.59,
+    "box": [
+     0.2877604166666667,
+     0.47265625,
+     0.44531250000000006,
+     0.025390625
+    ]
+   }
+  ]
+ },
+ "source": "langs pol+eng; installed eng,pol"
+}

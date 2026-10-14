@@ -1,0 +1,93 @@
+{
+ "receiptId": "14",
+ "configuration": "haiku-prod-v3-off",
+ "model": "claude-haiku-5-5",
+ "seconds": 3.77,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.000805,
+ "paidEquivalentUsd": 0.000805,
+ "usage": {
+  "inputTokens": 2843,
+  "outputTokens": 1041
+ },
+ "parsed": {
+  "merchant": "CARREFOUR MARKET",
+  "date": "2025-06-10T14:49:00+02:00",
+  "currency": "PLN",
+  "total": 192.4,
+  "totalBox": null,
+  "items": [
+   {
+    "name": "WODA MINER BORJOM",
+    "quantity": 1,
+    "unitPrice": 10.59,
+    "lineTotal": 10.59,
+    "box": null
+   },
+   {
+    "name": "MC TOST MASLANY 5",
+    "quantity": 1,
+    "unitPrice": 3.79,
+    "lineTotal": 3.79,
+    "box": null
+   },
+   {
+    "name": "UKLAD MAXTRA PRO",
+    "quantity": 1,
+    "unitPrice": 74.99,
+    "lineTotal": 74.99,
+    "box": null
+   },
+   {
+    "name": "FILET Z KURCZ. ZA",
+    "quantity": 0.412,
+    "unitPrice": 52.99,
+    "lineTotal": 21.83,
+    "box": null
+   },
+   {
+    "name": "SALAME VILCANI 80",
+    "quantity": 1,
+    "unitPrice": 30.79,
+    "lineTotal": 30.79,
+    "box": null
+   },
+   {
+    "name": "MOVI LOSOS SWIEZY",
+    "quantity": 1,
+    "unitPrice": 19.49,
+    "lineTotal": 19.49,
+    "box": null
+   },
+   {
+    "name": "JOGURT MOVENPICK",
+    "quantity": 1,
+    "unitPrice": 5.39,
+    "lineTotal": 5.39,
+    "box": null
+   },
+   {
+    "name": "SMAKIJA KASZKA 13",
+    "quantity": 1,
+    "unitPrice": 3.45,
+    "lineTotal": 3.45,
+    "box": null
+   },
+   {
+    "name": "PAPRYKA CZERWONA",
+    "quantity": 0.546,
+    "unitPrice": 12.99,
+    "lineTotal": 7.09,
+    "box": null
+   },
+   {
+    "name": "MC SZPARAG ZIELO",
+    "quantity": 1,
+    "unitPrice": 14.99,
+    "lineTotal": 14.99,
+    "box": null
+   }
+  ]
+ }
+}

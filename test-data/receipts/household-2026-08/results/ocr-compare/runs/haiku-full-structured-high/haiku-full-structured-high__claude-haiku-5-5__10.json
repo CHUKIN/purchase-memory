@@ -1,0 +1,148 @@
+{
+ "receiptId": "10",
+ "configuration": "haiku-full-structured-high",
+ "model": "claude-haiku-5-5",
+ "seconds": 18.51,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.002642,
+ "paidEquivalentUsd": 0.002642,
+ "usage": {
+  "inputTokens": 2978,
+  "outputTokens": 4689
+ },
+ "parsed": {
+  "merchant": "SUPERMARKET AUCHAN",
+  "date": "2025-08-05T21:29:00+02:00",
+  "currency": "PLN",
+  "total": 85.69,
+  "totalBox": [
+   0.182,
+   0.63,
+   0.651,
+   0.027
+  ],
+  "items": [
+   {
+    "name": "GUMA ROZP. 356556A",
+    "quantity": 1,
+    "unitPrice": 7.44,
+    "lineTotal": 7.44,
+    "box": [
+     0.16,
+     0.324,
+     0.706,
+     0.023
+    ]
+   },
+   {
+    "name": "TOST PEŁNO 303971C",
+    "quantity": 1,
+    "unitPrice": 3.18,
+    "lineTotal": 3.18,
+    "box": [
+     0.16,
+     0.342,
+     0.706,
+     0.02
+    ]
+   },
+   {
+    "name": "FILET Z KU 339849C",
+    "quantity": 0.555,
+    "unitPrice": 28.98,
+    "lineTotal": 16.08,
+    "box": [
+     0.16,
+     0.359,
+     0.706,
+     0.025
+    ]
+   },
+   {
+    "name": "BANAN 34041C",
+    "quantity": 0.414,
+    "unitPrice": 6.99,
+    "lineTotal": 2.89,
+    "box": [
+     0.16,
+     0.387,
+     0.706,
+     0.02
+    ]
+   },
+   {
+    "name": "SZYNKA Z P 695097C",
+    "quantity": 1,
+    "unitPrice": 6.19,
+    "lineTotal": 6.19,
+    "box": [
+     0.16,
+     0.406,
+     0.706,
+     0.027
+    ]
+   },
+   {
+    "name": "SER SZWAJC 508926C",
+    "quantity": 1,
+    "unitPrice": 5.89,
+    "lineTotal": 5.89,
+    "box": [
+     0.16,
+     0.428,
+     0.706,
+     0.021
+    ]
+   },
+   {
+    "name": "CEBULA 43444C",
+    "quantity": 0.184,
+    "unitPrice": 4.39,
+    "lineTotal": 0.81,
+    "box": [
+     0.16,
+     0.445,
+     0.706,
+     0.02
+    ]
+   },
+   {
+    "name": "DORSZ ATLA 809036C",
+    "quantity": 0.302,
+    "unitPrice": 104.9,
+    "lineTotal": 31.68,
+    "box": [
+     0.16,
+     0.463,
+     0.706,
+     0.021
+    ]
+   },
+   {
+    "name": "JOGURT OWC 281650C",
+    "quantity": 1,
+    "unitPrice": 7.64,
+    "lineTotal": 7.64,
+    "box": [
+     0.16,
+     0.484,
+     0.706,
+     0.018
+    ]
+   },
+   {
+    "name": "ZIEMNIAK W 266537C",
+    "quantity": 1,
+    "unitPrice": 3.89,
+    "lineTotal": 3.89,
+    "box": [
+     0.16,
+     0.5,
+     0.706,
+     0.018
+    ]
+   }
+  ]
+ }
+}

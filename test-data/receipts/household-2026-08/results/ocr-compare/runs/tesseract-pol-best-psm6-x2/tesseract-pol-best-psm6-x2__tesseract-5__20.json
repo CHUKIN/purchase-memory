@@ -1,0 +1,44 @@
+{
+ "receiptId": "20",
+ "configuration": "tesseract-pol-best-psm6-x2",
+ "model": "tesseract-5",
+ "seconds": 0.58,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "A",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "Chrup TalarkM 1/x15,30",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": -45.3,
+    "box": [
+     0.21809895833333334,
+     0.2744140625,
+     0.7584635416666666,
+     0.04443359375
+    ]
+   },
+   {
+    "name": "Woda NieGaz. H+",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 8.0,
+    "box": [
+     0.21875,
+     0.30615234375,
+     0.53515625,
+     0.0400390625
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

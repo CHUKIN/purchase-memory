@@ -1,0 +1,68 @@
+{
+ "receiptId": "12",
+ "configuration": "tesseract-pol-best-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.65,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "URRREFOUR MARKET",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "CHSER RAJSKI ULOSZĆ 1szte7,99",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 7.99,
+    "box": [
+     0.2591145833333333,
+     0.32421875,
+     0.4674479166666667,
+     0.0302734375
+    ]
+   },
+   {
+    "name": "CHDESER SATINO BAKO iszte3,35=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.35,
+    "box": [
+     0.2591145833333333,
+     0.4462890625,
+     0.4778645833333333,
+     0.013671875
+    ]
+   },
+   {
+    "name": "ARBATONIK TWARÓG HR iszte3,25=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.25,
+    "box": [
+     0.2591145833333333,
+     0.4794921875,
+     0.48046875000000006,
+     0.0146484375
+    ]
+   },
+   {
+    "name": "ARTORBA RECYKLING sztx0,79",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 0.79,
+    "box": [
+     0.2591145833333333,
+     0.49609375,
+     0.4817708333333333,
+     0.015625
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

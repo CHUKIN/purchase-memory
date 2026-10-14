@@ -1,0 +1,121 @@
+{
+ "receiptId": "02",
+ "configuration": "haiku-prod-v3-off",
+ "model": "claude-haiku-5-5",
+ "seconds": 4.23,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.000839,
+ "paidEquivalentUsd": 0.000839,
+ "usage": {
+  "inputTokens": 2843,
+  "outputTokens": 1109
+ },
+ "parsed": {
+  "merchant": "ROSSIA Betriebsgesellschaft GmbH",
+  "date": "2025-07-10T18:27:00+02:00",
+  "currency": "EUR",
+  "total": 24.3,
+  "totalBox": null,
+  "items": [
+   {
+    "name": "Kekse Uschki",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.49,
+    "box": null
+   },
+   {
+    "name": "Tulskij prjanik",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 1.49,
+    "box": null
+   },
+   {
+    "name": "Tulskij prjanik",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 1.49,
+    "box": null
+   },
+   {
+    "name": "Tulskij prjanik",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 1.49,
+    "box": null
+   },
+   {
+    "name": "Tulskij prjanik",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 1.49,
+    "box": null
+   },
+   {
+    "name": "geback",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.49,
+    "box": null
+   },
+   {
+    "name": "Gebäck mit Minzgeschmack",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 1.99,
+    "box": null
+   },
+   {
+    "name": "Lebensmittel 7%",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 0.99,
+    "box": null
+   },
+   {
+    "name": "Tafelschokolade",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 1.49,
+    "box": null
+   },
+   {
+    "name": "Schokolade",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 1.19,
+    "box": null
+   },
+   {
+    "name": "Lebensmittel 7%",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 1.99,
+    "box": null
+   },
+   {
+    "name": "Schokolade Babaevskij",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 1.49,
+    "box": null
+   },
+   {
+    "name": "Sefir",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.99,
+    "box": null
+   },
+   {
+    "name": "Sonstige 19%",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 0.23,
+    "box": null
+   }
+  ]
+ }
+}

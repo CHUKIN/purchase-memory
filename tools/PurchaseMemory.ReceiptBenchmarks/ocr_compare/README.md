@@ -25,7 +25,8 @@ python3 $B haiku --variants haiku-bbox-required-low,haiku-full-structured-low --
 # Paid, only with an approved budget (hard stop on worst case of the next call):
 zsh -ic 'python3 tools/PurchaseMemory.ReceiptBenchmarks/run_ocr_compare.py haiku --run-haiku --budget-usd 0.50'
 
-# Score everything and write the report (also scores the saved 2026-10-11 Haiku prod runs, free).
+# Score everything and write the report (also scores the saved 2026-10-11 Haiku prod runs, free,
+# and rebuilds the Haiku + Azure-box hybrids from the Azure cache: no network).
 python3 $B report
 
 # score_items.py works on any run folder as before:
@@ -42,6 +43,13 @@ Files:
 - `haiku_matrix.py` — 3 prompts × 4 thinking levels, cost estimate, budgeted runner.
 - `boxes.py` — box geometry and the "box hit" definition.
 - `report.py` — metrics (reuses `score_items.score_receipt`) and the report.
+- `hybrid.py` — free hybrid: Haiku's items/totals/discounts with boxes taken from the cached Azure
+  response (Azure items, then Azure OCR lines as a fallback). Strategies `amount`, `name`,
+  `name-amount`, `aligned` (order-preserving), `aligned+lines`, `aligned+lines+own` run for every
+  saved Haiku run; new `runs/haiku-*` runs get `aligned+lines` only. Hybrids live in memory (not
+  written to `runs/`). The report's "Hybrid" section adds a per-line box verdict
+  (right / ambiguous / wrong = other line + miss, see `report.box_verdict`) and two calibration
+  rows with deliberately shifted boxes that show how many wrong boxes the check catches.
 
 Caches: `cache/azure/*.json` are raw Azure responses (they contain receipt text, like the other
 committed outputs here); `cache/tesseract/` holds words/lines JSON.

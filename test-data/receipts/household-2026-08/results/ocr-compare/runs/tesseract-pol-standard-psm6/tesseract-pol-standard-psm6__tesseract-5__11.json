@@ -1,0 +1,92 @@
+{
+ "receiptId": "11",
+ "configuration": "tesseract-pol-standard-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.77,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "CARREFOUR MARKET CH Sadyba",
+  "date": null,
+  "currency": null,
+  "total": 12.37,
+  "items": [
+   {
+    "name": "O CHFILET Z KURCZAKA",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 17.05,
+    "box": [
+     0.11328125,
+     0.333984375,
+     0.6901041666666666,
+     0.02734375
+    ]
+   },
+   {
+    "name": "T | CaPOLEDWICH Z o0RSZ",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 22.74,
+    "box": [
+     0.17708333333333334,
+     0.345703125,
+     0.6263020833333333,
+     0.0322265625
+    ]
+   },
+   {
+    "name": "T CHJOGURT HOVENPICK 2szts5,75=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 11.5,
+    "box": [
+     0.1875,
+     0.3720703125,
+     0.6158854166666666,
+     0.025390625
+    ]
+   },
+   {
+    "name": "T CHDESER SATINO BAKO Iszt+3,35=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.35,
+    "box": [
+     0.17578125,
+     0.4052734375,
+     0.6263020833333333,
+     0.0205078125
+    ]
+   },
+   {
+    "name": "T AKBATONIK TUAROG HA",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.25,
+    "box": [
+     0.19140625,
+     0.4228515625,
+     0.6106770833333333,
+     0.0205078125
+    ]
+   },
+   {
+    "name": "1 AKTORBA RECYKLING",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 0.79,
+    "box": [
+     0.18880208333333334,
+     0.439453125,
+     0.6132812499999999,
+     0.0224609375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

@@ -1,0 +1,140 @@
+{
+ "receiptId": "10",
+ "configuration": "tesseract-pol-best-psm6-x2",
+ "model": "tesseract-5",
+ "seconds": 0.78,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "SUPERNORKET KUCHGM |",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "GUMA ROZP. 356556A",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 7.44,
+    "box": [
+     0.16341145833333334,
+     0.3203125,
+     0.6927083333333333,
+     0.02783203125
+    ]
+   },
+   {
+    "name": "T05T PEŁNO",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.18,
+    "box": [
+     0.16666666666666666,
+     0.3427734375,
+     0.6855468750000001,
+     0.02783203125
+    ]
+   },
+   {
+    "name": "FILET Z KU 339849",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 16.08,
+    "box": [
+     0.171875,
+     0.3642578125,
+     0.6751302083333333,
+     0.0283203125
+    ]
+   },
+   {
+    "name": "BANAN 34044",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.89,
+    "box": [
+     0.177734375,
+     0.384765625,
+     0.6647135416666666,
+     0.02783203125
+    ]
+   },
+   {
+    "name": "SZMKA 7 P 695097C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 6.19,
+    "box": [
+     0.18359375,
+     0.4052734375,
+     0.6536458333333333,
+     0.02685546875
+    ]
+   },
+   {
+    "name": "SER SZMAJC 508926C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.89,
+    "box": [
+     0.189453125,
+     0.42431640625,
+     0.642578125,
+     0.0263671875
+    ]
+   },
+   {
+    "name": "CEBULA 43444C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 0.81,
+    "box": [
+     0.19466145833333334,
+     0.44384765625,
+     0.6321614583333333,
+     0.02490234375
+    ]
+   },
+   {
+    "name": "DORSZ ATLA 809036C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 31.68,
+    "box": [
+     0.19856770833333334,
+     0.46240234375,
+     0.6236979166666666,
+     0.0244140625
+    ]
+   },
+   {
+    "name": "J0GURT OWC 281650C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 7.64,
+    "box": [
+     0.203125,
+     0.48095703125,
+     0.6145833333333333,
+     0.0234375
+    ]
+   },
+   {
+    "name": "UNA PN",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 85.09,
+    "box": [
+     0.18684895833333334,
+     0.6298828125,
+     0.6451822916666666,
+     0.0400390625
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

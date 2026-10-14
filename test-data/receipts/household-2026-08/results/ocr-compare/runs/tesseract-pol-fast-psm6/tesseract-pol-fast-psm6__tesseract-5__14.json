@@ -1,0 +1,104 @@
+{
+ "receiptId": "14",
+ "configuration": "tesseract-pol-fast-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.35,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "CARREFOUR KARKET CH Sady.",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "RBUOD KIKER BORJOK 1szt:10,59=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 10.59,
+    "box": [
+     0.3098958333333333,
+     0.396484375,
+     0.46875000000000006,
+     0.017578125
+    ]
+   },
+   {
+    "name": "CNC TOST MAŚLANY 5 1szte3,19<",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.79,
+    "box": [
+     0.3098958333333333,
+     0.412109375,
+     0.4674479166666667,
+     0.0166015625
+    ]
+   },
+   {
+    "name": "ARUKŁRD MAKTRA PRO 0 4 EMŚ",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 74.99,
+    "box": [
+     0.3098958333333333,
+     0.4169921875,
+     0.4505208333333333,
+     0.04296875
+    ]
+   },
+   {
+    "name": "CAFILET 2 KURCZ. ZA 2 0,412g:52,99=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 21.83,
+    "box": [
+     0.3098958333333333,
+     0.443359375,
+     0.4661458333333333,
+     0.0146484375
+    ]
+   },
+   {
+    "name": "CASĄLANE UILCANI 80 1szt+30,79=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 30.79,
+    "box": [
+     0.3098958333333333,
+     0.4599609375,
+     0.4661458333333333,
+     0.013671875
+    ]
+   },
+   {
+    "name": "CAJOGURT HOUENPICK: Iszte5,39=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.39,
+    "box": [
+     0.3111979166666667,
+     0.4912109375,
+     0.4622395833333333,
+     0.0146484375
+    ]
+   },
+   {
+    "name": "róć* 0” p 04 U",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 192.4,
+    "box": [
+     0.06640625,
+     0.7587890625,
+     0.6927083333333334,
+     0.0751953125
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

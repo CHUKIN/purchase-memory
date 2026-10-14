@@ -1,0 +1,56 @@
+{
+ "receiptId": "15",
+ "configuration": "haiku-prod-v3-off",
+ "model": "claude-haiku-5-5",
+ "seconds": 3.04,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.000535,
+ "paidEquivalentUsd": 0.000535,
+ "usage": {
+  "inputTokens": 2843,
+  "outputTokens": 502
+ },
+ "parsed": {
+  "merchant": "Billy's American Restaurants Sp z o.o.",
+  "date": "2025-05-20T18:17:00+02:00",
+  "currency": "PLN",
+  "total": 219.0,
+  "totalBox": [
+   0.33,
+   0.79,
+   0.42,
+   0.04
+  ],
+  "items": [
+   {
+    "name": "AMERICAN SALAD",
+    "quantity": 1,
+    "unitPrice": 49.0,
+    "lineTotal": 49.0,
+    "box": null
+   },
+   {
+    "name": "AMERYKAŃSKIE ŻEBERKA",
+    "quantity": 1,
+    "unitPrice": 79.0,
+    "lineTotal": 79.0,
+    "box": null
+   },
+   {
+    "name": "GRILLOWANY PSTRĄG",
+    "quantity": 1,
+    "unitPrice": 69.0,
+    "lineTotal": 69.0,
+    "box": null
+   },
+   {
+    "name": "DOMOWA MROŻONA HERBATA",
+    "quantity": 1,
+    "unitPrice": 22.0,
+    "lineTotal": 22.0,
+    "box": null
+   }
+  ]
+ }
+}

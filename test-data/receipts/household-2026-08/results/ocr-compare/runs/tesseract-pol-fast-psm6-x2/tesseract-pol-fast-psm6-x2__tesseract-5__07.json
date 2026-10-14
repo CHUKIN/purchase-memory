@@ -1,0 +1,68 @@
+{
+ "receiptId": "07",
+ "configuration": "tesseract-pol-fast-psm6-x2",
+ "model": "tesseract-5",
+ "seconds": 0.33,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "D",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "DANIE BUFET GR",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 27.36,
+    "box": [
+     0.3372395833333333,
+     0.4677734375,
+     0.43359375000000006,
+     0.02197265625
+    ]
+   },
+   {
+    "name": "DANIE BUFET GR",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 50.73,
+    "box": [
+     0.3372395833333333,
+     0.490234375,
+     0.4348958333333333,
+     0.02099609375
+    ]
+   },
+   {
+    "name": "NYPOŻYCZENIE RĘCZNIKA - _",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 30.0,
+    "box": [
+     0.337890625,
+     0.5126953125,
+     0.43489583333333337,
+     0.02880859375
+    ]
+   },
+   {
+    "name": "GUNA PLN",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 108.69,
+    "box": [
+     0.3424479166666667,
+     0.650390625,
+     0.5989583333333333,
+     0.02978515625
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

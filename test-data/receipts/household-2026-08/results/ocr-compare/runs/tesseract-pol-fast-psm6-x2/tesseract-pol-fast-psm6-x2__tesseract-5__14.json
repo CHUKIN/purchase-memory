@@ -1,0 +1,92 @@
+{
+ "receiptId": "14",
+ "configuration": "tesseract-pol-fast-psm6-x2",
+ "model": "tesseract-5",
+ "seconds": 0.51,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "' *",
+  "date": null,
+  "currency": null,
+  "total": 192.4,
+  "items": [
+   {
+    "name": "ARUODĄ KINER BORJOM 1sztr10,59=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 10.59,
+    "box": [
+     0.310546875,
+     0.39697265625,
+     0.46809895833333337,
+     0.0166015625
+    ]
+   },
+   {
+    "name": "CHHC TOST MAŚLANY 5 + lsztz3,79=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.79,
+    "box": [
+     0.3098958333333333,
+     0.41259765625,
+     0.4674479166666667,
+     0.0166015625
+    ]
+   },
+   {
+    "name": "ASUKŁAD HAXTRA PRO ” fszt+74,99=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 74.99,
+    "box": [
+     0.3098958333333333,
+     0.4287109375,
+     0.4674479166666667,
+     0.017578125
+    ]
+   },
+   {
+    "name": "CAMOWI ŁOSOŚ ŚWIEŻY 1sztz19,49=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 19.49,
+    "box": [
+     0.3111979166666667,
+     0.47509765625,
+     0.4635416666666667,
+     0.0146484375
+    ]
+   },
+   {
+    "name": "CRSHAKIJA KASZKA 13 1sztr3,45=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.45,
+    "box": [
+     0.3125,
+     0.50732421875,
+     0.4609375,
+     0.01416015625
+    ]
+   },
+   {
+    "name": "Kuota C 05,00%",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.09,
+    "box": [
+     0.3170572916666667,
+     0.61474609375,
+     0.4348958333333333,
+     0.01611328125
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

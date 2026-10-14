@@ -1,0 +1,98 @@
+{
+ "receiptId": "04",
+ "configuration": "haiku-prod-v3-high",
+ "model": "claude-haiku-5-5",
+ "seconds": 20.34,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.002981,
+ "paidEquivalentUsd": 0.002981,
+ "usage": {
+  "inputTokens": 2844,
+  "outputTokens": 5393
+ },
+ "parsed": {
+  "merchant": "Lidl",
+  "date": "2026-07-17T21:45:36+02:00",
+  "currency": "PLN",
+  "total": 136.99,
+  "totalBox": [
+   0.53,
+   0.38,
+   0.12,
+   0.03
+  ],
+  "items": [
+   {
+    "name": "Fairy Kapsulki Lemon",
+    "quantity": 1,
+    "unitPrice": 84.99,
+    "lineTotal": 84.99,
+    "box": null
+   },
+   {
+    "name": "OPUST Fairy Kapsulki Lemon",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": -30.0,
+    "box": null
+   },
+   {
+    "name": "Ogórki grunt. PL luz",
+    "quantity": 0.18,
+    "unitPrice": 9.99,
+    "lineTotal": 1.8,
+    "box": null
+   },
+   {
+    "name": "OPUST Ogórki grunt. PL luz",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": -0.2,
+    "box": null
+   },
+   {
+    "name": "Pure Parówki z Ind.",
+    "quantity": 1,
+    "unitPrice": 6.49,
+    "lineTotal": 6.49,
+    "box": null
+   },
+   {
+    "name": "Persil Kapsułki 60pr",
+    "quantity": 1,
+    "unitPrice": 51.99,
+    "lineTotal": 51.99,
+    "box": null
+   },
+   {
+    "name": "Sał. batauska korzeń",
+    "quantity": 1,
+    "unitPrice": 5.99,
+    "lineTotal": 5.99,
+    "box": null
+   },
+   {
+    "name": "Lay's Chipsy",
+    "quantity": 1,
+    "unitPrice": 8.29,
+    "lineTotal": 8.29,
+    "box": null
+   },
+   {
+    "name": "Przysnacki(chipsy w...",
+    "quantity": 1,
+    "unitPrice": 6.99,
+    "lineTotal": 6.99,
+    "box": null
+   },
+   {
+    "name": "Reklamówka 50µ",
+    "quantity": 1,
+    "unitPrice": 0.65,
+    "lineTotal": 0.65,
+    "box": null
+   }
+  ]
+ }
+}

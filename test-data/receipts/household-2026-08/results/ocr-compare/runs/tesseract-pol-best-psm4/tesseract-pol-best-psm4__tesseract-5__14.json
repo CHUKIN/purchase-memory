@@ -1,0 +1,32 @@
+{
+ "receiptId": "14",
+ "configuration": "tesseract-pol-best-psm4",
+ "model": "tesseract-5",
+ "seconds": 0.17,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "CARREFOUR MARKET",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "nr wydr„447950/1880",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 10.59,
+    "box": [
+     0.6171875,
+     0.365234375,
+     0.16145833333333337,
+     0.0615234375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

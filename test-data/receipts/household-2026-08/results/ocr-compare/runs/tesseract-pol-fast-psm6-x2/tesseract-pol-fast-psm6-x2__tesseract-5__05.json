@@ -1,0 +1,32 @@
+{
+ "receiptId": "05",
+ "configuration": "tesseract-pol-fast-psm6-x2",
+ "model": "tesseract-5",
+ "seconds": 0.66,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "meeiucacja HebonatU ? - >",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "Big Aret Fiskaky",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 33.08,
+    "box": [
+     0.3033854166666667,
+     0.076171875,
+     0.3053385416666667,
+     0.02099609375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

@@ -1,0 +1,148 @@
+{
+ "receiptId": "14",
+ "configuration": "haiku-full-structured-off",
+ "model": "claude-haiku-5-5",
+ "seconds": 4.13,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.000808,
+ "paidEquivalentUsd": 0.000808,
+ "usage": {
+  "inputTokens": 2977,
+  "outputTokens": 1021
+ },
+ "parsed": {
+  "merchant": "CARREFOUR MARKET",
+  "date": "2025-06-10T00:00:00+02:00",
+  "currency": "PLN",
+  "total": 192.4,
+  "totalBox": [
+   0.66,
+   0.68,
+   0.25,
+   0.03
+  ],
+  "items": [
+   {
+    "name": "WODA MINER BORJOM",
+    "quantity": 1,
+    "unitPrice": 10.59,
+    "lineTotal": 10.59,
+    "box": [
+     0.31,
+     0.4,
+     0.45,
+     0.03
+    ]
+   },
+   {
+    "name": "MC TOST MASŁANY 5",
+    "quantity": 1,
+    "unitPrice": 3.79,
+    "lineTotal": 3.79,
+    "box": [
+     0.31,
+     0.415,
+     0.45,
+     0.03
+    ]
+   },
+   {
+    "name": "UKŁAD MAXTRA PRO",
+    "quantity": 1,
+    "unitPrice": 74.99,
+    "lineTotal": 74.99,
+    "box": [
+     0.31,
+     0.43,
+     0.45,
+     0.03
+    ]
+   },
+   {
+    "name": "FILET Z KURCZ. ZA",
+    "quantity": 0.412,
+    "unitPrice": 52.99,
+    "lineTotal": 21.83,
+    "box": [
+     0.31,
+     0.447,
+     0.45,
+     0.03
+    ]
+   },
+   {
+    "name": "SALAME VILCANI 80",
+    "quantity": 1,
+    "unitPrice": 30.79,
+    "lineTotal": 30.79,
+    "box": [
+     0.31,
+     0.463,
+     0.45,
+     0.03
+    ]
+   },
+   {
+    "name": "MOVI ŁOSOŚ ŚWIEŻY",
+    "quantity": 1,
+    "unitPrice": 19.49,
+    "lineTotal": 19.49,
+    "box": [
+     0.31,
+     0.48,
+     0.45,
+     0.03
+    ]
+   },
+   {
+    "name": "JOGURT MOVENPICK",
+    "quantity": 1,
+    "unitPrice": 5.39,
+    "lineTotal": 5.39,
+    "box": [
+     0.31,
+     0.496,
+     0.45,
+     0.03
+    ]
+   },
+   {
+    "name": "SMAKIJA KASZKA 13",
+    "quantity": 1,
+    "unitPrice": 3.45,
+    "lineTotal": 3.45,
+    "box": [
+     0.31,
+     0.512,
+     0.45,
+     0.03
+    ]
+   },
+   {
+    "name": "PAPRYKA CZERWONA",
+    "quantity": 0.546,
+    "unitPrice": 12.99,
+    "lineTotal": 7.09,
+    "box": [
+     0.31,
+     0.528,
+     0.45,
+     0.03
+    ]
+   },
+   {
+    "name": "MC SZPARAGI ZIELO",
+    "quantity": 1,
+    "unitPrice": 14.99,
+    "lineTotal": 14.99,
+    "box": [
+     0.31,
+     0.545,
+     0.45,
+     0.03
+    ]
+   }
+  ]
+ }
+}

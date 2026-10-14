@@ -3,7 +3,7 @@ import copy
 import statistics
 import time
 
-from . import azure_receipt, boxes
+from . import azure_receipt, boxes, hybrid
 from .common import RESULTS, load_score_items, read_json, write_json
 
 
@@ -23,6 +23,35 @@ def _close(a, b):
     return a is not None and b is not None and abs(float(a) - float(b)) <= 0.01 + 1e-9
 
 
+def box_verdict(gt_items, gt_index, box, check, words, normalize):
+    """"right" / "ambiguous" / "other-line" / "miss" for the plausible box of the line
+    matched to gt_items[gt_index], using the reference words of the box check.
+
+    right       the recognised name is printed in the box (nameHit), or its price
+                is and no other labelled line's name is;
+    ambiguous   only the price matches and another labelled line's name is in the
+                box too: the box covers the right row plus a neighbour, or sits on
+                a neighbour that happens to share the price;
+    other-line  neither the name nor the price is in the box, but another labelled
+                line of the same receipt is (fuzzy name >= NAME_MATCH or its price):
+                the highlight lands on the wrong row;
+    miss        nothing labelled is in the box (header, totals, blank space), or
+                the reference layer lacks the text.
+    """
+    if not words:
+        return "right" if check["hit"] else "miss"
+    if check["nameHit"]:
+        return "right"
+    text = boxes.text_in_box(box, words)
+    others = [g for k, g in enumerate(gt_items) if k != gt_index]
+    other_name = any(boxes.partial_similarity(g["name"], text, normalize) >= boxes.NAME_MATCH for g in others)
+    if check["priceHit"]:
+        return "ambiguous" if other_name else "right"
+    if other_name or any(boxes.price_printed(g["lineTotal"], text) for g in others):
+        return "other-line"
+    return "miss"
+
+
 def score_configuration(records, out_dir, tesseract_reference, ground_truth, items_truth, own_layer=None):
     """Aggregate metrics for one configuration ({receipt id: record}).
 
@@ -37,6 +66,8 @@ def score_configuration(records, out_dir, tesseract_reference, ground_truth, ite
            "itemsWithAzureRef": 0, "itemsWithTessRef": 0,
            "labelledReceipts": 0, "gtItems": 0, "gtCorrect": 0, "gtWrongPrice": 0, "gtMissing": 0,
            "gtExtra": 0, "gtDiscounts": 0, "gtDiscountsOk": 0, "gtBoxHit": 0,
+           "gtBoxPlausible": 0, "gtBoxWrong": 0, "gtBoxOtherLine": 0, "gtBoxAmbiguous": 0, "gtBoxHitTess": 0,
+           "discLines": 0, "discBoxPlausible": 0, "discBoxHit": 0,
            "seconds": [], "costUsd": [], "paidUsd": []}
     for receipt_id, record in sorted(records.items()):
         parsed = record.get("parsed")
@@ -63,7 +94,7 @@ def score_configuration(records, out_dir, tesseract_reference, ground_truth, ite
             agg["sumOk"] += 1  # the app's own consistency check: lines (discounts negative) = total
 
         refs = reference_words(out_dir, receipt_id, tesseract_reference)
-        checks = []
+        checks, tess_checks, check_words = [], [], []
         for item in parsed["items"]:
             azure_check = boxes.check_box(item, refs["azure"], si.normalize)
             tess_check = boxes.check_box(item, refs["tesseract"], si.normalize)
@@ -71,6 +102,12 @@ def score_configuration(records, out_dir, tesseract_reference, ground_truth, ite
             if own_layer == "tesseract" and refs["azure"] is not None:
                 use_azure = True
             checks.append(azure_check if use_azure else tess_check)
+            tess_checks.append(tess_check)
+            check_words.append(refs["azure"] if use_azure else refs["tesseract"])
+            if item.get("lineTotal") is not None and float(item["lineTotal"]) < 0:
+                agg["discLines"] += 1
+                agg["discBoxPlausible"] += checks[-1]["plausible"]
+                agg["discBoxHit"] += checks[-1]["hit"]
             agg["items"] += 1
             agg["boxPresent"] += azure_check["present"]
             agg["boxPlausible"] += azure_check["plausible"]
@@ -96,6 +133,16 @@ def score_configuration(records, out_dir, tesseract_reference, ground_truth, ite
             agg["gtDiscounts"] += scored["disc_total"]
             agg["gtDiscountsOk"] += scored["disc_ok"]
             agg["gtBoxHit"] += sum(1 for _, pred_index in scored["pairs"] if checks[pred_index]["hit"])
+            agg["gtBoxHitTess"] += sum(1 for _, pred_index in scored["pairs"] if tess_checks[pred_index]["hit"])
+            for gt_index, pred_index in scored["pairs"]:
+                if not checks[pred_index]["plausible"]:
+                    continue
+                agg["gtBoxPlausible"] += 1
+                verdict = box_verdict(gt["items"], gt_index, parsed["items"][pred_index]["box"],
+                                      checks[pred_index], check_words[pred_index], si.normalize)
+                agg["gtBoxWrong"] += verdict in ("other-line", "miss")
+                agg["gtBoxAmbiguous"] += verdict == "ambiguous"
+                agg["gtBoxOtherLine"] += verdict == "other-line"
 
     pct = lambda a, b: None if not b else round(100.0 * a / b, 1)
     mean = lambda xs: None if not xs else round(statistics.mean(xs), 6)
@@ -107,6 +154,9 @@ def score_configuration(records, out_dir, tesseract_reference, ground_truth, ite
         "gtWrongPrice": agg["gtWrongPrice"], "gtMissing": agg["gtMissing"], "gtExtra": agg["gtExtra"],
         "gtDiscounts": agg["gtDiscounts"], "gtDiscountsOk": agg["gtDiscountsOk"],
         "gtBoxHit": agg["gtBoxHit"], "gtBoxHitPct": pct(agg["gtBoxHit"], agg["gtItems"]),
+        "gtBoxPlausible": agg["gtBoxPlausible"], "gtBoxWrong": agg["gtBoxWrong"],
+        "gtBoxOtherLine": agg["gtBoxOtherLine"], "gtBoxAmbiguous": agg["gtBoxAmbiguous"], "gtBoxHitTess": agg["gtBoxHitTess"],
+        "discLines": agg["discLines"], "discBoxPlausible": agg["discBoxPlausible"], "discBoxHit": agg["discBoxHit"],
         "recognisedItems": agg["items"],
         "boxPresentPct": pct(agg["boxPresent"], agg["items"]),
         "boxPlausiblePct": pct(agg["boxPlausible"], agg["items"]),
@@ -119,7 +169,14 @@ def score_configuration(records, out_dir, tesseract_reference, ground_truth, ite
     }
 
 
-def build(out_dir, runs, notes, matrix, tesseract_reference):
+def _hybrid_order(configuration):
+    """Hybrids grouped by strategy (hybrid.STRATEGIES order), calibration rows last."""
+    matches = [s for s in hybrid.STRATEGIES if configuration.startswith(f"hybrid-{s}-")]
+    strategy = max(matches, key=len) if matches else None
+    return (strategy is None, hybrid.STRATEGIES.index(strategy) if strategy else 0, configuration)
+
+
+def build(out_dir, runs, notes, matrix, tesseract_reference, hybrid_runs=None):
     ground_truth = {k: v for k, v in read_json(RESULTS / "ground_truth.json").items() if not k.startswith("_")}
     items_truth = read_json(RESULTS / "ground_truth_items.json")
     rows = []
@@ -128,6 +185,10 @@ def build(out_dir, runs, notes, matrix, tesseract_reference):
             "tesseract" if configuration.startswith("tesseract") else None)
         metrics = score_configuration(records, out_dir, tesseract_reference, ground_truth, items_truth, own_layer)
         rows.append({"configuration": configuration, "note": notes.get(configuration, ""), **metrics})
+    hybrid_rows = []
+    for configuration, records in sorted((hybrid_runs or {}).items(), key=lambda kv: _hybrid_order(kv[0])):
+        metrics = score_configuration(records, out_dir, tesseract_reference, ground_truth, items_truth)
+        hybrid_rows.append({"configuration": configuration, **metrics})
     azure_ledger_path = out_dir / "cache" / "azure" / "_calls.json"
     report = {
         "generatedAt": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
@@ -135,6 +196,9 @@ def build(out_dir, runs, notes, matrix, tesseract_reference):
         "tesseractReference": tesseract_reference,
         "azureCalls": read_json(azure_ledger_path) if azure_ledger_path.exists() else None,
         "configurations": rows,
+        "hybridDefinition": hybrid.__doc__.strip(),
+        "boxVerdictDefinition": box_verdict.__doc__.strip(),
+        "hybrids": hybrid_rows,
         "haikuMatrixPlan": matrix,
     }
     write_json(out_dir / "report.json", report)
@@ -169,8 +233,10 @@ def markdown(report):
     lines += [f"- `{r['configuration']}`: {r['note']}" for r in report["configurations"] if r["note"]]
     if report["azureCalls"]:
         lines.append(f"- Azure calls in the ledger (all runs): {report['azureCalls']}")
+    if report.get("hybrids"):
+        lines += hybrid_markdown(report)
     lines += ["", "## Box hit definition", "", "```", report["boxHitDefinition"], "```", "",
-              "## Haiku matrix (planned, not run)", "",
+              "## Haiku matrix cost estimate (actual spend: haiku_ledger.json)", "",
               "| variant | input tok | output tok (est.) | $/receipt (est.) | calls | $ total (est.) | $ worst case |",
               "|---|---:|---:|---:|---:|---:|---:|"]
     total = worst = calls = 0
@@ -182,3 +248,38 @@ def markdown(report):
         calls += m["calls"]
     lines.append(f"| **all** | | | | {calls} | {total:.4f} | {worst:.4f} |")
     return "\n".join(lines) + "\n"
+
+
+def hybrid_markdown(report):
+    """Hybrid section: Haiku items + Azure boxes, next to plain Haiku and plain Azure."""
+    baselines = [r for r in report["configurations"]
+                 if r["configuration"].startswith(("haiku-prod-v3-saved", "azure"))]
+    lines = ["", "## Hybrid: Haiku items + Azure boxes (free, from cache)", "",
+             "Items, totals and discounts are Haiku's (so those columns equal the Haiku run); "
+             "only boxes change. Box columns are over the 110 labelled lines (8 receipts), matched "
+             "to recognised lines by `score_items.pairs`; the reference word layer is Azure's "
+             "(Tesseract for the plain Azure row, as above, so its right/wrong mostly reflect Tesseract misreads). "
+             "right / ambiguous / wrong: see the box verdict definition below; wrong = other line + miss; "
+             "\"of which other line\" = wrong boxes that land on another labelled line. "
+             "\"hit (Tess.)\" re-checks the same boxes against Tesseract eng words (independent of Azure, "
+             "but Tesseract misreads Polish text, so it is a lower bound). "
+             "Discount rows = recognised negative lines on all 20 receipts with a hit box.", "",
+             "| configuration | items ok | total ok | disc | GT lines with box | right | ambiguous | wrong | of which other line | hit (Tess.) | box present (all 20) | box hit, Azure words (all 20) | discount rows with hit box |",
+             "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
+    for r in baselines + report["hybrids"]:
+        right = r["gtBoxPlausible"] - r["gtBoxWrong"] - r["gtBoxAmbiguous"]
+        lines.append(
+            f"| {r['configuration']} | {r['gtCorrect']}/{r['gtItems']} | {r['totalOk']}/{r['totalChecked']} "
+            f"| {r['gtDiscountsOk']}/{r['gtDiscounts']} | {r['gtBoxPlausible']}/{r['gtItems']} "
+            f"| {right}/{r['gtItems']} | {r['gtBoxAmbiguous']} | {r['gtBoxWrong']} | {r['gtBoxOtherLine']} "
+            f"| {r['gtBoxHitTess']}/{r['gtItems']} | {_fmt(r['boxPresentPct'], '%')} | {_fmt(r['boxHitAzurePct'], '%')} "
+            f"| {r['discBoxHit']}/{r['discLines']} |")
+    lines += ["", "Calibration rows take the `hybrid-aligned-medium-r1` boxes and give every line the box of "
+              "the line 1 (or 3) positions later on the same receipt, so every box is wrong by construction. "
+              "Their \"right\" count is how many wrong boxes the check misses: neighbouring rows are close, "
+              "Azure item boxes on Polish receipts span the name row and the price row, and the check widens "
+              "boxes by 25% of their height, so an off-by-one box is caught only about half the time; "
+              "a box several rows away is almost always caught.",
+              "", "Strategies:", "", "```", report["hybridDefinition"], "```", "",
+              "Box verdict (per labelled line):", "", "```", report["boxVerdictDefinition"], "```"]
+    return lines

@@ -1,0 +1,44 @@
+{
+ "receiptId": "18",
+ "configuration": "tesseract-pol-best-psm6",
+ "model": "tesseract-5",
+ "seconds": 1.37,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "CARREFOUR MARKET CH Sadyba e e",
+  "date": null,
+  "currency": null,
+  "total": 166.69,
+  "items": [
+   {
+    "name": "C-SER KROLEŃSKI SIE 27,15",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 14.0,
+    "box": [
+     0.2955729166666667,
+     0.455078125,
+     0.37500000000000006,
+     0.0126953125
+    ]
+   },
+   {
+    "name": "C_MAROHEW LUZ 0,2543,76",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 0.4,
+    "box": [
+     0.296875,
+     0.6025390625,
+     0.37239583333333337,
+     0.013671875
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

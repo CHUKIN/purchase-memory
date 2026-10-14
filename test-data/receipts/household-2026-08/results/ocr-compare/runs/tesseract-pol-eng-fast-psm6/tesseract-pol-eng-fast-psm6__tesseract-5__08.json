@@ -1,0 +1,44 @@
+{
+ "receiptId": "08",
+ "configuration": "tesseract-pol-eng-fast-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.55,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "Sa skLEP ZABKA-ZBO31",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "Z J06 SKYR JAGO 336nl-C {szt. x5,99",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.99,
+    "box": [
+     0.040364583333333336,
+     0.490234375,
+     0.8203125,
+     0.0322265625
+    ]
+   },
+   {
+    "name": "2 OPUST CROISSANT CZEKOLAU-C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": -2.0,
+    "box": [
+     0.020833333333333332,
+     0.53515625,
+     0.83984375,
+     0.0263671875
+    ]
+   }
+  ]
+ },
+ "source": "langs pol+eng; installed eng,pol"
+}

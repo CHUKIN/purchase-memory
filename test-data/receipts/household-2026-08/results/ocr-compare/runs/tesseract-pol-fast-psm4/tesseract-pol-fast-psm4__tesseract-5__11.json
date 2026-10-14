@@ -1,0 +1,32 @@
+{
+ "receiptId": "11",
+ "configuration": "tesseract-pol-fast-psm4",
+ "model": "tesseract-5",
+ "seconds": 0.35,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "CARREFOUR HARKET _CH Sadyba",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "CAPOLĘDWICA 2 DORSZ",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 22.74,
+    "box": [
+     0.296875,
+     0.3564453125,
+     0.5065104166666666,
+     0.015625
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

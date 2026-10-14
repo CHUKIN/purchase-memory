@@ -1,0 +1,148 @@
+{
+ "receiptId": "14",
+ "configuration": "haiku-prod-v3-medium",
+ "model": "claude-haiku-5-5",
+ "seconds": 10.53,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.001698,
+ "paidEquivalentUsd": 0.001698,
+ "usage": {
+  "inputTokens": 2844,
+  "outputTokens": 2827
+ },
+ "parsed": {
+  "merchant": "CARREFOUR MARKET",
+  "date": "2025-06-10T14:49:00+02:00",
+  "currency": "PLN",
+  "total": 192.4,
+  "totalBox": [
+   0.46,
+   0.63,
+   0.42,
+   0.035
+  ],
+  "items": [
+   {
+    "name": "A#WODA MINER BORJOM",
+    "quantity": 1,
+    "unitPrice": 10.59,
+    "lineTotal": 10.59,
+    "box": [
+     0.31,
+     0.403,
+     0.47,
+     0.015
+    ]
+   },
+   {
+    "name": "C#MC TOST MAŚLANY 5",
+    "quantity": 1,
+    "unitPrice": 3.79,
+    "lineTotal": 3.79,
+    "box": [
+     0.31,
+     0.419,
+     0.47,
+     0.015
+    ]
+   },
+   {
+    "name": "A#UKŁAD MAXTRA PRO",
+    "quantity": 1,
+    "unitPrice": 74.99,
+    "lineTotal": 74.99,
+    "box": [
+     0.31,
+     0.435,
+     0.47,
+     0.015
+    ]
+   },
+   {
+    "name": "C#FILET Z KURCZ. ZA",
+    "quantity": 0.412,
+    "unitPrice": 52.99,
+    "lineTotal": 21.83,
+    "box": [
+     0.31,
+     0.451,
+     0.47,
+     0.015
+    ]
+   },
+   {
+    "name": "C#SALAME VILCANI 80",
+    "quantity": 1,
+    "unitPrice": 30.79,
+    "lineTotal": 30.79,
+    "box": [
+     0.31,
+     0.467,
+     0.47,
+     0.015
+    ]
+   },
+   {
+    "name": "C#MOVI ŁOSOŚ ŚWIEŻY",
+    "quantity": 1,
+    "unitPrice": 19.49,
+    "lineTotal": 19.49,
+    "box": [
+     0.31,
+     0.483,
+     0.47,
+     0.015
+    ]
+   },
+   {
+    "name": "C#JOGURT MOVENPICK",
+    "quantity": 1,
+    "unitPrice": 5.39,
+    "lineTotal": 5.39,
+    "box": [
+     0.31,
+     0.499,
+     0.47,
+     0.015
+    ]
+   },
+   {
+    "name": "C#SMAKIJA KASZKA 13",
+    "quantity": 1,
+    "unitPrice": 3.45,
+    "lineTotal": 3.45,
+    "box": [
+     0.31,
+     0.515,
+     0.47,
+     0.015
+    ]
+   },
+   {
+    "name": "C#PAPRYKA CZERWONA",
+    "quantity": 0.546,
+    "unitPrice": 12.99,
+    "lineTotal": 7.09,
+    "box": [
+     0.31,
+     0.531,
+     0.47,
+     0.015
+    ]
+   },
+   {
+    "name": "C#MC SZPARAG ZIELO",
+    "quantity": 1,
+    "unitPrice": 14.99,
+    "lineTotal": 14.99,
+    "box": [
+     0.31,
+     0.543,
+     0.47,
+     0.015
+    ]
+   }
+  ]
+ }
+}

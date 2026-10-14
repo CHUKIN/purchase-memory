@@ -1,0 +1,44 @@
+{
+ "receiptId": "17",
+ "configuration": "tesseract-pol-fast-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.52,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "SUPERHARKET AUCHAN | 5",
+  "date": null,
+  "currency": null,
+  "total": 465.36,
+  "items": [
+   {
+    "name": "ZIEMNIAKI W 33980C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 7.42,
+    "box": [
+     0.10807291666666667,
+     0.337890625,
+     0.5234375,
+     0.0224609375
+    ]
+   },
+   {
+    "name": ">=) PWC Sż",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 6.8,
+    "box": [
+     0.022135416666666668,
+     0.6357421875,
+     0.6223958333333334,
+     0.03125
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

@@ -1,0 +1,128 @@
+{
+ "receiptId": "10",
+ "configuration": "tesseract-pol-eng-fast-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.62,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "1-336 Warszawa, Świętego Bonifacego 70",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "T05T PEŁNO 303974 1_x3,18",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.18,
+    "box": [
+     0.16666666666666666,
+     0.3427734375,
+     0.6861979166666667,
+     0.02734375
+    ]
+   },
+   {
+    "name": "FILET 2 KU 339848C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 16.08,
+    "box": [
+     0.171875,
+     0.3642578125,
+     0.67578125,
+     0.0283203125
+    ]
+   },
+   {
+    "name": "BANAN 34041C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.89,
+    "box": [
+     0.17708333333333334,
+     0.384765625,
+     0.6653645833333333,
+     0.0283203125
+    ]
+   },
+   {
+    "name": "SINNKA Z P",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 6.19,
+    "box": [
+     0.18359375,
+     0.4052734375,
+     0.6536458333333333,
+     0.02734375
+    ]
+   },
+   {
+    "name": "SER SZWAJC 508926C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.89,
+    "box": [
+     0.18880208333333334,
+     0.4248046875,
+     0.6432291666666666,
+     0.0263671875
+    ]
+   },
+   {
+    "name": "CEBULA 43444C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 0.81,
+    "box": [
+     0.19401041666666666,
+     0.443359375,
+     0.6328125,
+     0.025390625
+    ]
+   },
+   {
+    "name": "DORSZ ATLA 8090360",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 31.68,
+    "box": [
+     0.19921875,
+     0.4619140625,
+     0.6223958333333333,
+     0.0244140625
+    ]
+   },
+   {
+    "name": "JOGURT ONC 281650Ć",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 7.64,
+    "box": [
+     0.203125,
+     0.48046875,
+     0.6145833333333334,
+     0.0234375
+    ]
+   },
+   {
+    "name": "PIU A 23%",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 4.39,
+    "box": [
+     0.19140625,
+     0.5654296875,
+     0.62890625,
+     0.0224609375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol+eng; installed eng,pol"
+}

@@ -1,0 +1,56 @@
+{
+ "receiptId": "19",
+ "configuration": "tesseract-pol-eng-best-psm6",
+ "model": "tesseract-5",
+ "seconds": 1.28,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "RIERA ERAT Pg Ci GE i me pee ER ER",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "Cezar z Kurczakien",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 16.9,
+    "box": [
+     0.23567708333333334,
+     0.5458984375,
+     0.5338541666666666,
+     0.01953125
+    ]
+   },
+   {
+    "name": "Snietankouo-Truskaukouy",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 16.9,
+    "box": [
+     0.23567708333333334,
+     0.5625,
+     0.5338541666666666,
+     0.0224609375
+    ]
+   },
+   {
+    "name": "Z Krenen Waniliouyn",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 12.9,
+    "box": [
+     0.23307291666666666,
+     0.6015625,
+     0.53515625,
+     0.021484375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol+eng; installed eng,pol"
+}

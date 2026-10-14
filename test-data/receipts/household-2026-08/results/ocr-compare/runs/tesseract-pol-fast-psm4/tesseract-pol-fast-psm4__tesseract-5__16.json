@@ -1,0 +1,32 @@
+{
+ "receiptId": "16",
+ "configuration": "tesseract-pol-fast-psm4",
+ "model": "tesseract-5",
+ "seconds": 0.31,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "SUPERHARKET. AUCHAN",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "BANAN 34044C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.15,
+    "box": [
+     0.19921875,
+     0.396484375,
+     0.62109375,
+     0.04296875
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

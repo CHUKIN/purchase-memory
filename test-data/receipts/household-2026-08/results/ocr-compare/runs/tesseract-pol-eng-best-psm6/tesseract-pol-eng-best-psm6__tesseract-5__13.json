@@ -1,0 +1,44 @@
+{
+ "receiptId": "13",
+ "configuration": "tesseract-pol-eng-best-psm6",
+ "model": "tesseract-5",
+ "seconds": 1.05,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "r hy.",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "Króleyski (6) 1 5,80",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 25.9,
+    "box": [
+     0.2981770833333333,
+     0.46875,
+     0.45703125000000006,
+     0.0224609375
+    ]
+   },
+   {
+    "name": "+Serek śnietankowy (dodatek)",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.0,
+    "box": [
+     0.2994791666666667,
+     0.484375,
+     0.4557291666666667,
+     0.0224609375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol+eng; installed eng,pol"
+}

@@ -1,0 +1,32 @@
+{
+ "receiptId": "04",
+ "configuration": "tesseract-pol-fast-psm4",
+ "model": "tesseract-5",
+ "seconds": 0.11,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "15KALNY",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "PORAGON I",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 136.99,
+    "box": [
+     0.3502604166666667,
+     0.1982421875,
+     0.27734374999999994,
+     0.2119140625
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

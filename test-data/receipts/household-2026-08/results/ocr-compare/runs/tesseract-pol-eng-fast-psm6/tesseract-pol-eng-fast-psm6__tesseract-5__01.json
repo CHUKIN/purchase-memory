@@ -1,0 +1,92 @@
+{
+ "receiptId": "01",
+ "configuration": "tesseract-pol-eng-fast-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.45,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "Dodo Pizza Poland s, LL.",
+  "date": null,
+  "currency": null,
+  "total": 56.38,
+  "items": [
+   {
+    "name": "' mostauy 1 szt 1 x",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.98,
+    "box": [
+     0.2526041666666667,
+     0.3505859375,
+     0.4869791666666666,
+     0.017578125
+    ]
+   },
+   {
+    "name": "3 Pudetko na pizzę 30 1 szt 1 xż,01",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.01,
+    "box": [
+     0.20572916666666666,
+     0.388671875,
+     0.5442708333333334,
+     0.041015625
+    ]
+   },
+   {
+    "name": "OPUST “",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": -2.0,
+    "box": [
+     0.2877604166666667,
+     0.4150390625,
+     0.5013020833333333,
+     0.0205078125
+    ]
+   },
+   {
+    "name": "Podsuna",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 7.97,
+    "box": [
+     0.26953125,
+     0.4560546875,
+     0.515625,
+     0.0205078125
+    ]
+   },
+   {
+    "name": "OPUSTY ŁĄCZNIE AA “",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": -23.59,
+    "box": [
+     0.26953125,
+     0.49609375,
+     0.46875,
+     0.0234375
+    ]
+   },
+   {
+    "name": "PIU B 8%",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 4.18,
+    "box": [
+     0.2669270833333333,
+     0.5361328125,
+     0.47265624999999994,
+     0.01953125
+    ]
+   }
+  ]
+ },
+ "source": "langs pol+eng; installed eng,pol"
+}

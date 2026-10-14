@@ -1,0 +1,128 @@
+{
+ "receiptId": "11",
+ "configuration": "tesseract-pol-eng-standard-psm6",
+ "model": "tesseract-5",
+ "seconds": 1.21,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "CARREFOUR MARKET CH Sadyba",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "s OPUST CASER TUARD. DZIUGAS 195",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": -3.95,
+    "box": [
+     0.0,
+     0.2998046875,
+     0.8033854166666666,
+     0.03515625
+    ]
+   },
+   {
+    "name": "O CHFILET 2 KURCZAKA",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 17.05,
+    "box": [
+     0.11328125,
+     0.333984375,
+     0.6901041666666666,
+     0.02734375
+    ]
+   },
+   {
+    "name": "Ss CaPOLEDWICH Z o0RSZ",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 22.74,
+    "box": [
+     0.17708333333333334,
+     0.349609375,
+     0.6263020833333333,
+     0.0244140625
+    ]
+   },
+   {
+    "name": "T CHJOGURT HOVENPICK 2szts5,75=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 11.5,
+    "box": [
+     0.1875,
+     0.3720703125,
+     0.6158854166666666,
+     0.025390625
+    ]
+   },
+   {
+    "name": ">) CHDESER SATINO BAKO Iszt3,35=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.35,
+    "box": [
+     0.17578125,
+     0.4052734375,
+     0.6263020833333333,
+     0.0205078125
+    ]
+   },
+   {
+    "name": "©) ANBATONIK TuAROG HA",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.25,
+    "box": [
+     0.19140625,
+     0.4228515625,
+     0.6106770833333333,
+     0.0205078125
+    ]
+   },
+   {
+    "name": "1 AKTORBA RECYKLING",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 0.79,
+    "box": [
+     0.18880208333333334,
+     0.439453125,
+     0.6132812499999999,
+     0.0224609375
+    ]
+   },
+   {
+    "name": "(Sune Opustów",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": -2.37,
+    "box": [
+     0.1328125,
+     0.478515625,
+     0.6497395833333334,
+     0.01953125
+    ]
+   },
+   {
+    "name": "ey kuota PIU A 23,008",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 0.76,
+    "box": [
+     0.07682291666666667,
+     0.5244140625,
+     0.7057291666666667,
+     0.025390625
+    ]
+   }
+  ]
+ },
+ "source": "langs pol+eng; installed eng,pol"
+}

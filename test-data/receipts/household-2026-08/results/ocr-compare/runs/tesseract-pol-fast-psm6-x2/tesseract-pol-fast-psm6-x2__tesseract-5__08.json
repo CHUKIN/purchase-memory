@@ -1,0 +1,68 @@
+{
+ "receiptId": "08",
+ "configuration": "tesseract-pol-fast-psm6-x2",
+ "model": "tesseract-5",
+ "seconds": 0.5,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "O AS SkLEP ZABKA ZBO31",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "RZE pks BIECZ R iszt. x5,50",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.5,
+    "box": [
+     0.0013020833333333333,
+     0.4228515625,
+     0.859375,
+     0.04833984375
+    ]
+   },
+   {
+    "name": "oo 2 „4 EDAMSKI PLASTRY 150g-C iszt. x6,50",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 6.5,
+    "box": [
+     0.004557291666666667,
+     0.4453125,
+     0.8561197916666666,
+     0.03515625
+    ]
+   },
+   {
+    "name": "SZZSEŻ8 JOGURT SKYR PITNY 330mt-C iszt, x5,99",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.99,
+    "box": [
+     0.047526041666666664,
+     0.4677734375,
+     0.8131510416666666,
+     0.03271484375
+    ]
+   },
+   {
+    "name": "ZE A OPUST CROISSANT CZEKÓLAC-C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": -2.0,
+    "box": [
+     0.014973958333333334,
+     0.53564453125,
+     0.845703125,
+     0.033203125
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

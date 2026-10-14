@@ -1,0 +1,116 @@
+{
+ "receiptId": "16",
+ "configuration": "tesseract-pol-eng-fast-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.75,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "SUPERHARKET AUCHAN 4",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "OGÓREK DŁU 306053C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.99,
+    "box": [
+     0.203125,
+     0.271484375,
+     0.6263020833333334,
+     0.0283203125
+    ]
+   },
+   {
+    "name": "% ZIEMNTAKT W 33980C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 7.42,
+    "box": [
+     0.028645833333333332,
+     0.2939453125,
+     0.7994791666666666,
+     0.0283203125
+    ]
+   },
+   {
+    "name": "PIECZARKI 195413C 1 «5,89",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.69,
+    "box": [
+     0.052083333333333336,
+     0.314453125,
+     0.7747395833333334,
+     0.0302734375
+    ]
+   },
+   {
+    "name": "SER KROLEN",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 7.04,
+    "box": [
+     0.1171875,
+     0.3388671875,
+     0.7083333333333334,
+     0.0283203125
+    ]
+   },
+   {
+    "name": "L0S05 POR 962162 1 37,90",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 37.9,
+    "box": [
+     0.0,
+     0.361328125,
+     0.82421875,
+     0.033203125
+    ]
+   },
+   {
+    "name": "O PECZEK FAN",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 9.9,
+    "box": [
+     0.022135416666666668,
+     0.3828125,
+     0.7994791666666667,
+     0.02734375
+    ]
+   },
+   {
+    "name": "SZPINAK 253885C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.99,
+    "box": [
+     0.20442708333333334,
+     0.4267578125,
+     0.6145833333333334,
+     0.02734375
+    ]
+   },
+   {
+    "name": "me SZVNKA ZB x6,34",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 6.34,
+    "box": [
+     0.11848958333333333,
+     0.51171875,
+     0.6822916666666666,
+     0.02734375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol+eng; installed eng,pol"
+}

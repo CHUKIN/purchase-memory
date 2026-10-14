@@ -1,0 +1,44 @@
+{
+ "receiptId": "08",
+ "configuration": "tesseract-pol-best-psm6-x2",
+ "model": "tesseract-5",
+ "seconds": 0.76,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "a SKLEP ŻABKA ZBO31",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "s (ROISSANT CZEKOLĄD-C szt. x3,99",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 7.98,
+    "box": [
+     0.0,
+     0.5126953125,
+     0.8606770833333334,
+     0.03076171875
+    ]
+   },
+   {
+    "name": "NL OPUST CROISSANT CZEKOLAD-C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": -2.0,
+    "box": [
+     0.014973958333333334,
+     0.53564453125,
+     0.845703125,
+     0.033203125
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

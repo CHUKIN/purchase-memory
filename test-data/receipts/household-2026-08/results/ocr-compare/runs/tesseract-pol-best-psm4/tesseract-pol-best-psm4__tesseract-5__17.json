@@ -1,0 +1,44 @@
+{
+ "receiptId": "17",
+ "configuration": "tesseract-pol-best-psm4",
+ "model": "tesseract-5",
+ "seconds": 0.44,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "SUPERMARKET AUCHAN",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "POMIDOR KO 627810C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 11.99,
+    "box": [
+     0.10807291666666667,
+     0.3017578125,
+     0.5208333333333334,
+     0.0224609375
+    ]
+   },
+   {
+    "name": "OGOREK DŁU 306053C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.99,
+    "box": [
+     0.10807291666666667,
+     0.3203125,
+     0.5221354166666667,
+     0.021484375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

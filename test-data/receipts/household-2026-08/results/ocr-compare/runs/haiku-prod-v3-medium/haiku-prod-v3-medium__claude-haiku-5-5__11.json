@@ -1,0 +1,160 @@
+{
+ "receiptId": "11",
+ "configuration": "haiku-prod-v3-medium",
+ "model": "claude-haiku-5-5",
+ "seconds": 11.04,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.001716,
+ "paidEquivalentUsd": 0.001716,
+ "usage": {
+  "inputTokens": 2844,
+  "outputTokens": 2863
+ },
+ "parsed": {
+  "merchant": "CARREFOUR MARKET CH Sadyba",
+  "date": "2025-07-18T21:42:00+02:00",
+  "currency": "PLN",
+  "total": 75.55,
+  "totalBox": [
+   0.29,
+   0.575,
+   0.52,
+   0.04
+  ],
+  "items": [
+   {
+    "name": "C#SER RAJSKI WLOSZC",
+    "quantity": 1,
+    "unitPrice": 7.99,
+    "lineTotal": 7.99,
+    "box": [
+     0.28,
+     0.272,
+     0.52,
+     0.017
+    ]
+   },
+   {
+    "name": "C#SER TWARD.DZIUGAS",
+    "quantity": 1,
+    "unitPrice": 3.95,
+    "lineTotal": 3.95,
+    "box": [
+     0.28,
+     0.289,
+     0.52,
+     0.017
+    ]
+   },
+   {
+    "name": "OPUST C#SER TWARD.DZIUGAS",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": -2.37,
+    "box": [
+     0.28,
+     0.306,
+     0.52,
+     0.017
+    ]
+   },
+   {
+    "name": "C#SER TWARD.DZIUGAS",
+    "quantity": 1,
+    "unitPrice": 3.95,
+    "lineTotal": 3.95,
+    "box": [
+     0.28,
+     0.324,
+     0.52,
+     0.017
+    ]
+   },
+   {
+    "name": "C#FILET Z KURCZAKA",
+    "quantity": 0.609,
+    "unitPrice": 27.99,
+    "lineTotal": 17.05,
+    "box": [
+     0.28,
+     0.342,
+     0.52,
+     0.017
+    ]
+   },
+   {
+    "name": "C#POLEDWICA Z DORSZ",
+    "quantity": 0.253,
+    "unitPrice": 89.9,
+    "lineTotal": 22.74,
+    "box": [
+     0.28,
+     0.359,
+     0.52,
+     0.017
+    ]
+   },
+   {
+    "name": "C#JOGURT NOVENPICK",
+    "quantity": 2,
+    "unitPrice": 5.75,
+    "lineTotal": 11.5,
+    "box": [
+     0.28,
+     0.377,
+     0.52,
+     0.017
+    ]
+   },
+   {
+    "name": "C#DESER SATINO BAKO",
+    "quantity": 1,
+    "unitPrice": 3.35,
+    "lineTotal": 3.35,
+    "box": [
+     0.28,
+     0.394,
+     0.52,
+     0.017
+    ]
+   },
+   {
+    "name": "C#DESER SATINO BAKO",
+    "quantity": 1,
+    "unitPrice": 3.35,
+    "lineTotal": 3.35,
+    "box": [
+     0.28,
+     0.412,
+     0.52,
+     0.017
+    ]
+   },
+   {
+    "name": "A#BATONIK TWAROG MA",
+    "quantity": 1,
+    "unitPrice": 3.25,
+    "lineTotal": 3.25,
+    "box": [
+     0.28,
+     0.43,
+     0.52,
+     0.017
+    ]
+   },
+   {
+    "name": "A#TORBA RECYKLING",
+    "quantity": 1,
+    "unitPrice": 0.79,
+    "lineTotal": 0.79,
+    "box": [
+     0.28,
+     0.447,
+     0.52,
+     0.017
+    ]
+   }
+  ]
+ }
+}

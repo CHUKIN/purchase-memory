@@ -1,0 +1,19 @@
+{
+ "receiptId": "05",
+ "configuration": "tesseract-pol-fast-psm4",
+ "model": "tesseract-5",
+ "seconds": 0.09,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "JARA Y",
+  "date": null,
+  "currency": null,
+  "total": 0.5,
+  "items": []
+ },
+ "source": "langs pol; installed eng,pol"
+}

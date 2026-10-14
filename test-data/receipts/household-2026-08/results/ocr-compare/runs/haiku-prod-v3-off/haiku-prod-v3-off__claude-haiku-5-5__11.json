@@ -1,0 +1,100 @@
+{
+ "receiptId": "11",
+ "configuration": "haiku-prod-v3-off",
+ "model": "claude-haiku-5-5",
+ "seconds": 4.56,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.00086,
+ "paidEquivalentUsd": 0.00086,
+ "usage": {
+  "inputTokens": 2843,
+  "outputTokens": 1151
+ },
+ "parsed": {
+  "merchant": "CARREFOUR MARKET CH Sadyba",
+  "date": "2025-07-18T21:42:00+02:00",
+  "currency": "PLN",
+  "total": 75.55,
+  "totalBox": null,
+  "items": [
+   {
+    "name": "C#SER RAJSKI WLOSZC",
+    "quantity": 1,
+    "unitPrice": 7.99,
+    "lineTotal": 7.99,
+    "box": null
+   },
+   {
+    "name": "C#SER TWARD.DZIUGAS",
+    "quantity": 1,
+    "unitPrice": 3.95,
+    "lineTotal": 3.95,
+    "box": null
+   },
+   {
+    "name": "OPUST C#SER TWARD.DZIUGAS",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": -2.37,
+    "box": null
+   },
+   {
+    "name": "C#SER TWARD.DZIUGAS",
+    "quantity": 1,
+    "unitPrice": 3.95,
+    "lineTotal": 3.95,
+    "box": null
+   },
+   {
+    "name": "C#FILET Z KURCZAKA",
+    "quantity": 0.609,
+    "unitPrice": 27.99,
+    "lineTotal": 17.05,
+    "box": null
+   },
+   {
+    "name": "C#POLEDWICA Z DORSZ",
+    "quantity": 0.253,
+    "unitPrice": 89.9,
+    "lineTotal": 22.74,
+    "box": null
+   },
+   {
+    "name": "C#JOGURT NOVENPICK",
+    "quantity": 2,
+    "unitPrice": 5.75,
+    "lineTotal": 11.5,
+    "box": null
+   },
+   {
+    "name": "C#DESER SATINO BAKO",
+    "quantity": 1,
+    "unitPrice": 3.35,
+    "lineTotal": 3.35,
+    "box": null
+   },
+   {
+    "name": "C#DESER SATINO BAKO",
+    "quantity": 1,
+    "unitPrice": 3.35,
+    "lineTotal": 3.35,
+    "box": null
+   },
+   {
+    "name": "A#BATONIK TWAROG MA",
+    "quantity": 1,
+    "unitPrice": 3.25,
+    "lineTotal": 3.25,
+    "box": null
+   },
+   {
+    "name": "A#TORBA RECYKLING",
+    "quantity": 1,
+    "unitPrice": 0.79,
+    "lineTotal": 0.79,
+    "box": null
+   }
+  ]
+ }
+}

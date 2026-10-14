@@ -1,0 +1,88 @@
+{
+ "receiptId": "05",
+ "configuration": "haiku-bbox-required-low",
+ "model": "claude-haiku-5-5",
+ "seconds": 8.07,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.001169,
+ "paidEquivalentUsd": 0.001169,
+ "usage": {
+  "inputTokens": 2951,
+  "outputTokens": 1748
+ },
+ "parsed": {
+  "merchant": "Restauracja McDonald's",
+  "date": "2026-03-26T14:40:00+01:00",
+  "currency": "PLN",
+  "total": 70.8,
+  "totalBox": [
+   0.55,
+   0.19,
+   0.25,
+   0.03
+  ],
+  "items": [
+   {
+    "name": "Big Arch",
+    "quantity": 1,
+    "unitPrice": 33.0,
+    "lineTotal": 33.0,
+    "box": [
+     0.29,
+     0.065,
+     0.3,
+     0.035
+    ]
+   },
+   {
+    "name": "Wrap Chrup Klas",
+    "quantity": 1,
+    "unitPrice": 13.2,
+    "lineTotal": 13.2,
+    "box": [
+     0.29,
+     0.1,
+     0.3,
+     0.035
+    ]
+   },
+   {
+    "name": "Wrap Chrup Klas",
+    "quantity": 1,
+    "unitPrice": 13.2,
+    "lineTotal": 13.2,
+    "box": [
+     0.29,
+     0.125,
+     0.3,
+     0.035
+    ]
+   },
+   {
+    "name": "Frytki Srednie",
+    "quantity": 1,
+    "unitPrice": 5.7,
+    "lineTotal": 5.7,
+    "box": [
+     0.29,
+     0.15,
+     0.3,
+     0.035
+    ]
+   },
+   {
+    "name": "Frytki Srednie",
+    "quantity": 1,
+    "unitPrice": 5.7,
+    "lineTotal": 5.7,
+    "box": [
+     0.29,
+     0.175,
+     0.3,
+     0.035
+    ]
+   }
+  ]
+ }
+}

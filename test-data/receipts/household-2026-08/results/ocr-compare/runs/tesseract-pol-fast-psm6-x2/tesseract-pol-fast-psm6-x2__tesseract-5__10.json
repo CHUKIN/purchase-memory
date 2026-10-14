@@ -1,0 +1,80 @@
+{
+ "receiptId": "10",
+ "configuration": "tesseract-pol-fast-psm6-x2",
+ "model": "tesseract-5",
+ "seconds": 0.53,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "SUPERAKRKET AUCHAN",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "SZYNKA Ż P",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 6.19,
+    "box": [
+     0.18359375,
+     0.4052734375,
+     0.6536458333333333,
+     0.02685546875
+    ]
+   },
+   {
+    "name": "SER SZWAJC 508926C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.89,
+    "box": [
+     0.189453125,
+     0.42431640625,
+     0.642578125,
+     0.0263671875
+    ]
+   },
+   {
+    "name": "CEBULA 43444C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 0.81,
+    "box": [
+     0.19466145833333334,
+     0.44384765625,
+     0.6321614583333333,
+     0.02490234375
+    ]
+   },
+   {
+    "name": "JOGURT OKC 281650C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 7.64,
+    "box": [
+     0.203125,
+     0.48095703125,
+     0.6145833333333333,
+     0.0234375
+    ]
+   },
+   {
+    "name": "PIU A 232",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 4.39,
+    "box": [
+     0.19140625,
+     0.56591796875,
+     0.6295572916666666,
+     0.02197265625
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

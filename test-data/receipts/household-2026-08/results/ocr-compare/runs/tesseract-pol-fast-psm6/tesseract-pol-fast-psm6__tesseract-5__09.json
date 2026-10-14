@@ -1,0 +1,56 @@
+{
+ "receiptId": "09",
+ "configuration": "tesseract-pol-fast-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.44,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "== aż” \"7 ye Ń",
+  "date": null,
+  "currency": null,
+  "total": 177.48,
+  "items": [
+   {
+    "name": "C_MAŚLANKA 4206 BUT 1+2,89=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.69,
+    "box": [
+     0.15625,
+     0.3359375,
+     0.6158854166666666,
+     0.0263671875
+    ]
+   },
+   {
+    "name": "B_WILKIN RASPBERRY",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 35.99,
+    "box": [
+     0.15625,
+     0.3564453125,
+     0.6145833333333334,
+     0.025390625
+    ]
+   },
+   {
+    "name": "C_ KUKURYDZA ŚWIEŻA",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 13.98,
+    "box": [
+     0.16536458333333334,
+     0.474609375,
+     0.5989583333333333,
+     0.021484375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

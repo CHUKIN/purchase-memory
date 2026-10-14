@@ -1,0 +1,56 @@
+{
+ "receiptId": "15",
+ "configuration": "tesseract-pol-standard-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.46,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "L GW J",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "AHERYKAŃSKIE ZEBERKA —",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 79.0,
+    "box": [
+     0.2265625,
+     0.5615234375,
+     0.4921875,
+     0.0439453125
+    ]
+   },
+   {
+    "name": "GRILLOWANY PSTRĄG",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 69.0,
+    "box": [
+     0.22265625,
+     0.5986328125,
+     0.49609375,
+     0.0234375
+    ]
+   },
+   {
+    "name": "DOMOMA HROZONA HERBATA _",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 22.0,
+    "box": [
+     0.22265625,
+     0.623046875,
+     0.49739583333333337,
+     0.0322265625
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

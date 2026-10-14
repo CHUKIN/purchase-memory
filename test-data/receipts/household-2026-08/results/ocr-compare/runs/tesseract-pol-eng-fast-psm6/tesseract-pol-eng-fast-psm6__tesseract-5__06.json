@@ -1,0 +1,68 @@
+{
+ "receiptId": "06",
+ "configuration": "tesseract-pol-eng-fast-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.54,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "w",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "A) ska M ż,01",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 12.01,
+    "box": [
+     0.3268229166666667,
+     0.265625,
+     0.4114583333333333,
+     0.0341796875
+    ]
+   },
+   {
+    "name": "Laer 1 36,76",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 6.76,
+    "box": [
+     0.3385416666666667,
+     0.2861328125,
+     0.3997395833333333,
+     0.025390625
+    ]
+   },
+   {
+    "name": "f Mn",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 25.85,
+    "box": [
+     0.3463541666666667,
+     0.326171875,
+     0.39062500000000006,
+     0.029296875
+    ]
+   },
+   {
+    "name": "SO pr KOKANĄ B Ae",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 25.85,
+    "box": [
+     0.3138020833333333,
+     0.3271484375,
+     0.42187500000000006,
+     0.076171875
+    ]
+   }
+  ]
+ },
+ "source": "langs pol+eng; installed eng,pol"
+}

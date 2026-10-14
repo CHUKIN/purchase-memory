@@ -1,0 +1,76 @@
+{
+ "receiptId": "20",
+ "configuration": "haiku-prod-v3-medium",
+ "model": "claude-haiku-5-5",
+ "seconds": 6.81,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.001066,
+ "paidEquivalentUsd": 0.001066,
+ "usage": {
+  "inputTokens": 2844,
+  "outputTokens": 1564
+ },
+ "parsed": {
+  "merchant": "Restauracja McDonald's",
+  "date": "2023-03-25T12:09:00+01:00",
+  "currency": "PLN",
+  "total": 38.1,
+  "totalBox": [
+   0.56,
+   0.48,
+   0.11,
+   0.04
+  ],
+  "items": [
+   {
+    "name": "*BigMac M+",
+    "quantity": 1,
+    "unitPrice": 15.3,
+    "lineTotal": 15.3,
+    "box": [
+     0.21,
+     0.275,
+     0.45,
+     0.02
+    ]
+   },
+   {
+    "name": "Chrup TalarkM+",
+    "quantity": 1,
+    "unitPrice": 8.0,
+    "lineTotal": 8.0,
+    "box": [
+     0.21,
+     0.293,
+     0.45,
+     0.02
+    ]
+   },
+   {
+    "name": "Woda NieGaz. M+",
+    "quantity": 1,
+    "unitPrice": 7.9,
+    "lineTotal": 7.9,
+    "box": [
+     0.21,
+     0.319,
+     0.45,
+     0.02
+    ]
+   },
+   {
+    "name": "*Cheeseburger",
+    "quantity": 1,
+    "unitPrice": 6.9,
+    "lineTotal": 6.9,
+    "box": [
+     0.21,
+     0.344,
+     0.45,
+     0.02
+    ]
+   }
+  ]
+ }
+}

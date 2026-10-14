@@ -1,0 +1,149 @@
+{
+ "receiptId": "18",
+ "configuration": "haiku-prod-v3-off",
+ "model": "claude-haiku-5-5",
+ "seconds": 7.1,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.001168,
+ "paidEquivalentUsd": 0.001168,
+ "usage": {
+  "inputTokens": 2843,
+  "outputTokens": 1768
+ },
+ "parsed": {
+  "merchant": "CARREFOUR MARKET CH SADYBA",
+  "date": "2024-10-29T17:12:00+01:00",
+  "currency": "PLN",
+  "total": 166.69,
+  "totalBox": null,
+  "items": [
+   {
+    "name": "PAKOWANIE",
+    "quantity": 1,
+    "unitPrice": 2.0,
+    "lineTotal": 2.0,
+    "box": null
+   },
+   {
+    "name": "PODUDZIE Z KURCZ.",
+    "quantity": 0.5,
+    "unitPrice": 26.0,
+    "lineTotal": 13.0,
+    "box": null
+   },
+   {
+    "name": "SMIETANA 18% 200G",
+    "quantity": 1,
+    "unitPrice": 2.59,
+    "lineTotal": 2.59,
+    "box": null
+   },
+   {
+    "name": "MC POMARANCZE LUZ",
+    "quantity": 1,
+    "unitPrice": 7.0,
+    "lineTotal": 7.0,
+    "box": null
+   },
+   {
+    "name": "MC SOCZEWICA 500G",
+    "quantity": 1,
+    "unitPrice": 6.65,
+    "lineTotal": 6.65,
+    "box": null
+   },
+   {
+    "name": "SER KROLEWSKI SIE",
+    "quantity": 2,
+    "unitPrice": 7.15,
+    "lineTotal": 14.3,
+    "box": null
+   },
+   {
+    "name": "MYDLO W PL DOVE 5",
+    "quantity": 1,
+    "unitPrice": 10.99,
+    "lineTotal": 10.99,
+    "box": null
+   },
+   {
+    "name": "MC JAJA ZIELONOZK",
+    "quantity": 1,
+    "unitPrice": 11.79,
+    "lineTotal": 11.79,
+    "box": null
+   },
+   {
+    "name": "MOWI LOSOS WEDZ.",
+    "quantity": 1,
+    "unitPrice": 30.89,
+    "lineTotal": 30.89,
+    "box": null
+   },
+   {
+    "name": "SZYNKA KRAKUS 100",
+    "quantity": 2,
+    "unitPrice": 7.25,
+    "lineTotal": 14.5,
+    "box": null
+   },
+   {
+    "name": "KAPUSTA BIALA LUZ",
+    "quantity": 2.5,
+    "unitPrice": 3.49,
+    "lineTotal": 8.73,
+    "box": null
+   },
+   {
+    "name": "MC MIX SALATZ SA",
+    "quantity": 1,
+    "unitPrice": 4.45,
+    "lineTotal": 4.45,
+    "box": null
+   },
+   {
+    "name": "JZN ZIEMNIAK JADA",
+    "quantity": 1,
+    "unitPrice": 6.99,
+    "lineTotal": 6.99,
+    "box": null
+   },
+   {
+    "name": "NAPOJ ALPRO 1L MI",
+    "quantity": 1,
+    "unitPrice": 11.99,
+    "lineTotal": 11.99,
+    "box": null
+   },
+   {
+    "name": "MARCHEW LUZ",
+    "quantity": 0.25,
+    "unitPrice": 3.76,
+    "lineTotal": 0.94,
+    "box": null
+   },
+   {
+    "name": "ZUPA VIFON 70G KU",
+    "quantity": 2,
+    "unitPrice": 1.95,
+    "lineTotal": 3.9,
+    "box": null
+   },
+   {
+    "name": "CHLEB TOSTOWY PEL",
+    "quantity": 1,
+    "unitPrice": 6.49,
+    "lineTotal": 6.49,
+    "box": null
+   },
+   {
+    "name": "MASLO EKSTRA MAZU",
+    "quantity": 1,
+    "unitPrice": 9.49,
+    "lineTotal": 9.49,
+    "box": null
+   }
+  ]
+ }
+}

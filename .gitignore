@@ -76,3 +76,4 @@ pm-data/
 # Python bytecode (benchmark helper scripts)
 __pycache__/
 *.pyc
+tools/PurchaseMemory.ReceiptBenchmarks/.tessdata/

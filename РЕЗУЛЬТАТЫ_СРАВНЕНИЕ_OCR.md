@@ -70,3 +70,19 @@ Over 20 receipts that is **240 calls**: **≈ $0.36 estimated, $2.03 worst case*
 ## Files
 - New: `tools/PurchaseMemory.ReceiptBenchmarks/run_ocr_compare.py`, `tools/PurchaseMemory.ReceiptBenchmarks/ocr_compare/` (`cli.py`, `common.py`, `boxes.py`, `azure_receipt.py`, `tesseract_ocr.py`, `haiku_matrix.py`, `report.py`, `README.md`, `tests/test_ocr_compare.py`, 14 tests), `test-data/receipts/household-2026-08/results/ocr-compare/` (they contain receipt text, as the other committed outputs do; no images).
 - Changed: `score_items.py` (adds `pairs` to the per-receipt result; output unchanged), `.gitignore` (`__pycache__/`, `*.pyc`).
+
+## Round 2 (2026-10-14): Tesseract pol, Haiku matrix, hybrid
+Owner approved: download Polish Tesseract data, run the full Haiku matrix (budget $2.05), measure the hybrid. Opus review READY (26 unit tests OK, report regenerates offline and identically, invariants checked: hybrid items/totals/discounts = Haiku's, one-to-one boxes).
+
+- **Tesseract pol** (official tessdata fast/best/standard in gitignored `tools/PurchaseMemory.ReceiptBenchmarks/.tessdata/`, plus `configs/` copied from brew): 14 scenarios (pol, pol+eng × psm 4/6 × model, 2× scale). Best = `pol-eng-standard-psm6` 32/110 lines, totals 2/20. Still unusable; pol data does not help. Drop Tesseract.
+- **Haiku matrix** (240 calls, actual $0.3763, ledger `haiku_ledger.json`):
+  - `full-structured-high`: lines 110/110, totals 20/20, discounts 5/5, own box hit 109/110 GT lines, 14.5 s, $0.0021/receipt.
+  - `full-structured-medium`: 110/110, 20/20, 5/5, boxes 108/110, 12.0 s, $0.0018.
+  - `full-structured-low`: 110/110, 20/20, 5/5, boxes 102/110, 10.3 s, $0.0015.
+  - `bbox-required-high/low/medium`: 102–104/110 boxes. `off` (no thinking) for any prompt: boxes only 31–35%.
+  - `prod-v3` (today's prompt): boxes 0–58% depending on effort.
+- **Hybrid** (Haiku items + cached Azure boxes, free, `ocr_compare/hybrid.py`): best strategy `aligned+lines` gives box on 100% of lines, right ~106–108/110 (Azure words), 0–1 wrong, discount rows boxed 6/7; Haiku accuracy kept exactly.
+- Box check caveat: calibration (boxes shifted by 1 row) still scores 52/110 "right", so off-by-one errors are only half caught; box "right" numbers are upper bounds.
+
+**Recommendation:** Option A (simplest): switch prod prompt to `full-structured` at medium effort — one provider, boxes ~98%, +~$0.0003/receipt, ~+2 s. Option B: keep prod-v3 + Azure boxes (hybrid) — needs second provider, 500 free/month, +~6 s. Prefer A; validate on prod-like flow before the line-highlight UI.
+Review nits left: calibration shift wraps on 3-item receipts (only "all 20" columns of shift-3 row); new haiku-* rows have no per-run note; hybrid table omits the new plain haiku-* baselines.

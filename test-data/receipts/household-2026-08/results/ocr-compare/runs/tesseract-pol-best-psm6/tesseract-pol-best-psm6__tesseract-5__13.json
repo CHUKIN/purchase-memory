@@ -1,0 +1,56 @@
+{
+ "receiptId": "13",
+ "configuration": "tesseract-pol-best-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.46,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "r .",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "Pijana Wiśnia (4) 122,90",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 22.9,
+    "box": [
+     0.296875,
+     0.4384765625,
+     0.45703125,
+     0.021484375
+    ]
+   },
+   {
+    "name": "Króleyski (6) 1 5,80",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 25.6,
+    "box": [
+     0.2981770833333333,
+     0.46875,
+     0.45703125000000006,
+     0.0224609375
+    ]
+   },
+   {
+    "name": "+Serek śnietankowy (dodatek) 152,00",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.0,
+    "box": [
+     0.2994791666666667,
+     0.484375,
+     0.4557291666666667,
+     0.0224609375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

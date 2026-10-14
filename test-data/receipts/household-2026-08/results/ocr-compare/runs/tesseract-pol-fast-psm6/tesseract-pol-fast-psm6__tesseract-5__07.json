@@ -1,0 +1,32 @@
+{
+ "receiptId": "07",
+ "configuration": "tesseract-pol-fast-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.22,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "had ) 10,",
+  "date": null,
+  "currency": null,
+  "total": 108.09,
+  "items": [
+   {
+    "name": "DANIE BUFET GR",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 50.73,
+    "box": [
+     0.3372395833333333,
+     0.490234375,
+     0.4348958333333333,
+     0.0205078125
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

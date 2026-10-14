@@ -1,0 +1,44 @@
+{
+ "receiptId": "01",
+ "configuration": "tesseract-pol-standard-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.41,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "Dodo Pizza Poland sy, Lad",
+  "date": null,
+  "currency": null,
+  "total": 56.38,
+  "items": [
+   {
+    "name": "i Pudetko na pizzę 30 1 szt (xŻ.01",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.01,
+    "box": [
+     0.20572916666666666,
+     0.388671875,
+     0.5442708333333334,
+     0.041015625
+    ]
+   },
+   {
+    "name": "OPUSTY ŁĄCZNIE BN",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": -23.59,
+    "box": [
+     0.26953125,
+     0.49609375,
+     0.46875,
+     0.0234375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

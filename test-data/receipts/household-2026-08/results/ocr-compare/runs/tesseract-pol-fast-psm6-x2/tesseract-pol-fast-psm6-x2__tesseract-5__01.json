@@ -1,0 +1,68 @@
+{
+ "receiptId": "01",
+ "configuration": "tesseract-pol-fast-psm6-x2",
+ "model": "tesseract-5",
+ "seconds": 0.44,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "j h 3",
+  "date": null,
+  "currency": null,
+  "total": 206.38,
+  "items": [
+   {
+    "name": "4 pory roku Średnia 17x53;99+",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.33,
+    "box": [
+     0.10807291666666667,
+     0.380859375,
+     0.6419270833333334,
+     0.0205078125
+    ]
+   },
+   {
+    "name": "Pudełko na pizzę 30 1 szt",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.04,
+    "box": [
+     0.2701822916666667,
+     0.39794921875,
+     0.4791666666666667,
+     0.0205078125
+    ]
+   },
+   {
+    "name": "' OPUST",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": -2.0,
+    "box": [
+     0.040364583333333336,
+     0.4150390625,
+     0.7070312499999999,
+     0.02001953125
+    ]
+   },
+   {
+    "name": "Podsuna",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 17.97,
+    "box": [
+     0.26953125,
+     0.45361328125,
+     0.47395833333333337,
+     0.02294921875
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

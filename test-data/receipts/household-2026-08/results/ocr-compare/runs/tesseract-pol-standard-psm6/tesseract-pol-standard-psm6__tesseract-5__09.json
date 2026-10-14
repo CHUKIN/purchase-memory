@@ -1,0 +1,56 @@
+{
+ "receiptId": "09",
+ "configuration": "tesseract-pol-standard-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.95,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "s d P YN w",
+  "date": null,
+  "currency": null,
+  "total": 177.48,
+  "items": [
+   {
+    "name": "C_MAŚLANKA 420G BUT",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.89,
+    "box": [
+     0.15625,
+     0.3359375,
+     0.6158854166666666,
+     0.0263671875
+    ]
+   },
+   {
+    "name": "B_WILKIN RASPBERRY",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 35.99,
+    "box": [
+     0.15625,
+     0.3564453125,
+     0.6145833333333334,
+     0.025390625
+    ]
+   },
+   {
+    "name": "C_KEDYMEX-RZODKIEWE 0,392+38,99=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 15.28,
+    "box": [
+     0.15885416666666666,
+     0.376953125,
+     0.6119791666666667,
+     0.0244140625
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

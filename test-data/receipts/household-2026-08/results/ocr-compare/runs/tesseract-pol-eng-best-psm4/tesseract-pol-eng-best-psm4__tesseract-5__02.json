@@ -1,0 +1,56 @@
+{
+ "receiptId": "02",
+ "configuration": "tesseract-pol-eng-best-psm4",
+ "model": "tesseract-5",
+ "seconds": 0.88,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "11schaft Gab",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "lulskij prjanik",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 1.49,
+    "box": [
+     0.34765625,
+     0.353515625,
+     0.42057291666666663,
+     0.0185546875
+    ]
+   },
+   {
+    "name": "[otal",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 24.3,
+    "box": [
+     0.3619791666666667,
+     0.6611328125,
+     0.4088541666666667,
+     0.0302734375
+    ]
+   },
+   {
+    "name": "Nettoumsatz",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.69,
+    "box": [
+     0.3541666666666667,
+     0.701171875,
+     0.3658854166666667,
+     0.0166015625
+    ]
+   }
+  ]
+ },
+ "source": "langs pol+eng; installed eng,pol"
+}

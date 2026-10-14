@@ -1,0 +1,19 @@
+{
+ "receiptId": "04",
+ "configuration": "tesseract-pol-fast-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.14,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "j \"PARAGOW pISKALNY",
+  "date": null,
+  "currency": null,
+  "total": 136.59,
+  "items": []
+ },
+ "source": "langs pol; installed eng,pol"
+}

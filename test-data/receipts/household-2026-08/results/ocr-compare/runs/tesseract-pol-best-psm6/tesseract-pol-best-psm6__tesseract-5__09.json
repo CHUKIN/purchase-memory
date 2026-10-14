@@ -1,0 +1,68 @@
+{
+ "receiptId": "09",
+ "configuration": "tesseract-pol-best-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.75,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "z w 7 SW em",
+  "date": null,
+  "currency": null,
+  "total": 117.48,
+  "items": [
+   {
+    "name": "C_MAŚLANKA 420G BUT 142,89=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.89,
+    "box": [
+     0.15625,
+     0.3359375,
+     0.6158854166666666,
+     0.0263671875
+    ]
+   },
+   {
+    "name": "B_WILKIN RASPBERRY 1435,99=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 35.99,
+    "box": [
+     0.15625,
+     0.3564453125,
+     0.6145833333333334,
+     0.025390625
+    ]
+   },
+   {
+    "name": "C_KEDYNEX-RZODKIEWE 0,392+38,99=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 15.28,
+    "box": [
+     0.15885416666666666,
+     0.376953125,
+     0.5846354166666666,
+     0.0244140625
+    ]
+   },
+   {
+    "name": "ALCHUST DO KIG INT 149,99=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 9.99,
+    "box": [
+     0.16276041666666666,
+     0.4169921875,
+     0.6015625000000001,
+     0.0205078125
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

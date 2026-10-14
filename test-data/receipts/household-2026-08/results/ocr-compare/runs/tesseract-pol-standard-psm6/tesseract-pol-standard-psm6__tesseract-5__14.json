@@ -1,0 +1,92 @@
+{
+ "receiptId": "14",
+ "configuration": "tesseract-pol-standard-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.68,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "CARREFOUR MARKET CH Saayna",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "AAVODĄ MINER BORJON 1szt:10,59=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 10.59,
+    "box": [
+     0.3098958333333333,
+     0.396484375,
+     0.46875000000000006,
+     0.017578125
+    ]
+   },
+   {
+    "name": "CHKC TOST MAŚLANY 5 Iszta3, 79",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.79,
+    "box": [
+     0.3098958333333333,
+     0.4052734375,
+     0.4674479166666667,
+     0.0302734375
+    ]
+   },
+   {
+    "name": "ARUKŁAD MAXTRA PRO Ó qnmmf",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 74.99,
+    "box": [
+     0.3098958333333333,
+     0.4189453125,
+     0.4674479166666667,
+     0.037109375
+    ]
+   },
+   {
+    "name": "CeFILET Z KURCZ. ZA 9 07412k9852;99=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 21.83,
+    "box": [
+     0.3098958333333333,
+     0.443359375,
+     0.4661458333333333,
+     0.0146484375
+    ]
+   },
+   {
+    "name": "CHKOWI ŁOSOŚ ŚWIEŻY iszte19,49=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 19.49,
+    "box": [
+     0.3111979166666667,
+     0.4755859375,
+     0.4635416666666666,
+     0.0146484375
+    ]
+   },
+   {
+    "name": "pi 0 ” 7 04 M",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 192.4,
+    "box": [
+     0.06640625,
+     0.7587890625,
+     0.6927083333333334,
+     0.0751953125
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

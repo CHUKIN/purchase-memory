@@ -1,0 +1,44 @@
+{
+ "receiptId": "09",
+ "configuration": "tesseract-pol-eng-standard-psm4",
+ "model": "tesseract-5",
+ "seconds": 0.71,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "PE Market Sp. z 0.0.",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "PARAGUN FISKALNY",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 9.9,
+    "box": [
+     0.3567708333333333,
+     0.2763671875,
+     0.40624999999999994,
+     0.234375
+    ]
+   },
+   {
+    "name": "Sp lime ih mat B",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 35.99,
+    "box": [
+     0.17317708333333334,
+     0.5615234375,
+     0.5611979166666666,
+     0.0537109375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol+eng; installed eng,pol"
+}

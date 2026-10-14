@@ -1,0 +1,76 @@
+{
+ "receiptId": "19",
+ "configuration": "haiku-full-structured-medium",
+ "model": "claude-haiku-5-5",
+ "seconds": 6.47,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.000998,
+ "paidEquivalentUsd": 0.000998,
+ "usage": {
+  "inputTokens": 2978,
+  "outputTokens": 1400
+ },
+ "parsed": {
+  "merchant": "Lviv Croissants",
+  "date": "2023-06-21T19:49:00+02:00",
+  "currency": "PLN",
+  "total": 71.6,
+  "totalBox": [
+   0.232,
+   0.681,
+   0.539,
+   0.029
+  ],
+  "items": [
+   {
+    "name": "Cezar z Kurczakiem",
+    "quantity": 1,
+    "unitPrice": 16.9,
+    "lineTotal": 16.9,
+    "box": [
+     0.232,
+     0.545,
+     0.539,
+     0.022
+    ]
+   },
+   {
+    "name": "Śmietankowo-Truskaukowy",
+    "quantity": 1,
+    "unitPrice": 16.9,
+    "lineTotal": 16.9,
+    "box": [
+     0.232,
+     0.565,
+     0.539,
+     0.022
+    ]
+   },
+   {
+    "name": "Włoski",
+    "quantity": 1,
+    "unitPrice": 24.9,
+    "lineTotal": 24.9,
+    "box": [
+     0.232,
+     0.585,
+     0.539,
+     0.022
+    ]
+   },
+   {
+    "name": "Z Kremem Waniliowym",
+    "quantity": 1,
+    "unitPrice": 12.9,
+    "lineTotal": 12.9,
+    "box": [
+     0.232,
+     0.605,
+     0.539,
+     0.022
+    ]
+   }
+  ]
+ }
+}

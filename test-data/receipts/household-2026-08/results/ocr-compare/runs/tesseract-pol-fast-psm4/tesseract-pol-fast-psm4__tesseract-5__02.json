@@ -1,0 +1,92 @@
+{
+ "receiptId": "02",
+ "configuration": "tesseract-pol-fast-psm4",
+ "model": "tesseract-5",
+ "seconds": 0.3,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "Nschaft GabH",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "Tulskij prjanik",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 1.49,
+    "box": [
+     0.34765625,
+     0.40234375,
+     0.41927083333333326,
+     0.015625
+    ]
+   },
+   {
+    "name": "geback",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.49,
+    "box": [
+     0.3450520833333333,
+     0.451171875,
+     0.4205729166666667,
+     0.013671875
+    ]
+   },
+   {
+    "name": "zchokolade",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 1.19,
+    "box": [
+     0.3528645833333333,
+     0.53515625,
+     0.40625000000000006,
+     0.01171875
+    ]
+   },
+   {
+    "name": "schokolade Babaevskij",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 1.49,
+    "box": [
+     0.3567708333333333,
+     0.5712890625,
+     0.4010416666666667,
+     0.0234375
+    ]
+   },
+   {
+    "name": "fotal",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 24.3,
+    "box": [
+     0.3619791666666667,
+     0.6611328125,
+     0.4088541666666667,
+     0.0302734375
+    ]
+   },
+   {
+    "name": "Nettoumsatz",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 22.69,
+    "box": [
+     0.3541666666666667,
+     0.701171875,
+     0.3658854166666667,
+     0.0166015625
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

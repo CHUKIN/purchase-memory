@@ -1,0 +1,44 @@
+{
+ "receiptId": "13",
+ "configuration": "tesseract-pol-fast-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.28,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "p =",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "Pijana iśnia (d) 4 302,80",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 22.9,
+    "box": [
+     0.296875,
+     0.4384765625,
+     0.45703125,
+     0.021484375
+    ]
+   },
+   {
+    "name": "Króleuski (4) 1 x25,0",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 25.08,
+    "box": [
+     0.2981770833333333,
+     0.46875,
+     0.45703125000000006,
+     0.0224609375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

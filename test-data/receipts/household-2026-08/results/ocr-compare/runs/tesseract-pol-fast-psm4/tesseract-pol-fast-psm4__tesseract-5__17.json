@@ -1,0 +1,44 @@
+{
+ "receiptId": "17",
+ "configuration": "tesseract-pol-fast-psm4",
+ "model": "tesseract-5",
+ "seconds": 0.28,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "SUPERHĄRKET AUCHAN",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "OGOREK DŁU 306053C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.98,
+    "box": [
+     0.10807291666666667,
+     0.3203125,
+     0.5221354166666667,
+     0.021484375
+    ]
+   },
+   {
+    "name": "ad a",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.69,
+    "box": [
+     0.5078125,
+     0.353515625,
+     0.12369791666666674,
+     0.0712890625
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

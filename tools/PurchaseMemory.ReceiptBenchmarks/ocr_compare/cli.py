@@ -3,7 +3,7 @@ import argparse
 import pathlib
 import sys
 
-from . import azure_receipt, haiku_matrix, report, tesseract_ocr
+from . import azure_receipt, haiku_matrix, hybrid, report, tesseract_ocr
 from .common import DATASET, DEFAULT_OUT, image_path, load_runs, load_score_items, read_json, \
     receipt_ids, result_record, write_json, write_run
 
@@ -12,7 +12,9 @@ IMAGE_SIZE = (768, 1024)  # only used if Tesseract's TSV lacks a page row
 
 
 def tesseract_label(args):
-    return f"tesseract-{args.lang.replace('+', '-')}-psm{args.psm}" + (f"-x{args.scale}" if args.scale != 1 else "")
+    model = f"-{pathlib.Path(args.tessdata).name}" if args.tessdata else ""  # e.g. -fast / -best
+    return (f"tesseract-{args.lang.replace('+', '-')}{model}-psm{args.psm}"
+            + (f"-x{args.scale}" if args.scale != 1 else ""))
 
 
 def cmd_tesseract(args):
@@ -103,14 +105,28 @@ def cmd_report(args):
         notes[configuration] = first.get("source", "") if configuration.startswith("tesseract") else ""
     notes["azure-prebuilt-receipt"] = (f"api-version {azure_receipt.API_VERSION}, F0 (free); paid-equivalent "
                                        f"= S0 list ${azure_receipt.PAID_USD_PER_PAGE * 1000:.0f}/1000 pages")
+    hybrid_runs = {}
     if not args.no_saved_haiku:
-        for record in haiku_matrix.saved_runs():
+        saved = haiku_matrix.saved_runs()
+        for record in saved:
             runs.setdefault(record["configuration"], {})[record["receiptId"]] = record
             notes[record["configuration"]] = ("production prompt v3, " + record["source"]
                                               + "; outputs saved 2026-10-11, no new call")
+        si = load_score_items()
+        # Hybrids are rebuilt from the Azure cache on every report (free) and kept in memory only.
+        hybrid_runs = hybrid.build_runs(saved, args.out, si.similar, si.normalize)
+        # New Haiku matrix runs (runs/haiku-*) get the best strategy only, to keep the table short.
+        fresh = [r for c, rs in sorted(runs.items()) if c.startswith("haiku-") and not c.startswith("haiku-prod-v3-saved")
+                 for r in rs.values()]
+        hybrid_runs.update(hybrid.build_runs(fresh, args.out, si.similar, si.normalize, ["aligned+lines"]))
+        base = "hybrid-aligned-medium-r1"
+        if base in hybrid_runs:  # calibration of the wrong-box count
+            for shift in (1, 3):
+                name = f"calibration-{base[len('hybrid-'):]}-boxes-shifted-{shift}"
+                hybrid_runs[name] = hybrid.shift_boxes(hybrid_runs[base], shift, name)
     receipts = receipt_ids(args.images_dir) if args.images_dir.exists() else [f"{n:02d}" for n in range(1, 21)]
     matrix = haiku_matrix.estimate(receipts, args.repeats)
-    result = report.build(args.out, runs, notes, matrix, args.tesseract_reference)
+    result = report.build(args.out, runs, notes, matrix, args.tesseract_reference, hybrid_runs)
     print((args.out / "report.md").read_text())
     return result
 

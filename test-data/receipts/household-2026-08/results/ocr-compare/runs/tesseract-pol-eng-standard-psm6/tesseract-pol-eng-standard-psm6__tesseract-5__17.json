@@ -1,0 +1,80 @@
+{
+ "receiptId": "17",
+ "configuration": "tesseract-pol-eng-standard-psm6",
+ "model": "tesseract-5",
+ "seconds": 1.24,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "SUPERNARKET AUCHAN | :",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "POMIDOR KO 627810C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 11.99,
+    "box": [
+     0.10807291666666667,
+     0.3017578125,
+     0.5208333333333334,
+     0.0224609375
+    ]
+   },
+   {
+    "name": "ZIEMNIAKI W 33980C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 7.42,
+    "box": [
+     0.10807291666666667,
+     0.337890625,
+     0.5234375,
+     0.0224609375
+    ]
+   },
+   {
+    "name": "PIECZARKI 196413C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.69,
+    "box": [
+     0.10807291666666667,
+     0.3564453125,
+     0.5234375000000001,
+     0.021484375
+    ]
+   },
+   {
+    "name": "SER KROLEW 643509C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 7.04,
+    "box": [
+     0.10807291666666667,
+     0.3740234375,
+     0.5234375000000001,
+     0.021484375
+    ]
+   },
+   {
+    "name": "=5 PICS",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 6.8,
+    "box": [
+     0.022135416666666668,
+     0.6357421875,
+     0.6223958333333334,
+     0.03125
+    ]
+   }
+  ]
+ },
+ "source": "langs pol+eng; installed eng,pol"
+}

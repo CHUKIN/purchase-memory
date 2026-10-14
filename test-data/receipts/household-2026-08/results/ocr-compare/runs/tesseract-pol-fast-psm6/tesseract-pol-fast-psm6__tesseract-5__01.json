@@ -1,0 +1,56 @@
+{
+ "receiptId": "01",
+ "configuration": "tesseract-pol-fast-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.24,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "Dodo Pizza Polany s, LL.",
+  "date": null,
+  "currency": null,
+  "total": 56.38,
+  "items": [
+   {
+    "name": "' Kostany 1 szt 1 x",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.98,
+    "box": [
+     0.2526041666666667,
+     0.3505859375,
+     0.4869791666666666,
+     0.017578125
+    ]
+   },
+   {
+    "name": "OPUST",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": -2.0,
+    "box": [
+     0.2877604166666667,
+     0.4150390625,
+     0.5013020833333333,
+     0.0205078125
+    ]
+   },
+   {
+    "name": "OPUSTY ŁĄCZNIE AA",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": -23.56,
+    "box": [
+     0.26953125,
+     0.49609375,
+     0.46875,
+     0.0234375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

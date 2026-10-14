@@ -1,0 +1,140 @@
+{
+ "receiptId": "16",
+ "configuration": "tesseract-pol-eng-standard-psm4",
+ "model": "tesseract-5",
+ "seconds": 0.69,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "SUPERHARKET AUCHAN",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "UDO Z KURC 339863C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 11.26,
+    "box": [
+     0.19661458333333334,
+     0.22265625,
+     0.6354166666666666,
+     0.0400390625
+    ]
+   },
+   {
+    "name": "POMIDOR KO 627810C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 11.99,
+    "box": [
+     0.19661458333333334,
+     0.2451171875,
+     0.6341145833333333,
+     0.044921875
+    ]
+   },
+   {
+    "name": "OGOREK DŁU",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.99,
+    "box": [
+     0.19791666666666666,
+     0.267578125,
+     0.63671875,
+     0.0439453125
+    ]
+   },
+   {
+    "name": "ZIENIAKI M 33980C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 7.42,
+    "box": [
+     0.19791666666666666,
+     0.2880859375,
+     0.6341145833333334,
+     0.0419921875
+    ]
+   },
+   {
+    "name": "PHCZEK FAN",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 9.9,
+    "box": [
+     0.19791666666666666,
+     0.375,
+     0.6276041666666666,
+     0.04296875
+    ]
+   },
+   {
+    "name": "BANAN 34041C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.15,
+    "box": [
+     0.19921875,
+     0.396484375,
+     0.62109375,
+     0.04296875
+    ]
+   },
+   {
+    "name": "SZPINAK 253865C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.99,
+    "box": [
+     0.19921875,
+     0.41796875,
+     0.6236979166666666,
+     0.0439453125
+    ]
+   },
+   {
+    "name": "SOCZEWICA 979480C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 14.38,
+    "box": [
+     0.20442708333333334,
+     0.4599609375,
+     0.6158854166666666,
+     0.0439453125
+    ]
+   },
+   {
+    "name": "WWĄ”WW",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 6.34,
+    "box": [
+     0.20442708333333334,
+     0.5107421875,
+     0.6145833333333333,
+     0.037109375
+    ]
+   },
+   {
+    "name": "PIERNIKI S 1459560",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 16.57,
+    "box": [
+     0.20442708333333334,
+     0.552734375,
+     0.5833333333333334,
+     0.02734375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol+eng; installed eng,pol"
+}

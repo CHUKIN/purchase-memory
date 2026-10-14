@@ -1,0 +1,56 @@
+{
+ "receiptId": "19",
+ "configuration": "tesseract-pol-eng-standard-psm4",
+ "model": "tesseract-5",
+ "seconds": 0.5,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "ul, Alei Rzecz = te 18 tok. 2088",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "Cezar z Kurczakien j x16,90",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 16.9,
+    "box": [
+     0.23567708333333334,
+     0.5458984375,
+     0.5338541666666666,
+     0.03515625
+    ]
+   },
+   {
+    "name": "Snietankowo-Truskaukouy",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 16.9,
+    "box": [
+     0.23567708333333334,
+     0.5625,
+     0.5338541666666666,
+     0.0224609375
+    ]
+   },
+   {
+    "name": "Kłoski ś",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 24.9,
+    "box": [
+     0.234375,
+     0.5830078125,
+     0.5338541666666666,
+     0.0283203125
+    ]
+   }
+  ]
+ },
+ "source": "langs pol+eng; installed eng,pol"
+}

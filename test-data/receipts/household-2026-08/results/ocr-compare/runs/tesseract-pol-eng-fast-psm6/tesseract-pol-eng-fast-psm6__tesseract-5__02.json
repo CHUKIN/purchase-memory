@@ -1,0 +1,128 @@
+{
+ "receiptId": "02",
+ "configuration": "tesseract-pol-eng-fast-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.53,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "possi Betriebsge aa, fae",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "ś Kekse Uschki",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.49,
+    "box": [
+     0.21614583333333334,
+     0.328125,
+     0.5520833333333334,
+     0.0234375
+    ]
+   },
+   {
+    "name": "lulskij prjanik",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 1.49,
+    "box": [
+     0.34765625,
+     0.353515625,
+     0.42057291666666663,
+     0.0185546875
+    ]
+   },
+   {
+    "name": "© Tulskij prjanik",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 1.49,
+    "box": [
+     0.19791666666666666,
+     0.40234375,
+     0.5690104166666666,
+     0.01953125
+    ]
+   },
+   {
+    "name": "ji Tulskij prjanik",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 1.49,
+    "box": [
+     0.20052083333333334,
+     0.4267578125,
+     0.5651041666666666,
+     0.015625
+    ]
+   },
+   {
+    "name": "este mit Hinzgeschack",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 1.99,
+    "box": [
+     0.3450520833333333,
+     0.4736328125,
+     0.41796875000000006,
+     0.0283203125
+    ]
+   },
+   {
+    "name": "wih schokolade Babaeyski j 149 €u",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.99,
+    "box": [
+     0.13541666666666666,
+     0.564453125,
+     0.6315104166666666,
+     0.05859375
+    ]
+   },
+   {
+    "name": "onstige 19%",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 0.73,
+    "box": [
+     0.3697916666666667,
+     0.6181640625,
+     0.40234374999999994,
+     0.0146484375
+    ]
+   },
+   {
+    "name": "Total",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 24.3,
+    "box": [
+     0.3619791666666667,
+     0.6611328125,
+     0.4088541666666667,
+     0.0302734375
+    ]
+   },
+   {
+    "name": "Nettounsatz",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.69,
+    "box": [
+     0.3072916666666667,
+     0.701171875,
+     0.4127604166666667,
+     0.0234375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol+eng; installed eng,pol"
+}

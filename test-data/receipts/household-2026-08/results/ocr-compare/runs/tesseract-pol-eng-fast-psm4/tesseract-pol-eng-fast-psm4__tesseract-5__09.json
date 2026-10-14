@@ -1,0 +1,44 @@
+{
+ "receiptId": "09",
+ "configuration": "tesseract-pol-eng-fast-psm4",
+ "model": "tesseract-5",
+ "seconds": 0.46,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "PE Market Sp. z 0.0.",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "56 rzad ih TU B",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 35.99,
+    "box": [
+     0.17317708333333334,
+     0.5615234375,
+     0.5611979166666666,
+     0.0537109375
+    ]
+   },
+   {
+    "name": "wota",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 18.0,
+    "box": [
+     0.1875,
+     0.5791015625,
+     0.5169270833333334,
+     0.0283203125
+    ]
+   }
+  ]
+ },
+ "source": "langs pol+eng; installed eng,pol"
+}

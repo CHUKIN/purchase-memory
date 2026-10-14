@@ -1,0 +1,32 @@
+{
+ "receiptId": "03",
+ "configuration": "tesseract-pol-standard-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.18,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "E.Leclerc G) uńsyńów",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "SUA PLN",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 247.26,
+    "box": [
+     0.3723958333333333,
+     0.650390625,
+     0.3502604166666667,
+     0.0302734375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

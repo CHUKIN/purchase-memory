@@ -1,0 +1,56 @@
+{
+ "receiptId": "06",
+ "configuration": "tesseract-pol-standard-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.64,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "s",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "%Ę\"\"Ę r1 sKA 20",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 12.01,
+    "box": [
+     0.3268229166666667,
+     0.265625,
+     0.4114583333333333,
+     0.0341796875
+    ]
+   },
+   {
+    "name": "eiepnirocy",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 6.76,
+    "box": [
+     0.3385416666666667,
+     0.2861328125,
+     0.3997395833333333,
+     0.025390625
+    ]
+   },
+   {
+    "name": "Sm,% KOWANA 8 CI",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 25.65,
+    "box": [
+     0.31640625,
+     0.3271484375,
+     0.41927083333333337,
+     0.076171875
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

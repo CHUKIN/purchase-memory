@@ -1,0 +1,100 @@
+{
+ "receiptId": "08",
+ "configuration": "haiku-bbox-required-high",
+ "model": "claude-haiku-5-5",
+ "seconds": 11.5,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.001743,
+ "paidEquivalentUsd": 0.001743,
+ "usage": {
+  "inputTokens": 2951,
+  "outputTokens": 2896
+ },
+ "parsed": {
+  "merchant": "SKLEP ŻABKA ZB031",
+  "date": "2025-08-17T12:23:00+02:00",
+  "currency": "PLN",
+  "total": 29.96,
+  "totalBox": [
+   0.215,
+   0.633,
+   0.651,
+   0.041
+  ],
+  "items": [
+   {
+    "name": "PIERS PIECZ 75g-C",
+    "quantity": 1,
+    "unitPrice": 5.5,
+    "lineTotal": 5.5,
+    "box": [
+     0.208,
+     0.43,
+     0.657,
+     0.0215
+    ]
+   },
+   {
+    "name": "SER EDAMSKI PLASTRY 150g-C",
+    "quantity": 1,
+    "unitPrice": 6.5,
+    "lineTotal": 6.5,
+    "box": [
+     0.208,
+     0.455,
+     0.657,
+     0.0176
+    ]
+   },
+   {
+    "name": "JOGURT SKYR PITNY 330ml-C",
+    "quantity": 1,
+    "unitPrice": 5.99,
+    "lineTotal": 5.99,
+    "box": [
+     0.208,
+     0.4727,
+     0.657,
+     0.0176
+    ]
+   },
+   {
+    "name": "JOG SKYR JAGO 330ml-C",
+    "quantity": 1,
+    "unitPrice": 5.99,
+    "lineTotal": 5.99,
+    "box": [
+     0.208,
+     0.496,
+     0.657,
+     0.0176
+    ]
+   },
+   {
+    "name": "CROISSANT CZEKOLAD-C",
+    "quantity": 2,
+    "unitPrice": 3.99,
+    "lineTotal": 7.98,
+    "box": [
+     0.208,
+     0.5176,
+     0.657,
+     0.0176
+    ]
+   },
+   {
+    "name": "OPUST CROISSANT CZEKOLAD-C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": -2.0,
+    "box": [
+     0.208,
+     0.538,
+     0.657,
+     0.0166
+    ]
+   }
+  ]
+ }
+}

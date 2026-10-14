@@ -1,0 +1,80 @@
+{
+ "receiptId": "20",
+ "configuration": "tesseract-pol-eng-fast-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.48,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "4",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "Chrup Talarki+ i Radą",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 15.3,
+    "box": [
+     0.21875,
+     0.2900390625,
+     0.42317708333333337,
+     0.0341796875
+    ]
+   },
+   {
+    "name": "Woda NieGaz. He 8,00",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 8.0,
+    "box": [
+     0.21875,
+     0.3125,
+     0.42708333333333337,
+     0.02734375
+    ]
+   },
+   {
+    "name": "Cheeseburger",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 7.3,
+    "box": [
+     0.22135416666666666,
+     0.3291015625,
+     0.42838541666666674,
+     0.0322265625
+    ]
+   },
+   {
+    "name": "PIU B 8%",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.24,
+    "box": [
+     0.234375,
+     0.443359375,
+     0.42057291666666663,
+     0.0166015625
+    ]
+   },
+   {
+    "name": "z SUMA PU",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.72,
+    "box": [
+     0.15104166666666666,
+     0.462890625,
+     0.5039062500000001,
+     0.029296875
+    ]
+   }
+  ]
+ },
+ "source": "langs pol+eng; installed eng,pol"
+}

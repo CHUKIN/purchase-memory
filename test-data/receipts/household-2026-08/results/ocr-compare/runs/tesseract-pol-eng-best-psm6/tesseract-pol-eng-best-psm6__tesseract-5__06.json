@@ -1,0 +1,44 @@
+{
+ "receiptId": "06",
+ "configuration": "tesseract-pol-eng-best-psm6",
+ "model": "tesseract-5",
+ "seconds": 1.06,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "s",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "Geld 16,76",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 6.76,
+    "box": [
+     0.3385416666666667,
+     0.2861328125,
+     0.3997395833333333,
+     0.025390625
+    ]
+   },
+   {
+    "name": "Muy",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 25.85,
+    "box": [
+     0.31640625,
+     0.349609375,
+     0.41927083333333326,
+     0.0537109375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol+eng; installed eng,pol"
+}

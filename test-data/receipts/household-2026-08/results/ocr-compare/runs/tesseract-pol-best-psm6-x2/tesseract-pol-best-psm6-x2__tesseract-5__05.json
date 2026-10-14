@@ -1,0 +1,44 @@
+{
+ "receiptId": "05",
+ "configuration": "tesseract-pol-best-psm6-x2",
+ "model": "tesseract-5",
+ "seconds": 1.13,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "AMEucacja KoDonalU * 9 ”",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "Big Are! FrsKALĘ",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 33.0,
+    "box": [
+     0.3033854166666667,
+     0.076171875,
+     0.3053385416666667,
+     0.02099609375
+    ]
+   },
+   {
+    "name": "„ilcep CHU KUag 1 x87'5g",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 13.2,
+    "box": [
+     0.3046875,
+     0.091796875,
+     0.3046875,
+     0.015625
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

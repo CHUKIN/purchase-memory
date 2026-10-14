@@ -1,0 +1,49 @@
+{
+ "receiptId": "06",
+ "configuration": "haiku-prod-v3-off",
+ "model": "claude-haiku-5-5",
+ "seconds": 2.22,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.000497,
+ "paidEquivalentUsd": 0.000497,
+ "usage": {
+  "inputTokens": 2843,
+  "outputTokens": 425
+ },
+ "parsed": {
+  "merchant": "Mleczarnia Pousińska",
+  "date": "2025-10-11T14:10:00+02:00",
+  "currency": "PLN",
+  "total": 25.85,
+  "totalBox": [
+   0.31,
+   0.37,
+   0.22,
+   0.06
+  ],
+  "items": [
+   {
+    "name": "Gołąbek mięsny",
+    "quantity": 1,
+    "unitPrice": 12.01,
+    "lineTotal": 12.01,
+    "box": null
+   },
+   {
+    "name": "Sos pomidorowy",
+    "quantity": 1,
+    "unitPrice": 6.76,
+    "lineTotal": 6.76,
+    "box": null
+   },
+   {
+    "name": "Zacierkowa",
+    "quantity": 1,
+    "unitPrice": 7.08,
+    "lineTotal": 7.08,
+    "box": null
+   }
+  ]
+ }
+}

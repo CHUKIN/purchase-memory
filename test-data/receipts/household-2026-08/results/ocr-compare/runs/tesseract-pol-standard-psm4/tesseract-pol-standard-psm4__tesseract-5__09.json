@@ -1,0 +1,19 @@
+{
+ "receiptId": "09",
+ "configuration": "tesseract-pol-standard-psm4",
+ "model": "tesseract-5",
+ "seconds": 0.62,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "PE Market Sp. z 0.0.",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": []
+ },
+ "source": "langs pol; installed eng,pol"
+}

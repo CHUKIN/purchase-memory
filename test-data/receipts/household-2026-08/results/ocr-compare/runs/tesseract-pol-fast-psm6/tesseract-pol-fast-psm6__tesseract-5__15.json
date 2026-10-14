@@ -1,0 +1,68 @@
+{
+ "receiptId": "15",
+ "configuration": "tesseract-pol-fast-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.27,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "5 BŁ U © '",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "„AMERYKAŃSKIE ZEBERKA",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 79.0,
+    "box": [
+     0.2265625,
+     0.5751953125,
+     0.4921875,
+     0.021484375
+    ]
+   },
+   {
+    "name": "GRILLOWANY PSTRĄG 1_x68,00",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 69.0,
+    "box": [
+     0.22265625,
+     0.5986328125,
+     0.49609375,
+     0.0234375
+    ]
+   },
+   {
+    "name": "DOKOKA HROZONA NERBATA",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 22.0,
+    "box": [
+     0.22265625,
+     0.623046875,
+     0.49739583333333337,
+     0.0322265625
+    ]
+   },
+   {
+    "name": "PIU B 8%",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 14.59,
+    "box": [
+     0.22265625,
+     0.732421875,
+     0.5,
+     0.0263671875
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

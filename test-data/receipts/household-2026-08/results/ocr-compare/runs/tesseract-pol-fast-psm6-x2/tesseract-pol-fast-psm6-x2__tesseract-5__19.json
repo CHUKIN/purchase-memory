@@ -1,0 +1,32 @@
+{
+ "receiptId": "19",
+ "configuration": "tesseract-pol-fast-psm6-x2",
+ "model": "tesseract-5",
+ "seconds": 0.93,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "a 0 „a Ba 5",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "s Onietankovo-Truskaukowy 1 «16,90",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 16.9,
+    "box": [
+     0.17838541666666666,
+     0.5625,
+     0.5904947916666666,
+     0.02294921875
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

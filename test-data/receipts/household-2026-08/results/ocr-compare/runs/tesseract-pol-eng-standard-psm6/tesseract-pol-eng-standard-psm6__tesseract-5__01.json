@@ -1,0 +1,56 @@
+{
+ "receiptId": "01",
+ "configuration": "tesseract-pol-eng-standard-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.64,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "Dodo Pizza Poland sy, az.",
+  "date": null,
+  "currency": null,
+  "total": 26.38,
+  "items": [
+   {
+    "name": "mostauy 1.szt 1 ¥",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.98,
+    "box": [
+     0.2526041666666667,
+     0.3505859375,
+     0.4869791666666666,
+     0.017578125
+    ]
+   },
+   {
+    "name": "3 Pudetko na pizze 30 1 szt 1x20",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.01,
+    "box": [
+     0.20572916666666666,
+     0.388671875,
+     0.5442708333333334,
+     0.041015625
+    ]
+   },
+   {
+    "name": "OPUSTY ŁĄCZNIE BN “",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": -23.59,
+    "box": [
+     0.26953125,
+     0.49609375,
+     0.46875,
+     0.0234375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol+eng; installed eng,pol"
+}

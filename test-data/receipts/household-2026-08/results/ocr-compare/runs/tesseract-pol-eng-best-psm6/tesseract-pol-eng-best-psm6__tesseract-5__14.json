@@ -1,0 +1,80 @@
+{
+ "receiptId": "14",
+ "configuration": "tesseract-pol-eng-best-psm6",
+ "model": "tesseract-5",
+ "seconds": 1.33,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "CARREFOUR MARKET CH Satyna",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "RAVODĄ HINER BORJON 152t+10,59=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 10.59,
+    "box": [
+     0.3098958333333333,
+     0.396484375,
+     0.46875000000000006,
+     0.017578125
+    ]
+   },
+   {
+    "name": "CHNC TOST MAŚLANY 5 Isats3, 192",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.79,
+    "box": [
+     0.3098958333333333,
+     0.4052734375,
+     0.4674479166666667,
+     0.0302734375
+    ]
+   },
+   {
+    "name": "CeFILET Z KURCZ. ZA © 07412kg852;99=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 21.83,
+    "box": [
+     0.3098958333333333,
+     0.443359375,
+     0.4661458333333333,
+     0.0146484375
+    ]
+   },
+   {
+    "name": "CAROWI ŁOSOŚ ŚWIEŻY iszte19,49=",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 19.49,
+    "box": [
+     0.3111979166666667,
+     0.4755859375,
+     0.4635416666666666,
+     0.0146484375
+    ]
+   },
+   {
+    "name": "pa oi",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 192.4,
+    "box": [
+     0.061197916666666664,
+     0.798828125,
+     0.6979166666666667,
+     0.0390625
+    ]
+   }
+  ]
+ },
+ "source": "langs pol+eng; installed eng,pol"
+}

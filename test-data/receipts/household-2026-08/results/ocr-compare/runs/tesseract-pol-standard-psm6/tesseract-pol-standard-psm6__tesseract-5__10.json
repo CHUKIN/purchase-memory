@@ -1,0 +1,128 @@
+{
+ "receiptId": "10",
+ "configuration": "tesseract-pol-standard-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.64,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "1-9% Warszawa, Suiete;c_;srlfa:egc__['",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "GUMA ROZP. 356556A",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 7.44,
+    "box": [
+     0.16276041666666666,
+     0.3203125,
+     0.6927083333333334,
+     0.02734375
+    ]
+   },
+   {
+    "name": "TOST PEŁNO 303974C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.18,
+    "box": [
+     0.16666666666666666,
+     0.3427734375,
+     0.6861979166666667,
+     0.02734375
+    ]
+   },
+   {
+    "name": "FILET Z KU 339849C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 16.08,
+    "box": [
+     0.171875,
+     0.3642578125,
+     0.67578125,
+     0.0283203125
+    ]
+   },
+   {
+    "name": "BANAN 34044C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.89,
+    "box": [
+     0.17708333333333334,
+     0.384765625,
+     0.6653645833333333,
+     0.0283203125
+    ]
+   },
+   {
+    "name": "SZYWMA Z P 695097C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 6.19,
+    "box": [
+     0.18359375,
+     0.4052734375,
+     0.6536458333333333,
+     0.02734375
+    ]
+   },
+   {
+    "name": "SER SZWAJC 508926C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.89,
+    "box": [
+     0.18880208333333334,
+     0.4248046875,
+     0.6432291666666666,
+     0.0263671875
+    ]
+   },
+   {
+    "name": "CEGULA 43444C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 0.81,
+    "box": [
+     0.19401041666666666,
+     0.443359375,
+     0.6328125,
+     0.025390625
+    ]
+   },
+   {
+    "name": "DORSZ_ATLA S09036C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 31.68,
+    "box": [
+     0.19921875,
+     0.4619140625,
+     0.6223958333333333,
+     0.0244140625
+    ]
+   },
+   {
+    "name": "J06URT OMC 261650C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 7.64,
+    "box": [
+     0.203125,
+     0.48046875,
+     0.6145833333333334,
+     0.0234375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

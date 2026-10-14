@@ -1,0 +1,19 @@
+{
+ "receiptId": "04",
+ "configuration": "tesseract-pol-eng-fast-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.25,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "’ “baracon pISKALNY",
+  "date": null,
+  "currency": null,
+  "total": 136.59,
+  "items": []
+ },
+ "source": "langs pol+eng; installed eng,pol"
+}

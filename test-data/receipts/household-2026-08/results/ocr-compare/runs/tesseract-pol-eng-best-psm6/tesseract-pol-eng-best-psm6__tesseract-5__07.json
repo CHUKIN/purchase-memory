@@ -1,0 +1,44 @@
+{
+ "receiptId": "07",
+ "configuration": "tesseract-pol-eng-best-psm6",
+ "model": "tesseract-5",
+ "seconds": 0.71,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "= : LY",
+  "date": null,
+  "currency": null,
+  "total": 108.09,
+  "items": [
+   {
+    "name": "DANIE BUFET GR",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 50.73,
+    "box": [
+     0.3372395833333333,
+     0.490234375,
+     0.4348958333333334,
+     0.0205078125
+    ]
+   },
+   {
+    "name": "WYPOŻYCZENIE RĘCZNIKA",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 30.0,
+    "box": [
+     0.3372395833333333,
+     0.509765625,
+     0.4361979166666667,
+     0.0302734375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol+eng; installed eng,pol"
+}

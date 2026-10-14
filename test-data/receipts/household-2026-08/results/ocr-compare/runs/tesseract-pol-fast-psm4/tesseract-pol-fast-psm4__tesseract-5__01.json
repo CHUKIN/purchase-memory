@@ -1,0 +1,44 @@
+{
+ "receiptId": "01",
+ "configuration": "tesseract-pol-fast-psm4",
+ "model": "tesseract-5",
+ "seconds": 0.23,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "ź",
+  "date": null,
+  "currency": null,
+  "total": 56.38,
+  "items": [
+   {
+    "name": "OPUST",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": -21.58,
+    "box": [
+     0.2877604166666667,
+     0.47265625,
+     0.44531250000000006,
+     0.025390625
+    ]
+   },
+   {
+    "name": "OPUSTY ŁĄCZNIE Ę",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": -23.56,
+    "box": [
+     0.26953125,
+     0.49609375,
+     0.46875,
+     0.0224609375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol; installed eng,pol"
+}

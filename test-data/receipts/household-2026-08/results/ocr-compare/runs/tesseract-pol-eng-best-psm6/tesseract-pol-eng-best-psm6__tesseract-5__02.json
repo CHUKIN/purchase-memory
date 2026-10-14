@@ -1,0 +1,44 @@
+{
+ "receiptId": "02",
+ "configuration": "tesseract-pol-eng-best-psm6",
+ "model": "tesseract-5",
+ "seconds": 1.02,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "POSTA Betriehsne weg San",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "g Kekse Uschki",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 3.49,
+    "box": [
+     0.21614583333333334,
+     0.328125,
+     0.5520833333333334,
+     0.0234375
+    ]
+   },
+   {
+    "name": "Nettounsatz",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 2.69,
+    "box": [
+     0.3072916666666667,
+     0.701171875,
+     0.4127604166666667,
+     0.0234375
+    ]
+   }
+  ]
+ },
+ "source": "langs pol+eng; installed eng,pol"
+}

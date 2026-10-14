@@ -1,0 +1,68 @@
+{
+ "receiptId": "08",
+ "configuration": "tesseract-pol-eng-best-psm6",
+ "model": "tesseract-5",
+ "seconds": 1.02,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.0,
+ "paidEquivalentUsd": null,
+ "usage": null,
+ "parsed": {
+  "merchant": "SE SKLEP ŻABKA ZBO31",
+  "date": null,
+  "currency": null,
+  "total": null,
+  "items": [
+   {
+    "name": "SE == ( EDAMSKI PLASTRY 150g-C 1szt. 6,50",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 6.5,
+    "box": [
+     0.010416666666666666,
+     0.4453125,
+     0.8502604166666666,
+     0.03125
+    ]
+   },
+   {
+    "name": "JOGURT SKYR PITNY 338ml=C iszt, x5,99",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 5.99,
+    "box": [
+     0.10026041666666667,
+     0.4677734375,
+     0.7604166666666666,
+     0.02734375
+    ]
+   },
+   {
+    "name": "3 s (ROISSANT CZEKOLAD-C ?szt. 3,99",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": 7.86,
+    "box": [
+     0.006510416666666667,
+     0.5126953125,
+     0.8541666666666667,
+     0.029296875
+    ]
+   },
+   {
+    "name": "2 OPUST CROISSANT CZEKOLAD-C",
+    "quantity": null,
+    "unitPrice": null,
+    "lineTotal": -2.0,
+    "box": [
+     0.020833333333333332,
+     0.53515625,
+     0.83984375,
+     0.0263671875
+    ]
+   }
+  ]
+ },
+ "source": "langs pol+eng; installed eng,pol"
+}

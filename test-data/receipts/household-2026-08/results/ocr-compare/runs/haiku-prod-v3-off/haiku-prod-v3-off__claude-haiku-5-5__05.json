@@ -1,0 +1,63 @@
+{
+ "receiptId": "05",
+ "configuration": "haiku-prod-v3-off",
+ "model": "claude-haiku-5-5",
+ "seconds": 2.51,
+ "status": "success",
+ "error": null,
+ "costUsd": 0.00054,
+ "paidEquivalentUsd": 0.00054,
+ "usage": {
+  "inputTokens": 2843,
+  "outputTokens": 512
+ },
+ "parsed": {
+  "merchant": "McDonald's",
+  "date": "2026-03-26T14:40:00+01:00",
+  "currency": "PLN",
+  "total": 70.8,
+  "totalBox": [
+   0.52,
+   0.2,
+   0.2,
+   0.05
+  ],
+  "items": [
+   {
+    "name": "Big Arch",
+    "quantity": 1,
+    "unitPrice": 33.0,
+    "lineTotal": 33.0,
+    "box": null
+   },
+   {
+    "name": "Wrap Chrup Klas",
+    "quantity": 1,
+    "unitPrice": 13.2,
+    "lineTotal": 13.2,
+    "box": null
+   },
+   {
+    "name": "Wrap Chrup Klas",
+    "quantity": 1,
+    "unitPrice": 13.2,
+    "lineTotal": 13.2,
+    "box": null
+   },
+   {
+    "name": "Frytki Srednie",
+    "quantity": 1,
+    "unitPrice": 5.7,
+    "lineTotal": 5.7,
+    "box": null
+   },
+   {
+    "name": "Frytki Srednie",
+    "quantity": 1,
+    "unitPrice": 5.7,
+    "lineTotal": 5.7,
+    "box": null
+   }
+  ]
+ }
+}
