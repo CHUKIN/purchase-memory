@@ -65,7 +65,7 @@ export const helpTopics: HelpTopic[] = [
   { id: "feed", group: "history", links: [link("purchases", "/purchases"), link("needsAttentionFilter", "/purchases?status=needsAttention")] },
   { id: "filters", group: "history", links: [link("purchases", "/purchases"), link("products", "/products")] },
   { id: "purchase-edit", group: "history", links: [link("purchases", "/purchases"), link("reviewQueue", "/needs-attention")] },
-  { id: "receipt-lines-photo", group: "history", links: [link("purchases", "/purchases"), link("home", "/")] },
+  { id: "receipt-lines-photo", group: "history", links: [link("purchases", "/purchases")] },
   { id: "products", group: "catalog", links: [link("products", "/products")] },
   { id: "categories", group: "catalog", links: [link("products", "/products"), link("uncategorizedProducts", "/products?category=none"), link("reviewQueue", "/needs-attention")] },
   { id: "tags", group: "catalog", links: [link("products", "/products"), link("purchases", "/purchases"), link("analytics", "/analytics"), link("reviewQueue", "/needs-attention")] },

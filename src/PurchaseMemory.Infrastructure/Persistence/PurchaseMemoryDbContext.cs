@@ -93,6 +93,10 @@ public sealed class PurchaseMemoryDbContext(DbContextOptions<PurchaseMemoryDbCon
         ConfigureLineKind(item.Property(purchaseItem => purchaseItem.Kind));
         item.Property(purchaseItem => purchaseItem.DiscountedItemPosition);
         item.Ignore(purchaseItem => purchaseItem.IsDiscount);
+        item.Property(purchaseItem => purchaseItem.ApprovedAt).HasConversion(nullableDateTimeOffsetConverter);
+        item.Property(purchaseItem => purchaseItem.ApprovedByUserId).HasMaxLength(PurchaseItem.MaximumApproverIdLength);
+        item.Property(purchaseItem => purchaseItem.ApprovedByEmail).HasMaxLength(PurchaseItem.MaximumApproverEmailLength);
+        item.Ignore(purchaseItem => purchaseItem.IsApproved);
         item.HasIndex("PurchaseDraftId", nameof(PurchaseItem.Position)).IsUnique();
         item.HasIndex(purchaseItem => purchaseItem.ProductId);
 

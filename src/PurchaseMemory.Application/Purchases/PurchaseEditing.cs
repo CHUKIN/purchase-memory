@@ -21,6 +21,10 @@ public enum ProductLinkChoice
 }
 
 /// <param name="BoundingBox">Echoed back from the detail view so the receipt photo region survives an edit.</param>
+/// <param name="LineId">
+/// The saved line this one continues (its id from the detail view); null for a
+/// new line. Used only to keep the line's «checked» mark across the edit.
+/// </param>
 public sealed record EditPurchaseItemCommand(
     string Name,
     decimal? Quantity,
@@ -30,7 +34,8 @@ public sealed record EditPurchaseItemCommand(
     ReceiptLineKind? Kind = null,
     ProductLinkChoice Link = ProductLinkChoice.Automatic,
     Guid? ProductId = null,
-    BoundingBox? BoundingBox = null);
+    BoundingBox? BoundingBox = null,
+    Guid? LineId = null);
 
 /// <param name="ExpectedUpdatedAt">
 /// The <c>UpdatedAt</c> the editor started from. A different stored value means
@@ -69,7 +74,9 @@ public sealed record PurchaseDetailItemView(
     bool PendingMatch,
     IReadOnlyList<PurchaseProductCandidateView> Candidates,
     BoundingBox? BoundingBox,
-    Guid Id);
+    Guid Id,
+    DateTimeOffset? ApprovedAt = null,
+    string? ApprovedByEmail = null);
 
 public sealed record PurchaseDetailView(
     Guid PurchaseId,
@@ -166,6 +173,7 @@ public sealed class PurchaseEditService(
         }
 
         var oldItems = draft.Items.OrderBy(item => item.Position).ToList();
+        CarryApprovals(command.Items, newItems, oldItems);
         var oldLinks = oldItems.Select(item => item.ProductId).ToList();
         // Lines shift when one is added or removed, so a kept link is recognised
         // by product, not by position.
@@ -302,6 +310,27 @@ public sealed class PurchaseEditService(
         return await CreateViewAsync(draft, cancellationToken);
     }
 
+    /// <summary>
+    /// A correction replaces every line row. A line that continues an approved
+    /// one (by its id) stays approved even if its content changed: the person
+    /// who edits a line is looking at it, and the swipe review counts an edit
+    /// as a check. Each old line hands its mark to at most one new line.
+    /// </summary>
+    private static void CarryApprovals(
+        IReadOnlyList<EditPurchaseItemCommand> commands,
+        List<PurchaseItem> newItems,
+        List<PurchaseItem> oldItems)
+    {
+        var approved = oldItems.Where(item => item.IsApproved).ToDictionary(item => item.Id);
+        for (var position = 0; position < commands.Count; position++)
+        {
+            if (commands[position].LineId is { } lineId && approved.Remove(lineId, out var previous))
+            {
+                newItems[position].CarryApprovalFrom(previous);
+            }
+        }
+    }
+
     private async Task ConfirmAliasAsync(
         string merchantKey,
         string rawText,
@@ -387,7 +416,9 @@ public sealed class PurchaseEditService(
                         .ToList()
                     : [],
                 boxes.GetValueOrDefault(item.Position),
-                item.Id))
+                item.Id,
+                item.ApprovedAt,
+                item.ApprovedByEmail))
             .ToList();
 
         return new PurchaseDetailView(

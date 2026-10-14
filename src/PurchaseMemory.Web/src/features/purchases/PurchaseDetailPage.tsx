@@ -1,5 +1,6 @@
 import { IonButton, IonInput, IonItem, IonLabel, IonList, IonNote } from "@ionic/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { CircleCheck, ListChecks } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router";
@@ -37,7 +38,8 @@ import { PurchaseLineImpressions, usePurchaseImpressions } from "../impressions/
 import { HelpLink } from "../help/HelpLink";
 import { formatMoney } from "./money";
 import { ProductLinkRows, productStatusText } from "./ProductLinkRows";
-import { ReceiptLineViewer } from "../receipt-photo/ReceiptLineViewer";
+import { LineReview, type ReviewLinePatch, type ReviewStart } from "../line-review/LineReview";
+import { useApprovalSync, useLineApprovals } from "../line-review/useLineApprovals";
 import { usePurchaseReceiptPhoto } from "./usePurchaseReceiptPhoto";
 
 export const purchaseQueryKey = (purchaseId: string) => ["purchases", "detail", purchaseId] as const;
@@ -116,10 +118,14 @@ function PurchaseSummary({ purchase, back, onEdit }: { purchase: PurchaseDetail;
   const receiptPhoto = usePurchaseReceiptPhoto(purchase.sourceReceiptId);
   const photoUrl = receiptPhoto.url;
   const photo = receiptPhoto.viewer;
-  // With a receipt photo, tapping a line shows where it is on it.
-  const [viewerLine, setViewerLine] = useState<number | null>(null);
-  const locate = photo ? (index: number) => setViewerLine(index) : null;
+  const approvals = useLineApprovals(purchase, purchaseQueryKey(purchase.id));
+  // Tapping a line opens the swipe review at it; the header button at the
+  // first line nobody has checked.
+  const [review, setReview] = useState<ReviewStart | null>(null);
+  const openReview = (index: number | null) => setReview((current) => ({ index, nonce: (current?.nonce ?? 0) + 1 }));
+  const saveLine = useSaveLine(purchase, approvals);
   const returnState = useReturnState();
+  const total = purchase.items.length;
 
   return (
     <Page
@@ -159,13 +165,28 @@ function PurchaseSummary({ purchase, back, onEdit }: { purchase: PurchaseDetail;
       </section>
 
       <section aria-labelledby="purchase-lines">
-        <SectionHeader id="purchase-lines">{t("purchaseEdit.lines")} · {t("purchaseEdit.linesCount", { count: productCount })}</SectionHeader>
+        <SectionHeader
+          id="purchase-lines"
+          action={(
+            <IonButton
+              fill="clear"
+              className="pm-review-start"
+              onClick={() => openReview(null)}
+              aria-label={t("lineReview.start", { approved: approvals.approvedCount, total })}
+            >
+              <ListChecks size={20} aria-hidden="true" />
+              <span aria-hidden="true">{approvals.approvedCount}/{total}</span>
+            </IonButton>
+          )}
+        >
+          {t("purchaseEdit.lines")} · {t("purchaseEdit.linesCount", { count: productCount })}
+        </SectionHeader>
         <IonList inset className="pm-after-header">
           {purchase.items.map((item, index) => {
             if (isDiscount(item)) {
               const target = links[index].target;
               return (
-                <IonItem key={item.position} button={locate !== null} detail={false} onClick={locate ? () => locate(index) : undefined}>
+                <IonItem key={item.position} button detail={false} onClick={() => openReview(index)}>
                   <ReceiptDiscountLine
                     name={item.name}
                     lineTotal={item.lineTotal}
@@ -174,15 +195,17 @@ function PurchaseSummary({ purchase, back, onEdit }: { purchase: PurchaseDetail;
                     productLineTotal={target === null ? null : purchase.items[target].lineTotal}
                     appliesToReceipt={links[index].appliesToReceipt}
                   />
-                  {locate && <span className="visually-hidden">{t("lineLocator.showOnPhoto")}</span>}
+                  <ApprovedMark approved={approvals.isApproved(item)} />
+                  <span className="visually-hidden">{t("lineReview.openLine")}</span>
                 </IonItem>
               );
             }
             return (
               <IonItem key={item.position}>
                 <IonLabel className="pm-wrap">
-                  <LocateLine
-                    onLocate={locate ? () => locate(index) : null}
+                  <ReviewLineButton
+                    onOpen={() => openReview(index)}
+                    approved={approvals.isApproved(item)}
                     name={item.name}
                     details={[
                       {
@@ -201,18 +224,19 @@ function PurchaseSummary({ purchase, back, onEdit }: { purchase: PurchaseDetail;
             );
           })}
         </IonList>
-        {photo && <Footnote>{t("lineLocator.listHint")} <HelpLink topic="receipt-lines-photo" /></Footnote>}
+        <Footnote>{t("lineReview.listHint")} <HelpLink topic="receipt-lines-photo" /></Footnote>
       </section>
 
-      {photo && (
-        <ReceiptLineViewer
-          lines={purchase.items}
-          openIndex={viewerLine}
-          onClose={() => setViewerLine(null)}
-          photo={photo}
-          currency={purchase.currency}
-        />
-      )}
+      <LineReview
+        start={review}
+        onClose={() => setReview(null)}
+        lines={purchase.items}
+        isApproved={approvals.isApproved}
+        setApproved={approvals.setApproved}
+        onSaveLine={saveLine}
+        photo={photo}
+        currency={purchase.currency}
+      />
 
       <section aria-label={t("purchaseEdit.photoAlt")}>
         <SectionHeader>{t("purchaseEdit.photoAlt")}</SectionHeader>
@@ -227,35 +251,80 @@ function PurchaseSummary({ purchase, back, onEdit }: { purchase: PurchaseDetail;
 }
 
 /**
- * A purchase line's name and status. With a receipt photo they become one
- * button that shows the line on the photo; the line's other controls (like
- * «Оценить») stay outside it, so no control is nested in another.
+ * A purchase line's name and status as one button that opens the swipe
+ * review at this line; the line's other controls (like «Оценить») stay
+ * outside it, so no control is nested in another. A checked line shows ✓.
  */
-function LocateLine({ onLocate, name, details }: {
-  onLocate: (() => void) | null;
+function ReviewLineButton({ onOpen, approved, name, details }: {
+  onOpen: () => void;
+  approved: boolean;
   name: string;
   details: { text: string; warn: boolean }[];
 }) {
   const { t } = useTranslation();
-  if (!onLocate) {
-    return (
-      <>
-        <h3>{name}</h3>
-        {details.map((detail) => <p key={detail.text} className={detail.warn ? "pm-warn-text" : undefined}>{detail.text}</p>)}
-      </>
-    );
-  }
   return (
-    <button type="button" className="pm-line-locate" onClick={onLocate}>
-      <span className="pm-line-name">{name}</span>
+    <button type="button" className="pm-line-locate" onClick={onOpen}>
+      <span className="pm-line-name">
+        {name}
+        <ApprovedMark approved={approved} />
+      </span>
       {details.map((detail) => <span key={detail.text} className="pm-line-detail" data-warn={detail.warn}>{detail.text}</span>)}
-      <span className="visually-hidden">{t("lineLocator.showOnPhoto")}</span>
+      <span className="visually-hidden">{t("lineReview.openLine")}</span>
     </button>
   );
 }
 
+/** The small ✓ of a line someone has checked in the swipe review. */
+function ApprovedMark({ approved }: { approved: boolean }) {
+  const { t } = useTranslation();
+  if (!approved) return null;
+  return (
+    <span className="pm-line-checked">
+      <CircleCheck size={15} aria-hidden="true" />
+      <span className="visually-hidden">{t("lineReview.checkedSuffix")}</span>
+    </span>
+  );
+}
+
+/**
+ * The swipe review's «correct this line»: the purchase is saved with just
+ * that line changed (the same full snapshot the editor sends), and the
+ * corrected line counts as checked. Unsent marks go first, because a
+ * correction replaces the line rows.
+ */
+function useSaveLine(purchase: PurchaseDetail, approvals: ReturnType<typeof useLineApprovals>) {
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
+  return async (index: number, patch: ReviewLinePatch) => {
+    await approvals.flush();
+    const state = toEditState(purchase);
+    state.items = state.items.map((item, position) => position === index ? { ...item, ...patch } : item);
+    let updated: PurchaseDetail;
+    try {
+      updated = await updatePurchase(purchase.id, toRequest(purchase, state));
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 409) {
+        void queryClient.invalidateQueries({ queryKey: purchaseQueryKey(purchase.id) });
+        throw new Error(t("lineReview.conflict"));
+      }
+      throw error;
+    }
+    queryClient.setQueryData(purchaseQueryKey(purchase.id), updated);
+    const line = updated.items[index];
+    if (line) approvals.setApproved(line.id, true);
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: reviewQueueQueryKey }),
+      queryClient.invalidateQueries({ queryKey: ["purchases", "feed"] }),
+      queryClient.invalidateQueries({ queryKey: ["products"] }),
+      purchase.sourceReceiptId ? queryClient.invalidateQueries({ queryKey: ["receipts", purchase.sourceReceiptId] }) : Promise.resolve()
+    ]);
+  };
+}
+
 interface EditLine {
   key: string;
+  /** The saved line this row continues (keeps its «checked» mark); null for a new row. */
+  id: string | null;
   name: string;
   quantity: number | null;
   unit: string | null;
@@ -289,6 +358,7 @@ function toEditState(purchase: PurchaseDetail): EditState {
     receiptTotal: purchase.receiptTotal,
     items: purchase.items.map((item) => ({
       key: nextKey(),
+      id: item.id,
       name: item.name,
       quantity: item.quantity,
       unit: item.unit,
@@ -321,7 +391,8 @@ function toRequest(purchase: PurchaseDetail, state: EditState): UpdatePurchaseRe
       kind: item.kind,
       productLink: item.kind === "discount" ? "auto" : item.productLink,
       productId: item.kind === "discount" || item.productLink !== "existing" ? null : item.productId,
-      boundingBox: item.boundingBox
+      boundingBox: item.boundingBox,
+      id: item.id
     }))
   };
 }
@@ -343,6 +414,7 @@ function PurchaseEditor({ purchase, focus, onDone, onReload }: {
   const totalRef = useRef<HTMLIonInputElement>(null);
   const merchantRef = useRef<HTMLIonInputElement>(null);
   const receiptPhoto = usePurchaseReceiptPhoto(purchase.sourceReceiptId);
+  const approvalSync = useApprovalSync();
 
   // A review-queue link lands on the flagged field; otherwise the store name.
   useEffect(() => {
@@ -355,7 +427,12 @@ function PurchaseEditor({ purchase, focus, onDone, onReload }: {
   }, []);
 
   const save = useMutation({
-    mutationFn: () => updatePurchase(purchase.id, toRequest(purchase, state)),
+    mutationFn: async () => {
+      // A correction replaces the line rows: unsent «checked» marks go first,
+      // so the server can carry them over to the corrected lines.
+      await approvalSync.flush();
+      return updatePurchase(purchase.id, toRequest(purchase, state));
+    },
     onSuccess: async (updated) => {
       queryClient.setQueryData(purchaseQueryKey(purchase.id), updated);
       await Promise.all([
@@ -379,7 +456,7 @@ function PurchaseEditor({ purchase, focus, onDone, onReload }: {
   const addItem = (kind: ReceiptLineKind) => {
     update({
       items: [...state.items, {
-        key: nextKey(), name: "", quantity: kind === "product" ? 1 : null, unit: null, unitPrice: null, lineTotal: null, kind,
+        key: nextKey(), id: null, name: "", quantity: kind === "product" ? 1 : null, unit: null, unitPrice: null, lineTotal: null, kind,
         productLink: "auto", productId: null, productName: null, pendingMatch: false, candidates: [], boundingBox: null
       }]
     });

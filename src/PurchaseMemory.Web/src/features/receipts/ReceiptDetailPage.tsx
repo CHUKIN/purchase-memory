@@ -24,7 +24,7 @@ import { IssueReview, type IssueReviewPhoto } from "./IssueReview";
 import { LinesEditor } from "./LinesEditor";
 import { ReceiptProgress } from "./ReceiptProgress";
 import { messageOf } from "./receiptErrors";
-import type { LineViewerPhoto } from "../receipt-photo/ReceiptLineViewer";
+import type { LineViewerPhoto } from "../receipt-photo/LinePhoto";
 
 export function ReceiptDetailPage() {
   const { receiptId = "" } = useParams();

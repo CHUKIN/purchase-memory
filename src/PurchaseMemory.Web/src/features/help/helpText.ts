@@ -205,7 +205,7 @@ export const helpRu: HelpText = {
       see: [
         "Скидки показаны отдельными строками: к какому товару они относятся или что это скидка на весь чек, и цена товара после скидки.",
         "Счётчик «Осталось N неточностей» и сообщение «Все неточности исправлены», когда можно сохранять.",
-        "В полном редакторе внутри строки есть «Показать на фото»: фото чека с этой строкой в рамке (подробнее — «Строки чека на фото»)."
+        "В полном редакторе сверху в строке — её место на фото чека в рамке; фото можно увеличить двумя пальцами или двойным нажатием (подробнее — «Проверка строк по фото чека»)."
       ],
       trouble: [
         "Если предупреждения остались, первое нажатие покажет их, а кнопка станет «Всё равно сохранить» — так покупку можно сохранить как есть и поправить позже.",
@@ -271,23 +271,27 @@ export const helpRu: HelpText = {
       ]
     },
     "receipt-lines-photo": {
-      title: "Строки чека на фото",
-      summary: "Любую строку покупки можно найти на фото чека: приложение обводит её рамкой. Так легко сверить название и цену с тем, что напечатано.",
+      title: "Проверка строк по фото чека",
+      summary: "Строки покупки можно сверить с чеком по одной, как карточки: строка в рамке на фото и всё о ней на одном экране. Свайп вправо — верно, влево — исправить.",
       steps: [
-        "Откройте покупку с фото чека и нажмите на название строки. В редакторе чека или покупки нажмите на строку, а в ней — «Показать на фото».",
-        "Режим «Нажатие»: откроется фрагмент фото с этой строкой в рамке, под ним — название, количество, цена и сумма.",
-        "Режим «Пролистывание»: фото откроется на этой строке, дальше проведите по фото влево или вправо или нажмите «Следующая» и «Предыдущая», чтобы идти по строкам по одной.",
-        "Режим выбирается на «Главной»: «Ещё» (кружок с тремя точками вверху справа) → «Строки чека на фото» → «Нажатие» или «Пролистывание». Выбор запоминается на этом устройстве."
+        "Откройте покупку. Нажмите на значок со списком и галочкой рядом с заголовком «Строки» — проверка начнётся с первой непроверенной строки. Или нажмите на саму строку — проверка откроется прямо на ней.",
+        "Сверьте фото и данные под ним. Строка верна — проведите карточку вправо или нажмите зелёную кнопку с галочкой («Строка верна»). Откроется следующая непроверенная строка.",
+        "Что-то не так — проведите карточку влево или нажмите кнопку с карандашом («Исправить строку»), поправьте название, количество, цену или сумму и нажмите «Сохранить». Исправленная строка тоже считается проверенной.",
+        "Мелко? Разведите два пальца на фото или нажмите на него дважды — фото увеличится, рамка останется на строке. Пока фото увеличено, карточка не листается; уменьшите его, чтобы листать дальше.",
+        "Стрелка назад внизу слева возвращает к предыдущей строке. На компьютере: → — верно, ← — исправить, Backspace — назад."
       ],
       see: [
-        "Под фото — название, количество, цена и сумма строки; в редакторе — уже с вашими несохранёнными правками. Номер строки: в «Нажатии» — в заголовке («Строка N на фото»), в «Пролистывании» — между кнопками («Строка N из M»).",
-        "«Готово» закрывает фото и возвращает туда, откуда вы его открыли."
+        "Вверху — сколько строк проверено, например «3/12». Проверенные строки в списке покупки отмечены галочкой.",
+        "Когда всё проверено — «Все строки проверены» и кнопка «Проверить ещё раз», чтобы пройти все строки заново. Если закрыть проверку и открыть снова, покажутся только непроверенные строки.",
+        "Отметка «Проверено» на карточке: нажмите на неё, чтобы снять отметку.",
+        "Отметки сразу сохраняются на телефоне и через несколько секунд уходят на сервер — их видит и второй участник. Без интернета они дождутся связи."
       ],
       trouble: [
-        "«Место этой строки на фото не найдено — показан весь чек» — распознавание не смогло указать место строки (так бывает со старыми чеками и с добавленными вручную строками). В «Пролистывании» такие строки всё равно можно листать.",
-        "Чек, снятый на нескольких фото, показывается первым фото целиком: на каком из фото строка, распознавание не сообщает, поэтому рамка не рисуется.",
-        "Рамка немного смещена — место строки распознаётся приблизительно; ориентируйтесь на соседние строки на фрагменте.",
-        "У покупки без фото чека строки не нажимаются."
+        "«Место строки не найдено — показан весь чек» — распознавание не смогло указать место строки (так бывает со старыми чеками и с добавленными вручную строками). Такую строку всё равно можно проверить.",
+        "Чек, снятый на нескольких фото, показывается первым фото целиком без рамки: на каком из фото строка, распознавание не сообщает.",
+        "Рамка немного смещена — место строки распознаётся приблизительно; увеличьте фото и ориентируйтесь на соседние строки.",
+        "«Покупку только что изменили в другом окне» при сохранении строки — загрузится свежая версия, проверьте строку и сохраните ещё раз.",
+        "У покупки без фото чека проверка тоже работает, только без фото."
       ]
     },
     products: {
@@ -624,7 +628,7 @@ export const helpEn: HelpText = {
       see: [
         "Discounts are separate lines: which product they belong to, or that they apply to the whole receipt, and the product price after the discount.",
         "A “N issues left” counter and “Every issue is resolved” when you can save.",
-        "In the full editor each line has “Show on photo”: the receipt photo with that line outlined (see “Receipt lines on the photo”)."
+        "In the full editor a line's sheet starts with its place on the receipt photo, outlined; pinch or double-tap to zoom (see “Checking lines against the receipt”)."
       ],
       trouble: [
         "If warnings remain, the first press shows them and the button becomes “Save anyway” — so you can save as is and fix it later.",
@@ -690,23 +694,27 @@ export const helpEn: HelpText = {
       ]
     },
     "receipt-lines-photo": {
-      title: "Receipt lines on the photo",
-      summary: "Any line of a purchase can be found on the receipt photo: the app outlines it. This makes it easy to check the name and price against what is printed.",
+      title: "Checking lines against the receipt",
+      summary: "Check a purchase's lines one by one, like cards: the line outlined on the receipt photo and everything about it on one screen. Swipe right — right, left — correct it.",
       steps: [
-        "Open a purchase with a receipt photo and tap a line's name. In the receipt or purchase editor, tap a line and then “Show on photo”.",
-        "“Tap” mode: a fragment of the photo opens with that line outlined, with its name, quantity, price and sum below.",
-        "“Swipe” mode: the photo opens at that line; swipe the photo left or right or press “Next” and “Previous” to go through the lines one by one.",
-        "Choose the mode on “Home”: “More” (the circle with three dots at the top right) → “Receipt lines on the photo” → “Tap” or “Swipe”. The choice is remembered on this device."
+        "Open a purchase. Tap the list-with-a-tick icon next to the “Lines” header to start at the first unchecked line, or tap a line to open the check right at it.",
+        "Compare the photo and the details below it. The line is right — swipe the card right or press the green tick (“Line is right”). The next unchecked line opens.",
+        "Something is wrong — swipe left or press the pencil (“Correct the line”), fix the name, quantity, price or sum and press “Save”. A corrected line counts as checked too.",
+        "Too small? Pinch the photo or double-tap it — the outline stays on the line. While the photo is zoomed the card does not swipe; zoom out to go on.",
+        "The back arrow at the bottom left returns to the previous line. On a computer: → right, ← correct, Backspace back."
       ],
       see: [
-        "Below the photo: the line's name, quantity, price and sum; in an editor, already with your unsaved changes. The line number: in “Tap” mode in the title (“Line N on the photo”), in “Swipe” mode between the buttons (“Line N of M”).",
-        "“Done” closes the photo and returns where you opened it."
+        "At the top: how many lines are checked, e.g. “3/12”. Checked lines have a tick in the purchase's list.",
+        "When everything is checked — “All lines checked” and “Check again” to go through every line once more. Closing and reopening the check shows only unchecked lines.",
+        "The “Checked” mark on a card: tap it to remove the mark.",
+        "Marks are saved on the phone at once and reach the server a few seconds later — the other member sees them too. Offline, they wait for the connection."
       ],
       trouble: [
-        "“This line was not found on the photo, so the whole receipt is shown” — recognition could not place the line (this happens with older receipts and with lines added by hand). In “Swipe” mode you can still go through such lines.",
-        "A receipt photographed in several parts shows its first photo whole: recognition does not say which photo a line is on, so nothing is outlined.",
-        "The outline is a little off — line positions are approximate; use the neighbouring lines in the fragment.",
-        "Lines of a purchase without a receipt photo cannot be tapped."
+        "“The line was not found on the photo — the whole receipt is shown”: recognition could not place the line (older receipts, lines added by hand). You can still check it.",
+        "A receipt photographed in several parts shows its first photo whole, without an outline: recognition does not say which photo a line is on.",
+        "The outline is a little off — positions are approximate; zoom in and use the neighbouring lines.",
+        "“The purchase was just changed in another window” when saving a line — the fresh version loads; check the line and save again.",
+        "A purchase without a receipt photo can be checked too, just without the photo."
       ]
     },
     products: {

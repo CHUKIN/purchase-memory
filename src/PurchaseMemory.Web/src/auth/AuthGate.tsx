@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useRef, useState, type PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 import { ApiError, getAuthConfig, getCurrentUser, type AuthConfig, type CurrentUser } from "../api/client";
+import { releaseApprovalSyncs } from "../features/line-review/approvalSync";
 import { deviceBatchStore } from "../features/receipts/pendingBatchStore";
 import { AccessStatusScreen } from "./AccessStatusScreen";
 import { AuthContext, type AuthContextValue } from "./AuthContext";
@@ -272,6 +273,11 @@ export function AuthGate({ children }: PropsWithChildren) {
   }, [endSession, loadUser, queryClient, refreshStoredSession]);
 
   useEffect(() => () => setAccessTokenSource(null), []);
+
+  // Swipe-review marks queued for one person must not go out under another
+  // person's session, nor keep retrying after sign-out.
+  const signedInUserId = phase.kind === "user" ? phase.user.id : null;
+  useEffect(() => { releaseApprovalSyncs(signedInUserId); }, [signedInUserId]);
 
   const signOut = useCallback(async () => {
     await clientRef.current?.auth.signOut().catch(() => undefined);

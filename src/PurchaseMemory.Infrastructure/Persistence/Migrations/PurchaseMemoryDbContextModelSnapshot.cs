@@ -1035,6 +1035,17 @@ namespace PurchaseMemory.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("TEXT");
 
+                    b.Property<long?>("ApprovedAt")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ApprovedByEmail")
+                        .HasMaxLength(320)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ApprovedByUserId")
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
                     b.Property<int?>("DiscountedItemPosition")
                         .HasColumnType("INTEGER");
 

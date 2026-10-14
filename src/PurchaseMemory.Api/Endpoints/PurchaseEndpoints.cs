@@ -18,6 +18,9 @@ public static class PurchaseEndpoints
         endpoints.MapPut("/api/purchases/{purchaseId:guid}", UpdateAsync)
             .WithName("UpdatePurchase");
 
+        endpoints.MapPost("/api/purchases/line-approvals", ApplyLineApprovalsAsync)
+            .WithName("ApplyPurchaseLineApprovals");
+
         return endpoints;
     }
 
@@ -96,6 +99,21 @@ public static class PurchaseEndpoints
     {
         var command = request.ToCommand(purchaseId) with { Actor = AppUser.Actor(user) };
         return Results.Ok(PurchaseDetailResponse.FromView(await service.UpdateAsync(command, cancellationToken)));
+    }
+
+    /// <summary>
+    /// The swipe review's «checked» marks, sent by the phone in batches. Every
+    /// entry gets its own outcome; an unknown purchase or line changes nothing
+    /// and is reported as <c>notFound</c>, so one stale entry cannot block the rest.
+    /// </summary>
+    private static async Task<IResult> ApplyLineApprovalsAsync(
+        LineApprovalBatchRequest request,
+        ClaimsPrincipal user,
+        IPurchaseLineApprovalService service,
+        CancellationToken cancellationToken)
+    {
+        var results = await service.ApplyAsync(request.ToChanges(), AppUser.Actor(user), cancellationToken);
+        return Results.Ok(new LineApprovalBatchResponse(results.Select(LineApprovalResultResponse.FromResult).ToList()));
     }
 
     private static bool TryParseStatus(string? status, out PurchaseReviewStatus reviewStatus)
@@ -222,7 +240,8 @@ public sealed record UpdatePurchaseItemRequest(
     string? Kind = null,
     string? ProductLink = null,
     Guid? ProductId = null,
-    BoundingBoxPayload? BoundingBox = null);
+    BoundingBoxPayload? BoundingBox = null,
+    Guid? Id = null);
 
 /// <summary>
 /// A complete corrected snapshot of a saved purchase: lines left out are
@@ -293,7 +312,8 @@ public sealed record UpdatePurchaseRequest(
             kind,
             link,
             link == ProductLinkChoice.Existing ? item.ProductId : null,
-            item.BoundingBox?.ToDomain());
+            item.BoundingBox?.ToDomain(),
+            item.Id);
     }
 }
 
@@ -313,7 +333,10 @@ public sealed record PurchaseDetailItemResponse(
     bool PendingMatch,
     IReadOnlyList<PurchaseProductCandidateResponse> Candidates,
     BoundingBoxPayload? BoundingBox,
-    Guid Id);
+    Guid Id,
+    bool Approved,
+    DateTimeOffset? ApprovedAt,
+    string? ApprovedByEmail);
 
 public sealed record PurchaseDetailResponse(
     Guid Id,
@@ -355,7 +378,61 @@ public sealed record PurchaseDetailResponse(
                 item.Candidates.Select(candidate => new PurchaseProductCandidateResponse(
                     candidate.ProductId, candidate.Name, candidate.Score)).ToList(),
                 BoundingBoxPayload.FromDomain(item.BoundingBox),
-                item.Id)).ToList(),
+                item.Id,
+                item.ApprovedAt is not null,
+                item.ApprovedAt,
+                item.ApprovedByEmail)).ToList(),
             view.Issues.Select(PurchaseDraftIssueResponse.FromIssue).ToList());
     }
 }
+
+public sealed record LineApprovalRequest(Guid? PurchaseId, Guid? LineId, bool? Approved, DateTimeOffset? At);
+
+public sealed record LineApprovalBatchRequest(IReadOnlyList<LineApprovalRequest>? Items)
+{
+    public IReadOnlyList<LineApprovalChange> ToChanges()
+    {
+        if (Items is null || Items.Count == 0)
+        {
+            throw new ArgumentException("Send at least one line approval in items.");
+        }
+
+        if (Items.Count > PurchaseLineApprovalService.MaximumChanges)
+        {
+            throw new ArgumentException($"A batch can contain at most {PurchaseLineApprovalService.MaximumChanges} line approvals.");
+        }
+
+        return Items.Select((item, index) =>
+        {
+            if (item?.PurchaseId is not { } purchaseId || item.LineId is not { } lineId || item.Approved is not { } approved)
+            {
+                throw new ArgumentException($"Approval {index + 1}: purchaseId, lineId and approved are required.");
+            }
+
+            return new LineApprovalChange(purchaseId, lineId, approved, item.At);
+        }).ToList();
+    }
+}
+
+public sealed record LineApprovalResultResponse(
+    Guid PurchaseId,
+    Guid LineId,
+    string Status,
+    bool Approved,
+    DateTimeOffset? ApprovedAt)
+{
+    public static LineApprovalResultResponse FromResult(LineApprovalResult result) => new(
+        result.PurchaseId,
+        result.LineId,
+        result.Outcome switch
+        {
+            LineApprovalOutcome.Applied => "applied",
+            LineApprovalOutcome.Unchanged => "unchanged",
+            LineApprovalOutcome.NotFound => "notFound",
+            _ => throw new ArgumentOutOfRangeException(nameof(result), result.Outcome, null)
+        },
+        result.Approved,
+        result.ApprovedAt);
+}
+
+public sealed record LineApprovalBatchResponse(IReadOnlyList<LineApprovalResultResponse> Items);
