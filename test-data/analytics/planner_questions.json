@@ -1,0 +1,170 @@
+{
+  "description": "Fixed question set for the analytics planner benchmark (tools/PurchaseMemory.AnalyticsPlannerBenchmark). Synthetic household: the seeded category tree plus the stores, brands and tags below; no real data. Expected fields are checked on the validated plan; omitted fields mean: no brands/merchants/tags, discount any, groupBy none, understood true. 'what' passes when every chosen category is in categoryKeys and at least one chosen category or name term matches (a term matches when it contains a listed stem or a stem contains it). periods lists acceptable [from, to] pairs; null means open. tags is either the exact set of names or a list of acceptable sets. expected may instead hold anyOf: a list of whole alternative expectations. Categories and name terms are OR-ed by the planner, so a broader category (alcohol for beer) is an over-count and fails.",
+  "today": "2026-10-14",
+  "vocabulary": {
+    "merchants": ["Biedronka", "Lidl", "Żabka", "Carrefour", "Rossmann", "Auchan", "Kaufland", "Netto", "Dino", "Pepco"],
+    "brands": ["Łaciate", "Milka", "Wedel", "Tymbark", "Pampers", "Mlekovita", "Hochland", "Lavazza", "Tchibo", "Jacobs", "Tyskie", "Żywiec", "Danone", "Bakoma", "Pudliszki", "Winiary", "Lubella", "Kinder", "Pilos", "Ludwik"],
+    "tags": ["для ребёнка", "акция", "к празднику", "веган", "для кота"]
+  },
+  "questions": [
+    {
+      "id": "total-month",
+      "question": "Сколько мы потратили в сентябре?",
+      "expected": { "metric": ["spend"], "what": "all", "periods": [["2026-09-01", "2026-09-30"]] }
+    },
+    {
+      "id": "avg-sweets-year",
+      "question": "Средняя цена сладостей в этом году",
+      "expected": {
+        "metric": ["averageUnitPrice"],
+        "what": { "categoryKeys": ["sweets_snacks", "chocolate", "cookies"], "terms": ["slodyc", "czekol", "cukier", "baton"] },
+        "periods": [["2026-01-01", "2026-10-14"]]
+      }
+    },
+    {
+      "id": "avg-milk-store",
+      "question": "Сколько в среднем стоит молоко в Biedronce?",
+      "expected": {
+        "metric": ["averageUnitPrice"],
+        "what": { "categoryKeys": ["milk"], "terms": ["mlek"] },
+        "merchants": ["Biedronka"],
+        "periods": [[null, null]]
+      }
+    },
+    {
+      "id": "coffee-by-month",
+      "question": "Сколько мы тратим на кофе по месяцам в этом году?",
+      "expected": {
+        "metric": ["spend"],
+        "what": { "categoryKeys": ["coffee"], "terms": ["kaw"] },
+        "groupBy": ["month"],
+        "periods": [["2026-01-01", "2026-10-14"]]
+      }
+    },
+    {
+      "id": "by-store-all",
+      "question": "В каком магазине мы оставляем больше всего денег?",
+      "expected": {
+        "anyOf": [
+          { "metric": ["spend"], "what": "all", "groupBy": ["merchant"], "periods": [[null, null], ["2025-10-15", "2026-10-14"], ["2026-01-01", "2026-10-14"]] },
+          { "metric": ["top"], "what": "all", "groupBy": ["merchant"], "limit": 1, "periods": [[null, null], ["2025-10-15", "2026-10-14"], ["2026-01-01", "2026-10-14"]] }
+        ]
+      }
+    },
+    {
+      "id": "top5-last-month",
+      "question": "Топ-5 товаров по расходам за прошлый месяц",
+      "expected": { "metric": ["top"], "what": "all", "groupBy": ["product"], "limit": 5, "periods": [["2026-09-01", "2026-09-30"]] }
+    },
+    {
+      "id": "compare-months",
+      "question": "Сравни расходы в августе и сентябре",
+      "expected": { "metric": ["spend"], "what": "all", "groupBy": ["month"], "periods": [["2026-08-01", "2026-09-30"]] }
+    },
+    {
+      "id": "chemicals-store-30d",
+      "question": "Сколько ушло на бытовую химию в Rossmannie за последние 30 дней?",
+      "expected": {
+        "metric": ["spend"],
+        "what": { "categoryKeys": ["household_chemicals", "laundry", "dishwashing", "cleaning"], "terms": [] },
+        "merchants": ["Rossmann"],
+        "periods": [["2026-09-15", "2026-10-14"]]
+      }
+    },
+    {
+      "id": "beer-frequency",
+      "question": "Как часто мы покупаем пиво?",
+      "expected": {
+        "metric": ["purchaseCount"],
+        "what": { "categoryKeys": [], "terms": ["piw"] },
+        "periods": [[null, null]]
+      }
+    },
+    {
+      "id": "avocado-exists",
+      "question": "Мы когда-нибудь покупали авокадо?",
+      "expected": { "metric": ["exists"], "what": { "categoryKeys": [], "terms": ["awokad"] }, "periods": [[null, null]] }
+    },
+    {
+      "id": "discounts-this-month",
+      "question": "Сколько мы потратили на товары по акции в этом месяце?",
+      "expected": { "metric": ["spend"], "what": "all", "discount": "discountedOnly", "tags": [[], ["акция"]], "periods": [["2026-10-01", "2026-10-14"]] }
+    },
+    {
+      "id": "tag-kid-last-year",
+      "question": "Сколько мы потратили на детское в прошлом году?",
+      "expected": { "metric": ["spend"], "what": "all", "tags": ["для ребёнка"], "periods": [["2025-01-01", "2025-12-31"]] }
+    },
+    {
+      "id": "categories-last-week",
+      "question": "Расходы по категориям за последнюю неделю",
+      "expected": { "metric": ["spend"], "what": "all", "groupBy": ["category"], "periods": [["2026-10-08", "2026-10-14"], ["2026-10-05", "2026-10-11"], ["2026-10-12", "2026-10-14"]] }
+    },
+    {
+      "id": "coffee-brand",
+      "question": "Кофе какой марки мы покупаем чаще всего?",
+      "expected": {
+        "metric": ["purchaseCount", "quantity"],
+        "what": { "categoryKeys": ["coffee"], "terms": ["kaw"] },
+        "groupBy": ["brand"],
+        "periods": [[null, null]]
+      }
+    },
+    {
+      "id": "max-butter-12m",
+      "question": "Какая была самая высокая цена на сливочное масло за последние 12 месяцев?",
+      "expected": {
+        "metric": ["maximumUnitPrice"],
+        "what": { "categoryKeys": ["butter_cream"], "terms": ["maslo", "masło", "masl"] },
+        "periods": [["2025-10-15", "2026-10-14"]]
+      }
+    },
+    {
+      "id": "milka-two-stores",
+      "question": "Сколько шоколада Milka мы купили в Lidlu и Biedronce?",
+      "expected": {
+        "metric": ["quantity"],
+        "what": { "categoryKeys": ["chocolate", "sweets_snacks"], "terms": ["czekol"] },
+        "brands": ["Milka"],
+        "merchants": ["Biedronka", "Lidl"],
+        "periods": [[null, null]]
+      }
+    },
+    {
+      "id": "laciate-2025",
+      "question": "Сколько в среднем стоил литр молока Łaciate в 2025 году?",
+      "expected": {
+        "metric": ["averageUnitPrice"],
+        "what": { "categoryKeys": ["milk"], "terms": ["mlek"] },
+        "brands": ["Łaciate"],
+        "periods": [["2025-01-01", "2025-12-31"]]
+      }
+    },
+    {
+      "id": "by-tag-12m",
+      "question": "Покажи траты по тегам за последние 12 месяцев",
+      "expected": { "metric": ["spend"], "what": "all", "groupBy": ["tag"], "periods": [["2025-10-15", "2026-10-14"]] }
+    },
+    {
+      "id": "follow-up-store",
+      "question": "а в Lidlu?",
+      "previous": { "metric": "spend", "categoryKeys": ["coffee"], "from": "2026-01-01", "to": "2026-10-14" },
+      "expected": {
+        "metric": ["spend"],
+        "what": { "categoryKeys": ["coffee"], "terms": ["kaw"] },
+        "merchants": ["Lidl"],
+        "periods": [["2026-01-01", "2026-10-14"]]
+      }
+    },
+    {
+      "id": "unsupported-weather",
+      "question": "Какая погода будет завтра в Варшаве?",
+      "expected": { "understood": false }
+    },
+    {
+      "id": "unsupported-poem",
+      "question": "Напиши стихотворение про нашего кота",
+      "expected": { "understood": false }
+    }
+  ]
+}

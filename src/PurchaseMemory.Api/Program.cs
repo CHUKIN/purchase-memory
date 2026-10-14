@@ -69,10 +69,23 @@ builder.Services.AddHostedService<ProductCategorizationWorker>();
 builder.Services.AddSingleton<CategorizationBackfillGate>();
 builder.Services
     .AddOptions<AnalyticsOptions>()
-    .Bind(builder.Configuration.GetSection(AnalyticsOptions.SectionName));
+    .Bind(builder.Configuration.GetSection(AnalyticsOptions.SectionName))
+    .ValidateOnStart();
+builder.Services.AddSingleton<
+    Microsoft.Extensions.Options.IValidateOptions<AnalyticsOptions>,
+    AnalyticsOptionsValidator>();
+builder.Services.AddSingleton<AnthropicAnalyticsQueryPlanner>();
 builder.Services.AddSingleton<OpenAiAnalyticsQueryPlanner>();
 builder.Services.AddSingleton<IAnalyticsQueryPlanner>(serviceProvider =>
-    serviceProvider.GetRequiredService<OpenAiAnalyticsQueryPlanner>());
+{
+    var options = serviceProvider.GetRequiredService<Microsoft.Extensions.Options.IOptions<AnalyticsOptions>>().Value;
+    var planners = options.PlannerOrder()
+        .Select(provider => (provider, provider == AnthropicAnalyticsQueryPlanner.ProviderId
+            ? (IAnalyticsQueryPlanner)serviceProvider.GetRequiredService<AnthropicAnalyticsQueryPlanner>()
+            : serviceProvider.GetRequiredService<OpenAiAnalyticsQueryPlanner>()))
+        .ToList();
+    return new AnalyticsQueryPlannerRouter(planners, serviceProvider.GetRequiredService<ILogger<AnalyticsQueryPlannerRouter>>());
+});
 builder.Services.AddSingleton(serviceProvider => new AnalyticsSettings(TimeZoneInfo.FindSystemTimeZoneById(
     serviceProvider.GetRequiredService<Microsoft.Extensions.Options.IOptions<AnalyticsOptions>>().Value.TimeZone)));
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
