@@ -27,6 +27,11 @@ export function tabOf(pathname: string): Tab {
   return "home";
 }
 
+/** Badge text: the exact count up to 99, then «99+». */
+export function badgeText(count: number): string {
+  return count > 99 ? "99+" : String(count);
+}
+
 /**
  * The routed screen plus an iOS tab bar with the four sections. There is no
  * IonRouterOutlet (Ionic's router bindings stop at React Router 6), so the
@@ -58,17 +63,21 @@ export function AppShell({ children, reviewCount = null }: AppShellProps) {
             aria-current={item.tab === selected ? "page" : undefined}
             // Ionic cancels the link's own navigation and reports the tap here.
             onClick={() => {
-              // A second tap on the current tab goes back to its root, as on iOS.
-              if (location.pathname !== item.to || location.search) navigate(item.to);
+              // Already on this tab's root: do nothing, so scroll, filters and loaded data stay.
+              // On a nested screen (a detail, review, help) a tap goes back to the root, as on iOS.
+              if (location.pathname !== item.to) navigate(item.to);
             }}
           >
-            {item.icon}
+            {/* The badge is anchored to the icon, not to the tab button, so it is never cut off. */}
+            <span className="pm-tab-icon">
+              {item.icon}
+              {item.tab === "home" && badge !== null && (
+                <IonBadge className="pm-tab-badge" color="danger" aria-hidden="true">{badgeText(badge)}</IonBadge>
+              )}
+            </span>
             <IonLabel>{item.label}</IonLabel>
             {item.tab === "home" && badge !== null && (
-              <>
-                <IonBadge color="danger" aria-hidden="true">{badge > 99 ? "99+" : badge}</IonBadge>
-                <span className="visually-hidden">{`, ${t("reviewQueue.badgeLabel", { count: badge })}`}</span>
-              </>
+              <span className="visually-hidden">{`, ${t("reviewQueue.badgeLabel", { count: badge })}`}</span>
             )}
           </IonTabButton>
         ))}

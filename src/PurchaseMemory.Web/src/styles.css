@@ -66,6 +66,15 @@ body { overflow-wrap: break-word; }
 ion-title.title-large .pm-title-heading { white-space: normal; overflow-wrap: anywhere; line-height: 1.12; padding-bottom: 2px; }
 
 ion-tab-button svg { width: 26px; height: 26px; margin-bottom: 2px; }
+/* The badge hangs off the icon's top-right corner and stays inside the tab button at any digit count. */
+.pm-tab-icon { position: relative; display: inline-flex; }
+.pm-tab-icon > svg { margin-bottom: 0; }
+.pm-tab-badge {
+  position: absolute; top: -4px; left: calc(100% - 9px);
+  --padding-start: 5px; --padding-end: 5px; --padding-top: 1px; --padding-bottom: 1px;
+  min-width: 18px; height: 18px; box-sizing: border-box; border-radius: 9px;
+  font-size: 12px; line-height: 16px; text-align: center; white-space: nowrap;
+}
 ion-tab-button { --color-selected: var(--ion-color-primary); }
 ion-buttons ion-button svg { display: block; }
 /* Icon-only toolbar buttons get a full 44×44 tap area (Ionic's iOS toolbar default is 32 px). */

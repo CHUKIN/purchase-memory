@@ -50,3 +50,13 @@ export const DesktopWidth: Story = {
   args: { path: "/analytics", title: "Аналитика", reviewCount: 12 },
   globals: { viewport: { value: "desktop", isRotated: false } }
 };
+
+export const BadgeTwoDigits: Story = {
+  args: { reviewCount: 57 },
+  globals: { viewport: { value: "phone", isRotated: false } }
+};
+
+export const BadgeOverflow: Story = {
+  args: { reviewCount: 120 },
+  globals: { viewport: { value: "phone", isRotated: false } }
+};

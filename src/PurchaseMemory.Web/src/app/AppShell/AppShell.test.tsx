@@ -1,8 +1,9 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
+import { useEffect } from "react";
 import { MemoryRouter, useLocation } from "react-router";
 import { describe, expect, it } from "vitest";
 import { AppProviders } from "../AppProviders";
-import { AppShell, tabOf } from "./AppShell";
+import { AppShell, badgeText, tabOf } from "./AppShell";
 
 function Where() {
   return <output data-testid="where">{useLocation().pathname}</output>;
@@ -45,5 +46,37 @@ describe("AppShell navigation", () => {
     expect(within(tabs).getByRole("link", { name: /Главная.*3 пункта требуют внимания/ })).toBeInTheDocument();
     fireEvent.click(within(tabs).getByRole("link", { name: "Товары" }));
     expect(screen.getByTestId("where")).toHaveTextContent("/products");
+  });
+
+  it("formats the badge: exact up to 99, then 99+", () => {
+    expect([1, 57, 99, 100, 120].map(badgeText)).toEqual(["1", "57", "99", "99+", "99+"]);
+    renderShell("/", 120);
+    expect(screen.getByText("99+")).toBeInTheDocument();
+  });
+
+  it("does nothing when the active tab is tapped at its root, even with filters", () => {
+    let mounts = 0;
+    function Probe() {
+      useEffect(() => { mounts += 1; }, []);
+      return <Where />;
+    }
+    render(
+      <AppProviders locale="ru">
+        <MemoryRouter initialEntries={["/purchases?store=a"]}>
+          <AppShell><Probe /></AppShell>
+        </MemoryRouter>
+      </AppProviders>
+    );
+    const tabs = screen.getByRole("navigation", { name: "Разделы" });
+    fireEvent.click(within(tabs).getByRole("link", { name: "Покупки" }));
+    expect(screen.getByTestId("where")).toHaveTextContent("/purchases");
+    expect(mounts).toBe(1);
+  });
+
+  it("returns to the tab root from a nested screen", () => {
+    renderShell("/purchases/p1");
+    const tabs = screen.getByRole("navigation", { name: "Разделы" });
+    fireEvent.click(within(tabs).getByRole("link", { name: "Покупки" }));
+    expect(screen.getByTestId("where").textContent).toBe("/purchases");
   });
 });
