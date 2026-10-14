@@ -9,6 +9,8 @@ import type {
   CategorizationRunSummary,
   Impression,
   ImpressionRating,
+  LineApprovalChange,
+  LineApprovalResult,
   ProductCatalogPage,
   ProductCategory,
   ProductClassification,
@@ -214,6 +216,18 @@ export const updatePurchase = (purchaseId: string, body: UpdatePurchaseRequest) 
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body)
+  });
+
+/**
+ * Sends a batch of swipe-review marks. `keepalive` lets the request finish
+ * while the page is being hidden or closed.
+ */
+export const postLineApprovals = (items: LineApprovalChange[], options: { keepalive?: boolean } = {}) =>
+  request<{ items: LineApprovalResult[] }>("/api/purchases/line-approvals", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ items }),
+    keepalive: options.keepalive ?? false
   });
 
 export interface ProductCatalogRequest {

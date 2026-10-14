@@ -60,6 +60,8 @@ const preview: Preview = {
     viewport: {
       options: {
         phone: { name: "iPhone 390 × 844", styles: { width: "390px", height: "844px" }, type: "mobile" },
+        phoneSmall: { name: "iPhone SE 375 × 667", styles: { width: "375px", height: "667px" }, type: "mobile" },
+        phoneLandscape: { name: "iPhone sideways 812 × 375", styles: { width: "812px", height: "375px" }, type: "mobile" },
         desktop: { name: "Desktop 1440 × 960", styles: { width: "1440px", height: "960px" }, type: "desktop" }
       }
     }

@@ -1,0 +1,130 @@
+import { ZoomIn, ZoomOut } from "lucide-react";
+import { useLayoutEffect, useRef, useState, type CSSProperties, type RefObject } from "react";
+import { useTranslation } from "react-i18next";
+import type { BoundingBox } from "../../api/types";
+import { fitSize, fitWindow, imageOffset, isUsableBox, relativeTo, wholePhoto, type ReceiptPhoto } from "./photoBox";
+import { usePinchZoom } from "./usePinchZoom";
+
+/** The receipt photo as a screen has it: still loading, failed, or ready. */
+export interface LineViewerPhoto {
+  photo: ReceiptPhoto | null;
+  failed: boolean;
+}
+
+export interface LinePhotoProps {
+  photo: ReceiptPhoto;
+  /** Where the line is on the photo; anything unusable shows the whole photo. */
+  box: BoundingBox | null | undefined;
+  /** Alt text for the fragment with the outlined line. */
+  focusAlt: string;
+  /** Alt text for the whole photo, shown when the line cannot be placed. */
+  wholeAlt: string;
+  /**
+   * The photo's width/height once the browser has it. Kept by the caller so
+   * moving between lines of the same photo does not measure again.
+   */
+  photoRatio: number | null;
+  onPhotoRatio: (ratio: number) => void;
+  /** Swipe navigation listens to this: it is off while the photo is zoomed. */
+  onZoomChange?: (zoomed: boolean) => void;
+  /** Changing it (another line) resets the zoom. */
+  resetKey?: unknown;
+}
+
+/** Whether `LinePhoto` will outline this box on this photo. */
+export function canHighlight(photo: ReceiptPhoto, box: BoundingBox | null | undefined): box is BoundingBox {
+  return photo.croppable && isUsableBox(box);
+}
+
+/** Until the photo answers, a typical receipt shape keeps the layout steady. */
+const assumedRatio = 0.75;
+
+/**
+ * The receipt photo around one line, as large as the space it is given: the
+ * line across the width with neighbouring rows above and below, outlined and
+ * the rest dimmed. Pinch, drag and double-tap zoom it (or the corner button);
+ * the outline zooms with the photo. Without a usable box (or on a multi-photo
+ * receipt) it shows the whole photo with nothing outlined, so it never points
+ * at the wrong place. The outline appears only once the photo's real
+ * proportions are known.
+ */
+export function LinePhoto({ photo, box, focusAlt, wholeAlt, photoRatio, onPhotoRatio, onZoomChange, resetKey }: LinePhotoProps) {
+  const { t } = useTranslation();
+  const spaceRef = useRef<HTMLDivElement>(null);
+  const space = useSpaceSize(spaceRef);
+  const zoom = usePinchZoom({ resetKey, onZoomChange });
+  const highlighted = canHighlight(photo, box);
+  const ratio = photoRatio ?? assumedRatio;
+  const aspect = space ? space.width / space.height : 1.2;
+  const view = highlighted ? fitWindow(box, ratio, aspect) : wholePhoto;
+  const frameStyle: CSSProperties = space
+    ? fitSize(view, ratio, space.width, space.height)
+    : { width: "100%", aspectRatio: `${(ratio * view.width) / view.height}` };
+
+  const measure = (image: HTMLImageElement) => {
+    if (image.naturalWidth > 0 && image.naturalHeight > 0) onPhotoRatio(image.naturalWidth / image.naturalHeight);
+  };
+
+  return (
+    <div className="pm-photo-space" ref={spaceRef}>
+      <div
+        className="pm-photo-frame"
+        ref={zoom.frameRef}
+        style={frameStyle}
+        data-highlighted={highlighted}
+        data-zoomed={zoom.zoomed}
+        {...zoom.handlers}
+      >
+        <div className="pm-zoom-layer" style={zoom.layerStyle}>
+          <img
+            className="pm-crop-image"
+            src={photo.url}
+            alt={highlighted ? focusAlt : wholeAlt}
+            draggable={false}
+            onLoad={(event) => measure(event.currentTarget)}
+            style={imageOffset(view)}
+          />
+          {highlighted && photoRatio !== null && (
+            <div className="pm-locator-highlight" style={relativeTo(box, view)} aria-hidden="true" />
+          )}
+        </div>
+        <button
+          type="button"
+          className="pm-photo-zoom"
+          onClick={zoom.toggle}
+          // A press on the button is not a tap or a drag on the photo.
+          onPointerDown={(event) => event.stopPropagation()}
+          onPointerUp={(event) => event.stopPropagation()}
+          aria-label={zoom.zoomed ? t("lineReview.zoomOut") : t("lineReview.zoomIn")}
+        >
+          {zoom.zoomed ? <ZoomOut size={18} aria-hidden="true" /> : <ZoomIn size={18} aria-hidden="true" />}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/** The size of the space the photo may fill; null until (or where) layout is not measurable. */
+function useSpaceSize(ref: RefObject<HTMLDivElement | null>) {
+  const [size, setSize] = useState<{ width: number; height: number } | null>(null);
+  useLayoutEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+    const read = () => {
+      // Layout size, not getBoundingClientRect: the review card may still be
+      // mid-animation (translated and rotated), which would inflate the box.
+      const width = element.clientWidth;
+      const height = element.clientHeight;
+      setSize((current) => {
+        if (width < 1 || height < 1) return null;
+        return current && Math.abs(current.width - width) < 0.5 && Math.abs(current.height - height) < 0.5 ? current : { width, height };
+      });
+    };
+    read();
+    if (typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(read);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [ref]);
+  return size;
+}

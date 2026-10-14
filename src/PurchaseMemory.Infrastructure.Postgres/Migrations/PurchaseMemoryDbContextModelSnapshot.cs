@@ -1041,6 +1041,17 @@ namespace PurchaseMemory.Infrastructure.Postgres.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
+                    b.Property<long?>("ApprovedAt")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ApprovedByEmail")
+                        .HasMaxLength(320)
+                        .HasColumnType("character varying(320)");
+
+                    b.Property<string>("ApprovedByUserId")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
                     b.Property<int?>("DiscountedItemPosition")
                         .HasColumnType("integer");
 

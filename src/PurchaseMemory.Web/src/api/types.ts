@@ -155,6 +155,13 @@ export interface PurchaseDetailItem {
   pendingMatch: boolean;
   candidates: PurchaseProductCandidate[];
   boundingBox: BoundingBox | null;
+  /**
+   * Someone confirmed in the swipe review that the line matches the receipt.
+   * Always sent by the server; optional so older fixtures stay valid.
+   */
+  approved?: boolean;
+  approvedAt?: string | null;
+  approvedByEmail?: string | null;
 }
 
 /** One saved purchase with its catalog links, as the detail page and editor see it. */
@@ -182,6 +189,26 @@ export interface UpdatePurchaseItem {
   productLink: ProductLinkChoice;
   productId: string | null;
   boundingBox: BoundingBox | null;
+  /** The saved line this one continues; keeps its «checked» mark. Null for a new line. */
+  id?: string | null;
+}
+
+/** One «checked» mark from the swipe review, as the phone queues it. */
+export interface LineApprovalChange {
+  purchaseId: string;
+  lineId: string;
+  approved: boolean;
+  /** When the person swiped (ISO), by the phone's clock. */
+  at: string;
+}
+
+export interface LineApprovalResult {
+  purchaseId: string;
+  lineId: string;
+  /** `notFound`: no such purchase or line (e.g. replaced by a correction); nothing changed. */
+  status: "applied" | "unchanged" | "notFound";
+  approved: boolean;
+  approvedAt: string | null;
 }
 
 /** A complete corrected snapshot: lines left out are removed. */

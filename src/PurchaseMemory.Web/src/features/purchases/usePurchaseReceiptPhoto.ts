@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getReceipt } from "../../api/client";
 import { useAuthorizedImageUrl } from "../../auth/useAuthorizedImageUrl";
-import type { LineViewerPhoto } from "../receipt-photo/ReceiptLineViewer";
+import type { LineViewerPhoto } from "../receipt-photo/LinePhoto";
 
 /**
  * The receipt photo behind a saved purchase, for showing its lines on it.

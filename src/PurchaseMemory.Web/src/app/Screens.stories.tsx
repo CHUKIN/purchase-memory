@@ -45,7 +45,8 @@ const purchaseDetail: PurchaseDetail = {
   items: [
     {
       id: "line-1", position: 0, name: longProduct, quantity: 2, unit: "szt", unitPrice: 8.99, lineTotal: 17.98, kind: "product",
-      discountedItemPosition: null, productId: "product-long", productName: longProduct, pendingMatch: false, candidates: [], boundingBox: null
+      discountedItemPosition: null, productId: "product-long", productName: longProduct, pendingMatch: false, candidates: [], boundingBox: null,
+      approved: true, approvedAt: "2026-08-25T08:00:00Z", approvedByEmail: "anna@example.com"
     },
     {
       id: "line-2", position: 1, name: "RABAT Ser Gouda Mlekovita", quantity: null, unit: null, unitPrice: null, lineTotal: -3.6, kind: "discount",
@@ -261,6 +262,12 @@ const withStubbedApi: Decorator = (Story) => {
   window.fetch = async (input, init) => {
     const url = new URL(typeof input === "string" ? input : input instanceof URL ? input.href : input.url, window.location.origin);
     if (!url.pathname.startsWith("/api/")) return realFetch!(input, init);
+    if (url.pathname === "/api/purchases/line-approvals" && typeof init?.body === "string") {
+      // The swipe review's marks: accepted as sent.
+      const { items } = JSON.parse(init.body) as { items: { lineId: string; at: string }[] };
+      const answer = { items: items.map((item) => ({ ...item, status: "applied", approvedAt: item.at })) };
+      return new Response(JSON.stringify(answer), { status: 200, headers: { "Content-Type": "application/json" } });
+    }
     const body = route(url.pathname + url.search);
     return body === undefined
       ? new Response(null, { status: 404 })

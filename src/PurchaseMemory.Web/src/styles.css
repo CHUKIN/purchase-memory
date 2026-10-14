@@ -237,28 +237,94 @@ ion-segment-button ion-label { font-size: 13px; white-space: normal; }
 .pm-crop { position: relative; overflow: hidden; width: 100%; aspect-ratio: 4 / 1; border-radius: 8px; background: #f2f2f7; }
 .pm-crop-image { position: absolute; height: auto; max-width: none; }
 
-/* Receipt lines on the photo (tap / swipe viewer). */
-.pm-locator-stage { margin: 8px 16px 0; touch-action: pan-y; }
-.pm-locator-stage[data-swipe="true"] { user-select: none; -webkit-user-select: none; }
-.pm-locator-photo { border-radius: 10px; overflow: hidden; background: #fff; }
-.pm-locator-whole { display: block; width: 100%; max-height: 45vh; object-fit: contain; background: #e5e5ea; -webkit-user-drag: none; }
-/* No max-height here: it would break the ratio the outline relies on (see frameStyle). */
-.pm-locator-frame { position: relative; overflow: hidden; width: 100%; margin-inline: auto; aspect-ratio: 3 / 1; background: #e5e5ea; }
-.pm-locator-frame .pm-crop-image { -webkit-user-drag: none; }
+/* A receipt line on the photo: a window of the photo fitted to its space, zoomable (LinePhoto). */
+.pm-photo-space { position: relative; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; min-height: 0; overflow: hidden; }
+/* touch-action: none — pinch and drag belong to the photo, not to page zoom or scroll. */
+.pm-photo-frame { position: relative; flex: none; max-width: 100%; max-height: 100%; overflow: hidden; border-radius: 10px; background: #e5e5ea; touch-action: none; user-select: none; -webkit-user-select: none; }
+.pm-zoom-layer { position: absolute; inset: 0; transform-origin: 0 0; will-change: transform; }
+.pm-photo-frame .pm-crop-image { -webkit-user-drag: none; pointer-events: none; }
+/* The outline zooms with the photo; its border stays the same on screen. */
 .pm-locator-highlight {
-  position: absolute; box-sizing: border-box; border: 3px solid var(--ion-color-warning); border-radius: 4px;
+  position: absolute; box-sizing: border-box; border: calc(3px / var(--pm-zoom, 1)) solid var(--ion-color-warning); border-radius: calc(4px / var(--pm-zoom, 1));
   background: rgba(255, 196, 0, .18); box-shadow: 0 0 0 9999px rgba(0, 0, 0, .28); pointer-events: none;
   animation: pm-locator-in .2s ease-out;
 }
 @keyframes pm-locator-in { from { opacity: 0; } to { opacity: 1; } }
-.pm-locator-nav { display: flex; align-items: center; justify-content: space-between; gap: 4px; margin: 0 8px; }
-.pm-locator-nav ion-button { flex: 0 1 auto; min-width: 0; min-height: 44px; margin: 0; --padding-start: 4px; --padding-end: 4px; text-transform: none; }
-.pm-locator-position { flex: none; color: var(--pm-muted); font-size: 15px; white-space: nowrap; font-variant-numeric: tabular-nums; text-align: center; }
-.pm-locator-position:focus { outline: none; }
-.pm-locator-position:focus-visible { outline: 2px solid var(--ion-color-primary); outline-offset: 2px; border-radius: 6px; }
-/* Very narrow screens: the arrows stay, their words go (the buttons keep their labels). */
-@media (max-width: 359px) { .pm-locator-nav ion-button span { display: none; } }
-/* A purchase line that opens its place on the photo: the whole text block is the button. */
+.pm-photo-zoom {
+  position: absolute; z-index: 1; right: 6px; bottom: 6px; display: grid; place-items: center; width: 40px; height: 40px; padding: 0;
+  border: 0; border-radius: 50%; color: #fff; background: rgba(0, 0, 0, .5); cursor: pointer;
+}
+.pm-photo-zoom:focus-visible { outline: 2px solid var(--ion-color-primary); outline-offset: 2px; }
+.pm-review-photo-note {
+  position: absolute; left: 6px; right: 52px; bottom: 6px; margin: 0; padding: 3px 8px; border-radius: 8px;
+  color: #1c1c1e; background: rgba(255, 255, 255, .92); font-size: 12px; line-height: 1.3; pointer-events: none;
+}
+/* The line's sheet in an editor: the line on the photo above its fields. */
+.pm-sheet-photo { position: relative; height: min(32vh, 260px); margin: 8px 16px 0; }
+
+/* Swipe review of a purchase's lines (LineReview). */
+@media (min-width: 768px) and (min-height: 600px) {
+  .pm-review-modal { --width: 480px; --height: min(860px, 92vh); }
+}
+.pm-review {
+  box-sizing: border-box; display: flex; flex-direction: column; gap: 10px; height: 100%; overflow: hidden; outline: none;
+  padding: 8px 12px calc(10px + env(safe-area-inset-bottom));
+}
+.pm-review-card {
+  position: relative; display: flex; flex: 1; flex-direction: column; gap: 10px; min-height: 0; padding: 8px;
+  border-radius: 16px; background: #fff; box-shadow: 0 2px 12px rgba(0, 0, 0, .12);
+  touch-action: none; user-select: none; -webkit-user-select: none; transition: transform .25s ease;
+}
+.pm-review-card[data-dragging="true"] { transition: none; }
+.pm-review-card[data-leaving="true"] { transform: translateX(130%) rotate(14deg); opacity: 0; transition: transform .22s ease-in, opacity .22s ease-in; }
+.pm-review-photo { position: relative; flex: 1; min-height: 120px; }
+.pm-review-photo-empty { display: grid; place-items: center; padding: 12px; border-radius: 10px; color: var(--pm-muted); background: var(--pm-grouped-background); text-align: center; }
+.pm-review-photo-empty p { margin: 0; }
+.pm-review-info { display: grid; flex: none; gap: 4px; padding: 0 6px 4px; }
+.pm-review-meta { display: flex; align-items: center; justify-content: space-between; min-height: 32px; color: var(--pm-muted); font-size: 13px; }
+.pm-review-checked {
+  display: inline-flex; align-items: center; gap: 4px; min-height: 32px; padding: 4px 0 4px 8px; border: 0;
+  color: var(--pm-success-text); background: none; font: inherit; cursor: pointer;
+}
+.pm-review-checked:focus-visible { outline: 2px solid var(--ion-color-primary); outline-offset: 2px; border-radius: 6px; }
+.pm-review-name {
+  display: -webkit-box; margin: 0; overflow: hidden; color: var(--ion-text-color, #000); font-size: 19px; font-weight: 600; line-height: 1.25;
+  overflow-wrap: anywhere; -webkit-box-orient: vertical; -webkit-line-clamp: 3;
+}
+.pm-review-figures { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; color: var(--pm-muted); font-size: 16px; font-variant-numeric: tabular-nums; }
+.pm-review-figures strong { flex: none; color: var(--ion-text-color, #000); font-size: 20px; }
+.pm-review-figures strong.pm-discount-amount { color: var(--pm-success-text); }
+.pm-review-discount { display: flex; justify-content: space-between; gap: 12px; color: var(--pm-muted); font-size: 14px; font-variant-numeric: tabular-nums; }
+.pm-review-product { display: -webkit-box; margin: 0; overflow: hidden; color: var(--pm-muted); font-size: 13px; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.pm-review-actions { display: flex; flex: none; align-items: center; justify-content: center; gap: 24px; }
+.pm-review-back { width: 44px; height: 44px; margin: 0; --padding-start: 0; --padding-end: 0; }
+.pm-review-action { width: 64px; height: 64px; margin: 0; --border-radius: 50%; --padding-start: 0; --padding-end: 0; --box-shadow: 0 2px 8px rgba(0, 0, 0, .18); }
+.pm-review-approve { --background: var(--ion-color-success); --background-activated: var(--ion-color-success-shade); --color: #fff; }
+.pm-review-edit { --background: var(--ion-background-color, #fff); --background-activated: var(--pm-grouped-background); --color: var(--ion-color-primary); }
+.pm-review-stamp {
+  position: absolute; top: 16px; z-index: 2; display: grid; place-items: center; width: 52px; height: 52px;
+  border-radius: 50%; color: #fff; opacity: 0; pointer-events: none;
+}
+.pm-review-stamp-ok { left: 16px; background: var(--ion-color-success); }
+.pm-review-stamp-edit { right: 16px; background: var(--ion-color-primary); }
+.pm-review-done { display: grid; flex: 1; align-content: center; justify-items: center; gap: 12px; text-align: center; }
+.pm-review-done-icon { color: var(--ion-color-success); }
+.pm-review-done-title { margin: 0; font-size: 20px; font-weight: 600; }
+.pm-review-done ion-button svg { margin-inline-end: 6px; }
+.pm-review-progress { display: inline-flex; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; }
+.pm-section-header ion-button.pm-review-start { font-variant-numeric: tabular-nums; }
+.pm-review-start span { margin-left: 4px; }
+.pm-line-checked { display: inline-flex; margin-left: 6px; color: var(--pm-success-text); vertical-align: -2px; }
+/* A phone on its side: photo and line side by side, the buttons in a column. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .pm-review { flex-direction: row; padding: 6px calc(10px + env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) calc(10px + env(safe-area-inset-left)); }
+  .pm-review-card { flex-direction: row; }
+  .pm-review-photo { min-height: 0; }
+  .pm-review-info { width: 40%; align-content: start; overflow-y: auto; }
+  .pm-review-actions { flex-direction: column; gap: 12px; }
+  .pm-review-action { width: 56px; height: 56px; }
+}
+/* A purchase line that opens the swipe review at it: the whole text block is the button. */
 .pm-line-locate {
   display: block; width: 100%; min-height: 44px; margin: 0; padding: 0; border: 0; background: none;
   color: inherit; font: inherit; text-align: left; cursor: pointer;

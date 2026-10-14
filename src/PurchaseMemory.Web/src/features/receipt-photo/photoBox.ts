@@ -47,18 +47,36 @@ export function padBox(box: BoundingBox | null | undefined): BoundingBox | null 
   };
 }
 
+/** The whole photo as a window. */
+export const wholePhoto: BoundingBox = { x: 0, y: 0, width: 1, height: 1 };
+
 /**
- * The part of the photo shown around a highlighted line: the line itself plus
- * a few neighbouring rows above and below, so the person can see where on the
- * receipt they are. Always inside the photo.
+ * The part of the photo shown around a line in a space of the given shape
+ * (`aspect` = width / height in pixels): the line spans the width, with as
+ * many neighbouring rows above and below as fit, but no more than a band of
+ * the receipt, so the line stays what you look at. Always inside the photo.
  */
-export function contextWindow(box: BoundingBox): BoundingBox {
-  const x = Math.max(0, box.x - 0.06);
-  const right = Math.min(1, box.x + box.width + 0.06);
-  const height = Math.min(1, Math.max(box.height + 0.12, box.height * 3));
+export function fitWindow(box: BoundingBox, photoRatio: number, aspect: number): BoundingBox {
+  const x = Math.max(0, box.x - 0.04);
+  const right = Math.min(1, box.x + box.width + 0.04);
+  const width = right - x;
+  const wanted = (width * photoRatio) / Math.max(aspect, 0.1);
+  const band = Math.max(0.3, box.height * 10);
+  const height = Math.min(1, Math.max(box.height * 1.5, Math.min(wanted, band)));
   const centre = box.y + box.height / 2;
   const y = Math.min(Math.max(0, centre - height / 2), 1 - height);
-  return { x, y, width: right - x, height };
+  return { x, y, width, height };
+}
+
+/**
+ * The pixel size of a window of the photo shown as large as possible inside a
+ * `width` × `height` space without distortion.
+ */
+export function fitSize(window: BoundingBox, photoRatio: number, width: number, height: number) {
+  const ratio = (photoRatio * window.width) / window.height;
+  return width / height > ratio
+    ? { width: height * ratio, height }
+    : { width, height: width / ratio };
 }
 
 /** Where `box` sits inside `frame`, in percent of the frame, for CSS positioning. */

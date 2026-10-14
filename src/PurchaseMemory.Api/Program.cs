@@ -39,6 +39,7 @@ builder.Services.AddScoped<IProductMatcher, ProductMatcher>();
 builder.Services.AddScoped<IProductCatalogService, ProductCatalogService>();
 builder.Services.AddScoped<IPurchaseDraftService, PurchaseDraftService>();
 builder.Services.AddScoped<IPurchaseEditService, PurchaseEditService>();
+builder.Services.AddScoped<IPurchaseLineApprovalService, PurchaseLineApprovalService>();
 builder.Services.AddScoped<IProductImpressionService, ProductImpressionService>();
 builder.Services.AddScoped<IReceiptProcessingService, ReceiptProcessingService>();
 builder.Services.AddScoped<IProductCategoryService, ProductCategoryService>();

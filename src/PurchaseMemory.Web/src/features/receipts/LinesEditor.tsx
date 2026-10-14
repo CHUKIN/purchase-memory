@@ -8,13 +8,14 @@ import {
   IonList,
   IonNote
 } from "@ionic/react";
-import { Plus, ScanSearch, Trash2 } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { useRef, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { BoundingBox, ReceiptLineKind } from "../../api/types";
 import { DecimalInput, Footnote, SectionHeader, Sheet } from "../../design-system/components";
 import { formatMoney, formatQuantity } from "../purchases/money";
-import { ReceiptLineViewer, type LineViewerPhoto } from "../receipt-photo/ReceiptLineViewer";
+import { LinePhoto, type LineViewerPhoto } from "../receipt-photo/LinePhoto";
+import { isUsableBox } from "../receipt-photo/photoBox";
 import { discountLinks, isDiscount } from "./discountLines";
 import { DiscountFields, ReceiptDiscountLine } from "./ReceiptDiscountLine";
 
@@ -53,8 +54,8 @@ export interface LinesEditorProps<T extends EditableLine> {
   /** Section header above the rows. */
   title: string;
   /**
-   * The receipt photo, when there is one: each line's sheet then offers
-   * «Показать на фото», which opens the line viewer over it.
+   * The receipt photo, when there is one: each line's sheet then shows the
+   * line on it (outlined, zoomable) above the fields.
    */
   photo?: LineViewerPhoto | null;
 }
@@ -91,7 +92,7 @@ export function LinesEditor<T extends EditableLine>({
     onRemove(index);
   };
   const open = openLine !== null && lines[openLine] ? lines[openLine] : null;
-  const [viewerLine, setViewerLine] = useState<number | null>(null);
+  const [photoRatio, setPhotoRatio] = useState<number | null>(null);
 
   return (
     <>
@@ -152,6 +153,9 @@ export function LinesEditor<T extends EditableLine>({
         title={open && isDiscount(open) ? t("purchaseEdit.discountLine", { number: (openLine ?? 0) + 1 }) : t("purchaseEdit.line", { number: (openLine ?? 0) + 1 })}
         initialBreakpoint={0.85}
       >
+        {open !== null && openLine !== null && photo && (
+          <SheetPhoto line={open} lineKey={openLine} photo={photo} photoRatio={photoRatio} onPhotoRatio={setPhotoRatio} />
+        )}
         {open !== null && openLine !== null && (
           <LineFields
             line={open}
@@ -159,14 +163,6 @@ export function LinesEditor<T extends EditableLine>({
             focusField={focusField}
             extra={!isDiscount(open) ? sheetExtra?.(open, openLine) : null}
           />
-        )}
-        {open !== null && openLine !== null && photo && (
-          <IonList inset>
-            <IonItem button detail={false} lines="none" onClick={() => setViewerLine(openLine)}>
-              <ScanSearch slot="start" size={22} aria-hidden="true" className="pm-row-icon" />
-              <IonLabel color="primary">{t("lineLocator.showOnPhoto")}</IonLabel>
-            </IonItem>
-          </IonList>
         )}
         {open !== null && openLine !== null && (
           <IonList inset>
@@ -176,21 +172,45 @@ export function LinesEditor<T extends EditableLine>({
           </IonList>
         )}
       </Sheet>
-
-      {photo && (
-        <ReceiptLineViewer
-          lines={lines}
-          openIndex={viewerLine}
-          onClose={() => setViewerLine(null)}
-          photo={photo}
-          currency={currency}
-        />
-      )}
     </>
   );
 }
 
-function LineFields({ line, onChange, focusField, extra }: { line: EditableLine; onChange: (patch: Partial<EditableLine>) => void; focusField: LineFocus | null; extra: ReactNode }) {
+/**
+ * The open line on the receipt photo, at the top of its sheet: what the
+ * person is correcting, next to the fields (with their unsaved changes).
+ */
+function SheetPhoto({ line, lineKey, photo, photoRatio, onPhotoRatio }: {
+  line: EditableLine;
+  lineKey: number;
+  photo: LineViewerPhoto;
+  photoRatio: number | null;
+  onPhotoRatio: (ratio: number) => void;
+}) {
+  const { t } = useTranslation();
+  const name = line.name.trim() || t("lines.untitled");
+  if (!photo.photo) {
+    return <p className="pm-footnote" role={photo.failed ? "alert" : undefined}>{photo.failed ? t("lineReview.photoFailed") : t("lineReview.photoLoading")}</p>;
+  }
+  const note = !photo.photo.croppable ? t("lineReview.multiPart") : isUsableBox(line.boundingBox) ? null : t("lineReview.noBox");
+  return (
+    <div className="pm-sheet-photo">
+      <LinePhoto
+        photo={photo.photo}
+        box={line.boundingBox}
+        focusAlt={t("lineReview.photoLineAlt", { name })}
+        wholeAlt={t("lineReview.photoWholeAlt")}
+        photoRatio={photoRatio}
+        onPhotoRatio={onPhotoRatio}
+        resetKey={lineKey}
+      />
+      {note && <p className="pm-review-photo-note">{note}</p>}
+    </div>
+  );
+}
+
+/** A line's editable fields; also the swipe review's «correct this line» form. */
+export function LineFields({ line, onChange, focusField, extra }: { line: EditableLine; onChange: (patch: Partial<EditableLine>) => void; focusField: LineFocus | null; extra: ReactNode }) {
   const { t } = useTranslation();
   const nameRef = useRef<HTMLIonInputElement>(null);
   const priceRef = useRef<HTMLIonInputElement>(null);
