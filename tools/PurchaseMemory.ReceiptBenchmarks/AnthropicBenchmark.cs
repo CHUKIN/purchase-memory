@@ -12,7 +12,13 @@ using PurchaseMemory.Infrastructure.Recognition;
 /// AnthropicStructuredVisionProvider and ReceiptAnalysisWorkflow (prompt, adapted
 /// schema, parser, repair retry). Only that provider is constructed, so no other
 /// paid service can be called. Writes one JSON per receipt in the format
-/// score_items.py reads, with usage, cost and bounding-box fill counts.
+/// score_items.py reads, with usage, cost and bounding-box fill counts. The
+/// <c>parsed</c> block also carries each line's <c>box</c> ([x, y, width,
+/// height] fractions) and <c>totalBox</c>, the shape ocr_compare's report reads,
+/// so a run written to <c>results/ocr-compare/runs/&lt;label&gt;/</c> is scored for
+/// box hits by <c>run_ocr_compare.py report</c> as well. <c>--contract</c> picks
+/// the prompt/schema/parser (default v4, the production default; v3 is the
+/// shared contract).
 ///
 /// Spend control: a JSON ledger (--ledger) accumulates the cost of every call
 /// across runs; a receipt is skipped and the run stops when the ledger plus the
@@ -76,7 +82,8 @@ internal static class AnthropicBenchmark
         {
             Pipeline = AnthropicStructuredVisionProvider.ProviderId,
             AnthropicModel = arguments.Model,
-            AnthropicEffort = Enum.Parse<AnthropicEffort>(arguments.Effort, ignoreCase: true)
+            AnthropicEffort = Enum.Parse<AnthropicEffort>(arguments.Effort, ignoreCase: true),
+            AnthropicReceiptContract = arguments.Contract
         };
         using var provider = new AnthropicStructuredVisionProvider(
             Options.Create(options), NullLogger<AnthropicStructuredVisionProvider>.Instance);
@@ -85,7 +92,7 @@ internal static class AnthropicBenchmark
         var worstCasePerReceipt = 2 * Cost(10_000, options.AnthropicMaximumOutputTokens);
 
         Console.WriteLine(
-            $"{arguments.Label}: model {arguments.Model}, effort {arguments.Effort}; "
+            $"{arguments.Label}: model {arguments.Model}, effort {arguments.Effort}, contract {arguments.Contract}; "
             + $"receipts {string.Join(",", receipts.Select(receipt => receipt.Id))}; output {arguments.OutputDirectory}");
 
         var results = new List<AnthropicReceiptResult>();
@@ -106,7 +113,12 @@ internal static class AnthropicBenchmark
             try
             {
                 var analysis = await workflow.AnalyzeAsync(
-                    new ReceiptAnalysisRequest(Guid.NewGuid(), Guid.NewGuid().ToString("N"), [new ReceiptImageData(image, "image/jpeg")], counter.Id),
+                    new ReceiptAnalysisRequest(
+                        Guid.NewGuid(),
+                        Guid.NewGuid().ToString("N"),
+                        [new ReceiptImageData(image, "image/jpeg")],
+                        counter.Id,
+                        ContractVersion: options.AnthropicReceiptContract),
                     CancellationToken.None);
                 stopwatch.Stop();
                 var usage = counter.TakeUsage();
@@ -115,7 +127,7 @@ internal static class AnthropicBenchmark
                 result = new AnthropicReceiptResult(
                     arguments.Label, arguments.Model, receipt.Id, "success", null, stopwatch.ElapsedMilliseconds, stopwatch.ElapsedMilliseconds / 1000d,
                     arguments.Effort, usage, Cost(usage.InputTokens, usage.OutputTokens),
-                    shape.TotalMatches, shape.Parsed, analysis.Extraction, analysis.Warnings.Count,
+                    shape.TotalMatches, BoxedScorePyParsed.From(analysis.Extraction), analysis.Extraction, analysis.Warnings.Count,
                     analysis.Extraction.Items.Count(item => item.BoundingBox is not null),
                     analysis.Extraction.ReceiptTotalBoundingBox is not null);
                 Console.WriteLine(
@@ -166,7 +178,7 @@ internal static class AnthropicBenchmark
         var successes = results.Where(result => result.Status == "success").ToArray();
         var seconds = successes.Select(result => result.Seconds).Order().ToArray();
         var builder = new StringBuilder();
-        builder.AppendLine(CultureInfo.InvariantCulture, $"# {arguments.Label}: {arguments.Model}, effort {arguments.Effort}");
+        builder.AppendLine(CultureInfo.InvariantCulture, $"# {arguments.Label}: {arguments.Model}, effort {arguments.Effort}, contract {arguments.Contract}");
         if (stopReason is not null)
         {
             builder.AppendLine(CultureInfo.InvariantCulture, $"STOPPED: {stopReason}");
@@ -196,11 +208,12 @@ internal sealed record AnthropicArguments(
     string Model,
     string Effort,
     string LedgerPath,
-    decimal StopAtUsd)
+    decimal StopAtUsd,
+    ReceiptAnalysisContractVersion Contract)
 {
     public const string Usage =
         "Usage: anthropic --out DIR --ledger FILE --label NAME [--dataset DIR] [--receipts 01,05] "
-        + "[--model claude-haiku-5-5] [--effort low|medium|high] [--stop-at 0.45]";
+        + "[--model claude-haiku-5-5] [--effort low|medium|high] [--contract v4|v3] [--stop-at 0.45]";
 
     public static AnthropicArguments Parse(IReadOnlyList<string> args, string repositoryRoot)
     {
@@ -212,6 +225,7 @@ internal sealed record AnthropicArguments(
         var model = "claude-haiku-5-5";
         var effort = "low";
         var stopAt = 0.45m;
+        var contract = ReceiptAnalysisContractVersion.V4Structured;
         for (var index = 0; index < args.Count; index++)
         {
             switch (args[index])
@@ -223,6 +237,14 @@ internal sealed record AnthropicArguments(
                 case "--label": label = Value(args, ref index); break;
                 case "--model": model = Value(args, ref index); break;
                 case "--effort": effort = Value(args, ref index).ToLowerInvariant(); break;
+                case "--contract":
+                    contract = Value(args, ref index).ToLowerInvariant() switch
+                    {
+                        "v3" => ReceiptAnalysisContractVersion.V3,
+                        "v4" => ReceiptAnalysisContractVersion.V4Structured,
+                        _ => throw new ArgumentException("--contract must be v4 or v3.")
+                    };
+                    break;
                 case "--stop-at": stopAt = decimal.Parse(Value(args, ref index), CultureInfo.InvariantCulture); break;
                 default: throw new ArgumentException($"Unknown argument '{args[index]}'.");
             }
@@ -243,7 +265,7 @@ internal sealed record AnthropicArguments(
             throw new ArgumentException($"Dataset folder '{dataset}' does not exist.");
         }
 
-        return new(dataset, receipts, output, label, model, effort, ledger, stopAt);
+        return new(dataset, receipts, output, label, model, effort, ledger, stopAt, contract);
 
         static string Value(IReadOnlyList<string> args, ref int index) =>
             ++index < args.Count ? args[index] : throw new ArgumentException($"{args[index - 1]} needs a value.");
@@ -262,11 +284,36 @@ internal sealed record AnthropicReceiptResult(
     OpenAiUsage Usage,
     decimal CostUsd,
     bool? TotalMatches,
-    ScorePyParsed? Parsed,
+    BoxedScorePyParsed? Parsed,
     ReceiptExtractionResult? Extraction,
     int Warnings,
     int ItemBoxes,
     bool TotalBox);
+
+/// <summary>score_items.py's <c>parsed</c> shape plus boxes as ocr_compare reads them.</summary>
+internal sealed record BoxedScorePyParsed(
+    string? Merchant,
+    string? Date,
+    string? Currency,
+    decimal? Total,
+    double[]? TotalBox,
+    IReadOnlyList<BoxedScorePyItem> Items)
+{
+    public static BoxedScorePyParsed From(ReceiptExtractionResult extraction) => new(
+        extraction.MerchantName,
+        extraction.PurchasedAt?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+        extraction.Currency,
+        extraction.ReceiptTotal,
+        ToArray(extraction.ReceiptTotalBoundingBox),
+        extraction.Items
+            .Select(item => new BoxedScorePyItem(item.Name, item.Quantity, item.UnitPrice, item.LineTotal, ToArray(item.BoundingBox)))
+            .ToArray());
+
+    private static double[]? ToArray(PurchaseMemory.Domain.Receipts.BoundingBox? box) =>
+        box is null ? null : [box.X, box.Y, box.Width, box.Height];
+}
+
+internal sealed record BoxedScorePyItem(string Name, decimal? Quantity, decimal? UnitPrice, decimal? LineTotal, double[]? Box);
 
 /// <summary>Cumulative spend across benchmark runs; the hard budget stop reads it.</summary>
 internal sealed class Ledger

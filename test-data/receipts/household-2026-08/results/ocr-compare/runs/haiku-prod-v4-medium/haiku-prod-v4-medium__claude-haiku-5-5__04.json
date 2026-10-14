@@ -1,0 +1,313 @@
+{
+  "configuration": "haiku-prod-v4-medium",
+  "model": "claude-haiku-5-5",
+  "receiptId": "04",
+  "status": "success",
+  "error": null,
+  "elapsedMilliseconds": 23397,
+  "seconds": 23.397,
+  "effort": "medium",
+  "usage": {
+    "calls": 1,
+    "inputTokens": 2978,
+    "outputTokens": 5517,
+    "requestIds": [
+      "msg_011Cg28e2xGk13yzYcW2qnaU"
+    ]
+  },
+  "costUsd": 0.003056,
+  "totalMatches": true,
+  "parsed": {
+    "merchant": "Lidl",
+    "date": "2026-07-17",
+    "currency": "PLN",
+    "total": 136.99,
+    "totalBox": [
+      0.5,
+      0.395,
+      0.17,
+      0.025
+    ],
+    "items": [
+      {
+        "name": "Fairy Kapsułki Lemon X",
+        "quantity": 1,
+        "unitPrice": 84.99,
+        "lineTotal": 84.99,
+        "box": [
+          0.27,
+          0.19,
+          0.4,
+          0.05
+        ]
+      },
+      {
+        "name": "OPUST Fairy Kapsułki Lemon",
+        "quantity": null,
+        "unitPrice": null,
+        "lineTotal": -30.0,
+        "box": [
+          0.27,
+          0.215,
+          0.4,
+          0.025
+        ]
+      },
+      {
+        "name": "Ogórki grunt. Pl uz F",
+        "quantity": 1,
+        "unitPrice": 1.6,
+        "lineTotal": 1.6,
+        "box": [
+          0.27,
+          0.25,
+          0.4,
+          0.04
+        ]
+      },
+      {
+        "name": "OPUST Ogórki grunt. Pl uz",
+        "quantity": null,
+        "unitPrice": null,
+        "lineTotal": -0.2,
+        "box": [
+          0.27,
+          0.27,
+          0.4,
+          0.025
+        ]
+      },
+      {
+        "name": "Pure Parówki z Ind.",
+        "quantity": 1,
+        "unitPrice": 6.49,
+        "lineTotal": 6.49,
+        "box": [
+          0.27,
+          0.285,
+          0.4,
+          0.025
+        ]
+      },
+      {
+        "name": "Persil Kapsułki 60pr",
+        "quantity": 1,
+        "unitPrice": 51.99,
+        "lineTotal": 51.99,
+        "box": [
+          0.27,
+          0.31,
+          0.4,
+          0.025
+        ]
+      },
+      {
+        "name": "Sał. batawska korzeń",
+        "quantity": 1,
+        "unitPrice": 5.99,
+        "lineTotal": 5.99,
+        "box": [
+          0.27,
+          0.325,
+          0.4,
+          0.025
+        ]
+      },
+      {
+        "name": "Lay's Chipsy",
+        "quantity": 1,
+        "unitPrice": 8.29,
+        "lineTotal": 8.29,
+        "box": [
+          0.27,
+          0.34,
+          0.4,
+          0.025
+        ]
+      },
+      {
+        "name": "Przysnacki(chipsy w...)",
+        "quantity": 1,
+        "unitPrice": 6.99,
+        "lineTotal": 6.99,
+        "box": [
+          0.27,
+          0.355,
+          0.4,
+          0.025
+        ]
+      },
+      {
+        "name": "Reklamówka 50p",
+        "quantity": 1,
+        "unitPrice": 0.85,
+        "lineTotal": 0.85,
+        "box": [
+          0.27,
+          0.37,
+          0.4,
+          0.025
+        ]
+      }
+    ]
+  },
+  "extraction": {
+    "merchantName": "Lidl",
+    "purchasedAt": "2026-07-17T21:45:36+02:00",
+    "currency": "PLN",
+    "receiptTotal": 136.99,
+    "items": [
+      {
+        "name": "Fairy Kapsułki Lemon X",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 84.99,
+        "lineTotal": 84.99,
+        "boundingBox": {
+          "x": 0.27,
+          "y": 0.19,
+          "width": 0.4,
+          "height": 0.05
+        },
+        "kind": 0
+      },
+      {
+        "name": "OPUST Fairy Kapsułki Lemon",
+        "quantity": null,
+        "unit": null,
+        "unitPrice": null,
+        "lineTotal": -30.0,
+        "boundingBox": {
+          "x": 0.27,
+          "y": 0.215,
+          "width": 0.4,
+          "height": 0.025
+        },
+        "kind": 1
+      },
+      {
+        "name": "Ogórki grunt. Pl uz F",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 1.6,
+        "lineTotal": 1.6,
+        "boundingBox": {
+          "x": 0.27,
+          "y": 0.25,
+          "width": 0.4,
+          "height": 0.04
+        },
+        "kind": 0
+      },
+      {
+        "name": "OPUST Ogórki grunt. Pl uz",
+        "quantity": null,
+        "unit": null,
+        "unitPrice": null,
+        "lineTotal": -0.2,
+        "boundingBox": {
+          "x": 0.27,
+          "y": 0.27,
+          "width": 0.4,
+          "height": 0.025
+        },
+        "kind": 1
+      },
+      {
+        "name": "Pure Parówki z Ind.",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 6.49,
+        "lineTotal": 6.49,
+        "boundingBox": {
+          "x": 0.27,
+          "y": 0.285,
+          "width": 0.4,
+          "height": 0.025
+        },
+        "kind": 0
+      },
+      {
+        "name": "Persil Kapsułki 60pr",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 51.99,
+        "lineTotal": 51.99,
+        "boundingBox": {
+          "x": 0.27,
+          "y": 0.31,
+          "width": 0.4,
+          "height": 0.025
+        },
+        "kind": 0
+      },
+      {
+        "name": "Sał. batawska korzeń",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 5.99,
+        "lineTotal": 5.99,
+        "boundingBox": {
+          "x": 0.27,
+          "y": 0.325,
+          "width": 0.4,
+          "height": 0.025
+        },
+        "kind": 0
+      },
+      {
+        "name": "Lay's Chipsy",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 8.29,
+        "lineTotal": 8.29,
+        "boundingBox": {
+          "x": 0.27,
+          "y": 0.34,
+          "width": 0.4,
+          "height": 0.025
+        },
+        "kind": 0
+      },
+      {
+        "name": "Przysnacki(chipsy w...)",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 6.99,
+        "lineTotal": 6.99,
+        "boundingBox": {
+          "x": 0.27,
+          "y": 0.355,
+          "width": 0.4,
+          "height": 0.025
+        },
+        "kind": 0
+      },
+      {
+        "name": "Reklamówka 50p",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 0.85,
+        "lineTotal": 0.85,
+        "boundingBox": {
+          "x": 0.27,
+          "y": 0.37,
+          "width": 0.4,
+          "height": 0.025
+        },
+        "kind": 0
+      }
+    ],
+    "extractorName": "anthropic",
+    "modelName": "claude-haiku-5-5",
+    "receiptTotalBoundingBox": {
+      "x": 0.5,
+      "y": 0.395,
+      "width": 0.17,
+      "height": 0.025
+    }
+  },
+  "warnings": 0,
+  "itemBoxes": 10,
+  "totalBox": true
+}

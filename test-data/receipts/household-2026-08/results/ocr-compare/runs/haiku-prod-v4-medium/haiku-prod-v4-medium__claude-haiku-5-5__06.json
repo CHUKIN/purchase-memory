@@ -1,0 +1,131 @@
+{
+  "configuration": "haiku-prod-v4-medium",
+  "model": "claude-haiku-5-5",
+  "receiptId": "06",
+  "status": "success",
+  "error": null,
+  "elapsedMilliseconds": 7384,
+  "seconds": 7.384,
+  "effort": "medium",
+  "usage": {
+    "calls": 1,
+    "inputTokens": 2978,
+    "outputTokens": 1485,
+    "requestIds": [
+      "msg_011Cg28gSZ91ZQN1mSk1UGY1"
+    ]
+  },
+  "costUsd": 0.001040,
+  "totalMatches": true,
+  "parsed": {
+    "merchant": "Mleczarnia Pousińska",
+    "date": "2025-10-11",
+    "currency": "PLN",
+    "total": 25.85,
+    "totalBox": [
+      0.31,
+      0.36,
+      0.44,
+      0.04
+    ],
+    "items": [
+      {
+        "name": "Gołąbek mięsny",
+        "quantity": 1,
+        "unitPrice": 12.01,
+        "lineTotal": 12.01,
+        "box": [
+          0.31,
+          0.27,
+          0.45,
+          0.03
+        ]
+      },
+      {
+        "name": "Sos pomidorowy",
+        "quantity": 1,
+        "unitPrice": 6.76,
+        "lineTotal": 6.76,
+        "box": [
+          0.31,
+          0.29,
+          0.45,
+          0.03
+        ]
+      },
+      {
+        "name": "Zacierkowa",
+        "quantity": 1,
+        "unitPrice": 7.08,
+        "lineTotal": 7.08,
+        "box": [
+          0.31,
+          0.31,
+          0.45,
+          0.03
+        ]
+      }
+    ]
+  },
+  "extraction": {
+    "merchantName": "Mleczarnia Pousińska",
+    "purchasedAt": "2025-10-11T14:10:00+02:00",
+    "currency": "PLN",
+    "receiptTotal": 25.85,
+    "items": [
+      {
+        "name": "Gołąbek mięsny",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 12.01,
+        "lineTotal": 12.01,
+        "boundingBox": {
+          "x": 0.31,
+          "y": 0.27,
+          "width": 0.45,
+          "height": 0.03
+        },
+        "kind": 0
+      },
+      {
+        "name": "Sos pomidorowy",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 6.76,
+        "lineTotal": 6.76,
+        "boundingBox": {
+          "x": 0.31,
+          "y": 0.29,
+          "width": 0.45,
+          "height": 0.03
+        },
+        "kind": 0
+      },
+      {
+        "name": "Zacierkowa",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 7.08,
+        "lineTotal": 7.08,
+        "boundingBox": {
+          "x": 0.31,
+          "y": 0.31,
+          "width": 0.45,
+          "height": 0.03
+        },
+        "kind": 0
+      }
+    ],
+    "extractorName": "anthropic",
+    "modelName": "claude-haiku-5-5",
+    "receiptTotalBoundingBox": {
+      "x": 0.31,
+      "y": 0.36,
+      "width": 0.44,
+      "height": 0.04
+    }
+  },
+  "warnings": 0,
+  "itemBoxes": 3,
+  "totalBox": true
+}

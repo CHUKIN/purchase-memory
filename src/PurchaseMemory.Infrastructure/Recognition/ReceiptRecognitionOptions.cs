@@ -1,3 +1,5 @@
+using PurchaseMemory.Application.Receipts;
+
 namespace PurchaseMemory.Infrastructure.Recognition;
 
 public enum ReceiptRecognitionMode
@@ -132,16 +134,28 @@ public sealed class ReceiptRecognitionOptions
     public string AnthropicModel { get; set; } = "";
 
     /// <summary>
-    /// Haiku 5.5 defaults to <c>medium</c> when effort is omitted; <c>low</c>
-    /// matched it on the labelled receipts at lower cost and latency, so the
-    /// level is always sent explicitly.
+    /// Always sent explicitly. With contract v3 <c>low</c> matched <c>medium</c>
+    /// on the labelled receipts at lower cost; contract v4 (the production
+    /// default) was measured at <c>medium</c> — the level that placed a box on
+    /// 108/110 labelled lines — so appsettings.json sets Medium.
     /// </summary>
     public AnthropicEffort AnthropicEffort { get; set; } = AnthropicEffort.Low;
 
     /// <summary>
+    /// Prompt/schema/parser the <c>anthropic</c> pipeline uses. V4Structured
+    /// ("full-structured", РЕЗУЛЬТАТЫ_СРАВНЕНИЕ_OCR.md) returns a box for almost
+    /// every line; V3 is the shared contract the other providers use and stays
+    /// available as a configuration-only rollback
+    /// (<c>ReceiptRecognition__AnthropicReceiptContract=V3</c>, with effort Low).
+    /// </summary>
+    public ReceiptAnalysisContractVersion AnthropicReceiptContract { get; set; } =
+        ReceiptAnalysisContractVersion.V4Structured;
+
+    /// <summary>
     /// Per-attempt timeout for one Claude call. Measured Haiku 5.5 latency is
-    /// 7–20 s per receipt (the 27-line receipt produced ~5k output tokens in
-    /// ~16 s); 120 s covers the full 16384-token budget at that speed with
+    /// 7–20 s per receipt at effort low with contract v3 (the 27-line receipt
+    /// produced ~5k output tokens in ~16 s) and ~12 s median, ~25 s worst, at
+    /// effort medium with contract v4; 120 s covers the full 16384-token budget at that speed with
     /// room to spare, yet keeps a hung call from delaying the OpenAI fallback
     /// for minutes.
     /// </summary>

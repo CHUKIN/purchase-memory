@@ -43,27 +43,29 @@ public sealed class ReceiptAnalysisWorkflow : IReceiptAnalysisWorkflow
         }
 
         var instruction = ReceiptAnalysisContract.NormalizeInstruction(request.UserInstruction);
+        var contract = ContractDefinition.For(request.ContractVersion);
         var provider = _providerResolver.Resolve(request.ProviderId);
         ReceiptStructuredOutputException? lastValidationError = null;
 
         for (var attempt = 0; attempt <= MaximumRepairAttempts; attempt++)
         {
-            var prompt = ReceiptAnalysisContract.BuildPrompt(
+            var prompt = contract.BuildPrompt(
                 instruction,
-                attempt == 0 ? null : lastValidationError!.ValidationErrors);
+                attempt == 0 ? null : lastValidationError!.ValidationErrors,
+                request.Images.Count);
             var providerResponse = await provider.GenerateAsync(
                 new StructuredVisionRequest(
                     request.Images,
                     prompt,
-                    ReceiptAnalysisContract.JsonSchema,
-                    ReceiptAnalysisContract.PromptVersion,
-                    ReceiptAnalysisContract.SchemaVersion,
+                    contract.JsonSchema,
+                    contract.PromptVersion,
+                    contract.SchemaVersion,
                     request.CorrelationId),
                 cancellationToken);
 
             try
             {
-                var parsed = ReceiptStructuredOutputParser.Parse(providerResponse.RawJson);
+                var parsed = contract.Parse(providerResponse.RawJson);
                 var extraction = parsed.Extraction with
                 {
                     ExtractorName = providerResponse.Provider,
@@ -80,8 +82,8 @@ public sealed class ReceiptAnalysisWorkflow : IReceiptAnalysisWorkflow
                         providerResponse.InputTokens,
                         providerResponse.OutputTokens,
                         providerResponse.DurationMilliseconds,
-                        ReceiptAnalysisContract.PromptVersion,
-                        ReceiptAnalysisContract.SchemaVersion,
+                        contract.PromptVersion,
+                        contract.SchemaVersion,
                         request.CorrelationId));
             }
             catch (ReceiptStructuredOutputException exception) when (attempt < MaximumRepairAttempts)
@@ -96,5 +98,35 @@ public sealed class ReceiptAnalysisWorkflow : IReceiptAnalysisWorkflow
         }
 
         throw new InvalidOperationException("Receipt analysis ended without a result.");
+    }
+
+    /// <summary>The prompt, schema and parser that belong to one contract version.</summary>
+    private sealed record ContractDefinition(
+        string PromptVersion,
+        string SchemaVersion,
+        string JsonSchema,
+        Func<string?, IReadOnlyList<string>?, int, string> BuildPrompt,
+        Func<string, ParsedReceipt> Parse)
+    {
+        private static readonly ContractDefinition V3 = new(
+            ReceiptAnalysisContract.PromptVersion,
+            ReceiptAnalysisContract.SchemaVersion,
+            ReceiptAnalysisContract.JsonSchema,
+            (instruction, repairErrors, _) => ReceiptAnalysisContract.BuildPrompt(instruction, repairErrors),
+            ReceiptStructuredOutputParser.Parse);
+
+        private static readonly ContractDefinition V4Structured = new(
+            ReceiptStructuredAnalysisContract.PromptVersion,
+            ReceiptStructuredAnalysisContract.SchemaVersion,
+            ReceiptStructuredAnalysisContract.JsonSchema,
+            ReceiptStructuredAnalysisContract.BuildPrompt,
+            ReceiptStructuredOutputParser.ParseStructured);
+
+        public static ContractDefinition For(ReceiptAnalysisContractVersion version) => version switch
+        {
+            ReceiptAnalysisContractVersion.V3 => V3,
+            ReceiptAnalysisContractVersion.V4Structured => V4Structured,
+            _ => throw new ArgumentOutOfRangeException(nameof(version), version, "Unknown receipt contract version.")
+        };
     }
 }

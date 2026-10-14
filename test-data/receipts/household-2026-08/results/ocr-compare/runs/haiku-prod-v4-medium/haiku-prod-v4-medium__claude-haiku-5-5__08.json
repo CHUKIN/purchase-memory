@@ -1,0 +1,209 @@
+{
+  "configuration": "haiku-prod-v4-medium",
+  "model": "claude-haiku-5-5",
+  "receiptId": "08",
+  "status": "success",
+  "error": null,
+  "elapsedMilliseconds": 9704,
+  "seconds": 9.704,
+  "effort": "medium",
+  "usage": {
+    "calls": 1,
+    "inputTokens": 2978,
+    "outputTokens": 2158,
+    "requestIds": [
+      "msg_011Cg28hTrp2x621fAnj8D2R"
+    ]
+  },
+  "costUsd": 0.001377,
+  "totalMatches": true,
+  "parsed": {
+    "merchant": "SKLEP ŻABKA ZB031",
+    "date": "2025-08-17",
+    "currency": "PLN",
+    "total": 29.96,
+    "totalBox": [
+      0.21,
+      0.64,
+      0.68,
+      0.04
+    ],
+    "items": [
+      {
+        "name": "PIERS PIECZ 75g-C",
+        "quantity": 1,
+        "unitPrice": 5.5,
+        "lineTotal": 5.5,
+        "box": [
+          0.215,
+          0.43,
+          0.65,
+          0.024
+        ]
+      },
+      {
+        "name": "SER EDAMSKI PLASTRY 150g-C",
+        "quantity": 1,
+        "unitPrice": 6.5,
+        "lineTotal": 6.5,
+        "box": [
+          0.215,
+          0.452,
+          0.65,
+          0.024
+        ]
+      },
+      {
+        "name": "JOGURT SKYR PITNY 330ml-C",
+        "quantity": 1,
+        "unitPrice": 5.99,
+        "lineTotal": 5.99,
+        "box": [
+          0.215,
+          0.472,
+          0.65,
+          0.024
+        ]
+      },
+      {
+        "name": "JOG SKYR JAGO 330ml-C",
+        "quantity": 1,
+        "unitPrice": 5.99,
+        "lineTotal": 5.99,
+        "box": [
+          0.215,
+          0.494,
+          0.65,
+          0.024
+        ]
+      },
+      {
+        "name": "CROISSANT CZEKOLAD-C",
+        "quantity": 2,
+        "unitPrice": 3.99,
+        "lineTotal": 7.98,
+        "box": [
+          0.215,
+          0.514,
+          0.65,
+          0.024
+        ]
+      },
+      {
+        "name": "OPUST CROISSANT CZEKOLAD-C",
+        "quantity": null,
+        "unitPrice": null,
+        "lineTotal": -2.0,
+        "box": [
+          0.215,
+          0.535,
+          0.65,
+          0.024
+        ]
+      }
+    ]
+  },
+  "extraction": {
+    "merchantName": "SKLEP ŻABKA ZB031",
+    "purchasedAt": "2025-08-17T12:23:00+02:00",
+    "currency": "PLN",
+    "receiptTotal": 29.96,
+    "items": [
+      {
+        "name": "PIERS PIECZ 75g-C",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 5.5,
+        "lineTotal": 5.5,
+        "boundingBox": {
+          "x": 0.215,
+          "y": 0.43,
+          "width": 0.65,
+          "height": 0.024
+        },
+        "kind": 0
+      },
+      {
+        "name": "SER EDAMSKI PLASTRY 150g-C",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 6.5,
+        "lineTotal": 6.5,
+        "boundingBox": {
+          "x": 0.215,
+          "y": 0.452,
+          "width": 0.65,
+          "height": 0.024
+        },
+        "kind": 0
+      },
+      {
+        "name": "JOGURT SKYR PITNY 330ml-C",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 5.99,
+        "lineTotal": 5.99,
+        "boundingBox": {
+          "x": 0.215,
+          "y": 0.472,
+          "width": 0.65,
+          "height": 0.024
+        },
+        "kind": 0
+      },
+      {
+        "name": "JOG SKYR JAGO 330ml-C",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 5.99,
+        "lineTotal": 5.99,
+        "boundingBox": {
+          "x": 0.215,
+          "y": 0.494,
+          "width": 0.65,
+          "height": 0.024
+        },
+        "kind": 0
+      },
+      {
+        "name": "CROISSANT CZEKOLAD-C",
+        "quantity": 2,
+        "unit": "szt",
+        "unitPrice": 3.99,
+        "lineTotal": 7.98,
+        "boundingBox": {
+          "x": 0.215,
+          "y": 0.514,
+          "width": 0.65,
+          "height": 0.024
+        },
+        "kind": 0
+      },
+      {
+        "name": "OPUST CROISSANT CZEKOLAD-C",
+        "quantity": null,
+        "unit": null,
+        "unitPrice": null,
+        "lineTotal": -2.0,
+        "boundingBox": {
+          "x": 0.215,
+          "y": 0.535,
+          "width": 0.65,
+          "height": 0.024
+        },
+        "kind": 1
+      }
+    ],
+    "extractorName": "anthropic",
+    "modelName": "claude-haiku-5-5",
+    "receiptTotalBoundingBox": {
+      "x": 0.21,
+      "y": 0.64,
+      "width": 0.68,
+      "height": 0.04
+    }
+  },
+  "warnings": 0,
+  "itemBoxes": 6,
+  "totalBox": true
+}

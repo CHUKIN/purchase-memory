@@ -16,7 +16,12 @@ namespace PurchaseMemory.IntegrationTests;
 /// </summary>
 public sealed class AnthropicStructuredVisionProviderTests
 {
+    // Contract v4 (the anthropic pipeline's default): one product, one discount on it.
     private const string ValidReceiptJson = """
+        {"merchantName":"BIEDRONKA","purchasedAt":null,"currency":"PLN","items":[{"name":"CHLEB","quantity":1,"unit":null,"unitPrice":4.99,"lineTotal":4.99,"box":{"x":0.1,"y":0.3,"width":0.8,"height":0.03}}],"discounts":[{"label":"OPUST","amount":-1.00,"appliesToItem":0,"box":{"x":0.1,"y":0.33,"width":0.8,"height":0.02}}],"subtotal":null,"taxTotal":null,"receiptTotal":3.99,"receiptTotalBox":{"x":0.6,"y":0.5,"width":0.3,"height":0.03}}
+        """;
+
+    private const string ValidV3ReceiptJson = """
         {"rawLines":["CHLEB 4,99"],"merchantName":"BIEDRONKA","purchasedAt":null,"currency":"PLN","receiptTotal":4.99,"receiptTotalBoundingBox":null,"items":[{"name":"CHLEB","quantity":1,"unit":null,"unitPrice":4.99,"lineTotal":4.99,"boundingBox":null}]}
         """;
 
@@ -327,6 +332,34 @@ public sealed class AnthropicStructuredVisionProviderTests
         Assert.Equal("anthropic", extraction.ExtractorName);
         Assert.Equal("claude-haiku-5-5", extraction.ModelName);
         Assert.Equal(0, openAi.Calls);
+
+        // Contract v4 by default: its prompt and schema go out, every row and
+        // the total come back with a box, the discount is its own negative row.
+        var request = Assert.Single(transport.Requests);
+        Assert.Equal(ReceiptStructuredAnalysisContract.JsonSchema, request.JsonSchema);
+        Assert.Equal(ReceiptStructuredAnalysisContract.BuildPrompt(null), request.Prompt);
+        Assert.Equal(["CHLEB", "OPUST"], extraction.Items.Select(item => item.Name));
+        Assert.Equal([4.99m, -1.00m], extraction.Items.Select(item => item.LineTotal!.Value));
+        Assert.Equal(PurchaseMemory.Domain.Receipts.ReceiptLineKind.Discount, extraction.Items[1].Kind);
+        Assert.All(extraction.Items, item => Assert.NotNull(item.BoundingBox));
+        Assert.NotNull(extraction.ReceiptTotalBoundingBox);
+    }
+
+    [Fact]
+    public async Task ContractV3RemainsAConfigurationRollback()
+    {
+        var transport = new RecordingTransport(Completed() with { Json = ValidV3ReceiptJson });
+        using var provider = CreateProvider(transport);
+        var openAi = new FakeOpenAiPipeline();
+        var router = CreateRouter(provider, openAi, ReceiptAnalysisContractVersion.V3);
+
+        var extraction = await router.ExtractAsync(Images(), TestContext.Current.CancellationToken);
+
+        Assert.Equal("anthropic", extraction.ExtractorName);
+        Assert.Equal("CHLEB", Assert.Single(extraction.Items).Name);
+        var request = Assert.Single(transport.Requests);
+        Assert.Equal(ReceiptAnalysisContract.JsonSchema, request.JsonSchema);
+        Assert.Equal(ReceiptAnalysisContract.BuildPrompt(null), request.Prompt);
     }
 
     [Fact]
@@ -405,7 +438,8 @@ public sealed class AnthropicStructuredVisionProviderTests
         Assert.Equal("anthropic", options.Pipeline);
         Assert.Equal(["openai", "ollama"], options.FallbackPipelines);
         Assert.Equal("claude-haiku-5-5", options.AnthropicModel);
-        Assert.Equal(AnthropicEffort.Low, options.AnthropicEffort);
+        Assert.Equal(AnthropicEffort.Medium, options.AnthropicEffort);
+        Assert.Equal(ReceiptAnalysisContractVersion.V4Structured, options.AnthropicReceiptContract);
         Assert.Equal(120, options.AnthropicRequestTimeoutSeconds);
         Assert.Equal(16_384, options.AnthropicMaximumOutputTokens);
         Assert.Equal(1, options.AnthropicMaximumRetries);
@@ -437,12 +471,14 @@ public sealed class AnthropicStructuredVisionProviderTests
 
     private static ReceiptExtractorRouter CreateRouter(
         AnthropicStructuredVisionProvider provider,
-        IReceiptRecognitionPipeline openAi)
+        IReceiptRecognitionPipeline openAi,
+        ReceiptAnalysisContractVersion contract = ReceiptAnalysisContractVersion.V4Structured)
     {
         var resolver = new StructuredVisionProviderResolver([provider]);
         var anthropic = new AnthropicReceiptExtractor(
             new ReceiptAnalysisWorkflow(resolver),
             resolver,
+            Options.Create(new ReceiptRecognitionOptions { AnthropicReceiptContract = contract }),
             NullLogger<AnthropicReceiptExtractor>.Instance);
         return new ReceiptExtractorRouter(
             [anthropic, openAi],

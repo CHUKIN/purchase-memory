@@ -1,0 +1,417 @@
+{
+  "configuration": "haiku-prod-v4-medium",
+  "model": "claude-haiku-5-5",
+  "receiptId": "02",
+  "status": "success",
+  "error": null,
+  "elapsedMilliseconds": 15148,
+  "seconds": 15.148,
+  "effort": "medium",
+  "usage": {
+    "calls": 1,
+    "inputTokens": 2978,
+    "outputTokens": 3824,
+    "requestIds": [
+      "msg_011Cg28aTwKLnWsnb5GP2F44"
+    ]
+  },
+  "costUsd": 0.002210,
+  "totalMatches": true,
+  "parsed": {
+    "merchant": "ROSSIA Betriebsgesellschaft GmbH",
+    "date": "2025-07-10",
+    "currency": "EUR",
+    "total": 24.3,
+    "totalBox": [
+      0.31,
+      0.655,
+      0.5,
+      0.05
+    ],
+    "items": [
+      {
+        "name": "Kekse Uschki",
+        "quantity": 1,
+        "unitPrice": 3.49,
+        "lineTotal": 3.49,
+        "box": [
+          0.33,
+          0.331,
+          0.46,
+          0.02
+        ]
+      },
+      {
+        "name": "Tulskij prjanik",
+        "quantity": 1,
+        "unitPrice": 1.49,
+        "lineTotal": 1.49,
+        "box": [
+          0.33,
+          0.354,
+          0.46,
+          0.02
+        ]
+      },
+      {
+        "name": "Tulskij prjanik",
+        "quantity": 1,
+        "unitPrice": 1.49,
+        "lineTotal": 1.49,
+        "box": [
+          0.33,
+          0.378,
+          0.46,
+          0.02
+        ]
+      },
+      {
+        "name": "Tulskij prjanik",
+        "quantity": 1,
+        "unitPrice": 1.49,
+        "lineTotal": 1.49,
+        "box": [
+          0.33,
+          0.4,
+          0.46,
+          0.02
+        ]
+      },
+      {
+        "name": "Tulskij prjanik",
+        "quantity": 1,
+        "unitPrice": 1.49,
+        "lineTotal": 1.49,
+        "box": [
+          0.33,
+          0.423,
+          0.46,
+          0.02
+        ]
+      },
+      {
+        "name": "geback",
+        "quantity": 1,
+        "unitPrice": 2.49,
+        "lineTotal": 2.49,
+        "box": [
+          0.33,
+          0.446,
+          0.46,
+          0.02
+        ]
+      },
+      {
+        "name": "Gebäck mit Minzgeschmack",
+        "quantity": 1,
+        "unitPrice": 1.99,
+        "lineTotal": 1.99,
+        "box": [
+          0.33,
+          0.469,
+          0.46,
+          0.02
+        ]
+      },
+      {
+        "name": "Lebensmittel 7%",
+        "quantity": 1,
+        "unitPrice": 0.99,
+        "lineTotal": 0.99,
+        "box": [
+          0.33,
+          0.492,
+          0.46,
+          0.02
+        ]
+      },
+      {
+        "name": "Tafelschokolade",
+        "quantity": 1,
+        "unitPrice": 1.49,
+        "lineTotal": 1.49,
+        "box": [
+          0.33,
+          0.512,
+          0.46,
+          0.02
+        ]
+      },
+      {
+        "name": "Schokolade",
+        "quantity": 1,
+        "unitPrice": 1.19,
+        "lineTotal": 1.19,
+        "box": [
+          0.33,
+          0.53,
+          0.46,
+          0.02
+        ]
+      },
+      {
+        "name": "Lebensmittel 7%",
+        "quantity": 1,
+        "unitPrice": 1.99,
+        "lineTotal": 1.99,
+        "box": [
+          0.33,
+          0.55,
+          0.46,
+          0.02
+        ]
+      },
+      {
+        "name": "Schokolade Babaevskij",
+        "quantity": 1,
+        "unitPrice": 1.49,
+        "lineTotal": 1.49,
+        "box": [
+          0.33,
+          0.572,
+          0.46,
+          0.02
+        ]
+      },
+      {
+        "name": "Sefir",
+        "quantity": 1,
+        "unitPrice": 2.99,
+        "lineTotal": 2.99,
+        "box": [
+          0.33,
+          0.591,
+          0.46,
+          0.02
+        ]
+      },
+      {
+        "name": "Sonstige 19%",
+        "quantity": 1,
+        "unitPrice": 0.23,
+        "lineTotal": 0.23,
+        "box": [
+          0.33,
+          0.616,
+          0.46,
+          0.02
+        ]
+      }
+    ]
+  },
+  "extraction": {
+    "merchantName": "ROSSIA Betriebsgesellschaft GmbH",
+    "purchasedAt": "2025-07-10T18:27:00+02:00",
+    "currency": "EUR",
+    "receiptTotal": 24.3,
+    "items": [
+      {
+        "name": "Kekse Uschki",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 3.49,
+        "lineTotal": 3.49,
+        "boundingBox": {
+          "x": 0.33,
+          "y": 0.331,
+          "width": 0.46,
+          "height": 0.02
+        },
+        "kind": 0
+      },
+      {
+        "name": "Tulskij prjanik",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 1.49,
+        "lineTotal": 1.49,
+        "boundingBox": {
+          "x": 0.33,
+          "y": 0.354,
+          "width": 0.46,
+          "height": 0.02
+        },
+        "kind": 0
+      },
+      {
+        "name": "Tulskij prjanik",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 1.49,
+        "lineTotal": 1.49,
+        "boundingBox": {
+          "x": 0.33,
+          "y": 0.378,
+          "width": 0.46,
+          "height": 0.02
+        },
+        "kind": 0
+      },
+      {
+        "name": "Tulskij prjanik",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 1.49,
+        "lineTotal": 1.49,
+        "boundingBox": {
+          "x": 0.33,
+          "y": 0.4,
+          "width": 0.46,
+          "height": 0.02
+        },
+        "kind": 0
+      },
+      {
+        "name": "Tulskij prjanik",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 1.49,
+        "lineTotal": 1.49,
+        "boundingBox": {
+          "x": 0.33,
+          "y": 0.423,
+          "width": 0.46,
+          "height": 0.02
+        },
+        "kind": 0
+      },
+      {
+        "name": "geback",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 2.49,
+        "lineTotal": 2.49,
+        "boundingBox": {
+          "x": 0.33,
+          "y": 0.446,
+          "width": 0.46,
+          "height": 0.02
+        },
+        "kind": 0
+      },
+      {
+        "name": "Gebäck mit Minzgeschmack",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 1.99,
+        "lineTotal": 1.99,
+        "boundingBox": {
+          "x": 0.33,
+          "y": 0.469,
+          "width": 0.46,
+          "height": 0.02
+        },
+        "kind": 0
+      },
+      {
+        "name": "Lebensmittel 7%",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 0.99,
+        "lineTotal": 0.99,
+        "boundingBox": {
+          "x": 0.33,
+          "y": 0.492,
+          "width": 0.46,
+          "height": 0.02
+        },
+        "kind": 0
+      },
+      {
+        "name": "Tafelschokolade",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 1.49,
+        "lineTotal": 1.49,
+        "boundingBox": {
+          "x": 0.33,
+          "y": 0.512,
+          "width": 0.46,
+          "height": 0.02
+        },
+        "kind": 0
+      },
+      {
+        "name": "Schokolade",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 1.19,
+        "lineTotal": 1.19,
+        "boundingBox": {
+          "x": 0.33,
+          "y": 0.53,
+          "width": 0.46,
+          "height": 0.02
+        },
+        "kind": 0
+      },
+      {
+        "name": "Lebensmittel 7%",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 1.99,
+        "lineTotal": 1.99,
+        "boundingBox": {
+          "x": 0.33,
+          "y": 0.55,
+          "width": 0.46,
+          "height": 0.02
+        },
+        "kind": 0
+      },
+      {
+        "name": "Schokolade Babaevskij",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 1.49,
+        "lineTotal": 1.49,
+        "boundingBox": {
+          "x": 0.33,
+          "y": 0.572,
+          "width": 0.46,
+          "height": 0.02
+        },
+        "kind": 0
+      },
+      {
+        "name": "Sefir",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 2.99,
+        "lineTotal": 2.99,
+        "boundingBox": {
+          "x": 0.33,
+          "y": 0.591,
+          "width": 0.46,
+          "height": 0.02
+        },
+        "kind": 0
+      },
+      {
+        "name": "Sonstige 19%",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 0.23,
+        "lineTotal": 0.23,
+        "boundingBox": {
+          "x": 0.33,
+          "y": 0.616,
+          "width": 0.46,
+          "height": 0.02
+        },
+        "kind": 0
+      }
+    ],
+    "extractorName": "anthropic",
+    "modelName": "claude-haiku-5-5",
+    "receiptTotalBoundingBox": {
+      "x": 0.31,
+      "y": 0.655,
+      "width": 0.5,
+      "height": 0.05
+    }
+  },
+  "warnings": 0,
+  "itemBoxes": 14,
+  "totalBox": true
+}

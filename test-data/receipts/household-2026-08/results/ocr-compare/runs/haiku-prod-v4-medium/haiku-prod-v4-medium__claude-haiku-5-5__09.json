@@ -1,0 +1,339 @@
+{
+  "configuration": "haiku-prod-v4-medium",
+  "model": "claude-haiku-5-5",
+  "receiptId": "09",
+  "status": "success",
+  "error": null,
+  "elapsedMilliseconds": 10721,
+  "seconds": 10.721,
+  "effort": "medium",
+  "usage": {
+    "calls": 1,
+    "inputTokens": 2978,
+    "outputTokens": 2669,
+    "requestIds": [
+      "msg_011Cg28iBKRMJ93ZL9HiGb85"
+    ]
+  },
+  "costUsd": 0.001632,
+  "totalMatches": true,
+  "parsed": {
+    "merchant": "Carrefour MARKET Warszawa",
+    "date": "2025-08-06",
+    "currency": "PLN",
+    "total": 177.48,
+    "totalBox": [
+      0.18,
+      0.65,
+      0.58,
+      0.04
+    ],
+    "items": [
+      {
+        "name": "C_SZPINAK BABY 125G",
+        "quantity": 1,
+        "unitPrice": 5.99,
+        "lineTotal": 5.99,
+        "box": [
+          0.14,
+          0.295,
+          0.72,
+          0.025
+        ]
+      },
+      {
+        "name": "A_WODA MINER BORJOM",
+        "quantity": 1,
+        "unitPrice": 7.49,
+        "lineTotal": 7.49,
+        "box": [
+          0.14,
+          0.315,
+          0.72,
+          0.025
+        ]
+      },
+      {
+        "name": "C_MASLANKA 420G BUT",
+        "quantity": 1,
+        "unitPrice": 2.89,
+        "lineTotal": 2.89,
+        "box": [
+          0.14,
+          0.334,
+          0.72,
+          0.025
+        ]
+      },
+      {
+        "name": "B_WILKIN RASPBERRY",
+        "quantity": 1,
+        "unitPrice": 35.99,
+        "lineTotal": 35.99,
+        "box": [
+          0.14,
+          0.354,
+          0.72,
+          0.025
+        ]
+      },
+      {
+        "name": "C_KEDYMEX-RZODKIEWE",
+        "quantity": 0.392,
+        "unitPrice": 38.99,
+        "lineTotal": 15.28,
+        "box": [
+          0.14,
+          0.373,
+          0.72,
+          0.025
+        ]
+      },
+      {
+        "name": "C_MIOD PSZCZ. WIELO",
+        "quantity": 1,
+        "unitPrice": 13.99,
+        "lineTotal": 13.99,
+        "box": [
+          0.14,
+          0.393,
+          0.72,
+          0.025
+        ]
+      },
+      {
+        "name": "A_CHUST DO HIG INT",
+        "quantity": 1,
+        "unitPrice": 9.99,
+        "lineTotal": 9.99,
+        "box": [
+          0.14,
+          0.412,
+          0.72,
+          0.025
+        ]
+      },
+      {
+        "name": "A_KAWA O SMAKU ORZE",
+        "quantity": 1,
+        "unitPrice": 35.99,
+        "lineTotal": 35.99,
+        "box": [
+          0.14,
+          0.432,
+          0.72,
+          0.025
+        ]
+      },
+      {
+        "name": "C_MOWI LOSOS WEDZ.",
+        "quantity": 1,
+        "unitPrice": 25.99,
+        "lineTotal": 25.99,
+        "box": [
+          0.14,
+          0.451,
+          0.72,
+          0.025
+        ]
+      },
+      {
+        "name": "C_KUKURYDZA SWIEZA",
+        "quantity": 2,
+        "unitPrice": 6.99,
+        "lineTotal": 13.98,
+        "box": [
+          0.14,
+          0.471,
+          0.72,
+          0.025
+        ]
+      },
+      {
+        "name": "C_SER CHEDDAR WHITE",
+        "quantity": 0.132,
+        "unitPrice": 74.99,
+        "lineTotal": 9.9,
+        "box": [
+          0.14,
+          0.49,
+          0.72,
+          0.025
+        ]
+      }
+    ]
+  },
+  "extraction": {
+    "merchantName": "Carrefour MARKET Warszawa",
+    "purchasedAt": "2025-08-06T19:39:00+02:00",
+    "currency": "PLN",
+    "receiptTotal": 177.48,
+    "items": [
+      {
+        "name": "C_SZPINAK BABY 125G",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 5.99,
+        "lineTotal": 5.99,
+        "boundingBox": {
+          "x": 0.14,
+          "y": 0.295,
+          "width": 0.72,
+          "height": 0.025
+        },
+        "kind": 0
+      },
+      {
+        "name": "A_WODA MINER BORJOM",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 7.49,
+        "lineTotal": 7.49,
+        "boundingBox": {
+          "x": 0.14,
+          "y": 0.315,
+          "width": 0.72,
+          "height": 0.025
+        },
+        "kind": 0
+      },
+      {
+        "name": "C_MASLANKA 420G BUT",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 2.89,
+        "lineTotal": 2.89,
+        "boundingBox": {
+          "x": 0.14,
+          "y": 0.334,
+          "width": 0.72,
+          "height": 0.025
+        },
+        "kind": 0
+      },
+      {
+        "name": "B_WILKIN RASPBERRY",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 35.99,
+        "lineTotal": 35.99,
+        "boundingBox": {
+          "x": 0.14,
+          "y": 0.354,
+          "width": 0.72,
+          "height": 0.025
+        },
+        "kind": 0
+      },
+      {
+        "name": "C_KEDYMEX-RZODKIEWE",
+        "quantity": 0.392,
+        "unit": "kg",
+        "unitPrice": 38.99,
+        "lineTotal": 15.28,
+        "boundingBox": {
+          "x": 0.14,
+          "y": 0.373,
+          "width": 0.72,
+          "height": 0.025
+        },
+        "kind": 0
+      },
+      {
+        "name": "C_MIOD PSZCZ. WIELO",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 13.99,
+        "lineTotal": 13.99,
+        "boundingBox": {
+          "x": 0.14,
+          "y": 0.393,
+          "width": 0.72,
+          "height": 0.025
+        },
+        "kind": 0
+      },
+      {
+        "name": "A_CHUST DO HIG INT",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 9.99,
+        "lineTotal": 9.99,
+        "boundingBox": {
+          "x": 0.14,
+          "y": 0.412,
+          "width": 0.72,
+          "height": 0.025
+        },
+        "kind": 0
+      },
+      {
+        "name": "A_KAWA O SMAKU ORZE",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 35.99,
+        "lineTotal": 35.99,
+        "boundingBox": {
+          "x": 0.14,
+          "y": 0.432,
+          "width": 0.72,
+          "height": 0.025
+        },
+        "kind": 0
+      },
+      {
+        "name": "C_MOWI LOSOS WEDZ.",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 25.99,
+        "lineTotal": 25.99,
+        "boundingBox": {
+          "x": 0.14,
+          "y": 0.451,
+          "width": 0.72,
+          "height": 0.025
+        },
+        "kind": 0
+      },
+      {
+        "name": "C_KUKURYDZA SWIEZA",
+        "quantity": 2,
+        "unit": null,
+        "unitPrice": 6.99,
+        "lineTotal": 13.98,
+        "boundingBox": {
+          "x": 0.14,
+          "y": 0.471,
+          "width": 0.72,
+          "height": 0.025
+        },
+        "kind": 0
+      },
+      {
+        "name": "C_SER CHEDDAR WHITE",
+        "quantity": 0.132,
+        "unit": "kg",
+        "unitPrice": 74.99,
+        "lineTotal": 9.9,
+        "boundingBox": {
+          "x": 0.14,
+          "y": 0.49,
+          "width": 0.72,
+          "height": 0.025
+        },
+        "kind": 0
+      }
+    ],
+    "extractorName": "anthropic",
+    "modelName": "claude-haiku-5-5",
+    "receiptTotalBoundingBox": {
+      "x": 0.18,
+      "y": 0.65,
+      "width": 0.58,
+      "height": 0.04
+    }
+  },
+  "warnings": 0,
+  "itemBoxes": 11,
+  "totalBox": true
+}

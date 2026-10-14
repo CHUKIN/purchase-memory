@@ -1,0 +1,209 @@
+{
+  "configuration": "haiku-prod-v4-medium",
+  "model": "claude-haiku-5-5",
+  "receiptId": "01",
+  "status": "success",
+  "error": null,
+  "elapsedMilliseconds": 10387,
+  "seconds": 10.387,
+  "effort": "medium",
+  "usage": {
+    "calls": 1,
+    "inputTokens": 2978,
+    "outputTokens": 2298,
+    "requestIds": [
+      "msg_011Cg28ZjH2SSKY6HSv4oXzT"
+    ]
+  },
+  "costUsd": 0.001447,
+  "totalMatches": true,
+  "parsed": {
+    "merchant": "Dodo Pizza Poland Sp. z o.o.",
+    "date": "2026-03-21",
+    "currency": "PLN",
+    "total": 56.38,
+    "totalBox": [
+      0.28,
+      0.565,
+      0.5,
+      0.035
+    ],
+    "items": [
+      {
+        "name": "Dostawy 1 szt",
+        "quantity": 1,
+        "unitPrice": 5.98,
+        "lineTotal": 5.98,
+        "box": [
+          0.25,
+          0.335,
+          0.53,
+          0.03
+        ]
+      },
+      {
+        "name": "Placki ziemniaczane 8 szt.",
+        "quantity": 1,
+        "unitPrice": 17.99,
+        "lineTotal": 17.99,
+        "box": [
+          0.25,
+          0.36,
+          0.53,
+          0.03
+        ]
+      },
+      {
+        "name": "4 pory roku Średnia",
+        "quantity": 1,
+        "unitPrice": 53.99,
+        "lineTotal": 53.99,
+        "box": [
+          0.25,
+          0.38,
+          0.53,
+          0.03
+        ]
+      },
+      {
+        "name": "Pudełko na pizzę 30 1 szt",
+        "quantity": 1,
+        "unitPrice": 2.01,
+        "lineTotal": 2.01,
+        "box": [
+          0.25,
+          0.4,
+          0.53,
+          0.03
+        ]
+      },
+      {
+        "name": "OPUST",
+        "quantity": null,
+        "unitPrice": null,
+        "lineTotal": -2.00,
+        "box": [
+          0.25,
+          0.42,
+          0.53,
+          0.02
+        ]
+      },
+      {
+        "name": "OPUST",
+        "quantity": null,
+        "unitPrice": null,
+        "lineTotal": -21.59,
+        "box": [
+          0.25,
+          0.47,
+          0.53,
+          0.02
+        ]
+      }
+    ]
+  },
+  "extraction": {
+    "merchantName": "Dodo Pizza Poland Sp. z o.o.",
+    "purchasedAt": "2026-03-21T16:39:00+01:00",
+    "currency": "PLN",
+    "receiptTotal": 56.38,
+    "items": [
+      {
+        "name": "Dostawy 1 szt",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 5.98,
+        "lineTotal": 5.98,
+        "boundingBox": {
+          "x": 0.25,
+          "y": 0.335,
+          "width": 0.53,
+          "height": 0.03
+        },
+        "kind": 0
+      },
+      {
+        "name": "Placki ziemniaczane 8 szt.",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 17.99,
+        "lineTotal": 17.99,
+        "boundingBox": {
+          "x": 0.25,
+          "y": 0.36,
+          "width": 0.53,
+          "height": 0.03
+        },
+        "kind": 0
+      },
+      {
+        "name": "4 pory roku Średnia",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 53.99,
+        "lineTotal": 53.99,
+        "boundingBox": {
+          "x": 0.25,
+          "y": 0.38,
+          "width": 0.53,
+          "height": 0.03
+        },
+        "kind": 0
+      },
+      {
+        "name": "Pudełko na pizzę 30 1 szt",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 2.01,
+        "lineTotal": 2.01,
+        "boundingBox": {
+          "x": 0.25,
+          "y": 0.4,
+          "width": 0.53,
+          "height": 0.03
+        },
+        "kind": 0
+      },
+      {
+        "name": "OPUST",
+        "quantity": null,
+        "unit": null,
+        "unitPrice": null,
+        "lineTotal": -2.00,
+        "boundingBox": {
+          "x": 0.25,
+          "y": 0.42,
+          "width": 0.53,
+          "height": 0.02
+        },
+        "kind": 1
+      },
+      {
+        "name": "OPUST",
+        "quantity": null,
+        "unit": null,
+        "unitPrice": null,
+        "lineTotal": -21.59,
+        "boundingBox": {
+          "x": 0.25,
+          "y": 0.47,
+          "width": 0.53,
+          "height": 0.02
+        },
+        "kind": 1
+      }
+    ],
+    "extractorName": "anthropic",
+    "modelName": "claude-haiku-5-5",
+    "receiptTotalBoundingBox": {
+      "x": 0.28,
+      "y": 0.565,
+      "width": 0.5,
+      "height": 0.035
+    }
+  },
+  "warnings": 0,
+  "itemBoxes": 6,
+  "totalBox": true
+}

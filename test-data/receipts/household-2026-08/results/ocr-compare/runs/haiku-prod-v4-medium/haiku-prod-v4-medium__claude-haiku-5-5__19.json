@@ -1,0 +1,157 @@
+{
+  "configuration": "haiku-prod-v4-medium",
+  "model": "claude-haiku-5-5",
+  "receiptId": "19",
+  "status": "success",
+  "error": null,
+  "elapsedMilliseconds": 5566,
+  "seconds": 5.566,
+  "effort": "medium",
+  "usage": {
+    "calls": 1,
+    "inputTokens": 2978,
+    "outputTokens": 1169,
+    "requestIds": [
+      "msg_011Cg28rgXJhspfaVUr8wmEm"
+    ]
+  },
+  "costUsd": 0.000882,
+  "totalMatches": true,
+  "parsed": {
+    "merchant": "Lviv Croissants",
+    "date": "2023-06-21",
+    "currency": "PLN",
+    "total": 71.60,
+    "totalBox": [
+      0.33,
+      0.68,
+      0.45,
+      0.04
+    ],
+    "items": [
+      {
+        "name": "Cezar z Kurczakiem",
+        "quantity": 1,
+        "unitPrice": 16.90,
+        "lineTotal": 16.90,
+        "box": [
+          0.23,
+          0.548,
+          0.57,
+          0.02
+        ]
+      },
+      {
+        "name": "Śmietankowo-Truskaukowy",
+        "quantity": 1,
+        "unitPrice": 16.90,
+        "lineTotal": 16.90,
+        "box": [
+          0.23,
+          0.568,
+          0.57,
+          0.02
+        ]
+      },
+      {
+        "name": "Włoski",
+        "quantity": 1,
+        "unitPrice": 24.90,
+        "lineTotal": 24.90,
+        "box": [
+          0.23,
+          0.588,
+          0.57,
+          0.02
+        ]
+      },
+      {
+        "name": "Z Kremem Waniliowym",
+        "quantity": 1,
+        "unitPrice": 12.90,
+        "lineTotal": 12.90,
+        "box": [
+          0.23,
+          0.606,
+          0.57,
+          0.02
+        ]
+      }
+    ]
+  },
+  "extraction": {
+    "merchantName": "Lviv Croissants",
+    "purchasedAt": "2023-06-21T19:49:00+02:00",
+    "currency": "PLN",
+    "receiptTotal": 71.60,
+    "items": [
+      {
+        "name": "Cezar z Kurczakiem",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 16.90,
+        "lineTotal": 16.90,
+        "boundingBox": {
+          "x": 0.23,
+          "y": 0.548,
+          "width": 0.57,
+          "height": 0.02
+        },
+        "kind": 0
+      },
+      {
+        "name": "Śmietankowo-Truskaukowy",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 16.90,
+        "lineTotal": 16.90,
+        "boundingBox": {
+          "x": 0.23,
+          "y": 0.568,
+          "width": 0.57,
+          "height": 0.02
+        },
+        "kind": 0
+      },
+      {
+        "name": "Włoski",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 24.90,
+        "lineTotal": 24.90,
+        "boundingBox": {
+          "x": 0.23,
+          "y": 0.588,
+          "width": 0.57,
+          "height": 0.02
+        },
+        "kind": 0
+      },
+      {
+        "name": "Z Kremem Waniliowym",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 12.90,
+        "lineTotal": 12.90,
+        "boundingBox": {
+          "x": 0.23,
+          "y": 0.606,
+          "width": 0.57,
+          "height": 0.02
+        },
+        "kind": 0
+      }
+    ],
+    "extractorName": "anthropic",
+    "modelName": "claude-haiku-5-5",
+    "receiptTotalBoundingBox": {
+      "x": 0.33,
+      "y": 0.68,
+      "width": 0.45,
+      "height": 0.04
+    }
+  },
+  "warnings": 0,
+  "itemBoxes": 4,
+  "totalBox": true
+}

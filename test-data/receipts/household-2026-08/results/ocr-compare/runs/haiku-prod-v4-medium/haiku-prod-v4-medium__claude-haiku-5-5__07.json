@@ -1,0 +1,131 @@
+{
+  "configuration": "haiku-prod-v4-medium",
+  "model": "claude-haiku-5-5",
+  "receiptId": "07",
+  "status": "success",
+  "error": null,
+  "elapsedMilliseconds": 6466,
+  "seconds": 6.466,
+  "effort": "medium",
+  "usage": {
+    "calls": 1,
+    "inputTokens": 2978,
+    "outputTokens": 1211,
+    "requestIds": [
+      "msg_011Cg28gz9Rh1tWufUyYVh1m"
+    ]
+  },
+  "costUsd": 0.000903,
+  "totalMatches": true,
+  "parsed": {
+    "merchant": "Global Parks Poland Sp. z o.o.",
+    "date": "2025-08-18",
+    "currency": "PLN",
+    "total": 108.09,
+    "totalBox": [
+      0.33,
+      0.655,
+      0.44,
+      0.03
+    ],
+    "items": [
+      {
+        "name": "DANIE BUFET GR",
+        "quantity": 0.288,
+        "unitPrice": 95.00,
+        "lineTotal": 27.36,
+        "box": [
+          0.33,
+          0.47,
+          0.46,
+          0.03
+        ]
+      },
+      {
+        "name": "DANIE BUFET GR",
+        "quantity": 0.534,
+        "unitPrice": 95.00,
+        "lineTotal": 50.73,
+        "box": [
+          0.33,
+          0.495,
+          0.46,
+          0.03
+        ]
+      },
+      {
+        "name": "WYPOŻYCZENIE RĘCZNIKA",
+        "quantity": 2,
+        "unitPrice": 15.00,
+        "lineTotal": 30.00,
+        "box": [
+          0.33,
+          0.517,
+          0.46,
+          0.03
+        ]
+      }
+    ]
+  },
+  "extraction": {
+    "merchantName": "Global Parks Poland Sp. z o.o.",
+    "purchasedAt": "2025-08-18T19:59:00+02:00",
+    "currency": "PLN",
+    "receiptTotal": 108.09,
+    "items": [
+      {
+        "name": "DANIE BUFET GR",
+        "quantity": 0.288,
+        "unit": "kg",
+        "unitPrice": 95.00,
+        "lineTotal": 27.36,
+        "boundingBox": {
+          "x": 0.33,
+          "y": 0.47,
+          "width": 0.46,
+          "height": 0.03
+        },
+        "kind": 0
+      },
+      {
+        "name": "DANIE BUFET GR",
+        "quantity": 0.534,
+        "unit": "kg",
+        "unitPrice": 95.00,
+        "lineTotal": 50.73,
+        "boundingBox": {
+          "x": 0.33,
+          "y": 0.495,
+          "width": 0.46,
+          "height": 0.03
+        },
+        "kind": 0
+      },
+      {
+        "name": "WYPOŻYCZENIE RĘCZNIKA",
+        "quantity": 2,
+        "unit": "szt",
+        "unitPrice": 15.00,
+        "lineTotal": 30.00,
+        "boundingBox": {
+          "x": 0.33,
+          "y": 0.517,
+          "width": 0.46,
+          "height": 0.03
+        },
+        "kind": 0
+      }
+    ],
+    "extractorName": "anthropic",
+    "modelName": "claude-haiku-5-5",
+    "receiptTotalBoundingBox": {
+      "x": 0.33,
+      "y": 0.655,
+      "width": 0.44,
+      "height": 0.03
+    }
+  },
+  "warnings": 0,
+  "itemBoxes": 3,
+  "totalBox": true
+}

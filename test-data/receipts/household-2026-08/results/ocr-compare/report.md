@@ -1,6 +1,6 @@
 # OCR comparison: Azure prebuilt-receipt vs Tesseract vs Haiku
 
-Generated 2026-10-14T02:27:39+0200. Dataset: household-2026-08 (20 photos; item labels for 8).
+Generated 2026-10-14T14:34:02+0200. Dataset: household-2026-08 (20 photos; item labels for 8).
 
 | configuration | ok/receipts | total ok | lines sum = total | items ok (8 labelled) | disc | extra | box present | box plausible | box hit (Azure words) | box hit (Tesseract words) | GT lines with hit box | s/receipt (median) | $/receipt | paid-equivalent $/receipt |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
@@ -21,6 +21,7 @@ Generated 2026-10-14T02:27:39+0200. Dataset: household-2026-08 (20 photos; item 
 | haiku-prod-v3-saved-low-r2 | 20/20 | 20/20 | 20/20 | 109/110 (99.1%) | 5/5 | 0 | 5.7% | 5.7% | 5.7% | 5.2% | 0/110 (0.0%) | 7.96 (7.45) | 0.001271 | 0.001271 |
 | haiku-prod-v3-saved-medium-r1 | 20/20 | 20/20 | 20/20 | 109/110 (99.1%) | 5/5 | 0 | 16.5% | 16.5% | 16.5% | 15.5% | 18/110 (16.4%) | 9.56 (8.45) | 0.001462 | 0.001462 |
 | haiku-prod-v3-saved-medium-r2 | 20/20 | 20/20 | 19/20 | 109/110 (99.1%) | 5/5 | 0 | 16.5% | 16.5% | 16.5% | 13.9% | 0/110 (0.0%) | 9.29 (8.22) | 0.001442 | 0.001442 |
+| haiku-prod-v4-medium | 20/20 | 20/20 | 20/20 | 109/110 (99.1%) | 5/5 | 0 | 100.0% | 100.0% | 95.9% | 73.7% | 104/110 (94.5%) | 12.28 (10.78) | 0.001773 | — |
 | tesseract-eng-psm6 | 20/20 | 3/20 | 0/20 | 27/110 (24.5%) | 2/5 | 12 | 100.0% | 100.0% | 95.3% | 100.0% | 27/110 (24.5%) | 0.28 (0.26) | 0.0 | — |
 | tesseract-eng-psm6-x2 | 20/20 | 2/20 | 1/20 | 28/110 (25.5%) | 1/5 | 5 | 100.0% | 100.0% | 98.0% | 86.9% | 31/110 (28.2%) | 0.46 (0.43) | 0.0 | — |
 | tesseract-pol-best-psm4 | 20/20 | 0/20 | 0/20 | 12/110 (10.9%) | 1/5 | 3 | 100.0% | 96.6% | 96.6% | 96.6% | 13/110 (11.8%) | 0.32 (0.33) | 0.0 | — |
@@ -103,6 +104,7 @@ Items, totals and discounts are Haiku's (so those columns equal the Haiku run); 
 | hybrid-aligned+lines-haiku-prod-v3-low | 109/110 | 20/20 | 5/5 | 110/110 | 107/110 | 3 | 0 | 0 | 73/110 | 100.0% | 98.5% | 6/7 |
 | hybrid-aligned+lines-haiku-prod-v3-medium | 110/110 | 20/20 | 5/5 | 110/110 | 108/110 | 2 | 0 | 0 | 73/110 | 100.0% | 98.5% | 6/7 |
 | hybrid-aligned+lines-haiku-prod-v3-off | 107/110 | 20/20 | 5/5 | 110/110 | 106/110 | 3 | 1 | 1 | 73/110 | 100.0% | 97.9% | 6/7 |
+| hybrid-aligned+lines-haiku-prod-v4-medium | 109/110 | 20/20 | 5/5 | 110/110 | 107/110 | 3 | 0 | 0 | 73/110 | 100.0% | 98.5% | 6/7 |
 | hybrid-aligned+lines-low-r1 | 108/110 | 20/20 | 5/5 | 110/110 | 106/110 | 3 | 1 | 1 | 73/110 | 100.0% | 97.9% | 6/7 |
 | hybrid-aligned+lines-low-r2 | 109/110 | 20/20 | 5/5 | 110/110 | 108/110 | 2 | 0 | 0 | 73/110 | 100.0% | 98.5% | 6/7 |
 | hybrid-aligned+lines-medium-r1 | 109/110 | 20/20 | 5/5 | 110/110 | 108/110 | 2 | 0 | 0 | 73/110 | 100.0% | 98.5% | 6/7 |

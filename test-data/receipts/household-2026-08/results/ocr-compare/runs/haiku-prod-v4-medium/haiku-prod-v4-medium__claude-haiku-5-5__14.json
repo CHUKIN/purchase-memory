@@ -1,0 +1,313 @@
+{
+  "configuration": "haiku-prod-v4-medium",
+  "model": "claude-haiku-5-5",
+  "receiptId": "14",
+  "status": "success",
+  "error": null,
+  "elapsedMilliseconds": 10842,
+  "seconds": 10.842,
+  "effort": "medium",
+  "usage": {
+    "calls": 1,
+    "inputTokens": 2978,
+    "outputTokens": 2761,
+    "requestIds": [
+      "msg_011Cg28nWXRu7QLuPeyaKJpP"
+    ]
+  },
+  "costUsd": 0.001678,
+  "totalMatches": true,
+  "parsed": {
+    "merchant": "CARREFOUR MARKET",
+    "date": "2025-06-10",
+    "currency": "PLN",
+    "total": 192.4,
+    "totalBox": [
+      0.315,
+      0.635,
+      0.46,
+      0.035
+    ],
+    "items": [
+      {
+        "name": "WODA MINER BORJOM",
+        "quantity": 1,
+        "unitPrice": 10.59,
+        "lineTotal": 10.59,
+        "box": [
+          0.302,
+          0.395,
+          0.479,
+          0.025
+        ]
+      },
+      {
+        "name": "MC TOST MAŚLANY 5",
+        "quantity": 1,
+        "unitPrice": 3.79,
+        "lineTotal": 3.79,
+        "box": [
+          0.302,
+          0.415,
+          0.479,
+          0.025
+        ]
+      },
+      {
+        "name": "UKŁAD MAXTRA PRO",
+        "quantity": 1,
+        "unitPrice": 74.99,
+        "lineTotal": 74.99,
+        "box": [
+          0.302,
+          0.435,
+          0.479,
+          0.025
+        ]
+      },
+      {
+        "name": "FILET Z KURCZ. ZA",
+        "quantity": 0.412,
+        "unitPrice": 52.99,
+        "lineTotal": 21.83,
+        "box": [
+          0.302,
+          0.452,
+          0.479,
+          0.025
+        ]
+      },
+      {
+        "name": "SALAME VILCANI 80",
+        "quantity": 1,
+        "unitPrice": 30.79,
+        "lineTotal": 30.79,
+        "box": [
+          0.302,
+          0.47,
+          0.479,
+          0.025
+        ]
+      },
+      {
+        "name": "MOVI ŁOSOŚ ŚWIEŻY",
+        "quantity": 1,
+        "unitPrice": 19.49,
+        "lineTotal": 19.49,
+        "box": [
+          0.302,
+          0.487,
+          0.479,
+          0.025
+        ]
+      },
+      {
+        "name": "JOGURT MOVENPICK",
+        "quantity": 1,
+        "unitPrice": 5.39,
+        "lineTotal": 5.39,
+        "box": [
+          0.302,
+          0.503,
+          0.479,
+          0.025
+        ]
+      },
+      {
+        "name": "SMAKIJA KASZKA 13",
+        "quantity": 1,
+        "unitPrice": 3.45,
+        "lineTotal": 3.45,
+        "box": [
+          0.302,
+          0.52,
+          0.479,
+          0.025
+        ]
+      },
+      {
+        "name": "PAPRYKA CZERWONA",
+        "quantity": 0.546,
+        "unitPrice": 12.99,
+        "lineTotal": 7.09,
+        "box": [
+          0.302,
+          0.535,
+          0.479,
+          0.025
+        ]
+      },
+      {
+        "name": "MC SZPARAGI ZIELO",
+        "quantity": 1,
+        "unitPrice": 14.99,
+        "lineTotal": 14.99,
+        "box": [
+          0.302,
+          0.546,
+          0.479,
+          0.025
+        ]
+      }
+    ]
+  },
+  "extraction": {
+    "merchantName": "CARREFOUR MARKET",
+    "purchasedAt": "2025-06-10T14:49:00+02:00",
+    "currency": "PLN",
+    "receiptTotal": 192.4,
+    "items": [
+      {
+        "name": "WODA MINER BORJOM",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 10.59,
+        "lineTotal": 10.59,
+        "boundingBox": {
+          "x": 0.302,
+          "y": 0.395,
+          "width": 0.479,
+          "height": 0.025
+        },
+        "kind": 0
+      },
+      {
+        "name": "MC TOST MAŚLANY 5",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 3.79,
+        "lineTotal": 3.79,
+        "boundingBox": {
+          "x": 0.302,
+          "y": 0.415,
+          "width": 0.479,
+          "height": 0.025
+        },
+        "kind": 0
+      },
+      {
+        "name": "UKŁAD MAXTRA PRO",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 74.99,
+        "lineTotal": 74.99,
+        "boundingBox": {
+          "x": 0.302,
+          "y": 0.435,
+          "width": 0.479,
+          "height": 0.025
+        },
+        "kind": 0
+      },
+      {
+        "name": "FILET Z KURCZ. ZA",
+        "quantity": 0.412,
+        "unit": "kg",
+        "unitPrice": 52.99,
+        "lineTotal": 21.83,
+        "boundingBox": {
+          "x": 0.302,
+          "y": 0.452,
+          "width": 0.479,
+          "height": 0.025
+        },
+        "kind": 0
+      },
+      {
+        "name": "SALAME VILCANI 80",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 30.79,
+        "lineTotal": 30.79,
+        "boundingBox": {
+          "x": 0.302,
+          "y": 0.47,
+          "width": 0.479,
+          "height": 0.025
+        },
+        "kind": 0
+      },
+      {
+        "name": "MOVI ŁOSOŚ ŚWIEŻY",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 19.49,
+        "lineTotal": 19.49,
+        "boundingBox": {
+          "x": 0.302,
+          "y": 0.487,
+          "width": 0.479,
+          "height": 0.025
+        },
+        "kind": 0
+      },
+      {
+        "name": "JOGURT MOVENPICK",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 5.39,
+        "lineTotal": 5.39,
+        "boundingBox": {
+          "x": 0.302,
+          "y": 0.503,
+          "width": 0.479,
+          "height": 0.025
+        },
+        "kind": 0
+      },
+      {
+        "name": "SMAKIJA KASZKA 13",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 3.45,
+        "lineTotal": 3.45,
+        "boundingBox": {
+          "x": 0.302,
+          "y": 0.52,
+          "width": 0.479,
+          "height": 0.025
+        },
+        "kind": 0
+      },
+      {
+        "name": "PAPRYKA CZERWONA",
+        "quantity": 0.546,
+        "unit": "kg",
+        "unitPrice": 12.99,
+        "lineTotal": 7.09,
+        "boundingBox": {
+          "x": 0.302,
+          "y": 0.535,
+          "width": 0.479,
+          "height": 0.025
+        },
+        "kind": 0
+      },
+      {
+        "name": "MC SZPARAGI ZIELO",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 14.99,
+        "lineTotal": 14.99,
+        "boundingBox": {
+          "x": 0.302,
+          "y": 0.546,
+          "width": 0.479,
+          "height": 0.025
+        },
+        "kind": 0
+      }
+    ],
+    "extractorName": "anthropic",
+    "modelName": "claude-haiku-5-5",
+    "receiptTotalBoundingBox": {
+      "x": 0.315,
+      "y": 0.635,
+      "width": 0.46,
+      "height": 0.035
+    }
+  },
+  "warnings": 0,
+  "itemBoxes": 10,
+  "totalBox": true
+}

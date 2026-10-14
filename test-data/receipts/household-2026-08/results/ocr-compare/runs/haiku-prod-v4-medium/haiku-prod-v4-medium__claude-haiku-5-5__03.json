@@ -1,0 +1,755 @@
+{
+  "configuration": "haiku-prod-v4-medium",
+  "model": "claude-haiku-5-5",
+  "receiptId": "03",
+  "status": "success",
+  "error": null,
+  "elapsedMilliseconds": 33227,
+  "seconds": 33.227,
+  "effort": "medium",
+  "usage": {
+    "calls": 1,
+    "inputTokens": 2978,
+    "outputTokens": 8751,
+    "requestIds": [
+      "msg_011Cg28bahQduFi5xqpkTD9a"
+    ]
+  },
+  "costUsd": 0.004673,
+  "totalMatches": true,
+  "parsed": {
+    "merchant": "E.Leclerc",
+    "date": "2026-07-18",
+    "currency": "PLN",
+    "total": 217.26,
+    "totalBox": [
+      0.37,
+      0.664,
+      0.36,
+      0.025
+    ],
+    "items": [
+      {
+        "name": "KERRYGOLD MASŁO 200",
+        "quantity": 1,
+        "unitPrice": 9.99,
+        "lineTotal": 9.99,
+        "box": [
+          0.36,
+          0.233,
+          0.37,
+          0.018
+        ]
+      },
+      {
+        "name": "CZACHO JAJA 10",
+        "quantity": 1,
+        "unitPrice": 12.99,
+        "lineTotal": 12.99,
+        "box": [
+          0.36,
+          0.246,
+          0.37,
+          0.018
+        ]
+      },
+      {
+        "name": "PIĄT MLEKO 2%",
+        "quantity": 1,
+        "unitPrice": 5.69,
+        "lineTotal": 5.69,
+        "box": [
+          0.36,
+          0.258,
+          0.37,
+          0.018
+        ]
+      },
+      {
+        "name": "GULASZ CIELĘCY KG.MC",
+        "quantity": 0.65,
+        "unitPrice": 88.99,
+        "lineTotal": 57.84,
+        "box": [
+          0.36,
+          0.27,
+          0.37,
+          0.035
+        ]
+      },
+      {
+        "name": "KABACZEK",
+        "quantity": 0.96,
+        "unitPrice": 7.99,
+        "lineTotal": 7.67,
+        "box": [
+          0.36,
+          0.3,
+          0.37,
+          0.035
+        ]
+      },
+      {
+        "name": "LEER SER ORIGI 100",
+        "quantity": 1,
+        "unitPrice": 5.99,
+        "lineTotal": 5.99,
+        "box": [
+          0.36,
+          0.317,
+          0.37,
+          0.018
+        ]
+      },
+      {
+        "name": "MOWI LOSOS INT 100",
+        "quantity": 1,
+        "unitPrice": 22.49,
+        "lineTotal": 22.49,
+        "box": [
+          0.36,
+          0.33,
+          0.37,
+          0.018
+        ]
+      },
+      {
+        "name": "JANA SEREK CZE 120",
+        "quantity": 1,
+        "unitPrice": 2.65,
+        "lineTotal": 2.65,
+        "box": [
+          0.36,
+          0.342,
+          0.37,
+          0.018
+        ]
+      },
+      {
+        "name": "LEER SER ORIGI 100",
+        "quantity": 1,
+        "unitPrice": 5.99,
+        "lineTotal": 5.99,
+        "box": [
+          0.36,
+          0.355,
+          0.37,
+          0.018
+        ]
+      },
+      {
+        "name": "LEER SER LIGHT 100",
+        "quantity": 1,
+        "unitPrice": 6.99,
+        "lineTotal": 6.99,
+        "box": [
+          0.36,
+          0.367,
+          0.37,
+          0.018
+        ]
+      },
+      {
+        "name": "BAK JOGURT DRA 135",
+        "quantity": 1,
+        "unitPrice": 3.29,
+        "lineTotal": 3.29,
+        "box": [
+          0.36,
+          0.379,
+          0.37,
+          0.018
+        ]
+      },
+      {
+        "name": "GOSH DESER 125",
+        "quantity": 1,
+        "unitPrice": 2.99,
+        "lineTotal": 2.99,
+        "box": [
+          0.36,
+          0.391,
+          0.37,
+          0.018
+        ]
+      },
+      {
+        "name": "POL ME MĘK TORT 1",
+        "quantity": 1,
+        "unitPrice": 4.62,
+        "lineTotal": 4.62,
+        "box": [
+          0.36,
+          0.403,
+          0.37,
+          0.018
+        ]
+      },
+      {
+        "name": "ŁACIATE ŚMIETA 500",
+        "quantity": 1,
+        "unitPrice": 12.99,
+        "lineTotal": 12.99,
+        "box": [
+          0.36,
+          0.416,
+          0.37,
+          0.018
+        ]
+      },
+      {
+        "name": "NEST CHEER PŁA 250",
+        "quantity": 1,
+        "unitPrice": 7.55,
+        "lineTotal": 7.55,
+        "box": [
+          0.36,
+          0.428,
+          0.37,
+          0.018
+        ]
+      },
+      {
+        "name": "NEST CHOC PŁAT 250",
+        "quantity": 1,
+        "unitPrice": 7.78,
+        "lineTotal": 7.78,
+        "box": [
+          0.36,
+          0.44,
+          0.37,
+          0.018
+        ]
+      },
+      {
+        "name": "JOGO JOG B/CUK 150",
+        "quantity": 1,
+        "unitPrice": 2.99,
+        "lineTotal": 2.99,
+        "box": [
+          0.36,
+          0.452,
+          0.37,
+          0.018
+        ]
+      },
+      {
+        "name": "MEL SKRÓB ZIEM 500",
+        "quantity": 1,
+        "unitPrice": 5.42,
+        "lineTotal": 5.42,
+        "box": [
+          0.36,
+          0.464,
+          0.37,
+          0.018
+        ]
+      },
+      {
+        "name": "ROLN OCET 10x 500",
+        "quantity": 1,
+        "unitPrice": 4.27,
+        "lineTotal": 4.27,
+        "box": [
+          0.36,
+          0.477,
+          0.37,
+          0.018
+        ]
+      },
+      {
+        "name": "WEDE CHAŁ ORZE 50",
+        "quantity": 1,
+        "unitPrice": 2.99,
+        "lineTotal": 2.99,
+        "box": [
+          0.36,
+          0.489,
+          0.37,
+          0.018
+        ]
+      },
+      {
+        "name": "PROT BATON TWA 40",
+        "quantity": 1,
+        "unitPrice": 2.59,
+        "lineTotal": 2.59,
+        "box": [
+          0.36,
+          0.501,
+          0.37,
+          0.018
+        ]
+      },
+      {
+        "name": "PRES ŚMIETANKA 100",
+        "quantity": 1,
+        "unitPrice": 4.49,
+        "lineTotal": 4.49,
+        "box": [
+          0.36,
+          0.514,
+          0.37,
+          0.018
+        ]
+      },
+      {
+        "name": "PAPRYKA BIAŁ CORNO",
+        "quantity": 0.26,
+        "unitPrice": 6.29,
+        "lineTotal": 1.64,
+        "box": [
+          0.36,
+          0.527,
+          0.37,
+          0.03
+        ]
+      },
+      {
+        "name": "PRES ŚMIETANKA 100",
+        "quantity": 1,
+        "unitPrice": 4.49,
+        "lineTotal": 4.49,
+        "box": [
+          0.36,
+          0.544,
+          0.37,
+          0.018
+        ]
+      },
+      {
+        "name": "DETK EXST WAN 30",
+        "quantity": 1,
+        "unitPrice": 6.99,
+        "lineTotal": 6.99,
+        "box": [
+          0.36,
+          0.557,
+          0.37,
+          0.018
+        ]
+      },
+      {
+        "name": "DETK PROSZ PIEC 30",
+        "quantity": 1,
+        "unitPrice": 0.89,
+        "lineTotal": 0.89,
+        "box": [
+          0.36,
+          0.568,
+          0.37,
+          0.018
+        ]
+      },
+      {
+        "name": "WEDE CHAŁ ORZE 50",
+        "quantity": 1,
+        "unitPrice": 2.99,
+        "lineTotal": 2.99,
+        "box": [
+          0.36,
+          0.58,
+          0.37,
+          0.018
+        ]
+      }
+    ]
+  },
+  "extraction": {
+    "merchantName": "E.Leclerc",
+    "purchasedAt": "2026-07-18T16:38:00+02:00",
+    "currency": "PLN",
+    "receiptTotal": 217.26,
+    "items": [
+      {
+        "name": "KERRYGOLD MASŁO 200",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 9.99,
+        "lineTotal": 9.99,
+        "boundingBox": {
+          "x": 0.36,
+          "y": 0.233,
+          "width": 0.37,
+          "height": 0.018
+        },
+        "kind": 0
+      },
+      {
+        "name": "CZACHO JAJA 10",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 12.99,
+        "lineTotal": 12.99,
+        "boundingBox": {
+          "x": 0.36,
+          "y": 0.246,
+          "width": 0.37,
+          "height": 0.018
+        },
+        "kind": 0
+      },
+      {
+        "name": "PIĄT MLEKO 2%",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 5.69,
+        "lineTotal": 5.69,
+        "boundingBox": {
+          "x": 0.36,
+          "y": 0.258,
+          "width": 0.37,
+          "height": 0.018
+        },
+        "kind": 0
+      },
+      {
+        "name": "GULASZ CIELĘCY KG.MC",
+        "quantity": 0.65,
+        "unit": "kg",
+        "unitPrice": 88.99,
+        "lineTotal": 57.84,
+        "boundingBox": {
+          "x": 0.36,
+          "y": 0.27,
+          "width": 0.37,
+          "height": 0.035
+        },
+        "kind": 0
+      },
+      {
+        "name": "KABACZEK",
+        "quantity": 0.96,
+        "unit": "kg",
+        "unitPrice": 7.99,
+        "lineTotal": 7.67,
+        "boundingBox": {
+          "x": 0.36,
+          "y": 0.3,
+          "width": 0.37,
+          "height": 0.035
+        },
+        "kind": 0
+      },
+      {
+        "name": "LEER SER ORIGI 100",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 5.99,
+        "lineTotal": 5.99,
+        "boundingBox": {
+          "x": 0.36,
+          "y": 0.317,
+          "width": 0.37,
+          "height": 0.018
+        },
+        "kind": 0
+      },
+      {
+        "name": "MOWI LOSOS INT 100",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 22.49,
+        "lineTotal": 22.49,
+        "boundingBox": {
+          "x": 0.36,
+          "y": 0.33,
+          "width": 0.37,
+          "height": 0.018
+        },
+        "kind": 0
+      },
+      {
+        "name": "JANA SEREK CZE 120",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 2.65,
+        "lineTotal": 2.65,
+        "boundingBox": {
+          "x": 0.36,
+          "y": 0.342,
+          "width": 0.37,
+          "height": 0.018
+        },
+        "kind": 0
+      },
+      {
+        "name": "LEER SER ORIGI 100",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 5.99,
+        "lineTotal": 5.99,
+        "boundingBox": {
+          "x": 0.36,
+          "y": 0.355,
+          "width": 0.37,
+          "height": 0.018
+        },
+        "kind": 0
+      },
+      {
+        "name": "LEER SER LIGHT 100",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 6.99,
+        "lineTotal": 6.99,
+        "boundingBox": {
+          "x": 0.36,
+          "y": 0.367,
+          "width": 0.37,
+          "height": 0.018
+        },
+        "kind": 0
+      },
+      {
+        "name": "BAK JOGURT DRA 135",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 3.29,
+        "lineTotal": 3.29,
+        "boundingBox": {
+          "x": 0.36,
+          "y": 0.379,
+          "width": 0.37,
+          "height": 0.018
+        },
+        "kind": 0
+      },
+      {
+        "name": "GOSH DESER 125",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 2.99,
+        "lineTotal": 2.99,
+        "boundingBox": {
+          "x": 0.36,
+          "y": 0.391,
+          "width": 0.37,
+          "height": 0.018
+        },
+        "kind": 0
+      },
+      {
+        "name": "POL ME MĘK TORT 1",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 4.62,
+        "lineTotal": 4.62,
+        "boundingBox": {
+          "x": 0.36,
+          "y": 0.403,
+          "width": 0.37,
+          "height": 0.018
+        },
+        "kind": 0
+      },
+      {
+        "name": "ŁACIATE ŚMIETA 500",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 12.99,
+        "lineTotal": 12.99,
+        "boundingBox": {
+          "x": 0.36,
+          "y": 0.416,
+          "width": 0.37,
+          "height": 0.018
+        },
+        "kind": 0
+      },
+      {
+        "name": "NEST CHEER PŁA 250",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 7.55,
+        "lineTotal": 7.55,
+        "boundingBox": {
+          "x": 0.36,
+          "y": 0.428,
+          "width": 0.37,
+          "height": 0.018
+        },
+        "kind": 0
+      },
+      {
+        "name": "NEST CHOC PŁAT 250",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 7.78,
+        "lineTotal": 7.78,
+        "boundingBox": {
+          "x": 0.36,
+          "y": 0.44,
+          "width": 0.37,
+          "height": 0.018
+        },
+        "kind": 0
+      },
+      {
+        "name": "JOGO JOG B/CUK 150",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 2.99,
+        "lineTotal": 2.99,
+        "boundingBox": {
+          "x": 0.36,
+          "y": 0.452,
+          "width": 0.37,
+          "height": 0.018
+        },
+        "kind": 0
+      },
+      {
+        "name": "MEL SKRÓB ZIEM 500",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 5.42,
+        "lineTotal": 5.42,
+        "boundingBox": {
+          "x": 0.36,
+          "y": 0.464,
+          "width": 0.37,
+          "height": 0.018
+        },
+        "kind": 0
+      },
+      {
+        "name": "ROLN OCET 10x 500",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 4.27,
+        "lineTotal": 4.27,
+        "boundingBox": {
+          "x": 0.36,
+          "y": 0.477,
+          "width": 0.37,
+          "height": 0.018
+        },
+        "kind": 0
+      },
+      {
+        "name": "WEDE CHAŁ ORZE 50",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 2.99,
+        "lineTotal": 2.99,
+        "boundingBox": {
+          "x": 0.36,
+          "y": 0.489,
+          "width": 0.37,
+          "height": 0.018
+        },
+        "kind": 0
+      },
+      {
+        "name": "PROT BATON TWA 40",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 2.59,
+        "lineTotal": 2.59,
+        "boundingBox": {
+          "x": 0.36,
+          "y": 0.501,
+          "width": 0.37,
+          "height": 0.018
+        },
+        "kind": 0
+      },
+      {
+        "name": "PRES ŚMIETANKA 100",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 4.49,
+        "lineTotal": 4.49,
+        "boundingBox": {
+          "x": 0.36,
+          "y": 0.514,
+          "width": 0.37,
+          "height": 0.018
+        },
+        "kind": 0
+      },
+      {
+        "name": "PAPRYKA BIAŁ CORNO",
+        "quantity": 0.26,
+        "unit": "kg",
+        "unitPrice": 6.29,
+        "lineTotal": 1.64,
+        "boundingBox": {
+          "x": 0.36,
+          "y": 0.527,
+          "width": 0.37,
+          "height": 0.03
+        },
+        "kind": 0
+      },
+      {
+        "name": "PRES ŚMIETANKA 100",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 4.49,
+        "lineTotal": 4.49,
+        "boundingBox": {
+          "x": 0.36,
+          "y": 0.544,
+          "width": 0.37,
+          "height": 0.018
+        },
+        "kind": 0
+      },
+      {
+        "name": "DETK EXST WAN 30",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 6.99,
+        "lineTotal": 6.99,
+        "boundingBox": {
+          "x": 0.36,
+          "y": 0.557,
+          "width": 0.37,
+          "height": 0.018
+        },
+        "kind": 0
+      },
+      {
+        "name": "DETK PROSZ PIEC 30",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 0.89,
+        "lineTotal": 0.89,
+        "boundingBox": {
+          "x": 0.36,
+          "y": 0.568,
+          "width": 0.37,
+          "height": 0.018
+        },
+        "kind": 0
+      },
+      {
+        "name": "WEDE CHAŁ ORZE 50",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 2.99,
+        "lineTotal": 2.99,
+        "boundingBox": {
+          "x": 0.36,
+          "y": 0.58,
+          "width": 0.37,
+          "height": 0.018
+        },
+        "kind": 0
+      }
+    ],
+    "extractorName": "anthropic",
+    "modelName": "claude-haiku-5-5",
+    "receiptTotalBoundingBox": {
+      "x": 0.37,
+      "y": 0.664,
+      "width": 0.36,
+      "height": 0.025
+    }
+  },
+  "warnings": 0,
+  "itemBoxes": 27,
+  "totalBox": true
+}

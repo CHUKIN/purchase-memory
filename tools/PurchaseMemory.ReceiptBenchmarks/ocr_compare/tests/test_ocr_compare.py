@@ -142,6 +142,13 @@ class HaikuMatrixTests(unittest.TestCase):
         self.assertEqual([(i["name"], i["lineTotal"]) for i in parsed["items"]], [("A", 2.0), ("OPUST", -1.0), ("B", 2.0)])
         self.assertEqual(parsed["items"][0]["box"], [0.1, 0.2, 0.5, 0.02])
 
+    def test_production_v4_contract_is_the_measured_full_structured_variant(self):
+        # The backend's contract v4 must stay byte-identical to what was measured.
+        source = (haiku_matrix.ROOT / "src" / "PurchaseMemory.Application" / "Receipts"
+                  / "ReceiptStructuredAnalysisContract.cs").read_text()
+        self.assertEqual(haiku_matrix._raw_literal(source, "BasePrompt"), haiku_matrix.FULL_PROMPT)
+        self.assertEqual(json.loads(haiku_matrix._raw_literal(source, "JsonSchema")), haiku_matrix.FULL_SCHEMA)
+
     def test_estimate_is_positive_and_worst_case_bounds_it(self):
         rows = haiku_matrix.estimate(["01", "02"], repeats=2)
         self.assertEqual(len(rows), 12)

@@ -94,6 +94,11 @@ public sealed class ReceiptRecognitionOptionsValidator : IValidateOptions<Receip
             RequireModel(options.AnthropicModel, "AnthropicModel", errors);
         }
 
+        if (!Enum.IsDefined(options.AnthropicReceiptContract))
+        {
+            errors.Add("AnthropicReceiptContract must be V3 or V4Structured.");
+        }
+
         if (options.AnthropicRequestTimeoutSeconds is <= 0 or > 600)
         {
             errors.Add("AnthropicRequestTimeoutSeconds must be between 1 and 600.");

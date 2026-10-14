@@ -1,0 +1,339 @@
+{
+  "configuration": "haiku-prod-v4-medium",
+  "model": "claude-haiku-5-5",
+  "receiptId": "12",
+  "status": "success",
+  "error": null,
+  "elapsedMilliseconds": 13526,
+  "seconds": 13.526,
+  "effort": "medium",
+  "usage": {
+    "calls": 1,
+    "inputTokens": 2978,
+    "outputTokens": 3277,
+    "requestIds": [
+      "msg_011Cg28kp83Xxs5eUTNdKaiS"
+    ]
+  },
+  "costUsd": 0.001936,
+  "totalMatches": true,
+  "parsed": {
+    "merchant": "CARREFOUR MARKET CH Sadyba",
+    "date": "2025-07-18",
+    "currency": "PLN",
+    "total": 75.55,
+    "totalBox": [
+      0.256,
+      0.635,
+      0.5,
+      0.03
+    ],
+    "items": [
+      {
+        "name": "C#SER RAJSKI WLOSZ",
+        "quantity": 1,
+        "unitPrice": 7.99,
+        "lineTotal": 7.99,
+        "box": [
+          0.27,
+          0.327,
+          0.47,
+          0.022
+        ]
+      },
+      {
+        "name": "C#SER TWARD.DZIUGAS",
+        "quantity": 1,
+        "unitPrice": 3.95,
+        "lineTotal": 3.95,
+        "box": [
+          0.27,
+          0.342,
+          0.47,
+          0.022
+        ]
+      },
+      {
+        "name": "OPUST C#SER TWARD.DZIUGAS",
+        "quantity": null,
+        "unitPrice": null,
+        "lineTotal": -2.37,
+        "box": [
+          0.27,
+          0.362,
+          0.47,
+          0.022
+        ]
+      },
+      {
+        "name": "C#SER TWARD.DZIUGAS",
+        "quantity": 1,
+        "unitPrice": 3.95,
+        "lineTotal": 3.95,
+        "box": [
+          0.27,
+          0.375,
+          0.47,
+          0.022
+        ]
+      },
+      {
+        "name": "C#FILET Z KURCZAKA",
+        "quantity": 0.609,
+        "unitPrice": 27.99,
+        "lineTotal": 17.05,
+        "box": [
+          0.27,
+          0.39,
+          0.47,
+          0.022
+        ]
+      },
+      {
+        "name": "C#POLEDWICA Z DORSZ",
+        "quantity": 0.253,
+        "unitPrice": 89.9,
+        "lineTotal": 22.74,
+        "box": [
+          0.27,
+          0.407,
+          0.47,
+          0.022
+        ]
+      },
+      {
+        "name": "C#JOGURT MOVENPICK",
+        "quantity": 2,
+        "unitPrice": 5.75,
+        "lineTotal": 11.5,
+        "box": [
+          0.27,
+          0.424,
+          0.47,
+          0.022
+        ]
+      },
+      {
+        "name": "C#DESER SATINO BAKO",
+        "quantity": 1,
+        "unitPrice": 3.35,
+        "lineTotal": 3.35,
+        "box": [
+          0.27,
+          0.441,
+          0.47,
+          0.022
+        ]
+      },
+      {
+        "name": "C#DESER SATINO BAKO",
+        "quantity": 1,
+        "unitPrice": 3.35,
+        "lineTotal": 3.35,
+        "box": [
+          0.27,
+          0.458,
+          0.47,
+          0.022
+        ]
+      },
+      {
+        "name": "A#BATONIK TWAROG MA",
+        "quantity": 1,
+        "unitPrice": 3.25,
+        "lineTotal": 3.25,
+        "box": [
+          0.27,
+          0.475,
+          0.47,
+          0.022
+        ]
+      },
+      {
+        "name": "A#TORBA RECYKLING",
+        "quantity": 1,
+        "unitPrice": 0.79,
+        "lineTotal": 0.79,
+        "box": [
+          0.27,
+          0.493,
+          0.47,
+          0.022
+        ]
+      }
+    ]
+  },
+  "extraction": {
+    "merchantName": "CARREFOUR MARKET CH Sadyba",
+    "purchasedAt": "2025-07-18T21:42:00+02:00",
+    "currency": "PLN",
+    "receiptTotal": 75.55,
+    "items": [
+      {
+        "name": "C#SER RAJSKI WLOSZ",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 7.99,
+        "lineTotal": 7.99,
+        "boundingBox": {
+          "x": 0.27,
+          "y": 0.327,
+          "width": 0.47,
+          "height": 0.022
+        },
+        "kind": 0
+      },
+      {
+        "name": "C#SER TWARD.DZIUGAS",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 3.95,
+        "lineTotal": 3.95,
+        "boundingBox": {
+          "x": 0.27,
+          "y": 0.342,
+          "width": 0.47,
+          "height": 0.022
+        },
+        "kind": 0
+      },
+      {
+        "name": "OPUST C#SER TWARD.DZIUGAS",
+        "quantity": null,
+        "unit": null,
+        "unitPrice": null,
+        "lineTotal": -2.37,
+        "boundingBox": {
+          "x": 0.27,
+          "y": 0.362,
+          "width": 0.47,
+          "height": 0.022
+        },
+        "kind": 1
+      },
+      {
+        "name": "C#SER TWARD.DZIUGAS",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 3.95,
+        "lineTotal": 3.95,
+        "boundingBox": {
+          "x": 0.27,
+          "y": 0.375,
+          "width": 0.47,
+          "height": 0.022
+        },
+        "kind": 0
+      },
+      {
+        "name": "C#FILET Z KURCZAKA",
+        "quantity": 0.609,
+        "unit": "kg",
+        "unitPrice": 27.99,
+        "lineTotal": 17.05,
+        "boundingBox": {
+          "x": 0.27,
+          "y": 0.39,
+          "width": 0.47,
+          "height": 0.022
+        },
+        "kind": 0
+      },
+      {
+        "name": "C#POLEDWICA Z DORSZ",
+        "quantity": 0.253,
+        "unit": "kg",
+        "unitPrice": 89.9,
+        "lineTotal": 22.74,
+        "boundingBox": {
+          "x": 0.27,
+          "y": 0.407,
+          "width": 0.47,
+          "height": 0.022
+        },
+        "kind": 0
+      },
+      {
+        "name": "C#JOGURT MOVENPICK",
+        "quantity": 2,
+        "unit": "szt",
+        "unitPrice": 5.75,
+        "lineTotal": 11.5,
+        "boundingBox": {
+          "x": 0.27,
+          "y": 0.424,
+          "width": 0.47,
+          "height": 0.022
+        },
+        "kind": 0
+      },
+      {
+        "name": "C#DESER SATINO BAKO",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 3.35,
+        "lineTotal": 3.35,
+        "boundingBox": {
+          "x": 0.27,
+          "y": 0.441,
+          "width": 0.47,
+          "height": 0.022
+        },
+        "kind": 0
+      },
+      {
+        "name": "C#DESER SATINO BAKO",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 3.35,
+        "lineTotal": 3.35,
+        "boundingBox": {
+          "x": 0.27,
+          "y": 0.458,
+          "width": 0.47,
+          "height": 0.022
+        },
+        "kind": 0
+      },
+      {
+        "name": "A#BATONIK TWAROG MA",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 3.25,
+        "lineTotal": 3.25,
+        "boundingBox": {
+          "x": 0.27,
+          "y": 0.475,
+          "width": 0.47,
+          "height": 0.022
+        },
+        "kind": 0
+      },
+      {
+        "name": "A#TORBA RECYKLING",
+        "quantity": 1,
+        "unit": "szt",
+        "unitPrice": 0.79,
+        "lineTotal": 0.79,
+        "boundingBox": {
+          "x": 0.27,
+          "y": 0.493,
+          "width": 0.47,
+          "height": 0.022
+        },
+        "kind": 0
+      }
+    ],
+    "extractorName": "anthropic",
+    "modelName": "claude-haiku-5-5",
+    "receiptTotalBoundingBox": {
+      "x": 0.256,
+      "y": 0.635,
+      "width": 0.5,
+      "height": 0.03
+    }
+  },
+  "warnings": 0,
+  "itemBoxes": 11,
+  "totalBox": true
+}

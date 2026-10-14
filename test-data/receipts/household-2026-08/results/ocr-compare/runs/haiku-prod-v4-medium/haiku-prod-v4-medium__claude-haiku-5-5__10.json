@@ -1,0 +1,313 @@
+{
+  "configuration": "haiku-prod-v4-medium",
+  "model": "claude-haiku-5-5",
+  "receiptId": "10",
+  "status": "success",
+  "error": null,
+  "elapsedMilliseconds": 12246,
+  "seconds": 12.246,
+  "effort": "medium",
+  "usage": {
+    "calls": 1,
+    "inputTokens": 2978,
+    "outputTokens": 2807,
+    "requestIds": [
+      "msg_011Cg28iyzJpuw2CGXfgptmU"
+    ]
+  },
+  "costUsd": 0.001701,
+  "totalMatches": true,
+  "parsed": {
+    "merchant": "SUPERMARKET AUCHAN",
+    "date": "2025-08-05",
+    "currency": "PLN",
+    "total": 85.69,
+    "totalBox": [
+      0.18,
+      0.625,
+      0.65,
+      0.04
+    ],
+    "items": [
+      {
+        "name": "GUMA ROZP. 356556A",
+        "quantity": 1,
+        "unitPrice": 7.44,
+        "lineTotal": 7.44,
+        "box": [
+          0.16,
+          0.324,
+          0.7,
+          0.03
+        ]
+      },
+      {
+        "name": "TOST PEŁNO 303971C",
+        "quantity": 1,
+        "unitPrice": 3.18,
+        "lineTotal": 3.18,
+        "box": [
+          0.16,
+          0.342,
+          0.7,
+          0.03
+        ]
+      },
+      {
+        "name": "FILET Z KU 339849C",
+        "quantity": 0.555,
+        "unitPrice": 28.98,
+        "lineTotal": 16.08,
+        "box": [
+          0.16,
+          0.36,
+          0.7,
+          0.03
+        ]
+      },
+      {
+        "name": "BANAN 34041C",
+        "quantity": 0.414,
+        "unitPrice": 6.99,
+        "lineTotal": 2.89,
+        "box": [
+          0.16,
+          0.387,
+          0.7,
+          0.03
+        ]
+      },
+      {
+        "name": "SZYNKA Z P 695097C",
+        "quantity": 1,
+        "unitPrice": 6.19,
+        "lineTotal": 6.19,
+        "box": [
+          0.16,
+          0.405,
+          0.7,
+          0.03
+        ]
+      },
+      {
+        "name": "SER SZWAJC 508926C",
+        "quantity": 1,
+        "unitPrice": 5.89,
+        "lineTotal": 5.89,
+        "box": [
+          0.16,
+          0.42,
+          0.7,
+          0.03
+        ]
+      },
+      {
+        "name": "CEBULA 43444C",
+        "quantity": 0.184,
+        "unitPrice": 4.39,
+        "lineTotal": 0.81,
+        "box": [
+          0.16,
+          0.445,
+          0.7,
+          0.03
+        ]
+      },
+      {
+        "name": "DORSZ ATLA 809036C",
+        "quantity": 0.302,
+        "unitPrice": 104.9,
+        "lineTotal": 31.68,
+        "box": [
+          0.16,
+          0.463,
+          0.7,
+          0.03
+        ]
+      },
+      {
+        "name": "JOGURT OWC 281650C",
+        "quantity": 1,
+        "unitPrice": 7.64,
+        "lineTotal": 7.64,
+        "box": [
+          0.16,
+          0.48,
+          0.7,
+          0.03
+        ]
+      },
+      {
+        "name": "ZIEMNIAK W 266537C",
+        "quantity": 1,
+        "unitPrice": 3.89,
+        "lineTotal": 3.89,
+        "box": [
+          0.16,
+          0.5,
+          0.7,
+          0.03
+        ]
+      }
+    ]
+  },
+  "extraction": {
+    "merchantName": "SUPERMARKET AUCHAN",
+    "purchasedAt": "2025-08-05T21:29:00+02:00",
+    "currency": "PLN",
+    "receiptTotal": 85.69,
+    "items": [
+      {
+        "name": "GUMA ROZP. 356556A",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 7.44,
+        "lineTotal": 7.44,
+        "boundingBox": {
+          "x": 0.16,
+          "y": 0.324,
+          "width": 0.7,
+          "height": 0.03
+        },
+        "kind": 0
+      },
+      {
+        "name": "TOST PEŁNO 303971C",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 3.18,
+        "lineTotal": 3.18,
+        "boundingBox": {
+          "x": 0.16,
+          "y": 0.342,
+          "width": 0.7,
+          "height": 0.03
+        },
+        "kind": 0
+      },
+      {
+        "name": "FILET Z KU 339849C",
+        "quantity": 0.555,
+        "unit": "kg",
+        "unitPrice": 28.98,
+        "lineTotal": 16.08,
+        "boundingBox": {
+          "x": 0.16,
+          "y": 0.36,
+          "width": 0.7,
+          "height": 0.03
+        },
+        "kind": 0
+      },
+      {
+        "name": "BANAN 34041C",
+        "quantity": 0.414,
+        "unit": "kg",
+        "unitPrice": 6.99,
+        "lineTotal": 2.89,
+        "boundingBox": {
+          "x": 0.16,
+          "y": 0.387,
+          "width": 0.7,
+          "height": 0.03
+        },
+        "kind": 0
+      },
+      {
+        "name": "SZYNKA Z P 695097C",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 6.19,
+        "lineTotal": 6.19,
+        "boundingBox": {
+          "x": 0.16,
+          "y": 0.405,
+          "width": 0.7,
+          "height": 0.03
+        },
+        "kind": 0
+      },
+      {
+        "name": "SER SZWAJC 508926C",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 5.89,
+        "lineTotal": 5.89,
+        "boundingBox": {
+          "x": 0.16,
+          "y": 0.42,
+          "width": 0.7,
+          "height": 0.03
+        },
+        "kind": 0
+      },
+      {
+        "name": "CEBULA 43444C",
+        "quantity": 0.184,
+        "unit": "kg",
+        "unitPrice": 4.39,
+        "lineTotal": 0.81,
+        "boundingBox": {
+          "x": 0.16,
+          "y": 0.445,
+          "width": 0.7,
+          "height": 0.03
+        },
+        "kind": 0
+      },
+      {
+        "name": "DORSZ ATLA 809036C",
+        "quantity": 0.302,
+        "unit": "kg",
+        "unitPrice": 104.9,
+        "lineTotal": 31.68,
+        "boundingBox": {
+          "x": 0.16,
+          "y": 0.463,
+          "width": 0.7,
+          "height": 0.03
+        },
+        "kind": 0
+      },
+      {
+        "name": "JOGURT OWC 281650C",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 7.64,
+        "lineTotal": 7.64,
+        "boundingBox": {
+          "x": 0.16,
+          "y": 0.48,
+          "width": 0.7,
+          "height": 0.03
+        },
+        "kind": 0
+      },
+      {
+        "name": "ZIEMNIAK W 266537C",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 3.89,
+        "lineTotal": 3.89,
+        "boundingBox": {
+          "x": 0.16,
+          "y": 0.5,
+          "width": 0.7,
+          "height": 0.03
+        },
+        "kind": 0
+      }
+    ],
+    "extractorName": "anthropic",
+    "modelName": "claude-haiku-5-5",
+    "receiptTotalBoundingBox": {
+      "x": 0.18,
+      "y": 0.625,
+      "width": 0.65,
+      "height": 0.04
+    }
+  },
+  "warnings": 0,
+  "itemBoxes": 10,
+  "totalBox": true
+}

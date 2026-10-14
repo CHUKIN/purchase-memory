@@ -1,0 +1,157 @@
+{
+  "configuration": "haiku-prod-v4-medium",
+  "model": "claude-haiku-5-5",
+  "receiptId": "15",
+  "status": "success",
+  "error": null,
+  "elapsedMilliseconds": 5547,
+  "seconds": 5.547,
+  "effort": "medium",
+  "usage": {
+    "calls": 1,
+    "inputTokens": 2978,
+    "outputTokens": 1146,
+    "requestIds": [
+      "msg_011Cg28oJpFhrsn8DoRxzMQ2"
+    ]
+  },
+  "costUsd": 0.000871,
+  "totalMatches": true,
+  "parsed": {
+    "merchant": "Billy's American Restaurants",
+    "date": "2025-05-20",
+    "currency": "PLN",
+    "total": 219.00,
+    "totalBox": [
+      0.56,
+      0.775,
+      0.17,
+      0.065
+    ],
+    "items": [
+      {
+        "name": "AMERICAN SALAD",
+        "quantity": 1,
+        "unitPrice": 49.00,
+        "lineTotal": 49.00,
+        "box": [
+          0.22,
+          0.55,
+          0.51,
+          0.025
+        ]
+      },
+      {
+        "name": ",AMERYKAŃSKIE ŻEBERKA",
+        "quantity": 1,
+        "unitPrice": 79.00,
+        "lineTotal": 79.00,
+        "box": [
+          0.22,
+          0.575,
+          0.51,
+          0.025
+        ]
+      },
+      {
+        "name": "GRILLOWANY PSTRĄG",
+        "quantity": 1,
+        "unitPrice": 69.00,
+        "lineTotal": 69.00,
+        "box": [
+          0.22,
+          0.598,
+          0.51,
+          0.025
+        ]
+      },
+      {
+        "name": "DOMOWA MROŻONA HERBATA",
+        "quantity": 1,
+        "unitPrice": 22.00,
+        "lineTotal": 22.00,
+        "box": [
+          0.22,
+          0.622,
+          0.51,
+          0.025
+        ]
+      }
+    ]
+  },
+  "extraction": {
+    "merchantName": "Billy's American Restaurants",
+    "purchasedAt": "2025-05-20T18:17:00+02:00",
+    "currency": "PLN",
+    "receiptTotal": 219.00,
+    "items": [
+      {
+        "name": "AMERICAN SALAD",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 49.00,
+        "lineTotal": 49.00,
+        "boundingBox": {
+          "x": 0.22,
+          "y": 0.55,
+          "width": 0.51,
+          "height": 0.025
+        },
+        "kind": 0
+      },
+      {
+        "name": ",AMERYKAŃSKIE ŻEBERKA",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 79.00,
+        "lineTotal": 79.00,
+        "boundingBox": {
+          "x": 0.22,
+          "y": 0.575,
+          "width": 0.51,
+          "height": 0.025
+        },
+        "kind": 0
+      },
+      {
+        "name": "GRILLOWANY PSTRĄG",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 69.00,
+        "lineTotal": 69.00,
+        "boundingBox": {
+          "x": 0.22,
+          "y": 0.598,
+          "width": 0.51,
+          "height": 0.025
+        },
+        "kind": 0
+      },
+      {
+        "name": "DOMOWA MROŻONA HERBATA",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 22.00,
+        "lineTotal": 22.00,
+        "boundingBox": {
+          "x": 0.22,
+          "y": 0.622,
+          "width": 0.51,
+          "height": 0.025
+        },
+        "kind": 0
+      }
+    ],
+    "extractorName": "anthropic",
+    "modelName": "claude-haiku-5-5",
+    "receiptTotalBoundingBox": {
+      "x": 0.56,
+      "y": 0.775,
+      "width": 0.17,
+      "height": 0.065
+    }
+  },
+  "warnings": 0,
+  "itemBoxes": 4,
+  "totalBox": true
+}

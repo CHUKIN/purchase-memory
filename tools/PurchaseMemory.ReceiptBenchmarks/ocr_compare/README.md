@@ -29,6 +29,11 @@ zsh -ic 'python3 tools/PurchaseMemory.ReceiptBenchmarks/run_ocr_compare.py haiku
 # and rebuilds the Haiku + Azure-box hybrids from the Azure cache: no network).
 python3 $B report
 
+# The production pipeline (.NET, contract v4 by default; --contract v3 for the old one) writes
+# the same shape incl. boxes, so a run under runs/<label>/ is scored by `report` too. Paid:
+zsh -ic './scripts/dotnet.sh run --project tools/PurchaseMemory.ReceiptBenchmarks -- anthropic --contract v4 --effort medium --label haiku-prod-v4-medium --out test-data/receipts/household-2026-08/results/ocr-compare/runs/haiku-prod-v4-medium --ledger test-data/receipts/household-2026-08/results/out/haiku-5-5/ledger-prod-v4.json --stop-at 0.15'
+# (keep the ledger outside runs/: every runs/*/*.json is read as a result record)
+
 # score_items.py works on any run folder as before:
 python3 tools/PurchaseMemory.ReceiptBenchmarks/score_items.py test-data/receipts/household-2026-08/results/ocr-compare/runs/azure-prebuilt-receipt
 

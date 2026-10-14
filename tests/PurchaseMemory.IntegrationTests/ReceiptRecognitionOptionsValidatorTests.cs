@@ -72,6 +72,7 @@ public sealed class ReceiptRecognitionOptionsValidatorTests
         options.AnthropicRequestTimeoutSeconds = 0;
         options.AnthropicMaximumOutputTokens = 0;
         options.AnthropicMaximumRetries = -1;
+        options.AnthropicReceiptContract = (PurchaseMemory.Application.Receipts.ReceiptAnalysisContractVersion)99;
 
         var result = _validator.Validate(null, options);
 
@@ -80,6 +81,7 @@ public sealed class ReceiptRecognitionOptionsValidatorTests
         Assert.Contains(result.Failures, failure => failure.Contains("AnthropicRequestTimeoutSeconds", StringComparison.Ordinal));
         Assert.Contains(result.Failures, failure => failure.Contains("AnthropicMaximumOutputTokens", StringComparison.Ordinal));
         Assert.Contains(result.Failures, failure => failure.Contains("AnthropicMaximumRetries", StringComparison.Ordinal));
+        Assert.Contains(result.Failures, failure => failure.Contains("AnthropicReceiptContract", StringComparison.Ordinal));
     }
 
     [Fact]

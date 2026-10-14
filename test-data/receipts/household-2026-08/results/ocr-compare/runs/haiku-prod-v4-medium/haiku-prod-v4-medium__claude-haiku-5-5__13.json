@@ -1,0 +1,183 @@
+{
+  "configuration": "haiku-prod-v4-medium",
+  "model": "claude-haiku-5-5",
+  "receiptId": "13",
+  "status": "success",
+  "error": null,
+  "elapsedMilliseconds": 9827,
+  "seconds": 9.827,
+  "effort": "medium",
+  "usage": {
+    "calls": 1,
+    "inputTokens": 2978,
+    "outputTokens": 2149,
+    "requestIds": [
+      "msg_011Cg28mnXKmHFnZFEHFPXMF"
+    ]
+  },
+  "costUsd": 0.001372,
+  "totalMatches": true,
+  "parsed": {
+    "merchant": "Lviv Croissants",
+    "date": "2025-08-20",
+    "currency": "PLN",
+    "total": 54.80,
+    "totalBox": [
+      0.3,
+      0.607,
+      0.44,
+      0.03
+    ],
+    "items": [
+      {
+        "name": "Pijana Wiśnia (d)",
+        "quantity": 1,
+        "unitPrice": 22.90,
+        "lineTotal": 22.90,
+        "box": [
+          0.293,
+          0.441,
+          0.482,
+          0.022
+        ]
+      },
+      {
+        "name": "+Pudełko papierowe (d)",
+        "quantity": 1,
+        "unitPrice": 2.00,
+        "lineTotal": 2.00,
+        "box": [
+          0.293,
+          0.458,
+          0.482,
+          0.02
+        ]
+      },
+      {
+        "name": "Królewski (d)",
+        "quantity": 1,
+        "unitPrice": 25.90,
+        "lineTotal": 25.90,
+        "box": [
+          0.293,
+          0.468,
+          0.482,
+          0.026
+        ]
+      },
+      {
+        "name": "+Serek śmietankowy (dodatek)",
+        "quantity": 1,
+        "unitPrice": 2.00,
+        "lineTotal": 2.00,
+        "box": [
+          0.293,
+          0.493,
+          0.482,
+          0.018
+        ]
+      },
+      {
+        "name": "+Pudełko papierowe (d)",
+        "quantity": 1,
+        "unitPrice": 2.00,
+        "lineTotal": 2.00,
+        "box": [
+          0.293,
+          0.508,
+          0.482,
+          0.02
+        ]
+      }
+    ]
+  },
+  "extraction": {
+    "merchantName": "Lviv Croissants",
+    "purchasedAt": "2025-08-20T21:17:00+02:00",
+    "currency": "PLN",
+    "receiptTotal": 54.80,
+    "items": [
+      {
+        "name": "Pijana Wiśnia (d)",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 22.90,
+        "lineTotal": 22.90,
+        "boundingBox": {
+          "x": 0.293,
+          "y": 0.441,
+          "width": 0.482,
+          "height": 0.022
+        },
+        "kind": 0
+      },
+      {
+        "name": "+Pudełko papierowe (d)",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 2.00,
+        "lineTotal": 2.00,
+        "boundingBox": {
+          "x": 0.293,
+          "y": 0.458,
+          "width": 0.482,
+          "height": 0.02
+        },
+        "kind": 0
+      },
+      {
+        "name": "Królewski (d)",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 25.90,
+        "lineTotal": 25.90,
+        "boundingBox": {
+          "x": 0.293,
+          "y": 0.468,
+          "width": 0.482,
+          "height": 0.026
+        },
+        "kind": 0
+      },
+      {
+        "name": "+Serek śmietankowy (dodatek)",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 2.00,
+        "lineTotal": 2.00,
+        "boundingBox": {
+          "x": 0.293,
+          "y": 0.493,
+          "width": 0.482,
+          "height": 0.018
+        },
+        "kind": 0
+      },
+      {
+        "name": "+Pudełko papierowe (d)",
+        "quantity": 1,
+        "unit": null,
+        "unitPrice": 2.00,
+        "lineTotal": 2.00,
+        "boundingBox": {
+          "x": 0.293,
+          "y": 0.508,
+          "width": 0.482,
+          "height": 0.02
+        },
+        "kind": 0
+      }
+    ],
+    "extractorName": "anthropic",
+    "modelName": "claude-haiku-5-5",
+    "receiptTotalBoundingBox": {
+      "x": 0.3,
+      "y": 0.607,
+      "width": 0.44,
+      "height": 0.03
+    }
+  },
+  "warnings": 0,
+  "itemBoxes": 5,
+  "totalBox": true
+}

@@ -29,6 +29,17 @@ public static class ReceiptStructuredOutputParser
     private static readonly HashSet<string> OptionalRootProperties = ["receiptTotalBoundingBox", "rawLines"];
     private static readonly HashSet<string> OptionalItemProperties = ["boundingBox"];
 
+    // Contract v4 ("full-structured"). Boxes, the discount list and the
+    // subtotal/tax fields are tolerated when missing for the same reason boxes
+    // are optional in v3; subtotal and taxTotal have no place in the domain yet
+    // and are dropped here.
+    private static readonly HashSet<string> StructuredOptionalRootProperties =
+        ["discounts", "subtotal", "taxTotal", "receiptTotalBox"];
+    private static readonly HashSet<string> StructuredOptionalItemProperties = ["box"];
+    private static readonly HashSet<string> DiscountProperties = ["amount"];
+    private static readonly HashSet<string> OptionalDiscountProperties = ["label", "appliesToItem", "box"];
+    private const string DefaultDiscountLabel = "RABAT";
+
     public static ParsedReceipt Parse(string rawJson)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(rawJson);
@@ -37,6 +48,7 @@ public static class ReceiptStructuredOutputParser
         {
             using var document = JsonDocument.Parse(ExtractSingleObject(rawJson));
             ValidateObjectShape(document.RootElement, RootProperties, OptionalRootProperties, "$");
+            ValidateArrayItems(document.RootElement, "items", ItemProperties, OptionalItemProperties);
 
             var model = document.RootElement.Deserialize<ModelReceipt>(JsonOptions)
                 ?? throw Invalid("$: result cannot be null.");
@@ -78,6 +90,151 @@ public static class ReceiptStructuredOutputParser
                 exception);
         }
     }
+
+    /// <summary>
+    /// Parses contract v4 (<see cref="ReceiptStructuredAnalysisContract"/>) into
+    /// the same extraction v3 produces. Products are validated exactly like v3
+    /// items; each discount becomes a <see cref="ReceiptLineKind.Discount"/> row
+    /// with a negative total placed right after the product it names
+    /// (<c>appliesToItem</c>), and receipt-level or unplaceable discounts follow
+    /// the last product, which is where a receipt prints them. Storage then
+    /// links them by order exactly as it does for v3 rows.
+    /// </summary>
+    public static ParsedReceipt ParseStructured(string rawJson)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(rawJson);
+
+        try
+        {
+            using var document = JsonDocument.Parse(ExtractSingleObject(rawJson));
+            var root = document.RootElement;
+            ValidateObjectShape(root, RootProperties, StructuredOptionalRootProperties, "$");
+            ValidateArrayItems(root, "items", ItemProperties, StructuredOptionalItemProperties);
+            if (root.TryGetProperty("discounts", out var discountsElement)
+                && discountsElement.ValueKind != JsonValueKind.Null)
+            {
+                ValidateArrayItems(root, "discounts", DiscountProperties, OptionalDiscountProperties);
+            }
+
+            var model = root.Deserialize<StructuredModelReceipt>(JsonOptions)
+                ?? throw Invalid("$: result cannot be null.");
+            var products = model.Items ?? [];
+            var discounts = model.Discounts ?? [];
+            var errors = Validate(new ModelReceipt
+            {
+                MerchantName = model.MerchantName,
+                PurchasedAt = model.PurchasedAt,
+                Currency = model.Currency,
+                ReceiptTotal = model.ReceiptTotal,
+                Items = model.Items
+            });
+            ValidateDiscounts(discounts, errors);
+            if (products.Count + discounts.Count > 300)
+            {
+                errors.Add("$: items and discounts together cannot contain more than 300 entries.");
+            }
+
+            if (errors.Count > 0)
+            {
+                throw new ReceiptStructuredOutputException(errors);
+            }
+
+            var discountsAfter = new Dictionary<int, List<ReceiptExtractionItem>>();
+            var trailingDiscounts = new List<ReceiptExtractionItem>();
+            foreach (var discount in discounts)
+            {
+                var row = new ReceiptExtractionItem(
+                    NormalizeOptional(discount.Label) ?? DefaultDiscountLabel,
+                    Quantity: null,
+                    Unit: null,
+                    UnitPrice: null,
+                    LineTotal: -Math.Abs(discount.Amount!.Value),
+                    ReadBoundingBox(discount.Box),
+                    ReceiptLineKind.Discount);
+                if (ReadItemIndex(discount.AppliesToItem) is { } index && index < products.Count)
+                {
+                    if (!discountsAfter.TryGetValue(index, out var rows))
+                    {
+                        discountsAfter[index] = rows = [];
+                    }
+
+                    rows.Add(row);
+                }
+                else
+                {
+                    trailingDiscounts.Add(row);
+                }
+            }
+
+            var items = new List<ReceiptExtractionItem>(products.Count + discounts.Count);
+            for (var index = 0; index < products.Count; index++)
+            {
+                var product = products[index];
+                items.Add(new ReceiptExtractionItem(
+                    product.Name!.Trim(),
+                    product.Quantity,
+                    NormalizeOptional(product.Unit),
+                    product.UnitPrice,
+                    product.LineTotal,
+                    ReadBoundingBox(product.Box)));
+                if (discountsAfter.TryGetValue(index, out var rows))
+                {
+                    items.AddRange(rows);
+                }
+            }
+
+            items.AddRange(trailingDiscounts);
+            var extraction = new ReceiptExtractionResult(
+                NormalizeOptional(model.MerchantName),
+                ParseDate(model.PurchasedAt),
+                model.Currency,
+                model.ReceiptTotal,
+                items,
+                ExtractorName: string.Empty,
+                ModelName: null,
+                ReadBoundingBox(model.ReceiptTotalBox));
+
+            return new ParsedReceipt(extraction, BuildWarnings(extraction));
+        }
+        catch (ReceiptStructuredOutputException)
+        {
+            throw;
+        }
+        catch (JsonException exception)
+        {
+            throw new ReceiptStructuredOutputException(
+                ["$: response is not valid receipt JSON."],
+                exception);
+        }
+    }
+
+    private static void ValidateDiscounts(IReadOnlyList<StructuredModelDiscount> discounts, List<string> errors)
+    {
+        for (var index = 0; index < discounts.Count; index++)
+        {
+            var discount = discounts[index];
+            var path = $"$.discounts[{index}]";
+            if (discount.Amount is null)
+            {
+                errors.Add($"{path}.amount is required.");
+            }
+
+            if (discount.Label is not null && discount.Label.Trim().Length > 500)
+            {
+                errors.Add($"{path}.label must contain at most 500 characters.");
+            }
+        }
+    }
+
+    /// <summary>A non-negative whole number, or <c>null</c> for anything else (receipt-level).</summary>
+    private static int? ReadItemIndex(JsonElement? element) =>
+        element is { ValueKind: JsonValueKind.Number } value
+        && value.TryGetDecimal(out var number)
+        && number >= 0
+        && number <= int.MaxValue
+        && decimal.Truncate(number) == number
+            ? (int)number
+            : null;
 
     private static List<string> Validate(ModelReceipt model)
     {
@@ -171,7 +328,9 @@ public static class ReceiptStructuredOutputParser
                 warnings.Add($"Item {index + 1} total does not match quantity multiplied by unit price.");
             }
 
-            if (item.LineTotal < 0 && !ReceiptDiscountLineFilter.IsDiscountLine(item.Name))
+            if (item.LineTotal < 0
+                && item.Kind != ReceiptLineKind.Discount
+                && !ReceiptDiscountLineFilter.IsDiscountLine(item.Name))
             {
                 warnings.Add(
                     $"Item {index + 1} has a negative total but no discount marker in its name; "
@@ -218,19 +377,24 @@ public static class ReceiptStructuredOutputParser
             throw new ReceiptStructuredOutputException(errors);
         }
 
-        if (path == "$")
-        {
-            var items = element.GetProperty("items");
-            if (items.ValueKind != JsonValueKind.Array)
-            {
-                throw Invalid("$.items must be an array.");
-            }
+    }
 
-            var index = 0;
-            foreach (var item in items.EnumerateArray())
-            {
-                ValidateObjectShape(item, ItemProperties, OptionalItemProperties, $"$.items[{index++}]");
-            }
+    private static void ValidateArrayItems(
+        JsonElement root,
+        string arrayName,
+        IReadOnlySet<string> expectedProperties,
+        IReadOnlySet<string> optionalProperties)
+    {
+        var array = root.GetProperty(arrayName);
+        if (array.ValueKind != JsonValueKind.Array)
+        {
+            throw Invalid($"$.{arrayName} must be an array.");
+        }
+
+        var index = 0;
+        foreach (var item in array.EnumerateArray())
+        {
+            ValidateObjectShape(item, expectedProperties, optionalProperties, $"$.{arrayName}[{index++}]");
         }
     }
 
@@ -338,6 +502,31 @@ public static class ReceiptStructuredOutputParser
         public JsonElement? ReceiptTotalBoundingBox { get; init; }
     }
 
+    private sealed class StructuredModelReceipt
+    {
+        public string? MerchantName { get; init; }
+        public string? PurchasedAt { get; init; }
+        public string? Currency { get; init; }
+        public decimal? ReceiptTotal { get; init; }
+        public IReadOnlyList<ModelReceiptItem>? Items { get; init; }
+        public IReadOnlyList<StructuredModelDiscount>? Discounts { get; init; }
+
+        /// <summary>Kept as raw JSON so a malformed box cannot fail deserialization.</summary>
+        public JsonElement? ReceiptTotalBox { get; init; }
+    }
+
+    private sealed class StructuredModelDiscount
+    {
+        public string? Label { get; init; }
+        public decimal? Amount { get; init; }
+
+        /// <summary>Kept as raw JSON so a fractional or wrong-typed index means "receipt-level", not a failure.</summary>
+        public JsonElement? AppliesToItem { get; init; }
+
+        /// <summary>Kept as raw JSON so a malformed box cannot fail deserialization.</summary>
+        public JsonElement? Box { get; init; }
+    }
+
     private sealed class ModelReceiptItem
     {
         public string? Name { get; init; }
@@ -348,6 +537,9 @@ public static class ReceiptStructuredOutputParser
 
         /// <summary>Kept as raw JSON so a malformed box cannot fail deserialization.</summary>
         public JsonElement? BoundingBox { get; init; }
+
+        /// <summary>Contract v4 name of <see cref="BoundingBox"/>; raw JSON for the same reason.</summary>
+        public JsonElement? Box { get; init; }
     }
 }
 
