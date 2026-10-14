@@ -4,8 +4,9 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { RecognitionStatus } from "../api/types";
 import { useAuth } from "../auth/AuthContext";
-import { ItemLink, SectionHeader, Sheet } from "../design-system/components";
+import { Footnote, ItemLink, SectionHeader, Sheet } from "../design-system/components";
 import { helpPath } from "../features/help/topics";
+import { isLineLocatorMode, useLineLocatorMode } from "../features/receipt-photo/lineLocatorMode";
 import { isAppLocale } from "../i18n/i18n";
 import { LANGUAGE_SWITCH_ENABLED, useAppLocale } from "./LocaleContext";
 
@@ -18,13 +19,14 @@ export interface SettingsSheetProps {
 
 /**
  * «Ещё» on Home: the rarely used things that used to crowd every screen's
- * header — help, recognition status and sign-out.
+ * header — help, per-device preferences, recognition status and sign-out.
  */
 export function SettingsSheet({ isOpen, onClose, recognition, recognitionFailed = false }: SettingsSheetProps) {
   const { t } = useTranslation();
   const { locale, setLocale } = useAppLocale();
   const auth = useAuth();
   const [confirmSignOut, setConfirmSignOut] = useState(false);
+  const [lineLocatorMode, setLineLocatorMode] = useLineLocatorMode();
   const recognitionText = recognition === null && !recognitionFailed
     ? t("shell.recognitionChecking")
     : recognition?.available && !recognitionFailed
@@ -57,6 +59,21 @@ export function SettingsSheet({ isOpen, onClose, recognition, recognitionFailed 
       </IonList>
         </>
       )}
+
+      <SectionHeader level={3}>{t("lineLocator.settingTitle")}</SectionHeader>
+      <IonList inset className="pm-after-header">
+        <div className="ion-padding">
+          <IonSegment
+            value={lineLocatorMode}
+            aria-label={t("lineLocator.settingLabel")}
+            onIonChange={(event) => { if (isLineLocatorMode(event.detail.value)) setLineLocatorMode(event.detail.value); }}
+          >
+            <IonSegmentButton value="tap"><IonLabel>{t("lineLocator.tap")}</IonLabel></IonSegmentButton>
+            <IonSegmentButton value="swipe"><IonLabel>{t("lineLocator.swipe")}</IonLabel></IonSegmentButton>
+          </IonSegment>
+        </div>
+      </IonList>
+      <Footnote>{lineLocatorMode === "swipe" ? t("lineLocator.settingSwipeHint") : t("lineLocator.settingTapHint")}</Footnote>
 
       <IonList inset>
         <IonItem>

@@ -1,8 +1,8 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { ApiError, getProductCatalog, getPurchase, updatePurchase } from "../../api/client";
-import type { PurchaseDetail } from "../../api/types";
+import { ApiError, fetchProtectedBlob, getProductCatalog, getPurchase, getReceipt, updatePurchase } from "../../api/client";
+import type { PurchaseDetail, ReceiptView } from "../../api/types";
 import { AppProviders } from "../../app/AppProviders";
 import { dialog } from "../../test/ionicHelpers";
 import { PurchaseDetailPage } from "./PurchaseDetailPage";
@@ -17,7 +17,8 @@ vi.mock("../../api/client", async (importOriginal) => {
     listPurchaseImpressions: vi.fn(() => Promise.resolve([])),
     createImpression: vi.fn(),
     deleteImpression: vi.fn(),
-    fetchProtectedBlob: vi.fn(() => new Promise(() => undefined))
+    fetchProtectedBlob: vi.fn(() => new Promise(() => undefined)),
+    getReceipt: vi.fn()
   };
 });
 
@@ -268,5 +269,89 @@ describe("PurchaseDetailPage", () => {
     vi.mocked(getPurchase).mockRejectedValue(new ApiError("nope", 404));
     renderAt("/purchases/missing");
     expect(await screen.findByRole("alert")).toHaveTextContent("Такой покупки нет");
+  });
+});
+
+describe("PurchaseDetailPage lines on the receipt photo", () => {
+  const box = { x: 0.1, y: 0.3, width: 0.8, height: 0.04 };
+  const withPhoto: PurchaseDetail = {
+    ...purchase,
+    sourceReceiptId: "r1",
+    items: [{ ...purchase.items[0], boundingBox: box }, purchase.items[1]]
+  };
+  const receiptWith = (parts: number) => ({
+    id: "r1",
+    imageParts: Array.from({ length: parts }, (_, position) => ({ position, contentType: "image/jpeg", sizeBytes: 1, sourceImageUrl: `/api/receipts/r1/images/${position}` }))
+  }) as unknown as ReceiptView;
+
+  beforeEach(() => {
+    vi.mocked(getPurchase).mockReset().mockResolvedValue(withPhoto);
+    vi.mocked(getReceipt).mockReset().mockResolvedValue(receiptWith(1));
+    vi.mocked(fetchProtectedBlob).mockReset().mockResolvedValue(new Blob(["x"], { type: "image/jpeg" }));
+    // jsdom has no object URLs.
+    URL.createObjectURL = vi.fn(() => "blob:receipt-photo");
+    URL.revokeObjectURL = vi.fn();
+  });
+
+  it("opens the tapped line outlined on the photo", async () => {
+    renderAt("/purchases/p1");
+
+    const line = await screen.findByRole("button", { name: /^KAWA.*Показать на фото$/ });
+    // The «Оценить» button stays its own control, outside the line button.
+    expect(within(line).queryByRole("button")).toBeNull();
+    await waitFor(() => expect(getReceipt).toHaveBeenCalledWith("r1"));
+    fireEvent.click(line);
+
+    const viewer = dialog();
+    expect(within(viewer).getByRole("heading", { level: 2 })).toHaveTextContent("Строка 1 на фото");
+    expect(within(viewer).getByRole("img", { name: "Фрагмент фото чека, рамкой отмечена строка «KAWA»" })).toHaveAttribute("src", "blob:receipt-photo");
+  });
+
+  it("shows a line without a box on the whole photo", async () => {
+    renderAt("/purchases/p1");
+    await waitFor(() => expect(getReceipt).toHaveBeenCalled());
+    fireEvent.click(await screen.findByRole("button", { name: /^Ser Gouda 250g.*Показать на фото$/ }));
+
+    expect(within(dialog()).getByRole("img", { name: "Фото чека целиком" })).toBeInTheDocument();
+    expect(within(dialog()).getByText(/не найдено — показан весь чек/)).toBeInTheDocument();
+  });
+
+  it("does not outline lines of a multi-photo receipt", async () => {
+    vi.mocked(getReceipt).mockResolvedValue(receiptWith(2));
+    renderAt("/purchases/p1");
+    await waitFor(() => expect(getReceipt).toHaveBeenCalled());
+    fireEvent.click(await screen.findByRole("button", { name: /^KAWA.*Показать на фото$/ }));
+
+    expect(await within(dialog()).findByText(/нескольких фото/)).toBeInTheDocument();
+    expect(within(dialog()).getByRole("img", { name: "Фото чека целиком" })).toBeInTheDocument();
+  });
+
+  it("offers «Показать на фото» inside a line in the editor", async () => {
+    renderAt("/purchases/p1?edit=1");
+
+    fireEvent.click(await screen.findByRole("button", { name: /^KAWA/ }));
+    fireEvent.click(await within(dialog("Строка 1")).findByRole("button", { name: "Показать на фото" }));
+    expect(within(dialog()).getByRole("heading", { level: 2 })).toHaveTextContent("Строка 1 на фото");
+  });
+
+  it("names tappable discount rows like product lines", async () => {
+    vi.mocked(getPurchase).mockResolvedValue({
+      ...withPhoto,
+      items: [...withPhoto.items, {
+        ...purchase.items[0], id: "line-rabat", position: 2, name: "RABAT", quantity: null, unit: null, unitPrice: null,
+        lineTotal: -1, kind: "discount", productId: null, productName: null, boundingBox: null
+      }]
+    });
+    renderAt("/purchases/p1");
+    fireEvent.click(await screen.findByRole("button", { name: /RABAT.*Показать на фото$/ }));
+    expect(within(dialog()).getByRole("heading", { level: 2 })).toHaveTextContent("Строка 3 на фото");
+  });
+
+  it("keeps lines of a purchase without a photo plain", async () => {
+    vi.mocked(getPurchase).mockResolvedValue(purchase);
+    renderAt("/purchases/p1");
+    expect(await screen.findByRole("heading", { level: 3, name: "KAWA" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Показать на фото/ })).not.toBeInTheDocument();
+    expect(getReceipt).not.toHaveBeenCalled();
   });
 });

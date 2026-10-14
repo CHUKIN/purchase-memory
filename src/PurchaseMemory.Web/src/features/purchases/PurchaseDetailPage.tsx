@@ -12,7 +12,6 @@ import type {
   ReceiptLineKind,
   UpdatePurchaseRequest
 } from "../../api/types";
-import { useAuthorizedImageUrl } from "../../auth/useAuthorizedImageUrl";
 import { useToast } from "../../app/toasts";
 import {
   ActionButton,
@@ -38,6 +37,8 @@ import { PurchaseLineImpressions, usePurchaseImpressions } from "../impressions/
 import { HelpLink } from "../help/HelpLink";
 import { formatMoney } from "./money";
 import { ProductLinkRows, productStatusText } from "./ProductLinkRows";
+import { ReceiptLineViewer } from "../receipt-photo/ReceiptLineViewer";
+import { usePurchaseReceiptPhoto } from "./usePurchaseReceiptPhoto";
 
 export const purchaseQueryKey = (purchaseId: string) => ["purchases", "detail", purchaseId] as const;
 
@@ -112,8 +113,12 @@ function PurchaseSummary({ purchase, back, onEdit }: { purchase: PurchaseDetail;
   const links = discountLinks(purchase.items);
   // Optional context: if it fails to load the purchase is still fully usable.
   const impressions = usePurchaseImpressions(purchase.id);
-  const photoUrl = purchase.sourceReceiptId ? `/api/receipts/${purchase.sourceReceiptId}/image` : null;
-  const photo = useAuthorizedImageUrl(photoUrl);
+  const receiptPhoto = usePurchaseReceiptPhoto(purchase.sourceReceiptId);
+  const photoUrl = receiptPhoto.url;
+  const photo = receiptPhoto.viewer;
+  // With a receipt photo, tapping a line shows where it is on it.
+  const [viewerLine, setViewerLine] = useState<number | null>(null);
+  const locate = photo ? (index: number) => setViewerLine(index) : null;
   const returnState = useReturnState();
 
   return (
@@ -160,7 +165,7 @@ function PurchaseSummary({ purchase, back, onEdit }: { purchase: PurchaseDetail;
             if (isDiscount(item)) {
               const target = links[index].target;
               return (
-                <IonItem key={item.position}>
+                <IonItem key={item.position} button={locate !== null} detail={false} onClick={locate ? () => locate(index) : undefined}>
                   <ReceiptDiscountLine
                     name={item.name}
                     lineTotal={item.lineTotal}
@@ -169,19 +174,26 @@ function PurchaseSummary({ purchase, back, onEdit }: { purchase: PurchaseDetail;
                     productLineTotal={target === null ? null : purchase.items[target].lineTotal}
                     appliesToReceipt={links[index].appliesToReceipt}
                   />
+                  {locate && <span className="visually-hidden">{t("lineLocator.showOnPhoto")}</span>}
                 </IonItem>
               );
             }
             return (
               <IonItem key={item.position}>
                 <IonLabel className="pm-wrap">
-                  <h3>{item.name}</h3>
-                  <p className={item.pendingMatch ? "pm-warn-text" : undefined}>
-                    {item.productName
-                      ? t("purchaseEdit.productLinked", { name: item.productName })
-                      : item.pendingMatch ? t("purchaseEdit.productPending") : t("purchaseEdit.productUnlinked")}
-                  </p>
-                  {item.unitPrice === null && <p className="pm-warn-text">{t("purchaseEdit.missingPrice")}</p>}
+                  <LocateLine
+                    onLocate={locate ? () => locate(index) : null}
+                    name={item.name}
+                    details={[
+                      {
+                        text: item.productName
+                          ? t("purchaseEdit.productLinked", { name: item.productName })
+                          : item.pendingMatch ? t("purchaseEdit.productPending") : t("purchaseEdit.productUnlinked"),
+                        warn: item.pendingMatch
+                      },
+                      ...(item.unitPrice === null ? [{ text: t("purchaseEdit.missingPrice"), warn: true }] : [])
+                    ]}
+                  />
                   {impressions.data && <PurchaseLineImpressions item={item} impressions={impressions.data} locale={locale} />}
                 </IonLabel>
                 <IonNote slot="end" className="pm-amount">{money(item.lineTotal)}</IonNote>
@@ -189,17 +201,56 @@ function PurchaseSummary({ purchase, back, onEdit }: { purchase: PurchaseDetail;
             );
           })}
         </IonList>
+        {photo && <Footnote>{t("lineLocator.listHint")} <HelpLink topic="receipt-lines-photo" /></Footnote>}
       </section>
+
+      {photo && (
+        <ReceiptLineViewer
+          lines={purchase.items}
+          openIndex={viewerLine}
+          onClose={() => setViewerLine(null)}
+          photo={photo}
+          currency={purchase.currency}
+        />
+      )}
 
       <section aria-label={t("purchaseEdit.photoAlt")}>
         <SectionHeader>{t("purchaseEdit.photoAlt")}</SectionHeader>
         {!photoUrl && <Footnote>{t("purchaseEdit.noPhoto")}</Footnote>}
-        {photoUrl && photo.src && <div className="pm-photo-card"><img className="pm-photo" src={photo.src} alt={t("purchaseEdit.photoAlt")} /></div>}
-        {photoUrl && photo.failed && <Footnote>{t("purchaseEdit.photoFailed")}</Footnote>}
+        {photo?.photo && <div className="pm-photo-card"><img className="pm-photo" src={photo.photo.url} alt={t("purchaseEdit.photoAlt")} /></div>}
+        {photo?.failed && <Footnote>{t("purchaseEdit.photoFailed")}</Footnote>}
       </section>
 
       <Footnote><HelpLink topic="purchase-edit" /></Footnote>
     </Page>
+  );
+}
+
+/**
+ * A purchase line's name and status. With a receipt photo they become one
+ * button that shows the line on the photo; the line's other controls (like
+ * «Оценить») stay outside it, so no control is nested in another.
+ */
+function LocateLine({ onLocate, name, details }: {
+  onLocate: (() => void) | null;
+  name: string;
+  details: { text: string; warn: boolean }[];
+}) {
+  const { t } = useTranslation();
+  if (!onLocate) {
+    return (
+      <>
+        <h3>{name}</h3>
+        {details.map((detail) => <p key={detail.text} className={detail.warn ? "pm-warn-text" : undefined}>{detail.text}</p>)}
+      </>
+    );
+  }
+  return (
+    <button type="button" className="pm-line-locate" onClick={onLocate}>
+      <span className="pm-line-name">{name}</span>
+      {details.map((detail) => <span key={detail.text} className="pm-line-detail" data-warn={detail.warn}>{detail.text}</span>)}
+      <span className="visually-hidden">{t("lineLocator.showOnPhoto")}</span>
+    </button>
   );
 }
 
@@ -291,6 +342,7 @@ function PurchaseEditor({ purchase, focus, onDone, onReload }: {
   const [pickerOpenFor, setPickerOpenFor] = useState<number | null>(() => target?.kind === "product" ? target.line : null);
   const totalRef = useRef<HTMLIonInputElement>(null);
   const merchantRef = useRef<HTMLIonInputElement>(null);
+  const receiptPhoto = usePurchaseReceiptPhoto(purchase.sourceReceiptId);
 
   // A review-queue link lands on the flagged field; otherwise the store name.
   useEffect(() => {
@@ -378,6 +430,7 @@ function PurchaseEditor({ purchase, focus, onDone, onReload }: {
         onAdd={addItem}
         addKinds={["product", "discount"]}
         focusField={lineFocus}
+        photo={receiptPhoto.viewer}
         describe={(line) => (
           <p className={line.pendingMatch && line.productLink === "auto" ? "pm-warn-text" : undefined}>{productStatusText(t, line)}</p>
         )}

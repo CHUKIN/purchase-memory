@@ -8,12 +8,13 @@ import {
   IonList,
   IonNote
 } from "@ionic/react";
-import { Plus, Trash2 } from "lucide-react";
-import { useRef, type ReactNode } from "react";
+import { Plus, ScanSearch, Trash2 } from "lucide-react";
+import { useRef, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import type { ReceiptLineKind } from "../../api/types";
+import type { BoundingBox, ReceiptLineKind } from "../../api/types";
 import { DecimalInput, Footnote, SectionHeader, Sheet } from "../../design-system/components";
-import { formatMoney } from "../purchases/money";
+import { formatMoney, formatQuantity } from "../purchases/money";
+import { ReceiptLineViewer, type LineViewerPhoto } from "../receipt-photo/ReceiptLineViewer";
 import { discountLinks, isDiscount } from "./discountLines";
 import { DiscountFields, ReceiptDiscountLine } from "./ReceiptDiscountLine";
 
@@ -26,6 +27,8 @@ export interface EditableLine {
   lineTotal: number | null;
   /** Omitted by older receipt payloads, which means a product line. */
   kind?: ReceiptLineKind;
+  /** Where recognition found the line on the receipt photo; kept through edits. */
+  boundingBox?: BoundingBox | null;
 }
 
 /** The field to focus when a line sheet opens from a review-queue link. */
@@ -49,13 +52,18 @@ export interface LinesEditorProps<T extends EditableLine> {
   focusField?: LineFocus | null;
   /** Section header above the rows. */
   title: string;
+  /**
+   * The receipt photo, when there is one: each line's sheet then offers
+   * «Показать на фото», which opens the line viewer over it.
+   */
+  photo?: LineViewerPhoto | null;
 }
 
 /**
  * Receipt lines as an iOS list: name, «2 × 3,79» and the sum on each row;
  * a tap opens the line in a sheet, a swipe left deletes it. Discounts sit
  * under their product as their own rows. Used by the receipt review and the
- * purchase editor.
+ * purchase editor; with a receipt photo, a line's sheet also shows it there.
  */
 export function LinesEditor<T extends EditableLine>({
   lines,
@@ -69,7 +77,8 @@ export function LinesEditor<T extends EditableLine>({
   describe,
   sheetExtra,
   focusField = null,
-  title
+  title,
+  photo = null
 }: LinesEditorProps<T>) {
   const { t, i18n } = useTranslation();
   const locale = i18n.resolvedLanguage === "en" ? "en-GB" : "ru-RU";
@@ -82,6 +91,7 @@ export function LinesEditor<T extends EditableLine>({
     onRemove(index);
   };
   const open = openLine !== null && lines[openLine] ? lines[openLine] : null;
+  const [viewerLine, setViewerLine] = useState<number | null>(null);
 
   return (
     <>
@@ -150,6 +160,14 @@ export function LinesEditor<T extends EditableLine>({
             extra={!isDiscount(open) ? sheetExtra?.(open, openLine) : null}
           />
         )}
+        {open !== null && openLine !== null && photo && (
+          <IonList inset>
+            <IonItem button detail={false} lines="none" onClick={() => setViewerLine(openLine)}>
+              <ScanSearch slot="start" size={22} aria-hidden="true" className="pm-row-icon" />
+              <IonLabel color="primary">{t("lineLocator.showOnPhoto")}</IonLabel>
+            </IonItem>
+          </IonList>
+        )}
         {open !== null && openLine !== null && (
           <IonList inset>
             <IonItem button detail={false} lines="none" onClick={() => { onRemove(openLine); onOpenLine(null); }}>
@@ -158,6 +176,16 @@ export function LinesEditor<T extends EditableLine>({
           </IonList>
         )}
       </Sheet>
+
+      {photo && (
+        <ReceiptLineViewer
+          lines={lines}
+          openIndex={viewerLine}
+          onClose={() => setViewerLine(null)}
+          photo={photo}
+          currency={currency}
+        />
+      )}
     </>
   );
 }
@@ -213,8 +241,4 @@ function LineFields({ line, onChange, focusField, extra }: { line: EditableLine;
       {extra}
     </>
   );
-}
-
-function formatQuantity(value: number, locale: string): string {
-  return new Intl.NumberFormat(locale, { maximumFractionDigits: 3 }).format(value);
 }

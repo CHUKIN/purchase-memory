@@ -5,7 +5,6 @@ import { useId, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getReceiptAuditTrail } from "../../api/client";
 import type {
-  BoundingBox,
   PurchaseDraftIssue,
   ReceiptItemSnapshot,
   ReceiptReviewAuditEntry,
@@ -13,17 +12,10 @@ import type {
 } from "../../api/types";
 import { DecimalInput, EmptyState, Footnote, PrimaryButton, SectionHeader } from "../../design-system/components";
 import { isIssueResolved, issueCopy, issueKey } from "../issues/issueText";
+import { imageOffset, padBox, type ReceiptPhoto } from "../receipt-photo/photoBox";
 
-/** The receipt photo an issue card can point at. */
-export interface IssueReviewPhoto {
-  url: string;
-  /**
-   * Bounding boxes describe one image. A receipt photographed in several parts
-   * gives no way to tell which part a box belongs to, so cropping is disabled
-   * and the first photo is shown whole.
-   */
-  croppable: boolean;
-}
+/** The receipt photo an issue card can point at (see `ReceiptPhoto`). */
+export type IssueReviewPhoto = ReceiptPhoto;
 
 export interface IssueReviewProps {
   snapshot: ReceiptSnapshot;
@@ -232,50 +224,12 @@ function IssuePhoto({ issue, photo }: { issue: PurchaseDraftIssue; photo: IssueR
                 alt={t("issues.photoCropAlt")}
                 loading="lazy"
                 onLoad={(event) => setPhotoRatio(event.currentTarget.naturalWidth / Math.max(event.currentTarget.naturalHeight, 1))}
-                style={{
-                  width: `${100 / box.width}%`,
-                  left: `${(-100 * box.x) / box.width}%`,
-                  top: `${(-100 * box.y) / box.height}%`
-                }}
+                style={imageOffset(box)}
               />
             </div>
           )}
       </div>
     </IonItem>
-  );
-}
-
-/** Widens a tight row box a little so the fragment keeps some visual context. */
-function padBox(box: BoundingBox | null | undefined): BoundingBox | null {
-  if (!box) return null;
-  if (!isUsableBox(box)) return null;
-
-  const paddingX = 0.02;
-  const paddingY = 0.015;
-  const x = Math.max(0, box.x - paddingX);
-  const y = Math.max(0, box.y - paddingY);
-  return {
-    x,
-    y,
-    width: Math.min(1 - x, box.width + (box.x - x) + paddingX),
-    height: Math.min(1 - y, box.height + (box.y - y) + paddingY)
-  };
-}
-
-/**
- * The backend already validates every box, but the UI must not build a broken
- * crop out of a response it did not expect.
- */
-function isUsableBox(box: BoundingBox): boolean {
-  const values = [box.x, box.y, box.width, box.height];
-  return (
-    values.every((value) => typeof value === "number" && Number.isFinite(value)) &&
-    box.x >= 0 &&
-    box.y >= 0 &&
-    box.width > 0 &&
-    box.height > 0 &&
-    box.x + box.width <= 1.001 &&
-    box.y + box.height <= 1.001
   );
 }
 

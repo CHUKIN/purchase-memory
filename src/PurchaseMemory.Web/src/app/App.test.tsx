@@ -60,7 +60,7 @@ describe("App", () => {
 
   it("keeps help and sign-out in «Ещё» on Home, without a language switch", async () => {
     render(<AppProviders><App /></AppProviders>);
-    fireEvent.click(await screen.findByRole("button", { name: "Ещё: подсказки, выход" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Ещё: подсказки, настройки, выход" }));
     const settings = screen.getByRole("dialog");
     expect(within(settings).getByRole("link", { name: /Подсказки/ })).toHaveAttribute("href", "/help");
     expect(within(settings).queryByRole("tab", { name: "English" })).not.toBeInTheDocument();

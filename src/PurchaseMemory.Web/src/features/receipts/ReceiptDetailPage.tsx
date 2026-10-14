@@ -24,6 +24,7 @@ import { IssueReview, type IssueReviewPhoto } from "./IssueReview";
 import { LinesEditor } from "./LinesEditor";
 import { ReceiptProgress } from "./ReceiptProgress";
 import { messageOf } from "./receiptErrors";
+import type { LineViewerPhoto } from "../receipt-photo/ReceiptLineViewer";
 
 export function ReceiptDetailPage() {
   const { receiptId = "" } = useParams();
@@ -145,7 +146,7 @@ export function ReceiptDetailPage() {
       {receipt.status === "ready" && snapshot && (
         showIssueReview
           ? <IssueReview snapshot={snapshot} onSnapshotChange={updateSnapshot} issues={receipt.issues} onOpenFullEditor={() => setFullEditorRequested(true)} onSave={() => save.mutate()} busy={save.isPending} canSave={Boolean(canSave)} photo={receiptPhoto(receipt, photoSource.src)} receiptId={receipt.id} />
-          : <ReviewForm snapshot={snapshot} setSnapshot={updateSnapshot} warnings={receipt.warnings} warningsConfirmed={warningsConfirmed} busy={save.isPending} canSave={Boolean(canSave)} onSave={() => save.mutate()} />
+          : <ReviewForm snapshot={snapshot} setSnapshot={updateSnapshot} warnings={receipt.warnings} warningsConfirmed={warningsConfirmed} busy={save.isPending} canSave={Boolean(canSave)} onSave={() => save.mutate()} photo={receipt.sourceImageUrl ? { photo: receiptPhoto(receipt, photoSource.src), failed: photoSource.failed } : null} />
       )}
       {save.isError && <Notice tone="danger" role="alert"><p>{messageOf(t, save.error, t("legacyCapture.unknownError"))}</p></Notice>}
     </Page>
@@ -163,7 +164,7 @@ function receiptPhoto(receipt: ReceiptView, photoSrc: string | null): IssueRevie
 const emptyItem = (): ReceiptItemSnapshot => ({ name: "", quantity: null, unit: null, unitPrice: null, lineTotal: null, kind: "product" });
 
 /** The full draft editor: store, date, currency and total, then every line. */
-function ReviewForm({ snapshot, setSnapshot, warnings, warningsConfirmed, busy, canSave, onSave }: { snapshot: ReceiptSnapshot; setSnapshot: (snapshot: ReceiptSnapshot) => void; warnings: string[]; warningsConfirmed: boolean; busy: boolean; canSave: boolean; onSave: () => void }) {
+function ReviewForm({ snapshot, setSnapshot, warnings, warningsConfirmed, busy, canSave, onSave, photo }: { snapshot: ReceiptSnapshot; setSnapshot: (snapshot: ReceiptSnapshot) => void; warnings: string[]; warningsConfirmed: boolean; busy: boolean; canSave: boolean; onSave: () => void; photo: LineViewerPhoto | null }) {
   const { t } = useTranslation();
   const [openLine, setOpenLine] = useState<number | null>(null);
   const updateItem = (index: number, patch: Partial<ReceiptItemSnapshot>) => setSnapshot({ ...snapshot, items: snapshot.items.map((item, position) => position === index ? { ...item, ...patch } : item) });
@@ -212,6 +213,7 @@ function ReviewForm({ snapshot, setSnapshot, warnings, warningsConfirmed, busy, 
         onChange={updateItem}
         onRemove={removeItem}
         onAdd={() => { setSnapshot({ ...snapshot, items: [...snapshot.items, emptyItem()] }); setOpenLine(snapshot.items.length); }}
+        photo={photo}
       />
 
       <PrimaryButton disabled={!canSave} loading={busy} onClick={onSave}>

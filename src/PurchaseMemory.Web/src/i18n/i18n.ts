@@ -53,7 +53,7 @@ export const resources = {
         swipeToDelete: "Проведите строку влево, чтобы удалить."
       },
       settings: {
-        open: "Ещё: подсказки, выход",
+        open: "Ещё: подсказки, настройки, выход",
         title: "Настройки",
         help: "Подсказки",
         language: "Язык",
@@ -755,6 +755,31 @@ export const resources = {
         untitled: "Без названия",
         namePlaceholder: "Как на чеке"
       },
+      lineLocator: {
+        titleOne: "Строка {{number}} на фото",
+        titleSwipe: "Строки на фото",
+        position: "Строка {{number}} из {{count}}",
+        positionAnnouncement: "Строка {{number}} из {{count}}: {{name}}, {{amount}}",
+        previous: "Предыдущая",
+        next: "Следующая",
+        previousLabel: "Предыдущая строка",
+        nextLabel: "Следующая строка",
+        photoLineAlt: "Фрагмент фото чека, рамкой отмечена строка «{{name}}»",
+        photoWholeAlt: "Фото чека целиком",
+        noBox: "Место этой строки на фото не найдено — показан весь чек.",
+        multiPart: "Чек снят на нескольких фото, поэтому место строки не отмечается — показано первое фото.",
+        photoLoading: "Загружаем фото чека…",
+        photoFailed: "Фото чека не загрузилось.",
+        swipeHint: "Проведите по фото влево или вправо, чтобы перейти к соседней строке.",
+        showOnPhoto: "Показать на фото",
+        listHint: "Нажмите на строку, чтобы увидеть её на фото чека.",
+        settingTitle: "Строки чека на фото",
+        settingLabel: "Как показывать строки на фото чека",
+        tap: "Нажатие",
+        swipe: "Пролистывание",
+        settingTapHint: "Нажмите на строку — откроется фото чека, где эта строка обведена рамкой.",
+        settingSwipeHint: "Нажмите на строку — откроется фото чека, по которому можно листать строки по одной."
+      },
       discount: {
         label: "Скидка",
         forProduct: "к «{{product}}»",
@@ -1173,7 +1198,7 @@ export const resources = {
         recognitionUnavailable: "Receipt recognition unavailable",
       },
       settings: {
-        open: "More: help, sign out",
+        open: "More: help, settings, sign out",
         title: "Settings",
         help: "Help",
         language: "Language",
@@ -1803,6 +1828,31 @@ export const resources = {
       lines: {
         untitled: "Untitled",
         namePlaceholder: "As printed on the receipt"
+      },
+      lineLocator: {
+        titleOne: "Line {{number}} on the photo",
+        titleSwipe: "Lines on the photo",
+        position: "Line {{number}} of {{count}}",
+        positionAnnouncement: "Line {{number}} of {{count}}: {{name}}, {{amount}}",
+        previous: "Previous",
+        next: "Next",
+        previousLabel: "Previous line",
+        nextLabel: "Next line",
+        photoLineAlt: "Fragment of the receipt photo with the line “{{name}}” outlined",
+        photoWholeAlt: "The whole receipt photo",
+        noBox: "This line was not found on the photo, so the whole receipt is shown.",
+        multiPart: "This receipt was photographed in several parts, so the line is not marked; the first photo is shown.",
+        photoLoading: "Loading the receipt photo…",
+        photoFailed: "The receipt photo did not load.",
+        swipeHint: "Swipe the photo left or right to move to the neighbouring line.",
+        showOnPhoto: "Show on photo",
+        listHint: "Tap a line to see it on the receipt photo.",
+        settingTitle: "Receipt lines on the photo",
+        settingLabel: "How to show receipt lines on the photo",
+        tap: "Tap",
+        swipe: "Swipe",
+        settingTapHint: "Tap a line to open the receipt photo with that line outlined.",
+        settingSwipeHint: "Tap a line to open the receipt photo and go through the lines one by one."
       },
       discount: {
         label: "Discount",

@@ -204,7 +204,8 @@ export const helpRu: HelpText = {
       ],
       see: [
         "Скидки показаны отдельными строками: к какому товару они относятся или что это скидка на весь чек, и цена товара после скидки.",
-        "Счётчик «Осталось N неточностей» и сообщение «Все неточности исправлены», когда можно сохранять."
+        "Счётчик «Осталось N неточностей» и сообщение «Все неточности исправлены», когда можно сохранять.",
+        "В полном редакторе внутри строки есть «Показать на фото»: фото чека с этой строкой в рамке (подробнее — «Строки чека на фото»)."
       ],
       trouble: [
         "Если предупреждения остались, первое нажатие покажет их, а кнопка станет «Всё равно сохранить» — так покупку можно сохранить как есть и поправить позже.",
@@ -267,6 +268,26 @@ export const helpRu: HelpText = {
       trouble: [
         "Если покупку уже поменяли в другом окне или на другом устройстве, ваша правка не затрёт чужую: приложение предложит загрузить свежую версию.",
         "Пункты «Сумма не сходится», «Нет цены» и «Товар не сопоставлен» из «Нужно проверить» открывают правку сразу на нужном месте (итог, цену строки или выбор товара) и пропадают после сохранения. После «Сохранить» вы вернётесь в «Нужно проверить» с теми же фильтрами."
+      ]
+    },
+    "receipt-lines-photo": {
+      title: "Строки чека на фото",
+      summary: "Любую строку покупки можно найти на фото чека: приложение обводит её рамкой. Так легко сверить название и цену с тем, что напечатано.",
+      steps: [
+        "Откройте покупку с фото чека и нажмите на название строки. В редакторе чека или покупки нажмите на строку, а в ней — «Показать на фото».",
+        "Режим «Нажатие»: откроется фрагмент фото с этой строкой в рамке, под ним — название, количество, цена и сумма.",
+        "Режим «Пролистывание»: фото откроется на этой строке, дальше проведите по фото влево или вправо или нажмите «Следующая» и «Предыдущая», чтобы идти по строкам по одной.",
+        "Режим выбирается на «Главной»: «Ещё» (кружок с тремя точками вверху справа) → «Строки чека на фото» → «Нажатие» или «Пролистывание». Выбор запоминается на этом устройстве."
+      ],
+      see: [
+        "Под фото — название, количество, цена и сумма строки; в редакторе — уже с вашими несохранёнными правками. Номер строки: в «Нажатии» — в заголовке («Строка N на фото»), в «Пролистывании» — между кнопками («Строка N из M»).",
+        "«Готово» закрывает фото и возвращает туда, откуда вы его открыли."
+      ],
+      trouble: [
+        "«Место этой строки на фото не найдено — показан весь чек» — распознавание не смогло указать место строки (так бывает со старыми чеками и с добавленными вручную строками). В «Пролистывании» такие строки всё равно можно листать.",
+        "Чек, снятый на нескольких фото, показывается первым фото целиком: на каком из фото строка, распознавание не сообщает, поэтому рамка не рисуется.",
+        "Рамка немного смещена — место строки распознаётся приблизительно; ориентируйтесь на соседние строки на фрагменте.",
+        "У покупки без фото чека строки не нажимаются."
       ]
     },
     products: {
@@ -602,7 +623,8 @@ export const helpEn: HelpText = {
       ],
       see: [
         "Discounts are separate lines: which product they belong to, or that they apply to the whole receipt, and the product price after the discount.",
-        "A “N issues left” counter and “Every issue is resolved” when you can save."
+        "A “N issues left” counter and “Every issue is resolved” when you can save.",
+        "In the full editor each line has “Show on photo”: the receipt photo with that line outlined (see “Receipt lines on the photo”)."
       ],
       trouble: [
         "If warnings remain, the first press shows them and the button becomes “Save anyway” — so you can save as is and fix it later.",
@@ -665,6 +687,26 @@ export const helpEn: HelpText = {
       trouble: [
         "If the purchase was already changed in another window or device, your edit won't overwrite it: the app offers to load the fresh version.",
         "“Total does not match”, “Missing price” and “Product not matched” items in “Needs attention” open the editor right at the spot (the total, the line price or the product choice) and disappear after saving. After “Save” you come back to “Needs attention” with the same filters."
+      ]
+    },
+    "receipt-lines-photo": {
+      title: "Receipt lines on the photo",
+      summary: "Any line of a purchase can be found on the receipt photo: the app outlines it. This makes it easy to check the name and price against what is printed.",
+      steps: [
+        "Open a purchase with a receipt photo and tap a line's name. In the receipt or purchase editor, tap a line and then “Show on photo”.",
+        "“Tap” mode: a fragment of the photo opens with that line outlined, with its name, quantity, price and sum below.",
+        "“Swipe” mode: the photo opens at that line; swipe the photo left or right or press “Next” and “Previous” to go through the lines one by one.",
+        "Choose the mode on “Home”: “More” (the circle with three dots at the top right) → “Receipt lines on the photo” → “Tap” or “Swipe”. The choice is remembered on this device."
+      ],
+      see: [
+        "Below the photo: the line's name, quantity, price and sum; in an editor, already with your unsaved changes. The line number: in “Tap” mode in the title (“Line N on the photo”), in “Swipe” mode between the buttons (“Line N of M”).",
+        "“Done” closes the photo and returns where you opened it."
+      ],
+      trouble: [
+        "“This line was not found on the photo, so the whole receipt is shown” — recognition could not place the line (this happens with older receipts and with lines added by hand). In “Swipe” mode you can still go through such lines.",
+        "A receipt photographed in several parts shows its first photo whole: recognition does not say which photo a line is on, so nothing is outlined.",
+        "The outline is a little off — line positions are approximate; use the neighbouring lines in the fragment.",
+        "Lines of a purchase without a receipt photo cannot be tapped."
       ]
     },
     products: {

@@ -12,3 +12,8 @@ export function formatMoney(value: number, currency: string | null | undefined, 
     return `${plain} ${currency}`;
   }
 }
+
+/** A line quantity: up to three decimals for weighed goods, none for pieces. */
+export function formatQuantity(value: number, locale: string): string {
+  return new Intl.NumberFormat(locale, { maximumFractionDigits: 3 }).format(value);
+}
