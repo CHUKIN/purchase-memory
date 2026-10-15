@@ -56,7 +56,7 @@ describe("capture: separate receipts batch", () => {
     fireEvent.click(screen.getByRole("radio", { name: /Отдельные чеки/ }));
 
     expect(screen.getByText(/3 фото — 3 распознавания/)).toBeInTheDocument();
-    expect(screen.getByRole("list", { name: "Фото — каждое отдельный чек" })).toBeInTheDocument();
+    expect(screen.getByRole("list", { name: "Отдельные чеки" })).toBeInTheDocument();
     expect(screen.getByText("Чек 1")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Переместить/ })).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Загрузить 3 чека" })).toBeEnabled();

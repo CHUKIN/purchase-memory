@@ -14,8 +14,10 @@ describe("ReceiptDiscountLine", () => {
 
     const line = screen.getByRole("article", { name: /Скидка OPUST −30,00.*к товару Odkurzacz/ });
     expect(line).toBeInTheDocument();
-    expect(screen.getByText("к «Odkurzacz»")).toBeInTheDocument();
+    // The row sits under its product, so the product is named only in the accessible name.
+    expect(screen.queryByText("к «Odkurzacz»")).not.toBeInTheDocument();
     expect(screen.getByText(/−30,00/)).toBeInTheDocument();
+    expect(screen.getByText(/99,99/).tagName).toBe("S");
     expect(screen.getByText(/69,99/)).toBeInTheDocument();
   });
 

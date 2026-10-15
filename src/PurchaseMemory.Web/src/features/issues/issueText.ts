@@ -7,7 +7,8 @@ export const moneyComparisonTolerance = 0.01;
 export interface IssueCopy {
   title: string;
   detail: string;
-  suggestion: string;
+  /** Only for an issue type this build does not know: the backend's own hint. */
+  suggestion?: string;
 }
 
 /**
@@ -21,16 +22,14 @@ export function issueCopy(t: TFunction, issue: PurchaseDraftIssue): IssueCopy {
     case "receiptTotalMismatch":
       return {
         title: t("issues.receiptTotalMismatch.title"),
-        detail: t("issues.receiptTotalMismatch.detail", { recognized }),
-        suggestion: t("issues.receiptTotalMismatch.suggestion")
+        detail: t("issues.receiptTotalMismatch.detail", { recognized })
       };
     case "missingItemPrice":
       return {
         title: t("issues.missingItemPrice.title", { name: issue.itemName ?? t("issues.unnamedItem") }),
         detail: recognized
           ? t("issues.missingItemPrice.detailPartial", { recognized })
-          : t("issues.missingItemPrice.detailEmpty"),
-        suggestion: t("issues.missingItemPrice.suggestion")
+          : t("issues.missingItemPrice.detailEmpty")
       };
     default:
       return { title: t("issues.unknown"), detail: recognized, suggestion: issue.suggestedFix };

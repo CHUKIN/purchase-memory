@@ -71,7 +71,7 @@ function ScreenDemo() {
           <IonNote slot="end" className="pm-amount">42,50 PLN</IonNote>
         </ItemLink>
       </IonList>
-      <Footnote>Серый текст под списком: пояснение или «Как это работает».</Footnote>
+      <Footnote>Серый текст под списком: короткое пояснение.</Footnote>
       <IonList inset>
         <IonItem>
           <DecimalInput label="Итог чека" value={total} onChange={setTotal} />

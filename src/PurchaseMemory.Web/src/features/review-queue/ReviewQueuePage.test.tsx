@@ -274,7 +274,8 @@ describe("ReviewQueuePage", () => {
       renderPage();
 
       const card = await screen.findByRole("article", { name: "Ser Gouda 250g" });
-      expect(card).toHaveTextContent("Это один из товаров ниже? Выберите его или создайте новый.");
+      // «Похоже на» and the buttons say it; no extra sentence on the card.
+      expect(card).not.toHaveTextContent("Это один из товаров ниже?");
       const list = within(card).getByRole("list", { name: "Похожие товары для «Ser Gouda 250g»" });
       const options = within(list).getAllByRole("listitem");
       expect(options).toHaveLength(2);
@@ -375,7 +376,6 @@ describe("ReviewQueuePage", () => {
       expect(await screen.findByText("1 пункт из категории «Молочное и яйца / Молоко» требует внимания.")).toBeInTheDocument();
       expect(getReviewQueue).toHaveBeenLastCalledWith(20, { category: "milk", tag: undefined });
       expect(screen.getByTestId("location")).toHaveTextContent("?category=milk");
-      expect(screen.getByText(/Число в меню считает всю очередь/)).toBeInTheDocument();
 
       fireEvent.click(screen.getByRole("button", { name: "Сбросить фильтр" }));
       expect(await screen.findByText("4 пункта требуют внимания.")).toBeInTheDocument();
@@ -448,7 +448,6 @@ describe("ReviewQueuePage", () => {
       expect(await screen.findByText("1 пункт с тегом «Для ребёнка» требует внимания.")).toBeInTheDocument();
       expect(getReviewQueue).toHaveBeenLastCalledWith(20, { category: undefined, tag: "kid" });
       expect(screen.getByTestId("location")).toHaveTextContent("?tag=kid");
-      expect(screen.getByText(/Число в меню считает всю очередь/)).toBeInTheDocument();
       expect(screen.getByRole("article", { name: "MLEKO 2%" })).toBeInTheDocument();
       expect(screen.queryByRole("region", { name: "Сумма не сходится" })).not.toBeInTheDocument();
 

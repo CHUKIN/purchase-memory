@@ -70,8 +70,9 @@ describe("ProductCard", () => {
     expect(lastPurchase).toHaveTextContent("Żabka");
     expect(lastPurchase).toHaveTextContent("21 июл. 2026 г.");
 
+    // The latest price is the big figure; minimum and average follow per unit.
+    expect(lastPurchase).toHaveTextContent("6,30");
     const figures = within(lastPurchase).getAllByText(/\/шт\./).map((node) => node.textContent ?? "");
-    expect(figures.some((text) => text?.includes("6,30"))).toBe(true);
     expect(figures.some((text) => text?.includes("3,49"))).toBe(true);
     expect(figures.some((text) => text?.includes("4,93"))).toBe(true);
   });
@@ -142,7 +143,6 @@ describe("ProductCard", () => {
 
     expect(screen.getByRole("heading", { name: "Другие единицы измерения" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "за штуку" })).toBeInTheDocument();
-    expect(screen.getByText(/Цены за разные единицы не сравниваются/)).toBeInTheDocument();
     expect(screen.getAllByRole("table")).toHaveLength(2);
   });
 

@@ -11,6 +11,8 @@ export interface SheetProps {
   start?: ReactNode;
   /** Replaces the default «Готово» in the toolbar end. */
   end?: ReactNode;
+  /** A «?» (HelpLink) next to «Готово». */
+  help?: ReactNode;
   /**
    * `sheet`: a bottom sheet that opens at three quarters and can be pulled up.
    * `full`: a full-screen card for longer forms and lists.
@@ -26,7 +28,7 @@ export interface SheetProps {
  * the right. Content uses the grouped background, so inset lists look the
  * same as on the screens.
  */
-export function Sheet({ isOpen, onClose, title, start, end, variant = "sheet", initialBreakpoint = 0.75, children }: SheetProps) {
+export function Sheet({ isOpen, onClose, title, start, end, help, variant = "sheet", initialBreakpoint = 0.75, children }: SheetProps) {
   const { t } = useTranslation();
   const titleId = useId();
   const sheetProps = variant === "sheet" ? { initialBreakpoint, breakpoints: [0, initialBreakpoint, 1] } : {};
@@ -36,7 +38,7 @@ export function Sheet({ isOpen, onClose, title, start, end, variant = "sheet", i
         <IonToolbar>
           {start && <IonButtons slot="start">{start}</IonButtons>}
           <IonTitle><h2 id={titleId} className="pm-title-heading">{title}</h2></IonTitle>
-          <IonButtons slot="end">{end ?? <IonButton strong onClick={onClose}>{t("ui.done")}</IonButton>}</IonButtons>
+          <IonButtons slot="end">{help}{end ?? <IonButton strong onClick={onClose}>{t("ui.done")}</IonButton>}</IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent color="light">

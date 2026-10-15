@@ -20,7 +20,10 @@ export interface RatingControlProps {
   hideLegend?: boolean;
 }
 
-/** The three-level scale as an iOS segmented control: «Не нравится · Средне · Нравится». */
+/**
+ * The three-level scale as an iOS segmented control of three icons
+ * (👎 · 😐 · 👍); each segment keeps its word for screen readers.
+ */
 export function RatingControl({ legend, value, onChange, disabled = false, hideLegend = false }: RatingControlProps) {
   const { t } = useTranslation();
   return (
@@ -36,9 +39,9 @@ export function RatingControl({ legend, value, onChange, disabled = false, hideL
         }}
       >
         {ratings.map((rating) => (
-          <IonSegmentButton key={rating} value={rating} layout="icon-top">
-            <RatingIcon rating={rating} />
-            <IonLabel>{ratingLabel(t, rating)}</IonLabel>
+          <IonSegmentButton key={rating} value={rating}>
+            <RatingIcon rating={rating} size={22} />
+            <IonLabel className="visually-hidden">{ratingLabel(t, rating)}</IonLabel>
           </IonSegmentButton>
         ))}
       </IonSegment>

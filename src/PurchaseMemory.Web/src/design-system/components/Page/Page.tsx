@@ -5,7 +5,7 @@ import { BackButton, type BackTarget } from "../Links/Links";
 export interface PageProps {
   /** The screen's name: the iOS large title, and the page's only `<h1>`. */
   title: string;
-  /** «‹ Покупки» in the top-left corner. */
+  /** The «‹» back chevron in the top-left corner (named after the previous screen). */
   back?: BackTarget | null;
   /** Toolbar start slot when there is no back button (e.g. «Отмена» in an editor). */
   start?: ReactNode;

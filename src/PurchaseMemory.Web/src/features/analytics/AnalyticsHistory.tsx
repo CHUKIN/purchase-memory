@@ -131,7 +131,8 @@ export function AnalyticsHistoryList({
                       </span>
                       {item.conclusion && <span className="pm-history-conclusion">{item.conclusion}</span>}
                       <span className="pm-history-meta">
-                        {item.isFollowUp && <span className="pm-chip">{t("analytics.history.followUp")}</span>}
+                        {/* The ↪ before the question marks a follow-up; the word is for screen readers. */}
+                        {item.isFollowUp && <span className="visually-hidden">{t("analytics.history.followUp")}</span>}
                         <span>{formatMoment(item.answeredAt, locale)}</span>
                         <span aria-hidden="true">·</span>
                         <span title={asker}>{asker}</span>

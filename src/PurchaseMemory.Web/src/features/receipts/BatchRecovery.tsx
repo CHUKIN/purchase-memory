@@ -56,7 +56,6 @@ export function RecentUploadsList({ receipts }: { receipts: ReceiptView[] }) {
           </ItemLink>
         ))}
       </IonList>
-      <Footnote>{t("receiptCapture.recentHint")}</Footnote>
     </section>
   );
 }
@@ -100,7 +99,6 @@ export function InterruptedBatchNotice({ restored, disabled, onResume, onDiscard
           ))}
         </IonList>
       )}
-      <Footnote>{t("receiptCapture.interruptedSafe")}</Footnote>
       <Footnote>{kept > 0 ? t("receiptCapture.interruptedFirst") : t("receiptCapture.interruptedFirstLost")}</Footnote>
       <div className="pm-primary-block">
         {kept > 0 && <ActionButton expand="block" shape="round" disabled={disabled} onClick={onResume}>{t("receiptCapture.resumeBatch", { count: kept })}</ActionButton>}

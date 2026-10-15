@@ -178,17 +178,17 @@ describe("receipt background flow", () => {
   });
 
   it.each([
-    ["processing", "Чек загружен", "Обработка идёт в фоне. Этот адрес можно открыть снова после перехода или перезагрузки."],
-    ["ready", "Чек распознан", "Распознавание завершено. Проверьте черновик перед сохранением покупки."],
-    ["failed", "Чек не распознан", "Обработка остановлена, но фотографии сохранены. Откройте этот адрес снова, чтобы повторить попытку."],
-    ["saved", "Чек сохранён", "Обработка завершена, покупка сохранена в истории."]
-  ] as const)("shows truthful detail copy for %s status", async (status, title, description) => {
+    ["processing", "Чек загружен", "recognition"],
+    ["ready", "Чек распознан", "review-save"],
+    ["failed", "Чек не распознан", "recognition"],
+    ["saved", "Чек сохранён", "recognition"]
+  ] as const)("titles the %s status truthfully and links its help topic", async (status, title, topic) => {
     const receipt = fixture(status);
     vi.mocked(api.getReceipt).mockResolvedValue(receipt);
     render(<AppProviders><MemoryRouter initialEntries={[`/receipts/${receipt.id}`]}><Routes><Route path="/receipts/:receiptId" element={<ReceiptDetailPage />} /></Routes></MemoryRouter></AppProviders>);
 
-    expect(await screen.findByText(description)).toBeInTheDocument();
-    expect(screen.getByRole("heading", { level: 1, name: title })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { level: 1, name: title })).toBeInTheDocument();
+    expect(document.querySelector(`[data-help-topic="${topic}"]`)).toHaveAttribute("href", `/help#${topic}`);
   });
 
   it("does not overwrite dirty review fields when server state refetches on focus", async () => {

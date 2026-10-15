@@ -78,7 +78,7 @@ export function ProductCard({
   ];
 
   return (
-    <Page title={product.name} back={back}>
+    <Page title={product.name} back={back} end={<HelpLink topic="products" />}>
       {/* Shopping trips, not receipt lines — the same number the frequency block counts by. */}
       <p className="pm-home-intro">{t("products.purchaseCount", { count: product.purchaseCount })}</p>
       {/* Read-only summary; with editing available the sections below say it once. */}
@@ -99,7 +99,6 @@ export function ProductCard({
       {otherSeries.length > 0 && (
         <section aria-labelledby="other-units-title">
           <SectionHeader id="other-units-title">{t("products.otherUnitsTitle")}</SectionHeader>
-          <Footnote>{t("products.otherUnitsNote")}</Footnote>
           {otherSeries.map((series) => (
             <section key={`${series.currency}-${series.unit}`} aria-labelledby={`unit-${series.currency}-${series.unit}`}>
               <SectionHeader id={`unit-${series.currency}-${series.unit}`} level={3}>{t("products.perUnit", { unit: unitName(t, series.unit) })}</SectionHeader>
@@ -122,6 +121,7 @@ export function ProductCard({
           brand={product.brand ?? null}
           brandSource={product.brandSource ?? null}
           onSave={onClassify}
+          help={<HelpLink topic="categories" />}
         />
       )}
 
@@ -171,7 +171,6 @@ export function ProductCard({
       )}
 
       {children}
-      <Footnote><HelpLink topic="categories" /></Footnote>
     </Page>
   );
 }
@@ -240,21 +239,17 @@ function PrimarySeries({
 function PriceFigures({ series, locale }: { series: ProductPriceSeries; locale: string }) {
   const { t } = useTranslation();
   const unit = unitShortName(t, series.unit);
-  const row = (label: string, value: number, hint?: string) => (
-    <IonItem lines={hint ? "none" : undefined}>
-      <IonLabel className="pm-wrap">
-        {label}
-        {/* The average is unweighted: a 5 kg purchase and a 200 g one count the same. */}
-        {hint && <p>{hint}</p>}
-      </IonLabel>
+  const row = (label: string, value: number, last = false) => (
+    <IonItem lines={last ? "none" : undefined}>
+      <IonLabel className="pm-wrap">{label}</IonLabel>
       <IonNote slot="end" className="pm-amount">{formatMoney(locale, series.currency, value)}/{unit}</IonNote>
     </IonItem>
   );
   return (
     <IonList inset>
-      {row(t("products.lastPrice"), series.latestPrice)}
+      {/* The latest price is the big figure above; the average is unweighted (explained in help). */}
       {row(t("products.minimumPrice"), series.minimumPrice)}
-      {row(t("products.averagePrice"), series.averagePrice, t("products.averagePriceHint"))}
+      {row(t("products.averagePrice"), series.averagePrice, true)}
     </IonList>
   );
 }

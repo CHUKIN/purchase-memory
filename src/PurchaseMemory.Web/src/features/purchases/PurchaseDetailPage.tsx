@@ -1,7 +1,7 @@
 import { IonButton, IonInput, IonItem, IonLabel, IonList, IonNote } from "@ionic/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CircleCheck, ListChecks } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { AlertTriangle, CalendarClock, CircleCheck, ListChecks, Pencil, ReceiptText } from "lucide-react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router";
 import { ApiError, getPurchase, updatePurchase } from "../../api/client";
@@ -36,8 +36,9 @@ import { reviewQueueReturnPath } from "../review-queue/returnToQueue";
 import { useBackTarget, useReturnState } from "../../app/backNavigation";
 import { PurchaseLineImpressions, usePurchaseImpressions } from "../impressions/ImpressionSections";
 import { HelpLink } from "../help/HelpLink";
+import { formatShortDate } from "./dates";
 import { formatMoney } from "./money";
-import { ProductLinkRows, productStatusText } from "./ProductLinkRows";
+import { ProductLinkNote, ProductLinkRows, productStatusText } from "./ProductLinkRows";
 import { LineReview, type ReviewLinePatch, type ReviewStart } from "../line-review/LineReview";
 import { useApprovalSync, useLineApprovals } from "../line-review/useLineApprovals";
 import { usePurchaseReceiptPhoto } from "./usePurchaseReceiptPhoto";
@@ -131,55 +132,67 @@ function PurchaseSummary({ purchase, back, onEdit }: { purchase: PurchaseDetail;
     <Page
       title={purchase.merchantName ?? t("purchaseEdit.unknownStore")}
       back={back}
-      end={<IonButton strong onClick={onEdit}>{t("purchaseEdit.edit")}</IonButton>}
+      end={(
+        <>
+          <HelpLink topic="purchase-edit" />
+          <IonButton className="pm-icon-button" onClick={onEdit} aria-label={t("purchaseEdit.edit")}>
+            <Pencil size={22} aria-hidden="true" />
+          </IonButton>
+        </>
+      )}
     >
       <IonList inset>
         <IonItem>
-          <IonLabel>{t("purchaseEdit.dateTime")}</IonLabel>
-          <IonNote slot="end" className="pm-pick-value">{purchase.purchasedAt ? formatDateTime(purchase.purchasedAt, locale) : t("purchaseEdit.unknownDate")}</IonNote>
-        </IonItem>
-        <IonItem lines={purchase.sourceReceiptId ? undefined : "none"}>
-          <IonLabel>{t("purchaseEdit.total")}</IonLabel>
-          <IonNote slot="end" className="pm-amount pm-total">{money(purchase.receiptTotal)}</IonNote>
+          <CalendarClock slot="start" size={22} className="pm-row-icon pm-muted-icon" aria-hidden="true" />
+          <IonLabel>
+            <span className="visually-hidden">{t("purchaseEdit.dateTime")}: </span>
+            {purchase.purchasedAt ? formatShortDate(purchase.purchasedAt, locale, { time: true }) : t("purchaseEdit.unknownDate")}
+          </IonLabel>
+          <IonNote slot="end" className="pm-amount pm-total">
+            <span className="visually-hidden">{t("purchaseEdit.total")} </span>{money(purchase.receiptTotal)}
+          </IonNote>
         </IonItem>
         {purchase.sourceReceiptId && (
           <ItemLink to={`/receipts/${purchase.sourceReceiptId}`} state={returnState} lines="none">
+            <ReceiptText slot="start" size={22} className="pm-row-icon" aria-hidden="true" />
             <IonLabel color="primary">{t("purchaseEdit.openReceipt")}</IonLabel>
           </ItemLink>
         )}
       </IonList>
 
-      <section aria-labelledby="purchase-issues">
-        <SectionHeader id="purchase-issues">{t("purchaseEdit.issuesTitle")}</SectionHeader>
-        {purchase.issues.length === 0
-          ? <Footnote>{t("purchaseEdit.noIssues")}</Footnote>
-          : (
-            <IonList inset className="pm-after-header">
-              {purchase.issues.map((issue) => (
-                <IonItem key={issueKey(issue)}>
-                  <IonLabel className="pm-wrap pm-warn-text">{issueCopy(t, issue).title}</IonLabel>
-                </IonItem>
-              ))}
-            </IonList>
-          )}
-      </section>
+      {/* Only problems are shown; a clean purchase needs no «all fine» sentence. */}
+      {purchase.issues.length > 0 && (
+        <section aria-label={t("purchaseEdit.issuesTitle")}>
+          <IonList inset>
+            {purchase.issues.map((issue, index) => (
+              <IonItem key={issueKey(issue)} lines={index === purchase.issues.length - 1 ? "none" : undefined}>
+                <AlertTriangle slot="start" size={20} className="pm-row-icon pm-row-icon-warning" aria-hidden="true" />
+                <IonLabel className="pm-wrap pm-warn-text">{issueCopy(t, issue).title}</IonLabel>
+              </IonItem>
+            ))}
+          </IonList>
+        </section>
+      )}
 
       <section aria-labelledby="purchase-lines">
         <SectionHeader
           id="purchase-lines"
           action={(
-            <IonButton
-              fill="clear"
-              className="pm-review-start"
-              onClick={() => openReview(null)}
-              aria-label={t("lineReview.start", { approved: approvals.approvedCount, total })}
-            >
-              <ListChecks size={20} aria-hidden="true" />
-              <span aria-hidden="true">{approvals.approvedCount}/{total}</span>
-            </IonButton>
+            <span className="pm-header-actions">
+              <HelpLink topic="receipt-lines-photo" />
+              <IonButton
+                fill="clear"
+                className="pm-review-start"
+                onClick={() => openReview(null)}
+                aria-label={t("lineReview.start", { approved: approvals.approvedCount, total })}
+              >
+                <ListChecks size={20} aria-hidden="true" />
+                <span aria-hidden="true">{approvals.approvedCount}/{total}</span>
+              </IonButton>
+            </span>
           )}
         >
-          {t("purchaseEdit.lines")} · {t("purchaseEdit.linesCount", { count: productCount })}
+          {t("purchaseEdit.linesCount", { count: productCount })}
         </SectionHeader>
         <IonList inset className="pm-after-header">
           {purchase.items.map((item, index) => {
@@ -203,20 +216,18 @@ function PurchaseSummary({ purchase, back, onEdit }: { purchase: PurchaseDetail;
             return (
               <IonItem key={item.position}>
                 <IonLabel className="pm-wrap">
-                  <ReviewLineButton
-                    onOpen={() => openReview(index)}
-                    approved={approvals.isApproved(item)}
-                    name={item.name}
-                    details={[
-                      {
-                        text: item.productName
-                          ? t("purchaseEdit.productLinked", { name: item.productName })
-                          : item.pendingMatch ? t("purchaseEdit.productPending") : t("purchaseEdit.productUnlinked"),
-                        warn: item.pendingMatch
-                      },
-                      ...(item.unitPrice === null ? [{ text: t("purchaseEdit.missingPrice"), warn: true }] : [])
-                    ]}
-                  />
+                  <ReviewLineButton onOpen={() => openReview(index)} approved={approvals.isApproved(item)} name={item.name}>
+                    <ProductLinkNote
+                      text={item.productName
+                        ? t("purchaseEdit.productLinked", { name: item.productName })
+                        : item.pendingMatch ? t("purchaseEdit.productPending") : t("purchaseEdit.productUnlinked")}
+                      lineName={item.name}
+                      productName={item.productName}
+                      pending={!item.productName && item.pendingMatch}
+                      unlinked={!item.productName && !item.pendingMatch}
+                    />
+                    {item.unitPrice === null && <span className="pm-line-detail" data-warn="true">{t("purchaseEdit.missingPrice")}</span>}
+                  </ReviewLineButton>
                   {impressions.data && <PurchaseLineImpressions item={item} impressions={impressions.data} locale={locale} />}
                 </IonLabel>
                 <IonNote slot="end" className="pm-amount">{money(item.lineTotal)}</IonNote>
@@ -224,7 +235,6 @@ function PurchaseSummary({ purchase, back, onEdit }: { purchase: PurchaseDetail;
             );
           })}
         </IonList>
-        <Footnote>{t("lineReview.listHint")} <HelpLink topic="receipt-lines-photo" /></Footnote>
       </section>
 
       <LineReview
@@ -238,14 +248,13 @@ function PurchaseSummary({ purchase, back, onEdit }: { purchase: PurchaseDetail;
         currency={purchase.currency}
       />
 
-      <section aria-label={t("purchaseEdit.photoAlt")}>
-        <SectionHeader>{t("purchaseEdit.photoAlt")}</SectionHeader>
-        {!photoUrl && <Footnote>{t("purchaseEdit.noPhoto")}</Footnote>}
-        {photo?.photo && <div className="pm-photo-card"><img className="pm-photo" src={photo.photo.url} alt={t("purchaseEdit.photoAlt")} /></div>}
-        {photo?.failed && <Footnote>{t("purchaseEdit.photoFailed")}</Footnote>}
-      </section>
-
-      <Footnote><HelpLink topic="purchase-edit" /></Footnote>
+      {/* No photo, no section: the purchase simply was saved without one. */}
+      {photoUrl && (
+        <section aria-label={t("purchaseEdit.photoAlt")} className="pm-photo-section">
+          {photo?.photo && <div className="pm-photo-card"><img className="pm-photo" src={photo.photo.url} alt={t("purchaseEdit.photoAlt")} /></div>}
+          {photo?.failed && <Footnote>{t("purchaseEdit.photoFailed")}</Footnote>}
+        </section>
+      )}
     </Page>
   );
 }
@@ -255,11 +264,11 @@ function PurchaseSummary({ purchase, back, onEdit }: { purchase: PurchaseDetail;
  * review at this line; the line's other controls (like «Оценить») stay
  * outside it, so no control is nested in another. A checked line shows ✓.
  */
-function ReviewLineButton({ onOpen, approved, name, details }: {
+function ReviewLineButton({ onOpen, approved, name, children }: {
   onOpen: () => void;
   approved: boolean;
   name: string;
-  details: { text: string; warn: boolean }[];
+  children: ReactNode;
 }) {
   const { t } = useTranslation();
   return (
@@ -268,7 +277,7 @@ function ReviewLineButton({ onOpen, approved, name, details }: {
         {name}
         <ApprovedMark approved={approved} />
       </span>
-      {details.map((detail) => <span key={detail.text} className="pm-line-detail" data-warn={detail.warn}>{detail.text}</span>)}
+      {children}
       <span className="visually-hidden">{t("lineReview.openLine")}</span>
     </button>
   );
@@ -479,7 +488,6 @@ function PurchaseEditor({ purchase, focus, onDone, onReload }: {
       start={<IonButton disabled={save.isPending} onClick={() => onDone(false)}>{t("ui.cancel")}</IonButton>}
       end={<ActionButton strong loading={save.isPending} onClick={submit}>{save.isPending ? t("purchaseEdit.saving") : t("purchaseEdit.saveShort")}</ActionButton>}
     >
-      <Footnote>{t("purchaseEdit.editHint")}</Footnote>
       <IonList inset>
         <IonItem>
           <IonInput ref={merchantRef} label={t("purchaseEdit.store")} labelPlacement="fixed" value={state.merchantName} onIonInput={(event) => update({ merchantName: String(event.detail.value ?? "") })} />
@@ -497,7 +505,8 @@ function PurchaseEditor({ purchase, focus, onDone, onReload }: {
       <Reconciliation items={state.items} receiptTotal={state.receiptTotal} currency={currency} />
 
       <LinesEditor
-        title={`${t("purchaseEdit.lines")} · ${t("purchaseEdit.linesCount", { count: state.items.filter((item) => !isDiscount(item)).length })}`}
+        title={t("purchaseEdit.linesCount", { count: state.items.filter((item) => !isDiscount(item)).length })}
+        help={<HelpLink topic="purchase-edit" />}
         lines={state.items}
         currency={currency}
         openLine={openLine}
@@ -509,7 +518,15 @@ function PurchaseEditor({ purchase, focus, onDone, onReload }: {
         focusField={lineFocus}
         photo={receiptPhoto.viewer}
         describe={(line) => (
-          <p className={line.pendingMatch && line.productLink === "auto" ? "pm-warn-text" : undefined}>{productStatusText(t, line)}</p>
+          <p>
+            <ProductLinkNote
+              text={productStatusText(t, line)}
+              lineName={line.name}
+              productName={line.productLink === "existing" ? line.productName : null}
+              pending={line.pendingMatch && line.productLink === "auto"}
+              isNew={line.productLink === "new"}
+            />
+          </p>
         )}
         sheetExtra={(line, index) => (
           <ProductLinkRows
@@ -529,7 +546,6 @@ function PurchaseEditor({ purchase, focus, onDone, onReload }: {
           {conflict && <IonButton fill="outline" size="small" onClick={onReload}>{t("purchaseEdit.reload")}</IonButton>}
         </Notice>
       )}
-      <Footnote><HelpLink topic="purchase-edit" /></Footnote>
     </Page>
   );
 }
@@ -567,8 +583,4 @@ function toLocalInput(value: string | null): string {
   if (!value) return "";
   const date = new Date(value);
   return new Date(date.getTime() - date.getTimezoneOffset() * 60_000).toISOString().slice(0, 16);
-}
-
-function formatDateTime(value: string, locale: string) {
-  return new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
 }

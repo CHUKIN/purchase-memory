@@ -1,5 +1,5 @@
 import { IonButton, IonLabel, IonList, IonSearchbar, IonSegment, IonSegmentButton } from "@ionic/react";
-import { Camera, Receipt, SearchX } from "lucide-react";
+import { AlertTriangle, Camera, CircleCheck, Receipt, SearchX } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { BrandSummary, ProductCategory, PurchaseReviewFilter, PurchaseView, TagSummary } from "../../api/types";
@@ -108,7 +108,7 @@ export function PurchaseFeed({
   return (
     <Page
       title={t("common.purchases")}
-      end={<FilterButton count={sheetFilterCount(filters)} onClick={() => setFiltersOpen(true)} />}
+      end={<><HelpLink topic="feed" /><FilterButton count={sheetFilterCount(filters)} onClick={() => setFiltersOpen(true)} /></>}
       search={(
         <IonSearchbar
           value={filters.query}
@@ -119,9 +119,8 @@ export function PurchaseFeed({
         />
       )}
     >
-      <SectionHeader>
-        {t("feed.title")}{!loading && !error ? ` · ${t("feed.count", { count: totalCount })}` : ""}
-      </SectionHeader>
+      {/* The large title already names the list; the header only counts it. */}
+      <SectionHeader>{!loading && !error ? t("feed.count", { count: totalCount }) : "\u00a0"}</SectionHeader>
 
       {loading && <LoadingList label={t("feed.loading")} />}
       {!loading && error && <Notice tone="danger" role="alert"><p>{error}</p></Notice>}
@@ -132,7 +131,6 @@ export function PurchaseFeed({
             <EmptyState
               icon={<SearchX />}
               title={t("feed.filteredEmptyTitle")}
-              description={t("feed.filteredEmptyDescription")}
               action={<IonButton fill="clear" onClick={resetAll}>{t("feed.resetFilters")}</IonButton>}
             />
           )
@@ -140,7 +138,6 @@ export function PurchaseFeed({
             <EmptyState
               icon={<Receipt />}
               title={t("feed.emptyTitle")}
-              description={t("feed.emptyDescription")}
               action={<ButtonLink to="/purchases/new" state={returnState} shape="round"><Camera aria-hidden="true" size={18} />&nbsp;{t("common.captureReceipt")}</ButtonLink>}
             />
           )
@@ -162,26 +159,28 @@ export function PurchaseFeed({
         </>
       )}
 
-      <Footnote><HelpLink topic="feed" /></Footnote>
-
       <Sheet
         isOpen={filtersOpen}
         onClose={() => setFiltersOpen(false)}
         title={t("ui.filters")}
         start={<IonButton onClick={() => onFiltersChange({ ...emptyPurchaseFeedFilters, query: filters.query })}>{t("ui.reset")}</IonButton>}
+        help={<HelpLink topic="filters" />}
       >
-        <SectionHeader level={3}>{t("feed.periodLabel")}</SectionHeader>
-        <IonList inset className="pm-after-header">
+        <IonList inset aria-label={t("feed.periodLabel")}>
           <DateField label={t("feed.dateFrom")} value={filters.from} max={filters.to || undefined} onChange={(from) => update({ from })} />
           <DateField label={t("feed.dateTo")} value={filters.to} min={filters.from || undefined} onChange={(to) => update({ to })} />
         </IonList>
 
-        <SectionHeader level={3}>{t("feed.statusLabel")}</SectionHeader>
-        <IonList inset className="pm-after-header">
+        <IonList inset>
           <div className="ion-padding">
             <IonSegment value={filters.status} aria-label={t("feed.statusLabel")} onIonChange={(event) => update({ status: event.detail.value as PurchaseReviewFilter })}>
+              {/* The same ⚠ and ✓ as on the purchase rows; «Все» stays a word. */}
               {statusFilters.map((status) => (
-                <IonSegmentButton key={status} value={status}><IonLabel>{t(`feed.status.${status}`)}</IonLabel></IonSegmentButton>
+                <IonSegmentButton key={status} value={status}>
+                  {status === "needsAttention" && <AlertTriangle size={20} className="pm-warning-icon" aria-hidden="true" />}
+                  {status === "reviewed" && <CircleCheck size={20} className="pm-success-icon" aria-hidden="true" />}
+                  <IonLabel className={status === "all" ? undefined : "visually-hidden"}>{t(`feed.status.${status}`)}</IonLabel>
+                </IonSegmentButton>
               ))}
             </IonSegment>
           </div>
@@ -192,7 +191,6 @@ export function PurchaseFeed({
           <BrandFilterRow brands={brands} brand={filters.brand} onBrandChange={(brand) => update({ brand })} />
           {tags.length > 0 && <TagFilterRow tags={tags} tag={filters.tag} onTagChange={(tag) => update({ tag })} />}
         </IonList>
-        <Footnote><HelpLink topic="filters" /></Footnote>
       </Sheet>
     </Page>
   );

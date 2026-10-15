@@ -1,5 +1,5 @@
 import { IonButton, IonItem, IonLabel, IonList, IonTextarea } from "@ionic/react";
-import { CornerDownRight, MessageSquareText, Search } from "lucide-react";
+import { CornerDownRight, MessageSquareText, Search, X } from "lucide-react";
 import { useEffect, useRef, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import type { AnalyticsAnswer, AnalyticsHistoryItem, AnalyticsPlan, ProductCategory, ProductTag } from "../../api/types";
@@ -119,8 +119,7 @@ export function AnalyticsView({
           : "";
 
   return (
-    <Page title={t("common.analytics")}>
-      <p className="pm-home-intro">{t("analytics.intro")} <HelpLink topic="analytics" /></p>
+    <Page title={t("common.analytics")} end={<HelpLink topic="analytics" />}>
 
       <form onSubmit={submit} role="search" aria-label={t("analytics.formLabel")}>
         <IonList inset>
@@ -128,7 +127,9 @@ export function AnalyticsView({
             <IonItem>
               <CornerDownRight slot="start" size={18} className="pm-row-icon" aria-hidden="true" />
               <IonLabel className="pm-wrap"><p>{t("analytics.followUp.label", { period: periodLabel(t, locale, followUp) })}</p></IonLabel>
-              <IonButton slot="end" fill="clear" size="small" onClick={onClearFollowUp}>{t("analytics.followUp.clear")}</IonButton>
+              <IonButton slot="end" fill="clear" color="medium" className="pm-icon-button" onClick={onClearFollowUp} aria-label={t("analytics.followUp.clear")}>
+                <X size={20} aria-hidden="true" />
+              </IonButton>
             </IonItem>
           )}
           <IonItem lines="none">
@@ -206,7 +207,7 @@ export function AnalyticsView({
       )}
 
       {!answer && !asking && !problem && enabled && history.length === 0 && (
-        <EmptyState icon={<MessageSquareText />} title={t("analytics.emptyTitle")} description={t("analytics.emptyDescription")} />
+        <EmptyState icon={<MessageSquareText />} title={t("analytics.emptyTitle")} />
       )}
 
       {onOpenHistory && onDeleteHistory && (

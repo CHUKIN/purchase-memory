@@ -1,7 +1,7 @@
 import { IonButton, IonButtons, IonContent, IonHeader, IonItem, IonLabel, IonList, IonModal, IonSearchbar, IonTitle, IonToolbar } from "@ionic/react";
 import { useQuery } from "@tanstack/react-query";
-import { Check } from "lucide-react";
-import { useEffect, useId, useMemo, useState } from "react";
+import { AlertTriangle, Check, Package, PackagePlus, PackageX } from "lucide-react";
+import { useEffect, useId, useMemo, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { getProductCatalog } from "../../api/client";
 import type { ProductLinkChoice, PurchaseProductCandidate } from "../../api/types";
@@ -15,6 +15,37 @@ export function productStatusText(t: TFunction, line: Pick<LinkableLine, "produc
     : line.productLink === "new"
       ? t("purchaseEdit.productNew", { name: line.name.trim() || "…" })
       : line.pendingMatch ? t("purchaseEdit.productPending") : t("purchaseEdit.productAuto");
+}
+
+const sameName = (a: string, b: string) => a.trim().toLocaleLowerCase() === b.trim().toLocaleLowerCase();
+
+/**
+ * A line's catalog product in a list row, icon first: ⚠ «Выберите товар» when
+ * matching was unsure, the product's name when it differs from the line's,
+ * «Новый товар» for a new one, «Без товара» for a saved line left unlinked,
+ * and nothing more when it is obvious. The full
+ * sentence (`text`, e.g. «Связано с «…»») is always there for screen readers.
+ */
+export function ProductLinkNote({ text, lineName, productName, pending, isNew = false, unlinked = false }: {
+  text: string;
+  lineName: string;
+  productName: string | null;
+  pending: boolean;
+  isNew?: boolean;
+  unlinked?: boolean;
+}) {
+  const { t } = useTranslation();
+  let visible: ReactNode = null;
+  if (pending) visible = <><AlertTriangle size={13} className="pm-inline-icon" />{t("purchaseEdit.productPendingShort")}</>;
+  else if (isNew) visible = <><PackagePlus size={13} className="pm-inline-icon" />{t("purchaseEdit.productNewShort")}</>;
+  else if (unlinked) visible = <><PackageX size={13} className="pm-inline-icon" />{t("purchaseEdit.productUnlinkedShort")}</>;
+  else if (productName && !sameName(productName, lineName)) visible = <><Package size={13} className="pm-inline-icon" />{productName}</>;
+  return (
+    <span className="pm-line-detail pm-link-note" data-warn={pending}>
+      {visible && <span aria-hidden="true">{visible}</span>}
+      <span className="visually-hidden">{text}</span>
+    </span>
+  );
 }
 
 export interface LinkableLine {

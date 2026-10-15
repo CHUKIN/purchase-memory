@@ -129,16 +129,14 @@ export function ReviewQueueView({
     <Page
       title={t("reviewQueue.title")}
       back={back}
-      end={canFilter ? <FilterButton count={(category !== "" ? 1 : 0) + (tag !== "" ? 1 : 0)} onClick={() => setFiltersOpen(true)} /> : undefined}
-    >
-      <p className="pm-home-intro">{t("reviewQueue.intro")} <HelpLink topic="review-queue" /></p>
-
-      {filtered && (
+      end={(
         <>
-          <Footnote>{t("reviewQueue.filterNote")}</Footnote>
-          <div className="ion-padding-horizontal">{resetButton}</div>
+          <HelpLink topic="review-queue" />
+          {canFilter && <FilterButton count={(category !== "" ? 1 : 0) + (tag !== "" ? 1 : 0)} onClick={() => setFiltersOpen(true)} />}
         </>
       )}
+    >
+      {filtered && <div className="ion-padding-horizontal">{resetButton}</div>}
 
       {loading && <LoadingList label={t("reviewQueue.loading")} rows={3} />}
 
@@ -152,6 +150,7 @@ export function ReviewQueueView({
       {!loading && queue && queue.totalCount === 0 && (
         filtered
           ? (
+            // The one empty state that keeps a sentence: it names the filter that hides the rest.
             <EmptyState
               icon={<SearchX />}
               title={t("reviewQueue.filteredEmptyTitle")}
@@ -159,12 +158,13 @@ export function ReviewQueueView({
               action={resetButton}
             />
           )
-          : <EmptyState icon={<CheckCircle2 />} title={t("reviewQueue.emptyTitle")} description={t("reviewQueue.emptyDescription")} />
+          : <EmptyState icon={<CheckCircle2 />} title={t("reviewQueue.emptyTitle")} />
       )}
 
       {!loading && queue && queue.totalCount > 0 && (
         <>
-          <p className="pm-footnote" aria-live="polite">
+          {/* Each group shows its own count; the total is only said when a filter narrows it. */}
+          <p className={filtered ? "pm-footnote" : "visually-hidden"} aria-live="polite">
             {filtered
               ? t("reviewQueue.filteredSummary", { count: queue.totalCount, filter: filterText })
               : t("reviewQueue.summary", { count: queue.totalCount })}
@@ -212,10 +212,7 @@ function GroupSection({ group, categories }: { group: ReviewQueueGroup; categori
         {t(`reviewQueue.kinds.${group.kind}.title`)}
       </SectionHeader>
       {group.items.map((item) => <ItemCard key={item.id} item={item} categories={categories} />)}
-      <Footnote>
-        {t(`reviewQueue.kinds.${group.kind}.hint`)}
-        {group.totalCount > group.items.length && <> {t("reviewQueue.more", { count: group.totalCount - group.items.length })}</>}
-      </Footnote>
+      {group.totalCount > group.items.length && <Footnote>{t("reviewQueue.more", { count: group.totalCount - group.items.length })}</Footnote>}
     </section>
   );
 }
@@ -225,6 +222,7 @@ function ItemCard({ item, categories }: { item: ReviewQueueItem; categories: Pro
   const title = item.title || t(`reviewQueue.untitled.${untitledKey(item.kind)}`);
   const date = new Intl.DateTimeFormat(i18n.language, { dateStyle: "medium" }).format(new Date(item.occurredAt));
   const suggestions = item.kind === "pendingMatch" && item.purchaseId && (item.candidates?.length ?? 0) > 0;
+  const why = reason(item, t, i18n.language);
 
   return (
     <article aria-label={title}>
@@ -232,7 +230,7 @@ function ItemCard({ item, categories }: { item: ReviewQueueItem; categories: Pro
         <IonItem>
           <IonLabel className="pm-wrap">
             <h3>{title}</h3>
-            <p>{reason(item, t, i18n.language)}</p>
+            {why && <p>{why}</p>}
             <p><time dateTime={item.occurredAt}>{date}</time></p>
           </IonLabel>
         </IonItem>
@@ -385,7 +383,8 @@ function untitledKey(kind: ReviewQueueKind) {
   return kind === "suggestedCategory" || kind === "missingCategory" || kind === "pendingMatch" ? "product" : "receipt";
 }
 
-function reason(item: ReviewQueueItem, t: Translate, locale: string) {
+/** Why the item is here, in a few words; null where the action below already says it. */
+function reason(item: ReviewQueueItem, t: Translate, locale: string): string | null {
   const money = (value: number | null) => value === null ? "—" : formatMoney(value, item.currency, locale);
 
   switch (item.kind) {
@@ -396,9 +395,10 @@ function reason(item: ReviewQueueItem, t: Translate, locale: string) {
     case "suggestedCategory":
       return t("reviewQueue.kinds.suggestedCategory.reason", { category: item.categoryName ?? "—" });
     case "pendingMatch":
-      return (item.candidates?.length ?? 0) > 0 && item.purchaseId
-        ? t("reviewQueue.kinds.pendingMatch.reasonWithCandidates")
-        : t("reviewQueue.kinds.pendingMatch.reason");
+      // With suggestions, «Похоже на» and «Да, это он» say it.
+      return (item.candidates?.length ?? 0) > 0 && item.purchaseId ? null : t("reviewQueue.kinds.pendingMatch.reason");
+    case "missingCategory":
+      return null;
     default:
       return t(`reviewQueue.kinds.${item.kind}.reason`);
   }

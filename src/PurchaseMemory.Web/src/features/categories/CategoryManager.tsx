@@ -58,7 +58,6 @@ export function CategoryManager({ categories, onCreate, onRename, onDelete }: Ca
 
   return (
     <>
-      <Footnote>{t("categories.manageIntro")}</Footnote>
 
       <SectionHeader level={3}>{t("categories.add")}</SectionHeader>
       <IonList inset className="pm-after-header">

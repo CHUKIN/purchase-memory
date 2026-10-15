@@ -29,6 +29,8 @@ export interface LinePhotoProps {
   onZoomChange?: (zoomed: boolean) => void;
   /** Changing it (another line) resets the zoom. */
   resetKey?: unknown;
+  /** A short note over the top of the photo itself (e.g. «Место строки не найдено…»). */
+  note?: string | null;
 }
 
 /** Whether `LinePhoto` will outline this box on this photo. */
@@ -48,7 +50,7 @@ const assumedRatio = 0.75;
  * at the wrong place. The outline appears only once the photo's real
  * proportions are known.
  */
-export function LinePhoto({ photo, box, focusAlt, wholeAlt, photoRatio, onPhotoRatio, onZoomChange, resetKey }: LinePhotoProps) {
+export function LinePhoto({ photo, box, focusAlt, wholeAlt, photoRatio, onPhotoRatio, onZoomChange, resetKey, note = null }: LinePhotoProps) {
   const { t } = useTranslation();
   const spaceRef = useRef<HTMLDivElement>(null);
   const space = useSpaceSize(spaceRef);
@@ -88,6 +90,8 @@ export function LinePhoto({ photo, box, focusAlt, wholeAlt, photoRatio, onPhotoR
             <div className="pm-locator-highlight" style={relativeTo(box, view)} aria-hidden="true" />
           )}
         </div>
+        {/* Inside the frame: it stays on the photo however narrow it is, clear of the zoom button below. */}
+        {note && <p className="pm-review-photo-note">{note}</p>}
         <button
           type="button"
           className="pm-photo-zoom"

@@ -1,5 +1,5 @@
 import { IonAlert, IonItem, IonLabel, IonList, IonNote } from "@ionic/react";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { AttributeSource, ProductCategory } from "../../api/types";
 import { Footnote, SectionHeader } from "../../design-system/components";
@@ -18,6 +18,8 @@ export interface ProductClassificationProps {
   brandSource: AttributeSource | null;
   /** Everything sent becomes the person's confirmed decision. */
   onSave: (change: ClassificationChange) => Promise<unknown>;
+  /** A «?» (HelpLink) at the end of the section header. */
+  help?: ReactNode;
 }
 
 /**
@@ -26,7 +28,7 @@ export interface ProductClassificationProps {
  * confirmed as it is. A human choice here is authoritative: it covers every
  * purchase of the product and AI never overwrites it.
  */
-export function ProductClassification({ categories, categoryId, categorySource, brand, brandSource, onSave }: ProductClassificationProps) {
+export function ProductClassification({ categories, categoryId, categorySource, brand, brandSource, onSave, help }: ProductClassificationProps) {
   const { t } = useTranslation();
   const [saving, setSaving] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -47,7 +49,7 @@ export function ProductClassification({ categories, categoryId, categorySource, 
 
   return (
     <section aria-labelledby="classification-title">
-      <SectionHeader id="classification-title">{t("categories.title")}</SectionHeader>
+      <SectionHeader id="classification-title" action={help}>{t("categories.title")}</SectionHeader>
       <IonList inset className="pm-after-header">
         <CategoryPicker
           categories={categories}
@@ -78,8 +80,6 @@ export function ProductClassification({ categories, categoryId, categorySource, 
           </IonItem>
         )}
       </IonList>
-      {suggestedSomething && <Footnote>{t("categories.suggestedHint")}</Footnote>}
-      <Footnote>{t("categories.appliesToAll")}</Footnote>
       {failed && <Footnote tone="danger" role="alert">{t("categories.saveError")}</Footnote>}
 
       <IonAlert
