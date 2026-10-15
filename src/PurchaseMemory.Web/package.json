@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:lab": "vite --config vite.lab.config.ts",
     "build": "tsc -b && vite build",
     "storybook": "storybook dev -p 6006 --disable-telemetry",
     "build-storybook": "storybook build --disable-telemetry",
@@ -34,6 +35,8 @@
     "@testing-library/react": "16.3.2",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.4",
+    "@vitejs/plugin-basic-ssl": "2.3.0",
+    "barcode-detector": "3.2.2",
     "fake-indexeddb": "6.2.5",
     "jsdom": "29.1.1",
     "storybook": "10.5.5",
