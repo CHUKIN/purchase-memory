@@ -70,8 +70,7 @@ export function CapturePage({ recognition, batchStore = deviceBatchStore }: { re
   });
 
   return (
-    <Page title={t("receiptCapture.pageTitle")} back={back}>
-      <p className="pm-home-intro">{t("receiptCapture.description")} <HelpLink topic="capture" /></p>
+    <Page title={t("receiptCapture.pageTitle")} back={back} end={<HelpLink topic="capture" />}>
       {/* An interrupted batch is decided first: a new batch would replace its stored photos. */}
       {interrupted && !batch.photos
         ? <InterruptedBatchNotice restored={interrupted} disabled={recognition?.available !== true || upload.isPending} onResume={resumeInterrupted} onDiscard={discardInterrupted} />
@@ -92,10 +91,9 @@ export function CapturePage({ recognition, batchStore = deviceBatchStore }: { re
               onStartOver={() => { batch.reset(); setFiles([]); setMode("parts"); }}
             />
           )}
-      {recognition && (
-        <Footnote tone={recognition.available ? "neutral" : "danger"}>
-          {recognition.available ? `${recognition.mode}: ${recognition.models.join(" → ")}` : recognition.message ?? t("legacyCapture.serviceUnavailable")}
-        </Footnote>
+      {/* Only a problem is shown; the pipeline's model names are not for the household. */}
+      {recognition && !recognition.available && (
+        <Footnote tone="danger">{recognition.message ?? t("legacyCapture.serviceUnavailable")}</Footnote>
       )}
       <RecentUploads />
     </Page>

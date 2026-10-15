@@ -1,5 +1,6 @@
 import { IonButton, IonItem, IonLabel, IonList } from "@ionic/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { SmilePlus } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -13,6 +14,7 @@ import {
 import type { Impression, ImpressionRating, PurchaseDetailItem } from "../../api/types";
 import { Link } from "react-router";
 import { Footnote, SectionHeader, SelectRow, Sheet } from "../../design-system/components";
+import { formatShortDate } from "../purchases/dates";
 import { formatMoney } from "../purchases/money";
 import { HelpLink } from "../help/HelpLink";
 import { ImpressionForm, type ImpressionDraft } from "./ImpressionForm";
@@ -109,13 +111,14 @@ export function PurchaseLineImpressions({ item, impressions, locale }: { item: P
           {latest.map(({ group, impression }) => (
             <li key={group.authorUserId} className="pm-chip" data-rating={impression.rating}>
               <RatingIcon rating={impression.rating} size={12} />
-              {authorLabel(t, impression)}: {ratingLabel(t, impression.rating)}
+              {authorLabel(t, impression)}<span className="visually-hidden">: {ratingLabel(t, impression.rating)}</span>
             </li>
           ))}
         </ul>
       )}
-      <IonButton size="small" fill="clear" className="pm-inline-button" onClick={() => setOpen(true)} aria-label={t("impressions.rateLine", { name: item.name })}>
-        {t("impressions.rate")}
+      {/* «Оценить» as an icon: four lines would otherwise repeat the same word four times. */}
+      <IonButton fill="clear" className="pm-icon-button pm-rate-button" onClick={() => setOpen(true)} aria-label={t("impressions.rateLine", { name: item.name })}>
+        <SmilePlus size={20} aria-hidden="true" />
       </IonButton>
       <Sheet isOpen={open} onClose={() => setOpen(false)} title={t("impressions.rateLine", { name: item.name })}>
         <ImpressionForm onSubmit={(draft) => create.mutateAsync({ purchaseItemId: item.id, draft })} />
@@ -163,7 +166,7 @@ export function UnratedPurchasesBlock({ locale }: { locale: string }) {
                   </Link>
                 </h3>
                 <p>
-                  {[item.merchantName ?? t("impressions.unknownStore"), formatDay(locale, item.purchasedAt), price === null ? null : formatMoney(price, item.currency, locale)]
+                  {[item.merchantName ?? t("impressions.unknownStore"), formatShortDate(item.purchasedAt, locale), price === null ? null : formatMoney(price, item.currency, locale)]
                     .filter(Boolean).join(" · ")}
                 </p>
                 <RatingControl
@@ -179,7 +182,6 @@ export function UnratedPurchasesBlock({ locale }: { locale: string }) {
           );
         })}
       </IonList>
-      <Footnote>{t("impressions.unratedIntro")}</Footnote>
     </section>
   );
 }

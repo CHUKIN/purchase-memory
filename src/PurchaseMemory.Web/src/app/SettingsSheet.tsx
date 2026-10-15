@@ -1,5 +1,5 @@
 import { IonActionSheet, IonItem, IonLabel, IonList, IonNote, IonSegment, IonSegmentButton } from "@ionic/react";
-import { CircleHelp, LogOut } from "lucide-react";
+import { CircleCheck, CircleHelp, LogOut, ScanText } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { RecognitionStatus } from "../api/types";
@@ -25,9 +25,10 @@ export function SettingsSheet({ isOpen, onClose, recognition, recognitionFailed 
   const { locale, setLocale } = useAppLocale();
   const auth = useAuth();
   const [confirmSignOut, setConfirmSignOut] = useState(false);
+  const recognitionOk = recognition?.available === true && !recognitionFailed;
   const recognitionText = recognition === null && !recognitionFailed
     ? t("shell.recognitionChecking")
-    : recognition?.available && !recognitionFailed
+    : recognitionOk
       ? t("shell.recognitionAvailable")
       : t("shell.recognitionUnavailable");
 
@@ -59,9 +60,13 @@ export function SettingsSheet({ isOpen, onClose, recognition, recognitionFailed 
       )}
 
       <IonList inset>
-        <IonItem>
+        <IonItem lines="none">
+          <ScanText slot="start" size={22} className="pm-row-icon" aria-hidden="true" />
           <IonLabel className="pm-wrap">{t("settings.recognition")}</IonLabel>
-          <IonNote slot="end" className="pm-pick-value pm-wrap">{recognitionText}</IonNote>
+          {/* Working is shown as a ✓; only «checking» and «unavailable» need words. */}
+          {recognitionOk
+            ? <IonNote slot="end"><CircleCheck size={20} className="pm-success-icon" aria-hidden="true" /><span className="visually-hidden">{recognitionText}</span></IonNote>
+            : <IonNote slot="end" className="pm-pick-value pm-wrap">{recognitionText}</IonNote>}
         </IonItem>
       </IonList>
 

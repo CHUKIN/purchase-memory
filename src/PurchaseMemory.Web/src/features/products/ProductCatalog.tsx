@@ -88,7 +88,7 @@ export function ProductCatalog({
   return (
     <Page
       title={t("products.pageTitle")}
-      end={filterable ? <FilterButton count={sheetCount} onClick={() => setFiltersOpen(true)} /> : undefined}
+      end={<><HelpLink topic="products" />{filterable && <FilterButton count={sheetCount} onClick={() => setFiltersOpen(true)} />}</>}
       search={(
         <IonSearchbar
           value={query}
@@ -98,7 +98,7 @@ export function ProductCatalog({
         />
       )}
     >
-      <SectionHeader>{t("products.listTitle")}{!loading && !error ? ` · ${t("products.count", { count: totalCount })}` : ""}</SectionHeader>
+      <SectionHeader>{!loading && !error ? t("products.count", { count: totalCount }) : "\u00a0"}</SectionHeader>
 
       {loading && <LoadingList label={t("products.loading")} />}
       {!loading && error && <Notice tone="danger" role="alert"><p>{error}</p></Notice>}
@@ -109,11 +109,10 @@ export function ProductCatalog({
             <EmptyState
               icon={<SearchX />}
               title={t("products.filteredEmptyTitle")}
-              description={t("products.filteredEmptyDescription")}
               action={<IonButton fill="clear" onClick={resetFilters}>{t("products.resetSearch")}</IonButton>}
             />
           )
-          : <EmptyState icon={<PackageSearch />} title={t("products.emptyTitle")} description={t("products.emptyDescription")} />
+          : <EmptyState icon={<PackageSearch />} title={t("products.emptyTitle")} />
       )}
 
       {!loading && !error && products.length > 0 && (
@@ -130,7 +129,7 @@ export function ProductCatalog({
                     </div>
                   )}
                   <p>
-                    {[product.brand, t("products.purchaseCount", { count: product.purchaseCount }), t("products.aliasCount", { count: product.aliasCount })]
+                    {[product.brand, t("products.purchaseCount", { count: product.purchaseCount })]
                       .filter(Boolean).join(" · ")}
                   </p>
                 </IonLabel>
@@ -149,7 +148,6 @@ export function ProductCatalog({
 
       {/* Matching deliberately leaves uncertain lines unlinked; saying so keeps the catalog honest. */}
       {!loading && !error && pendingMatchCount > 0 && <Footnote>{t("products.pendingMatches", { count: pendingMatchCount })}</Footnote>}
-      <Footnote><HelpLink topic="products" /></Footnote>
 
       {footer}
 
@@ -160,13 +158,13 @@ export function ProductCatalog({
           title={t("ui.filters")}
           start={<IonButton disabled={sheetCount === 0} onClick={resetSheet}>{t("ui.reset")}</IonButton>}
           initialBreakpoint={0.6}
+          help={<HelpLink topic="filters" />}
         >
           <IonList inset>
             {categories.length > 0 && <CategoryFilterRow categories={categories} category={categoryFilter} onCategoryChange={onCategoryFilterChange} />}
             <BrandFilterRow brands={brands} brand={brandFilter} onBrandChange={onBrandFilterChange} />
             {tags.length > 0 && onTagFilterChange && <TagFilterRow tags={tags} tag={tagFilter} onTagChange={onTagFilterChange} />}
           </IonList>
-          <Footnote><HelpLink topic="filters" /></Footnote>
         </Sheet>
       )}
     </Page>

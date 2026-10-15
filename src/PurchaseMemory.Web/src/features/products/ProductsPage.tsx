@@ -41,12 +41,12 @@ function ReferenceLists() {
       <IonList inset className="pm-after-header">
         <IonItem button detail onClick={() => setOpen("categories")}>
           <FolderTree slot="start" size={22} className="pm-row-icon" aria-hidden="true" />
-          <IonLabel>{t("categories.manageTitle")}</IonLabel>
+          <IonLabel>{t("categories.sheetTitle")}</IonLabel>
           {categoriesQuery.data && <IonNote slot="end">{categoriesQuery.data.length}</IonNote>}
         </IonItem>
         <IonItem button detail lines="none" onClick={() => setOpen("tags")}>
           <Hash slot="start" size={22} className="pm-row-icon" aria-hidden="true" />
-          <IonLabel>{t("tags.manageTitle")}</IonLabel>
+          <IonLabel>{t("tags.title")}</IonLabel>
           {tagsQuery.data && <IonNote slot="end">{tagsQuery.data.length}</IonNote>}
         </IonItem>
       </IonList>

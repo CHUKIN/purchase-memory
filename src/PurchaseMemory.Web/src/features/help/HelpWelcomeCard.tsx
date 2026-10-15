@@ -32,19 +32,18 @@ export function HelpWelcomeCard() {
   if (dismissed) return null;
 
   return (
-    <aside aria-labelledby="help-welcome-heading">
+    <aside aria-label={t("help.ui.welcomeTitle")}>
       <IonList inset>
         <IonItem lines="none">
-          <CircleHelp slot="start" size={24} className="pm-row-icon" aria-hidden="true" />
-          <IonLabel className="pm-wrap">
-            <h2 id="help-welcome-heading">{t("help.ui.welcomeTitle")}</h2>
-            <p>{t("help.ui.welcomeBody")}</p>
-            <p><Link className="pm-help-link" to={helpPath()}>{t("help.ui.welcomeOpen")}</Link></p>
+          <CircleHelp slot="start" size={22} className="pm-row-icon" aria-hidden="true" />
+          <IonLabel>
+            <Link className="pm-text-action" to={helpPath()}>{t("help.ui.welcomeOpen")}</Link>
           </IonLabel>
           <IonButton
             slot="end"
             fill="clear"
             color="medium"
+            className="pm-icon-button"
             aria-label={t("help.ui.welcomeDismiss")}
             onClick={() => { writeDismissed(); setDismissed(true); }}
           >

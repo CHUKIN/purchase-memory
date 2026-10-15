@@ -19,7 +19,8 @@ function ModeHarness() {
 
 describe("production ReceiptCapture", () => {
   beforeEach(() => {
-    Object.defineProperty(URL, "createObjectURL", { configurable: true, value: vi.fn(() => "blob:receipt") });
+    // One URL per file, so a row's preview tells which photo it is.
+    Object.defineProperty(URL, "createObjectURL", { configurable: true, value: vi.fn((file: File) => `blob:${file.name}`) });
     Object.defineProperty(URL, "revokeObjectURL", { configurable: true, value: vi.fn() });
   });
 
@@ -29,19 +30,21 @@ describe("production ReceiptCapture", () => {
     const bottom = new File(["bottom"], "bottom.jpg", { type: "image/jpeg" });
     fireEvent.change(screen.getByLabelText("Выбрать из галереи"), { target: { files: [top, bottom] } });
 
+    // Rows show the photo, not its file name; the preview tells the parts apart.
+    const photoOf = (part: HTMLElement) => within(part).getByRole("img").getAttribute("src");
     let parts = screen.getAllByRole("listitem");
-    expect(within(parts[0]).getByText("top.jpg")).toBeInTheDocument();
-    expect(within(parts[1]).getByText("bottom.jpg")).toBeInTheDocument();
+    expect(photoOf(parts[0])).toBe("blob:top.jpg");
+    expect(photoOf(parts[1])).toBe("blob:bottom.jpg");
     // A tap on a part offers its actions in an action sheet; the first part cannot move up.
     fireEvent.click(within(parts[0]).getByRole("button"));
     expect(screen.queryByRole("button", { name: "Переместить часть 1 выше" })).not.toBeInTheDocument();
     chooseAction("Переместить часть 1 ниже");
     parts = screen.getAllByRole("listitem");
-    expect(within(parts[0]).getByText("bottom.jpg")).toBeInTheDocument();
+    expect(photoOf(parts[0])).toBe("blob:bottom.jpg");
     fireEvent.click(within(parts[1]).getByRole("button"));
     chooseAction("Удалить часть 2");
     expect(screen.getAllByRole("listitem")).toHaveLength(1);
-    expect(screen.queryByText("top.jpg")).not.toBeInTheDocument();
+    expect(photoOf(screen.getAllByRole("listitem")[0])).toBe("blob:bottom.jpg");
   });
 
   it("exposes separate camera and multiple gallery inputs", () => {

@@ -41,18 +41,18 @@ function renderHome(locale: "ru" | "en", partCounts: number[]) {
 }
 
 describe("HomePage recent receipts", () => {
-  it("uses Russian one, few, and many forms for receipt parts", () => {
+  it("uses Russian few and many forms for receipt parts and says nothing for one photo", () => {
     renderHome("ru", [1, 3, 5]);
 
-    expect(screen.getByText("1 часть")).toBeInTheDocument();
+    expect(screen.queryByText("1 часть")).not.toBeInTheDocument();
     expect(screen.getByText("3 части")).toBeInTheDocument();
     expect(screen.getByText("5 частей")).toBeInTheDocument();
   });
 
-  it("uses English singular and plural forms for receipt parts", () => {
+  it("uses the English plural form for receipt parts and says nothing for one photo", () => {
     renderHome("en", [1, 2]);
 
-    expect(screen.getByText("1 part")).toBeInTheDocument();
+    expect(screen.queryByText("1 part")).not.toBeInTheDocument();
     expect(screen.getByText("2 parts")).toBeInTheDocument();
   });
 });

@@ -68,7 +68,7 @@ describe("ProductClassification", () => {
     renderRu(<ProductClassification {...base} onSave={onSave} />);
 
     expect(screen.getByText("Напитки / Кофе")).toBeInTheDocument();
-    expect(screen.getByText("Категорию предложил AI — подтвердите или исправьте.")).toBeInTheDocument();
+    expect(screen.getByText("Категория · предложено")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Подтвердить" }));
     await waitFor(() => expect(onSave).toHaveBeenCalledWith({ categoryId: "coffee", brand: "Lavazza" }));
   });
@@ -85,7 +85,6 @@ describe("ProductClassification", () => {
     renderRu(<ProductClassification {...base} categorySource="confirmed" brandSource="confirmed" onSave={onSave} />);
 
     expect(screen.queryByRole("button", { name: "Подтвердить" })).not.toBeInTheDocument();
-    expect(screen.getByText(/применится ко всем покупкам/)).toBeInTheDocument();
     pick("Категория", "Чай");
     await waitFor(() => expect(onSave).toHaveBeenCalledWith({ categoryId: "tea" }));
 

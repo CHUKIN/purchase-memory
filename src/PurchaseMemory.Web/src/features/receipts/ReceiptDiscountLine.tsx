@@ -21,7 +21,9 @@ export interface ReceiptDiscountLineProps {
  * A receipt discount as the content of its own list row, under the product
  * it belongs to (owner decision, variant A). The product keeps its printed
  * price; the discount shows how much came off and what the product really
- * cost. Render it inside an `IonItem`: the amount goes to the row's end slot.
+ * cost (old price struck through, new price after it). The row sits right
+ * under its product, so the product is named only to screen readers.
+ * Render it inside an `IonItem`: the amount goes to the row's end slot.
  */
 export function ReceiptDiscountLine({
   name,
@@ -51,15 +53,18 @@ export function ReceiptDiscountLine({
         <article aria-label={accessibleName} data-testid="receipt-discount-line" className="pm-discount">
           <h3 className="pm-discount-title">
             <BadgePercent aria-hidden="true" size={15} strokeWidth={2.25} />
-            {t("discount.label")}{" "}
-            {appliesToReceipt
-              ? <span>{t("discount.onReceipt")}</span>
-              : productName
-                ? <span>{t("discount.forProduct", { product: productName })}</span>
-                : <span className="pm-warn-text">{t("discount.unlinked")}</span>}
+            {name && <span className="visually-hidden">{t("discount.label")} </span>}
+            <span>{label}</span>
           </h3>
-          <p>{name}</p>
-          {after !== null && <p>{t("discount.after")} <strong>{money(after)}</strong></p>}
+          {appliesToReceipt && <p>{t("discount.onReceipt")}</p>}
+          {!appliesToReceipt && !productName && <p className="pm-warn-text">{t("discount.unlinked")}</p>}
+          {after !== null && productLineTotal !== null && (
+            <p className="pm-discount-after">
+              <s aria-hidden="true">{money(productLineTotal)}</s>{" "}
+              <span className="visually-hidden">{t("discount.after")} </span>
+              <strong>{money(after)}</strong>
+            </p>
+          )}
         </article>
       </IonLabel>
       <IonNote slot="end" className="pm-amount pm-discount-amount">{amountText}</IonNote>

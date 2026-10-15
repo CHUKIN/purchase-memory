@@ -48,7 +48,7 @@ export function ButtonLink({ to, state, children, onClick, ...props }: ButtonPro
 export interface BackTarget {
   /** Where «назад» goes when the screen was opened directly (a link, a reload). */
   to: To;
-  /** The previous screen's name, shown after the chevron as on iOS. */
+  /** The previous screen's name: the accessible name of the back chevron. */
   label: string;
   state?: unknown;
   /** Step back through history when there is history inside the app. Only for a generic «Назад» label. */
@@ -77,8 +77,11 @@ export function BackButton({ target }: { target: BackTarget }) {
   const location = useLocation();
   const href = useHref(target.to);
   const canGoBack = target.preferHistory === true && location.key !== "default";
+  // Only the chevron shows: a long screen title needs the room once it collapses
+  // into the bar. The previous screen's name stays the accessible name.
   return (
     <IonButton
+      className="pm-icon-button pm-back-button"
       href={href}
       onClick={(event: MouseEvent<HTMLElement>) => {
         if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
@@ -89,8 +92,8 @@ export function BackButton({ target }: { target: BackTarget }) {
         else navigate(target.to, { state: target.state });
       }}
     >
-      <ChevronLeft size={26} aria-hidden="true" className="pm-back-chevron" />
-      {target.label}
+      <ChevronLeft size={28} aria-hidden="true" className="pm-back-chevron" />
+      <span className="visually-hidden">{target.label}</span>
     </IonButton>
   );
 }

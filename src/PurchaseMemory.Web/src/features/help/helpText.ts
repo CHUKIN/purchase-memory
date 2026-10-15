@@ -16,7 +16,6 @@ export interface HelpTopicText {
 export interface HelpText {
   ui: {
     title: string;
-    intro: string;
     contentsLabel: string;
     skipToTopics: string;
     searchLabel: string;
@@ -28,10 +27,8 @@ export interface HelpText {
     troubleTitle: string;
     linksTitle: string;
     backToContents: string;
-    contextLink: string;
     contextLinkFor: string;
     welcomeTitle: string;
-    welcomeBody: string;
     welcomeOpen: string;
     welcomeDismiss: string;
   };
@@ -43,7 +40,6 @@ export interface HelpText {
 export const helpRu: HelpText = {
   ui: {
     title: "Подсказки",
-    intro: "Как пользоваться историей покупок: от фото чека до вопросов к аналитике. Темы сгруппированы по задачам, в каждой — шаги, что вы увидите и что делать, если что-то пошло не так.",
     contentsLabel: "Содержание подсказок",
     skipToTopics: "Перейти к темам",
     searchLabel: "Найти подсказку",
@@ -55,10 +51,8 @@ export const helpRu: HelpText = {
     troubleTitle: "Если что-то пошло не так",
     linksTitle: "Открыть в приложении",
     backToContents: "К содержанию",
-    contextLink: "Как это работает",
     contextLinkFor: "Как это работает: {{topic}}",
     welcomeTitle: "Первый раз здесь?",
-    welcomeBody: "В «Подсказках» коротко описано, как добавить чек, проверить его и найти покупку или ответ на вопрос о тратах.",
     welcomeOpen: "Открыть подсказки",
     welcomeDismiss: "Скрыть"
   },
@@ -90,7 +84,8 @@ export const helpRu: HelpText = {
         "В приложении на экране «Домой» iPhone: введите почту, нажмите «Получить код на почту», скопируйте цифры из письма и вставьте их в поле «Код из письма». Ссылку в письме здесь не нажимайте — она откроется в браузере, а не в приложении.",
         "Если владелец включил вход через Google, можно нажать «Продолжить через Google».",
         "При первом входе появится экран «Заявка отправлена». Когда владелец подтвердит доступ, нажмите «Проверить снова».",
-        "После входа «Подсказки» и «Выйти» — на «Главной» под кнопкой «Ещё» (кружок с тремя точками вверху справа)."
+        "После входа «Подсказки» и «Выйти» — на «Главной» под кнопкой «Ещё» (кружок с тремя точками вверху справа). Кружок со знаком вопроса вверху экрана или у заголовка раздела открывает подсказку именно к нему.",
+        "Кнопка «‹» вверху слева возвращает на предыдущий экран."
       ],
       see: [
         "Покупки, товары и аналитика общие для всей семьи.",
@@ -203,7 +198,7 @@ export const helpRu: HelpText = {
         "Нажмите «Сохранить покупку». После сохранения откроется история покупок."
       ],
       see: [
-        "Скидки показаны отдельными строками: к какому товару они относятся или что это скидка на весь чек, и цена товара после скидки.",
+        "Скидка — отдельная строка со значком % сразу под своим товаром: цена товара до скидки зачёркнута, рядом — цена после скидки. Скидка на весь чек подписана «на весь чек».",
         "Счётчик «Осталось N неточностей» и сообщение «Все неточности исправлены», когда можно сохранять.",
         "В полном редакторе сверху в строке — её место на фото чека в рамке; фото можно увеличить двумя пальцами или двойным нажатием (подробнее — «Проверка строк по фото чека»)."
       ],
@@ -219,11 +214,11 @@ export const helpRu: HelpText = {
       steps: [
         "Вверху «Покупок» в поле поиска введите магазин или название позиции так, как оно напечатано на чеке.",
         "Нажмите кнопку фильтров вверху справа (на ней число выбранных фильтров) и задайте «Дата с» и «Дата по», чтобы ограничить период.",
-        "Там же в «Проверка» выберите «Нужно проверить» или «Проверено». «Готово» закрывает окно фильтров.",
+        "Там же переключатель «Все · ⚠ · ✓»: ⚠ — покупки, которые нужно проверить, ✓ — проверенные. «Готово» закрывает окно фильтров.",
         "Нажмите на покупку в списке, чтобы открыть её. «Показать ещё» догружает следующие покупки."
       ],
       see: [
-        "Строка покупки: магазин, дата, число позиций, статус проверки и сумма справа.",
+        "Строка покупки: магазин со значком ✓ (проверено) — или, ниже, ⚠ и что именно не так; дата, число позиций и сумма справа. Над списком — сколько покупок найдено.",
         "Фильтры складываются друг с другом; «Сбросить» в окне фильтров убирает всё, кроме поиска, а «Сбросить фильтры» под пустым результатом — всё сразу."
       ],
       trouble: [
@@ -256,12 +251,13 @@ export const helpRu: HelpText = {
       summary: "Сохранённую покупку можно поправить в любой момент — ошибки в истории не навсегда.",
       steps: [
         "Откройте покупку: нажмите на магазин в ленте, «Открыть и исправить покупку» на странице чека или пункт в «Нужно проверить».",
-        "Нажмите «Исправить» вверху справа. Сверху меняйте магазин, дату, валюту и итог. Нажмите на строку, чтобы изменить название, количество, цену и сумму; «Добавить строку» и «Добавить скидку» добавляют новые. Лишнюю строку проведите влево и нажмите «Удалить» (или «Удалить строку N» внутри строки).",
+        "Нажмите карандаш («Исправить») вверху справа. Сверху меняйте магазин, дату, валюту и итог. Нажмите на строку, чтобы изменить название, количество, цену и сумму; «Добавить строку» и «Добавить скидку» добавляют новые. Лишнюю строку проведите влево и нажмите «Удалить» (или «Удалить строку N» внутри строки).",
         "Товар строки выбирается внутри строки: «Изменить товар» — из похожих, через поиск, «Создать новый товар» или «Подобрать автоматически».",
         "Нажмите «Сохранить» вверху справа. «Отмена» закрывает правку без изменений."
       ],
       see: [
-        "Сверху видно, сходятся ли строки с итогом чека и какая разница. Строки без цены подсвечены.",
+        "На странице покупки сверху — дата и итог, ниже со значком ⚠ — что стоит проверить. В строке видно название товара из каталога, только если оно отличается от строки; «⚠ Выберите товар» — товар не удалось выбрать автоматически, «Без товара» — строка ни с каким товаром не связана.",
+        "В правке сверху видно, сходятся ли строки с итогом чека и какая разница. Строки без цены подсвечены.",
         "Выбор товара запоминается для этого магазина: в следующий раз такая строка свяжется сама.",
         "Если у покупки есть фото чека, правки попадают в историю изменений чека (кнопка «Показать историю изменений»)."
       ],
@@ -274,7 +270,7 @@ export const helpRu: HelpText = {
       title: "Проверка строк по фото чека",
       summary: "Строки покупки можно сверить с чеком по одной, как карточки: строка в рамке на фото и всё о ней на одном экране. Свайп вправо — верно, влево — исправить.",
       steps: [
-        "Откройте покупку. Нажмите на значок со списком и галочкой рядом с заголовком «Строки» — проверка начнётся с первой непроверенной строки. Или нажмите на саму строку — проверка откроется прямо на ней.",
+        "Откройте покупку. Нажмите на значок со списком и галочкой справа над строками (рядом с числом позиций) — проверка начнётся с первой непроверенной строки. Или нажмите на саму строку — проверка откроется прямо на ней.",
         "Сверьте фото и данные под ним. Строка верна — проведите карточку вправо или нажмите зелёную кнопку с галочкой («Строка верна»). Откроется следующая непроверенная строка.",
         "Что-то не так — проведите карточку влево или нажмите кнопку с карандашом («Исправить строку»), поправьте название, количество, цену или сумму и нажмите «Сохранить». Исправленная строка тоже считается проверенной.",
         "Мелко? Разведите два пальца на фото или нажмите на него дважды — фото увеличится, рамка останется на строке. Пока фото увеличено, карточка не листается; уменьшите его, чтобы листать дальше.",
@@ -302,13 +298,13 @@ export const helpRu: HelpText = {
         "Откройте карточку товара, чтобы увидеть цены и историю покупок."
       ],
       see: [
-        "Последняя покупка, цена в прошлый раз, минимальная и средняя цена, как часто покупаем.",
+        "Последняя покупка (крупно — цена в прошлый раз), минимальная и средняя цена, как часто покупаем. Средняя цена — по покупкам: каждая покупка весит одинаково, независимо от количества и числа строк в чеке.",
         "График «Как менялась цена» и та же таблица числами. Цены за разные единицы (штука, килограмм) считаются отдельно.",
         "«Названия на чеках» — все варианты написания товара по магазинам."
       ],
       trouble: [
         "Если цену строки прочитать не удалось, она не входит в расчёты — об этом есть заметка.",
-        "Сообщение «позиции ждут ручной проверки сопоставления» — строка похожа на товар, но уверенности не хватило. Разберите её в «Нужно проверить»."
+        "Сообщение «N позиций ждут выбора товара» — строка похожа на товар, но уверенности не хватило. Разберите её в «Нужно проверить»."
       ]
     },
     categories: {
@@ -317,7 +313,7 @@ export const helpRu: HelpText = {
       steps: [
         "После сохранения покупки AI в фоне предлагает категорию и бренд новым товарам. Такие значения отмечены «предложено».",
         "В блоке «Категория и бренд» на странице товара нажмите «Подтвердить», чтобы принять подсказку. Чтобы выбрать другую категорию, нажмите строку «Категория» и выберите её в списке; бренд — строка «Бренд», введите название и нажмите «Сохранить». Выбор сохраняется сразу.",
-        "Свои категории добавляйте внизу «Товаров»: «Справочники» → «Управление категориями». Нажмите на категорию, чтобы переименовать или удалить её."
+        "Свои категории добавляйте внизу «Товаров»: «Справочники» → «Категории». Нажмите на категорию, чтобы переименовать или удалить её."
       ],
       see: [
         "Исправление применяется ко всем покупкам этого товара — прошлым и будущим.",
@@ -338,7 +334,7 @@ export const helpRu: HelpText = {
         "Отметьте нужные теги галочкой, снимите лишние. Нового тега нет в списке — введите его в «Новый тег» и нажмите «Создать тег»: он сразу отметится.",
         "Нажмите «Сохранить» вверху справа.",
         "Не знаете, какие теги подходят? В блоке «Теги» нажмите «Предложить теги»: ИИ посмотрит на название, бренд, категорию и текст из чеков и предложит теги из ваших. У каждой подсказки есть короткое объяснение. Нажмите «Добавить» у подходящей, крестик у лишней или «Добавить все», если подходят все.",
-        "Переименовать или удалить тег можно внизу «Товаров»: «Справочники» → «Управление тегами», нажмите на тег."
+        "Переименовать или удалить тег можно внизу «Товаров»: «Справочники» → «Теги», нажмите на тег."
       ],
       see: [
         "Теги видны в списке «Товары» и на карточке товара.",
@@ -360,12 +356,13 @@ export const helpRu: HelpText = {
       title: "Впечатления о товарах",
       summary: "Отметьте, понравился ли товар, — необязательно и в любой момент. Потом легко вспомнить, что брать снова, а что нет.",
       steps: [
-        "На главной в блоке «Оценить недавнее» нажмите «Не нравится», «Средне» или «Нравится».",
-        "На странице покупки у строки нажмите «Оценить» — откроется окно с оценкой, заметкой и фото.",
+        "На главной в блоке «Оценить недавнее» нажмите 👎 («Не нравится»), 😐 («Средне») или 👍 («Нравится»).",
+        "На странице покупки у строки нажмите смайлик с плюсом («Оценить») — откроется окно с оценкой, заметкой и фото.",
         "На странице товара в «Впечатления» выберите, какую покупку оцениваете (магазин, дата, цена)."
       ],
       see: [
         "У каждого участника своя история впечатлений. Изменилось мнение — оставьте новое, старое сохранится.",
+        "Под строкой покупки — последняя оценка каждого: значок 👍, 😐 или 👎 и кто оценил («Вы» или «Участник»).",
         "«Сравнение по магазинам» показывает, где товар понравился, а где нет (появляется, когда есть впечатления из двух магазинов)."
       ],
       trouble: [
@@ -405,7 +402,7 @@ export const helpRu: HelpText = {
       steps: [
         "Напишите вопрос или выберите пример и нажмите «Спросить».",
         "Проверьте блок «Как понят вопрос»: чипы показывают товары, категории, теги, магазины и период. Лишний чип уберите крестиком, а в «Изменить» поменяйте что считаем, даты, магазин, тег, разбивку или скидки и нажмите «Пересчитать» — ответ посчитается заново без нового вопроса и без AI.",
-        "Чтобы уточнить, задайте следующий вопрос: фильтры прошлого ответа сохранятся. «Новый вопрос» начинает с нуля."
+        "Чтобы уточнить, задайте следующий вопрос: фильтры прошлого ответа сохранятся (над полем — «Уточняем прошлый ответ» и период). Крестик рядом («Новый вопрос») начинает с нуля."
       ],
       see: [
         "Можно спросить про траты, количество, сколько раз покупали, среднюю, минимальную и максимальную цену, покупали ли что-то и на что больше всего трат.",
@@ -413,6 +410,7 @@ export const helpRu: HelpText = {
         "Теги: если в вопросе есть ваш тег («Сколько потратили на детское?» при теге «Для ребёнка»), ответ посчитается только по товарам с этим тегом — это видно по чипу «#Для ребёнка» и по последней фразе вывода. Поле «Тег» и разбивка «По тегам» появляются, когда в доме есть хотя бы один тег.",
         "В разбивке «По тегам» товар с несколькими тегами считается в каждом из них, поэтому сумма строк может быть больше итога. Товары без тегов собраны в строке «Без тега».",
         "Ни одно число не придумано моделью: AI превращает вопрос в план, а считает и пишет вывод сервер.",
+        "«На чём основан ответ» свёрнут в одну строку: нажмите, чтобы увидеть, сколько чеков и позиций учтено и что не вошло в расчёт.",
         "В тратах учтены скидки. Скидка на весь чек учитывается, только если вопрос про весь чек, а не про отдельные товары."
       ],
       trouble: [
@@ -428,14 +426,14 @@ export const helpRu: HelpText = {
       summary: "Каждый заданный вопрос сохраняется вместе с тем, как он понят, и последним ответом. Повторный вопрос не тратит обращение к AI: сервер берёт сохранённый разбор и считает цифры заново.",
       steps: [
         "Список «Предыдущие вопросы» — под ответом на странице «Аналитика», сверху самые свежие. Нажмите на вопрос — сразу откроется сохранённый ответ.",
-        "«Обновить» пересчитывает сохранённый вопрос по сегодняшним чекам, без AI. Период вроде «в этом месяце» или «за прошлый месяц» считается от сегодняшнего дня.",
+        "Над сохранённым ответом — «Сохранённый ответ от …». С тех пор могли появиться новые чеки: «Обновить» пересчитывает сохранённый вопрос по сегодняшним чекам, без AI. Период вроде «в этом месяце» или «за прошлый месяц» считается от сегодняшнего дня.",
         "Если задать тот же вопрос ещё раз (регистр и лишние пробелы не важны), ответ посчитается по сохранённому разбору, без AI, а запись в списке обновится, а не задвоится.",
         "«Спросить заново» отправляет вопрос AI ещё раз — пригодится, если вопрос в прошлый раз понят неточно.",
         "Значок корзины рядом с вопросом удаляет его из истории — после подтверждения «Удалить»."
       ],
       see: [
         "История общая для всех участников дома, а не у каждого своя: все видят одни и те же вопросы, любой может открыть, обновить или удалить любой из них — удалённый вопрос пропадает у всех. У каждого вопроса видно, кто задал его последним («вы» или адрес почты).",
-        "Уточнения («а по магазинам?») отмечены «Уточнение»: такие слова зависят от прошлого ответа, поэтому повтор уточнения всегда идёт к AI, а «Спросить заново» для них не показывается.",
+        "Уточнения («а по магазинам?») отмечены стрелкой перед вопросом: такие слова зависят от прошлого ответа, поэтому повтор уточнения всегда идёт к AI, а «Спросить заново» для них не показывается.",
         "Правка чипов и «Пересчитать» в историю не записываются — сохраняются только заданные вопросы.",
         "Хранятся последние 300 вопросов; в списке «Показать ещё» догружает до 100."
       ],
@@ -466,7 +464,6 @@ export const helpRu: HelpText = {
 export const helpEn: HelpText = {
   ui: {
     title: "Help",
-    intro: "How to use Purchase Memory: from a receipt photo to questions about spending. Topics are grouped by task; each has steps, what you'll see, and what to do if something goes wrong.",
     contentsLabel: "Help contents",
     skipToTopics: "Skip to topics",
     searchLabel: "Find a topic",
@@ -478,10 +475,8 @@ export const helpEn: HelpText = {
     troubleTitle: "If something goes wrong",
     linksTitle: "Open in the app",
     backToContents: "Back to contents",
-    contextLink: "How it works",
     contextLinkFor: "How it works: {{topic}}",
     welcomeTitle: "New here?",
-    welcomeBody: "Help briefly explains how to add a receipt, check it, and find a purchase or an answer about your spending.",
     welcomeOpen: "Open help",
     welcomeDismiss: "Hide"
   },
@@ -513,7 +508,8 @@ export const helpEn: HelpText = {
         "In the app on the iPhone Home Screen: enter your email, press “Email me a sign-in code”, copy the digits from the email and paste them into “Code from the email”. Do not tap the link in the email there: it opens in the browser, not in the app.",
         "If the owner enabled Google sign-in, you can press “Continue with Google”.",
         "On your first sign-in you will see “Request sent”. Once the owner approves you, press “Check again”.",
-        "Once signed in, “Help” and “Sign out” are on Home under the “More” button (the circle with three dots at the top right)."
+        "Once signed in, “Help” and “Sign out” are on Home under the “More” button (the circle with three dots at the top right). The circled question mark at the top of a screen or next to a section header opens help for exactly that.",
+        "The “‹” button at the top left goes back to the previous screen."
       ],
       see: [
         "Purchases, products and analytics are shared by the whole household.",
@@ -626,7 +622,7 @@ export const helpEn: HelpText = {
         "Press “Save purchase”. Purchase history opens after saving."
       ],
       see: [
-        "Discounts are separate lines: which product they belong to, or that they apply to the whole receipt, and the product price after the discount.",
+        "A discount is its own line with a % icon right under its product: the product's price before the discount is struck through, the price after it is next to it. A whole-receipt discount is labelled “on the whole receipt”.",
         "A “N issues left” counter and “Every issue is resolved” when you can save.",
         "In the full editor a line's sheet starts with its place on the receipt photo, outlined; pinch or double-tap to zoom (see “Checking lines against the receipt”)."
       ],
@@ -642,11 +638,11 @@ export const helpEn: HelpText = {
       steps: [
         "At the top of “Purchases”, type a store or a line name into the search field as it is printed on the receipt.",
         "Press the filter button at the top right (it shows how many filters are set) and set “Date from” and “Date to” to limit the period.",
-        "In the same sheet, under “Review”, choose “Needs attention” or “Reviewed”. “Done” closes the filters.",
+        "In the same sheet the “All · ⚠ · ✓” switch picks purchases that need attention (⚠) or are reviewed (✓). “Done” closes the filters.",
         "Tap a purchase in the list to open it. “Show more” loads the next purchases."
       ],
       see: [
-        "A purchase row: store, date, number of lines, review status and the total on the right.",
+        "A purchase row: the store with a ✓ (reviewed) — or, below it, ⚠ and what exactly is wrong; date, number of lines and the total on the right. Above the list — how many purchases were found.",
         "Filters combine; “Reset” in the filter sheet clears everything but the search, and “Reset filters” under an empty result clears everything at once."
       ],
       trouble: [
@@ -679,12 +675,13 @@ export const helpEn: HelpText = {
       summary: "A saved purchase can be fixed at any time — mistakes in history are not permanent.",
       steps: [
         "Open the purchase: press the store in the feed, “Open and correct the purchase” on the receipt page, or an item in “Needs attention”.",
-        "Press “Correct” at the top right. Change store, date, currency and total at the top. Tap a line to change its name, quantity, price and sum; “Add line” and “Add discount” add new ones. Swipe an extra line left and press “Delete” (or “Remove line N” inside the line).",
+        "Press the pencil (“Correct”) at the top right. Change store, date, currency and total at the top. Tap a line to change its name, quantity, price and sum; “Add line” and “Add discount” add new ones. Swipe an extra line left and press “Delete” (or “Remove line N” inside the line).",
         "A line's product is chosen inside the line: “Change product” — from similar ones, by search, “Create a new product” or “Match automatically”.",
         "Press “Save” at the top right. “Cancel” leaves without changes."
       ],
       see: [
-        "The top shows whether the lines add up to the receipt total and by how much they differ. Lines without a price are highlighted.",
+        "The purchase page starts with the date and total, then what is worth checking, marked ⚠. A line shows its catalog product only when the name differs from the line; “⚠ Choose the product” — the product could not be chosen automatically, “No product” — the line is not linked to any product.",
+        "While correcting, the top shows whether the lines add up to the receipt total and by how much they differ. Lines without a price are highlighted.",
         "Your product choice is remembered for that store: next time such a line links by itself.",
         "If the purchase has a receipt photo, changes go into the receipt's change history (“Show change history”)."
       ],
@@ -697,7 +694,7 @@ export const helpEn: HelpText = {
       title: "Checking lines against the receipt",
       summary: "Check a purchase's lines one by one, like cards: the line outlined on the receipt photo and everything about it on one screen. Swipe right — right, left — correct it.",
       steps: [
-        "Open a purchase. Tap the list-with-a-tick icon next to the “Lines” header to start at the first unchecked line, or tap a line to open the check right at it.",
+        "Open a purchase. Tap the list-with-a-tick icon at the right above the lines (next to the number of lines) to start at the first unchecked line, or tap a line to open the check right at it.",
         "Compare the photo and the details below it. The line is right — swipe the card right or press the green tick (“Line is right”). The next unchecked line opens.",
         "Something is wrong — swipe left or press the pencil (“Correct the line”), fix the name, quantity, price or sum and press “Save”. A corrected line counts as checked too.",
         "Too small? Pinch the photo or double-tap it — the outline stays on the line. While the photo is zoomed the card does not swipe; zoom out to go on.",
@@ -725,13 +722,13 @@ export const helpEn: HelpText = {
         "Open a product card to see prices and purchase history."
       ],
       see: [
-        "Last purchase, last price, lowest and average price, how often we buy it.",
+        "Last purchase (the big figure is the last price), lowest and average price, how often we buy it. The average is per purchase: every purchase weighs the same, whatever the quantity or the number of lines.",
         "A “How the price moved” chart and the same table in numbers. Prices per different units (piece, kilogram) are counted separately.",
         "“Receipt spellings” — every spelling of the product by store."
       ],
       trouble: [
         "If a line price couldn't be read, it is left out of the numbers — a note says so.",
-        "“lines are waiting for their catalog match to be confirmed” — a line looks like a product, but confidence was too low. Sort it out in “Needs attention”."
+        "“N lines are waiting for their product to be chosen” — a line looks like a product, but confidence was too low. Sort it out in “Needs attention”."
       ]
     },
     categories: {
@@ -740,7 +737,7 @@ export const helpEn: HelpText = {
       steps: [
         "After a purchase is saved, AI suggests a category and brand for new products in the background. Such values are marked “suggested”.",
         "In “Category and brand” on the product page press “Confirm” to accept a suggestion. To pick another category, tap the “Category” row and choose it in the list; for the brand, tap the “Brand” row, type the name and press “Save”. The choice is saved at once.",
-        "Add your own categories at the bottom of “Products”: “Lists” → “Manage categories”. Tap a category to rename or delete it."
+        "Add your own categories at the bottom of “Products”: “Lists” → “Categories”. Tap a category to rename or delete it."
       ],
       see: [
         "A fix applies to every purchase of that product, past and future.",
@@ -761,7 +758,7 @@ export const helpEn: HelpText = {
         "Check the tags you want and uncheck the rest. If the tag isn't there yet, type it into “New tag” and press “Create tag”: it gets checked right away.",
         "Press “Save” at the top right.",
         "Not sure which tags fit? In the “Tags” block press “Suggest tags”: the AI looks at the name, brand, category and receipt text and suggests some of your tags, each with a short reason. Press “Add” on a good one, the cross on a wrong one, or “Add all” if they all fit.",
-        "Rename or delete tags at the bottom of “Products”: “Lists” → “Manage tags”, then tap the tag."
+        "Rename or delete tags at the bottom of “Products”: “Lists” → “Tags”, then tap the tag."
       ],
       see: [
         "Tags are shown in the “Products” list and on the product page.",
@@ -783,12 +780,13 @@ export const helpEn: HelpText = {
       title: "Product impressions",
       summary: "Mark whether you liked a product — optional and any time. Later it's easy to remember what to buy again.",
       steps: [
-        "On Home, in “Rate recent purchases”, press “Dislike”, “So-so” or “Like”.",
-        "On a purchase page press “Rate” on a line — a sheet opens with the rating, a note and a photo.",
+        "On Home, in “Rate recent purchases”, press 👎 (“Dislike”), 😐 (“So-so”) or 👍 (“Like”).",
+        "On a purchase page press the smiley with a plus (“Rate”) on a line — a sheet opens with the rating, a note and a photo.",
         "On a product page, in “Impressions”, choose which purchase you're rating (store, date, price)."
       ],
       see: [
         "Each member has their own impression history. Changed your mind — leave a new one; the old one stays.",
+        "Under a purchase line — everyone's latest rating: 👍, 😐 or 👎 and who rated it (“You” or “Member”).",
         "“Compare by store” shows where the product was liked and where not (it appears once there are impressions from two stores)."
       ],
       trouble: [
@@ -828,7 +826,7 @@ export const helpEn: HelpText = {
       steps: [
         "Type a question or pick an example and press “Ask”.",
         "Check “How the question was understood”: the chips show products, categories, tags, stores and period. Remove an extra chip with its cross, or use “Edit” to change what is counted, dates, store, tag, breakdown or discounts and press “Recalculate” — the answer is recomputed without a new question and without AI.",
-        "To refine, ask a follow-up: the previous answer's filters are kept. “New question” starts over."
+        "To refine, ask a follow-up: the previous answer's filters are kept (“Refining the previous answer” and its period show above the field). The cross next to it (“New question”) starts over."
       ],
       see: [
         "You can ask about spending, quantity, how many times you bought something, average, lowest and highest price, whether you bought something, and what you spent the most on.",
@@ -836,6 +834,7 @@ export const helpEn: HelpText = {
         "Tags: if the question names one of your tags (“How much did we spend on kids' stuff?” with a “For the kids” tag), only products with that tag are counted — you'll see a “#For the kids” chip and the last sentence of the summary says so. The “Tag” field and the “By tag” breakdown appear once the household has at least one tag.",
         "In the “By tag” breakdown a product with several tags is counted under each of them, so the rows can add up to more than the total. Products without tags are in the “No tag” row.",
         "No number is made up by the model: AI turns the question into a plan, the server counts and writes the summary.",
+        "“What the answer is based on” is folded into one row: tap it to see how many receipts and lines were counted and what was left out.",
         "Spending includes discounts. A whole-receipt discount counts only when the question is about whole receipts, not individual products."
       ],
       trouble: [
@@ -851,14 +850,14 @@ export const helpEn: HelpText = {
       summary: "Every question you ask is saved together with how it was understood and its latest answer. Asking it again does not call AI: the server reuses the saved interpretation and recounts the numbers.",
       steps: [
         "The “Previous questions” list is below the answer on the Insights page, newest first. Tap a question to open its saved answer right away.",
-        "“Refresh” recounts the saved question on today's receipts, without AI. A period like “this month” or “last month” is counted from today.",
+        "A saved answer says “Saved answer from …”. New receipts may have arrived since: “Refresh” recounts the saved question on today's receipts, without AI. A period like “this month” or “last month” is counted from today.",
         "Asking the same question again (case and extra spaces don't matter) answers it from the saved interpretation, without AI, and updates the list entry instead of adding a duplicate.",
         "“Ask again” sends the question to AI once more — useful if it was misunderstood last time.",
         "The bin icon next to a question deletes it from the history after you confirm with “Delete”."
       ],
       see: [
         "The history is shared by the whole household, not kept per person: everyone sees the same questions and anyone can open, refresh or delete any of them — a deleted question disappears for everyone. Each question shows who asked it last (“you” or an email address).",
-        "Follow-ups (“and by store?”) are marked “Follow-up”: their words depend on the previous answer, so repeating a follow-up always goes to AI and “Ask again” is not offered for them.",
+        "Follow-ups (“and by store?”) are marked with an arrow before the question: their words depend on the previous answer, so repeating a follow-up always goes to AI and “Ask again” is not offered for them.",
         "Chip edits and “Recalculate” are not saved to the history — only asked questions are.",
         "The last 300 questions are kept; “Show more” loads up to 100 in the list."
       ],

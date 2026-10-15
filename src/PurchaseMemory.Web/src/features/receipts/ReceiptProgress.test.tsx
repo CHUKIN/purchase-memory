@@ -23,13 +23,13 @@ describe("ReceiptProgress status guidance", () => {
     expect(screen.queryByText(/сначала проверьте черновик/)).not.toBeInTheDocument();
     failed.unmount();
     render(<AppProviders><ReceiptProgress receipt={view("saved")} /></AppProviders>);
-    expect(screen.getByText("Покупка уже сохранена в истории.")).toBeInTheDocument();
+    expect(screen.getByText("Покупка сохранена")).toBeInTheDocument();
     expect(screen.queryByText(/сначала проверьте черновик/)).not.toBeInTheDocument();
   });
 
-  it("uses Russian one, few, and many forms for image parts", () => {
+  it("uses Russian few and many forms for image parts and says nothing for one photo", () => {
     const one = render(<AppProviders locale="ru"><ReceiptProgress receipt={view("queued", 1)} /></AppProviders>);
-    expect(screen.getByText("1 часть")).toBeInTheDocument();
+    expect(screen.queryByText("1 часть")).not.toBeInTheDocument();
     one.unmount();
     const few = render(<AppProviders locale="ru"><ReceiptProgress receipt={view("queued", 3)} /></AppProviders>);
     expect(screen.getByText("3 части")).toBeInTheDocument();
@@ -38,9 +38,9 @@ describe("ReceiptProgress status guidance", () => {
     expect(screen.getByText("5 частей")).toBeInTheDocument();
   });
 
-  it("uses English singular and plural forms for image parts", () => {
+  it("uses the English plural form for image parts and says nothing for one photo", () => {
     const one = render(<AppProviders locale="en"><ReceiptProgress receipt={view("queued", 1)} /></AppProviders>);
-    expect(screen.getByText("1 part")).toBeInTheDocument();
+    expect(screen.queryByText("1 part")).not.toBeInTheDocument();
     one.unmount();
     render(<AppProviders locale="en"><ReceiptProgress receipt={view("queued", 2)} /></AppProviders>);
     expect(screen.getByText("2 parts")).toBeInTheDocument();

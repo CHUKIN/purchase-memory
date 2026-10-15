@@ -392,8 +392,8 @@ function ReviewPhoto({ line, index, photo, photoRatio, onPhotoRatio, onZoomChang
         onPhotoRatio={onPhotoRatio}
         onZoomChange={onZoomChange}
         resetKey={index}
+        note={note}
       />
-      {note && <p className="pm-review-photo-note">{note}</p>}
     </div>
   );
 }

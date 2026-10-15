@@ -158,7 +158,7 @@ export function ProductTags({ tags, allTags, onSave, onCreate, onSuggest, readCu
         start={<IonButton disabled={saving} onClick={() => setEditing(false)}>{t("tags.cancel")}</IonButton>}
         end={<ActionButton strong loading={saving} disabled={creating} onClick={() => void save()}>{t("tags.save")}</ActionButton>}
       >
-        <Footnote id="product-tags-pick">{t("tags.pickLabel")} · {t("tags.selectedCount", { count: draft.length, max: maximumTagsPerProduct })}</Footnote>
+        <Footnote id="product-tags-pick"><span className="visually-hidden">{t("tags.pickLabel")} · </span>{t("tags.selectedCount", { count: draft.length, max: maximumTagsPerProduct })}</Footnote>
         {choices.length === 0
           ? <Footnote>{t("tags.noTagsYet")}</Footnote>
           : (
@@ -201,7 +201,6 @@ export function ProductTags({ tags, allTags, onSave, onCreate, onSuggest, readCu
           </IonItem>
         </IonList>
         {error && <Footnote tone="danger" role="alert">{error}</Footnote>}
-        <Footnote>{t("tags.appliesToAll")}</Footnote>
       </Sheet>
     </section>
   );

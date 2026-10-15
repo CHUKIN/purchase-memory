@@ -1,5 +1,5 @@
-import { IonActionSheet, IonButton, IonItem, IonLabel, IonList, IonNote, IonRadio, IonRadioGroup } from "@ionic/react";
-import { Camera, Images, RotateCcw } from "lucide-react";
+import { IonActionSheet, IonButton, IonItem, IonLabel, IonList, IonRadio, IonRadioGroup } from "@ionic/react";
+import { Camera, Ellipsis, Images, RotateCcw } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ButtonLink, Footnote, ItemLink, PrimaryButton, SectionHeader } from "../../design-system/components";
@@ -90,7 +90,6 @@ export function ReceiptCapture({ files, uploading = false, disabled = false, err
               <IonLabel color="primary">{t("receiptCapture.gallery")}</IonLabel>
             </IonItem>
           </IonList>
-          <Footnote>{separate ? t("receiptCapture.separateLimitHint") : t("receiptCapture.limitHint")}</Footnote>
         </>
       )}
 
@@ -99,8 +98,8 @@ export function ReceiptCapture({ files, uploading = false, disabled = false, err
           <SectionHeader id="capture-mode-title" action={<HelpLink topic="capture-batch" />}>{t("receiptCapture.modeLegend")}</SectionHeader>
           <IonList inset className="pm-after-header">
             <IonRadioGroup aria-labelledby="capture-mode-title" value={mode} onIonChange={(event) => onModeChange(event.detail.value as CaptureMode)}>
-              <ModeOption value="parts" title={t("receiptCapture.modeParts")} hint={t("receiptCapture.modePartsHint")} disabled={uploading} />
-              <ModeOption value="separate" title={t("receiptCapture.modeSeparate")} hint={t("receiptCapture.modeSeparateHint")} disabled={uploading} last />
+              <ModeOption value="parts" title={t("receiptCapture.modeParts")} disabled={uploading} />
+              <ModeOption value="separate" title={t("receiptCapture.modeSeparate")} disabled={uploading} last />
             </IonRadioGroup>
           </IonList>
         </section>
@@ -118,8 +117,7 @@ export function ReceiptCapture({ files, uploading = false, disabled = false, err
                   <img slot="start" className="pm-thumb" src={previews[index]} alt={separate ? t("receiptCapture.previewReceiptAlt", { number: index + 1 }) : t("receiptCapture.previewAlt", { number: index + 1 })} />
                   <IonLabel className="pm-wrap">
                     <h3>{name(index)}</h3>
-                    <p>{file.name}</p>
-                    <p>{formatBytes(file.size, locale)}</p>
+                    {/* The thumbnail shows the photo; name and size are in the row's actions. */}
                     {state && <BatchPhotoStatus state={state} number={index + 1} running={uploading} onRetry={onRetryPhoto} />}
                   </IonLabel>
                 </>
@@ -129,7 +127,8 @@ export function ReceiptCapture({ files, uploading = false, disabled = false, err
                 : (
                   <IonItem key={`${file.name}-${file.lastModified}-${index}`} role="listitem" button detail={false} disabled={uploading} onClick={() => setActionsFor(index)}>
                     {content}
-                    <IonNote slot="end">{t("ui.more")}</IonNote>
+                    <Ellipsis slot="end" size={20} className="pm-muted-icon" aria-hidden="true" />
+                    <span className="visually-hidden">{t("ui.more")}</span>
                   </IonItem>
                 );
             })}
@@ -139,7 +138,7 @@ export function ReceiptCapture({ files, uploading = false, disabled = false, err
 
       <IonActionSheet
         isOpen={actionsFor !== null}
-        header={actionsFor === null ? undefined : `${name(actionsFor)} · ${files[actionsFor]?.name ?? ""}`}
+        header={actionsFor === null || !files[actionsFor] ? undefined : `${name(actionsFor)} · ${files[actionsFor].name} · ${formatBytes(files[actionsFor].size, locale)}`}
         onDidDismiss={() => setActionsFor(null)}
         buttons={actionsFor === null ? [] : [
           ...(!separate && actionsFor > 0 ? [{ text: t("receiptCapture.moveUp", { number: actionsFor + 1 }), handler: () => move(actionsFor, -1) }] : []),
@@ -161,11 +160,11 @@ export function ReceiptCapture({ files, uploading = false, disabled = false, err
   );
 }
 
-function ModeOption({ value, title, hint, disabled, last = false }: { value: CaptureMode; title: string; hint: string; disabled: boolean; last?: boolean }) {
+function ModeOption({ value, title, disabled, last = false }: { value: CaptureMode; title: string; disabled: boolean; last?: boolean }) {
   return (
     <IonItem lines={last ? "none" : undefined}>
       <IonRadio value={value} disabled={disabled} justify="space-between" labelPlacement="start">
-        <span className="pm-radio-text"><strong>{title}</strong><small>{hint}</small></span>
+        <span className="pm-radio-text">{title}</span>
       </IonRadio>
     </IonItem>
   );

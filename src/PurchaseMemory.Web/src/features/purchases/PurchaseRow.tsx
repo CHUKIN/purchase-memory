@@ -1,15 +1,18 @@
 import { IonLabel, IonNote } from "@ionic/react";
+import { AlertTriangle, CircleCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { PurchaseView } from "../../api/types";
-import { ItemLink, StatusText } from "../../design-system/components";
+import { ItemLink } from "../../design-system/components";
 import { issueCopy } from "../issues/issueText";
+import { formatShortDate } from "./dates";
 import { formatMoney } from "./money";
 import { useReturnState } from "../../app/backNavigation";
 
 /**
- * One saved purchase as a list row: store, date and item count, the review
- * state, the issues by name, and the total on the right. Used by the feed and
- * by «Последние покупки» on Home.
+ * One saved purchase as a list row: store with a ✓ (or the issues by name
+ * after a ⚠), date and item count, and the total on the right. The state's
+ * word («Проверено» / «Нужно проверить») is kept for screen readers only.
+ * Used by the feed and by «Последние покупки» on Home.
  */
 export function PurchaseRow({ purchase }: { purchase: PurchaseView }) {
   const { t, i18n } = useTranslation();
@@ -20,7 +23,7 @@ export function PurchaseRow({ purchase }: { purchase: PurchaseView }) {
   // still opens, this just says which lines made it match.
   const matchedLines = purchase.items.filter((item) => item.matchesFilter === true);
   const date = purchase.purchasedAt
-    ? new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short" }).format(new Date(purchase.purchasedAt))
+    ? formatShortDate(purchase.purchasedAt, locale, { time: true })
     : t("feed.unknownDate");
   const total = purchase.receiptTotal === null ? "—" : formatMoney(purchase.receiptTotal, purchase.currency ?? "PLN", locale);
   // Discounts are lines on the receipt, not items the user bought.
@@ -29,11 +32,16 @@ export function PurchaseRow({ purchase }: { purchase: PurchaseView }) {
   return (
     <ItemLink to={`/purchases/${purchase.id}`} state={returnState}>
       <IonLabel className="pm-wrap">
-        <h2>{purchase.merchantName ?? t("feed.unknownStore")}</h2>
+        <h2>
+          {purchase.merchantName ?? t("feed.unknownStore")}
+          {!needsAttention && <CircleCheck size={15} className="pm-inline-icon pm-success-icon" aria-hidden="true" />}
+        </h2>
+        <p className="visually-hidden">{t(needsAttention ? "status.needsAttention" : "status.verified")}</p>
         <p>{date} · {t("feed.itemCount", { count: itemCount })}</p>
-        <p><StatusText status={needsAttention ? "needsAttention" : "verified"} /></p>
         {needsAttention && purchase.issues.map((issue) => (
-          <p key={`${issue.type}:${issue.itemPosition ?? "receipt"}`} className="pm-warn-text">{issueCopy(t, issue).title}</p>
+          <p key={`${issue.type}:${issue.itemPosition ?? "receipt"}`} className="pm-warn-text">
+            <AlertTriangle size={13} className="pm-inline-icon" aria-hidden="true" />{issueCopy(t, issue).title}
+          </p>
         ))}
         {matchedLines.length > 0 && (
           <p>

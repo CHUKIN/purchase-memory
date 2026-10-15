@@ -87,7 +87,8 @@ describe("PurchaseDetailPage", () => {
     expect(screen.getByText("Не удалось выбрать товар автоматически — выберите сами.")).toBeInTheDocument();
     expect(screen.getByText("Нет цены")).toBeInTheDocument();
     expect(screen.getByText("Сумма строк не сходится с итогом чека")).toBeInTheDocument();
-    expect(screen.getByText("Покупка сохранена без фото чека.")).toBeInTheDocument();
+    // No photo, no photo section (and no sentence about it).
+    expect(screen.queryByRole("region", { name: "Фото чека" })).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Исправить" }));
     expect(await screen.findByRole("heading", { level: 1, name: "Исправить" })).toBeInTheDocument();

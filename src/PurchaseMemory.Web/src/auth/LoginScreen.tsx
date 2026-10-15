@@ -144,7 +144,6 @@ export function LoginScreen({
   return (
     <AuthLayout>
       <h1 className="pm-auth-title">{t("auth.loginTitle")}</h1>
-      <p className="pm-auth-intro">{t("auth.loginIntro")}</p>
       {notice && <Notice tone="warning" role="status"><p>{notice}</p></Notice>}
 
       {emailEnabled && !sentTo && (

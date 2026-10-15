@@ -121,22 +121,13 @@ export function ReceiptDetailPage() {
       : receipt.status === "saved"
         ? t("receiptProgress.titleSaved")
         : t("receiptProgress.titleActive");
-  const description = receipt.status === "ready"
-    ? t("receiptProgress.descriptionReady")
-    : receipt.status === "failed"
-      ? t("receiptProgress.descriptionFailed")
-      : receipt.status === "saved"
-        ? t("receiptProgress.descriptionSaved")
-        : t("receiptProgress.descriptionActive");
-
+  // The title says where the receipt is; the «?» explains the rest.
   return (
-    <Page title={title} back={back}>
-      <p className="pm-home-intro">{description} {receipt.status === "ready" ? <HelpLink topic="review-save" /> : <HelpLink topic="recognition" />}</p>
+    <Page title={title} back={back} end={receipt.status === "ready" ? <HelpLink topic="review-save" /> : <HelpLink topic="recognition" />}>
       <ReceiptProgress receipt={receipt} retrying={retry.isPending} onRetry={receipt.status === "failed" || receipt.status === "uploaded" ? () => retry.mutate() : undefined} />
       {retry.isError && <Notice tone="danger" role="alert"><p>{messageOf(t, retry.error, t("legacyCapture.unknownError"))}</p></Notice>}
       {receipt.status === "saved" && (
         <>
-          <Notice tone="success"><p><strong>{t("receiptProgress.saved")}</strong></p></Notice>
           <IonList inset>
             {receipt.savedPurchaseId && <ItemLink to={`/purchases/${receipt.savedPurchaseId}`} state={returnState}><IonLabel color="primary">{t("receiptProgress.openPurchase")}</IonLabel></ItemLink>}
             <ItemLink to="/purchases" lines="none"><IonLabel color="primary">{t("receiptProgress.openPurchases")}</IonLabel></ItemLink>
@@ -206,6 +197,7 @@ function ReviewForm({ snapshot, setSnapshot, warnings, warningsConfirmed, busy, 
 
       <LinesEditor
         title={`${t("legacyCapture.positions", { count: productCount })}${discountCount > 0 ? ` · ${t("discount.count", { count: discountCount })}` : ""}`}
+        help={<HelpLink topic="review-save" />}
         lines={snapshot.items}
         currency={currency}
         openLine={openLine}

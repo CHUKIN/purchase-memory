@@ -1,4 +1,4 @@
-import { IonItem, IonLabel, IonList, IonNote } from "@ionic/react";
+import { IonItem, IonLabel, IonList } from "@ionic/react";
 import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle, CheckCircle2, ChevronDown, SlidersHorizontal } from "lucide-react";
 import { useId, useState } from "react";
@@ -61,7 +61,7 @@ export function IssueReview({
       <Footnote role="status">{unresolved.length === 0 ? t("issues.allResolved") : t("issues.remaining", { count: unresolved.length })}</Footnote>
 
       {issues.length === 0
-        ? <EmptyState icon={<CheckCircle2 />} title={t("issues.emptyTitle")} description={t("issues.emptyDescription")} headingLevel={3} />
+        ? <EmptyState icon={<CheckCircle2 />} title={t("issues.emptyTitle")} headingLevel={3} />
         : issues.map((issue) => <IssueCard key={issueKey(issue)} issue={issue} snapshot={snapshot} onSnapshotChange={onSnapshotChange} photo={photo} />)}
 
       <PrimaryButton disabled={!canSave || unresolved.length > 0} loading={busy} onClick={onSave}>
@@ -98,17 +98,10 @@ function ReviewHistory({ receiptId }: { receiptId: string }) {
   return (
     <section>
       <IonList inset>
-        <IonItem
-          button
-          detail={false}
-          lines={open ? undefined : "none"}
-          aria-expanded={open}
-          aria-controls={historyId}
-          onClick={() => setOpen((current) => !current)}
-        >
-          <IonLabel>{open ? t("review.history.toggleHide") : t("review.history.toggleShow")}</IonLabel>
-          <ChevronDown slot="end" size={20} aria-hidden="true" className="pm-chevron" data-open={open} />
-        </IonItem>
+        <button type="button" className="pm-disclosure" data-open={open} aria-expanded={open} aria-controls={historyId} onClick={() => setOpen((current) => !current)}>
+          <span className="pm-disclosure-label">{open ? t("review.history.toggleHide") : t("review.history.toggleShow")}</span>
+          <ChevronDown size={20} aria-hidden="true" className="pm-chevron" data-open={open} />
+        </button>
         {open && (
           <div id={historyId}>
             <h3 className="visually-hidden">{t("review.history.title")}</h3>
@@ -174,15 +167,18 @@ function IssueCard({
             <h3>{copy.title}</h3>
             <p>{copy.detail}</p>
           </IonLabel>
-          {resolved && <IonNote slot="end" className="pm-status pm-ok">{t("issues.resolved")}</IonNote>}
+          {resolved && <span className="visually-hidden">{t("issues.resolved")}</span>}
         </IonItem>
         {/* Once resolved, the suggestion and its inputs no longer matter. */}
         {!resolved && (
           <>
             <IssuePhoto issue={issue} photo={photo} />
-            <IonItem lines="full">
-              <IonLabel className="pm-wrap" color="medium"><p>{copy.suggestion}</p></IonLabel>
-            </IonItem>
+            {/* The fields below are the fix; only an unknown issue type needs words. */}
+            {copy.suggestion && (
+              <IonItem lines="full">
+                <IonLabel className="pm-wrap" color="medium"><p>{copy.suggestion}</p></IonLabel>
+              </IonItem>
+            )}
             {issue.type === "receiptTotalMismatch" && (
               <TotalMismatchFix snapshot={snapshot} onSnapshotChange={onSnapshotChange} />
             )}

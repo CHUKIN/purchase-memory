@@ -69,7 +69,6 @@ export function HelpPage() {
       )}
     >
       <a className="visually-hidden pm-skip-link" href={`#${topicsId}`}>{t("help.ui.skipToTopics")}</a>
-      <p className="pm-home-intro">{t("help.ui.intro")}</p>
 
       <nav id={contentsId} aria-label={t("help.ui.contentsLabel")}>
         {groups.map(({ group, topics }) => (

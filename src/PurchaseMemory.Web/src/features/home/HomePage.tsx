@@ -46,11 +46,8 @@ export function HomePage({ recognition, recognitionFailed = false, receipts, rec
   // Only receipts still in flight or still waiting for the user stay here; a
   // saved one belongs to the purchases below.
   const openReceipts = receipts.filter((receipt) => receipt.status !== "saved");
-  const recognitionCopy = recognition === null && !recognitionFailed
-    ? t("productionHome.recognitionLoading")
-    : available
-      ? t("productionHome.recognitionReady")
-      : t("productionHome.recognitionOffline");
+  // Only a problem is worth a line here; «ready» is the normal state.
+  const recognitionDown = !available && (recognition !== null || recognitionFailed);
   const recent = useQuery({
     queryKey: ["purchases", "feed", "home", recentPurchaseCount],
     queryFn: () => getPurchaseFeed({ page: 1, pageSize: recentPurchaseCount })
@@ -65,15 +62,14 @@ export function HomePage({ recognition, recognitionFailed = false, receipts, rec
         </IonButton>
       )}
     >
-      <p className="pm-home-intro">{t("productionHome.intro")}</p>
       <div className="pm-primary-block">
         <ButtonLink to="/purchases/new" state={returnState} expand="block" shape="round" size="large">
           <Camera aria-hidden="true" size={22} />&nbsp;{t("common.captureReceipt")}
         </ButtonLink>
       </div>
-      <Footnote tone={available || (recognition === null && !recognitionFailed) ? "neutral" : "warning"} role="status">
-        {recognitionCopy}
-      </Footnote>
+      <div role="status">
+        {recognitionDown && <Footnote tone="warning">{t("productionHome.recognitionOffline")}</Footnote>}
+      </div>
 
       <HelpWelcomeCard />
 
@@ -94,9 +90,10 @@ export function HomePage({ recognition, recognitionFailed = false, receipts, rec
           {reviewCount ? <AlertTriangle slot="start" size={22} className="pm-row-icon pm-row-icon-warning" aria-hidden="true" /> : <CircleCheck slot="start" size={22} className="pm-row-icon" aria-hidden="true" />}
           <IonLabel className="pm-wrap">
             <h2>{t("common.review")}</h2>
-            <p>{reviewCount ? t("reviewQueue.summary", { count: reviewCount }) : t("reviewQueue.emptyTitle")}</p>
+            {/* The badge shows the count; the sentence stays for screen readers. */}
+            <p className="visually-hidden">{reviewCount ? t("reviewQueue.summary", { count: reviewCount }) : t("reviewQueue.emptyTitle")}</p>
           </IonLabel>
-          {reviewCount ? <IonBadge slot="end" color="danger">{reviewCount > 99 ? "99+" : reviewCount}</IonBadge> : null}
+          {reviewCount ? <IonBadge slot="end" color="danger" aria-hidden="true">{reviewCount > 99 ? "99+" : reviewCount}</IonBadge> : null}
         </ItemLink>
       </IonList>
 
@@ -106,7 +103,7 @@ export function HomePage({ recognition, recognitionFailed = false, receipts, rec
         {t("common.recentPurchases")}
       </SectionHeader>
       {recent.isError && <Notice tone="danger" role="alert"><p>{t("feed.loadError")}</p></Notice>}
-      {recent.data && recent.data.items.length === 0 && <Footnote>{t("feed.emptyDescription")}</Footnote>}
+      {recent.data && recent.data.items.length === 0 && <Footnote>{t("feed.emptyTitle")}</Footnote>}
       {recent.data && recent.data.items.length > 0 && (
         <IonList inset className="pm-after-header">
           {recent.data.items.map((purchase) => <PurchaseRow key={purchase.id} purchase={purchase} />)}
@@ -151,7 +148,8 @@ function ReceiptJobRow({ receipt }: { receipt: ReceiptView }) {
       <ReceiptText slot="start" size={22} className="pm-row-icon" aria-hidden="true" />
       <IonLabel className="pm-wrap">
         <h2>{receipt.snapshot?.merchantName ?? t("receiptJobs.receipt")}</h2>
-        <p>{t("receiptJobs.parts", { count: receipt.imageParts.length })}</p>
+        {/* One photo is the usual case; only a long receipt in parts says so. */}
+        {receipt.imageParts.length > 1 && <p>{t("receiptJobs.parts", { count: receipt.imageParts.length })}</p>}
         <p className={justCompleted ? "pm-pulse" : undefined}><StatusText status={label} /></p>
         <IonProgressBar
           className="pm-job-progress"

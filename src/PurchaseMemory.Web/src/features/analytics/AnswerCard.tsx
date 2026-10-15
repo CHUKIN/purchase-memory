@@ -1,6 +1,6 @@
 import { IonItem, IonLabel, IonList, IonNote } from "@ionic/react";
-import { Info, ReceiptText } from "lucide-react";
-import { forwardRef } from "react";
+import { ChevronDown, Info, ReceiptText } from "lucide-react";
+import { forwardRef, useId, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import type { AnalyticsAnswer, AnalyticsPlan, ProductCategory, ProductTag } from "../../api/types";
@@ -77,17 +77,8 @@ export const AnswerCard = forwardRef<HTMLHeadingElement, AnswerCardProps>(functi
         </ul>
       )}
 
-      <section aria-labelledby="analytics-coverage-title">
-        <SectionHeader id="analytics-coverage-title" level={3}>{t("analytics.coverage.title")}</SectionHeader>
-        <IonList inset className="pm-after-header">
-          {coverageLines(t, result.coverage, answer.plan).map((line, index, lines) => (
-            <IonItem key={line} lines={index === lines.length - 1 ? "none" : undefined}>
-              <IonLabel className="pm-wrap"><p className="pm-plain-text">{line}</p></IonLabel>
-            </IonItem>
-          ))}
-        </IonList>
-        {!result.hasData && <Footnote>{t("analytics.noDataHint")}</Footnote>}
-      </section>
+      <Coverage lines={coverageLines(t, result.coverage, answer.plan)} />
+      {!result.hasData && <Footnote>{t("analytics.noDataHint")}</Footnote>}
 
       {result.evidence.length > 0 && (
         <section aria-labelledby="analytics-evidence-title">
@@ -135,3 +126,34 @@ export const AnswerCard = forwardRef<HTMLHeadingElement, AnswerCardProps>(functi
     </article>
   );
 });
+
+/**
+ * «На чём основан ответ», folded into one row: the numbers above are the
+ * answer, these lines are the fine print for whoever wants it.
+ */
+function Coverage({ lines }: { lines: string[] }) {
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const listId = useId();
+  return (
+    <section aria-labelledby="analytics-coverage-title">
+      <IonList inset>
+        {/* A native button inside the heading, so the expanded state reaches screen readers. */}
+        <h3 id="analytics-coverage-title" className="pm-disclosure-heading">
+          <button type="button" className="pm-disclosure" data-open={open} aria-expanded={open} aria-controls={listId} onClick={() => setOpen((current) => !current)}>
+            <Info size={20} className="pm-row-icon" aria-hidden="true" />
+            <span className="pm-disclosure-label">{t("analytics.coverage.title")}</span>
+            <ChevronDown size={20} aria-hidden="true" className="pm-chevron" data-open={open} />
+          </button>
+        </h3>
+        <div id={listId} hidden={!open}>
+          {lines.map((line, index) => (
+            <IonItem key={line} lines={index === lines.length - 1 ? "none" : undefined}>
+              <IonLabel className="pm-wrap"><p className="pm-plain-text">{line}</p></IonLabel>
+            </IonItem>
+          ))}
+        </div>
+      </IonList>
+    </section>
+  );
+}

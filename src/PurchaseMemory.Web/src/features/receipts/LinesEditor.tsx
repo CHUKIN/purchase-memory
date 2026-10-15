@@ -12,7 +12,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { useRef, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { BoundingBox, ReceiptLineKind } from "../../api/types";
-import { DecimalInput, Footnote, SectionHeader, Sheet } from "../../design-system/components";
+import { DecimalInput, SectionHeader, Sheet } from "../../design-system/components";
 import { formatMoney, formatQuantity } from "../purchases/money";
 import { LinePhoto, type LineViewerPhoto } from "../receipt-photo/LinePhoto";
 import { isUsableBox } from "../receipt-photo/photoBox";
@@ -53,6 +53,8 @@ export interface LinesEditorProps<T extends EditableLine> {
   focusField?: LineFocus | null;
   /** Section header above the rows. */
   title: string;
+  /** A «?» (HelpLink) at the end of the section header. */
+  help?: ReactNode;
   /**
    * The receipt photo, when there is one: each line's sheet then shows the
    * line on it (outlined, zoomable) above the fields.
@@ -79,6 +81,7 @@ export function LinesEditor<T extends EditableLine>({
   sheetExtra,
   focusField = null,
   title,
+  help,
   photo = null
 }: LinesEditorProps<T>) {
   const { t, i18n } = useTranslation();
@@ -96,7 +99,7 @@ export function LinesEditor<T extends EditableLine>({
 
   return (
     <>
-      <SectionHeader>{title}</SectionHeader>
+      <SectionHeader action={help}>{title}</SectionHeader>
       <IonList inset className="pm-after-header">
         {lines.map((line, index) => {
           const number = index + 1;
@@ -145,7 +148,6 @@ export function LinesEditor<T extends EditableLine>({
           </IonItem>
         ))}
       </IonList>
-      {lines.length > 0 && <Footnote>{t("ui.swipeToDelete")}</Footnote>}
 
       <Sheet
         isOpen={open !== null}
@@ -203,8 +205,8 @@ function SheetPhoto({ line, lineKey, photo, photoRatio, onPhotoRatio }: {
         photoRatio={photoRatio}
         onPhotoRatio={onPhotoRatio}
         resetKey={lineKey}
+        note={note}
       />
-      {note && <p className="pm-review-photo-note">{note}</p>}
     </div>
   );
 }

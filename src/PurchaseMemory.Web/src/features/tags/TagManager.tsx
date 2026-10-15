@@ -48,7 +48,6 @@ export function TagManager({ tags, onCreate, onRename, onDelete }: TagManagerPro
 
   return (
     <>
-      <Footnote>{t("tags.manageIntro")}</Footnote>
 
       <SectionHeader level={3}>{t("tags.add")}</SectionHeader>
       <IonList inset className="pm-after-header">

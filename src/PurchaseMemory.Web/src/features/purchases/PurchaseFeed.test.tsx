@@ -144,7 +144,7 @@ describe("PurchaseFeed", () => {
     renderFeed({ purchases: [purchase({ items: [] })], totalCount: 1 }, "en");
 
     expect(screen.getByRole("heading", { level: 1, name: "Purchases" })).toBeInTheDocument();
-    expect(screen.getByText(/Purchase feed/)).toBeInTheDocument();
+    expect(screen.getByText("1 purchase")).toBeInTheDocument();
     expect(screen.getByText(/0 items/)).toBeInTheDocument();
     const sheet = openFilters();
     expect(within(sheet).getByRole("tab", { name: "Needs attention" })).toBeInTheDocument();
