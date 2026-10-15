@@ -1,0 +1,112 @@
+/*
+ * Product photos, barcodes and the shop scanner (variants A and B, see
+ * scanVariant.ts). Grown out of the stage 1 mock styles in
+ * product-scan-prototype/prototype.css.
+ */
+
+/* ---------- photos ---------- */
+.pm-media-photo { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 10px; background: #e5e5ea; }
+.pm-media-photo-empty { display: grid; place-items: center; width: 100%; height: 100%; border-radius: 10px; background: #e5e5ea; color: #8e8e93; }
+.pm-media-thumb { flex: 0 0 auto; width: 44px; height: 44px; margin-right: 12px; }
+.pm-media-thumb .pm-media-photo, .pm-media-thumb .pm-media-photo-empty { border-radius: 8px; }
+
+/* Variant A: big gallery card */
+.pm-media-gallery { margin: 0 16px 8px; border-radius: 10px; background: #fff; overflow: hidden; }
+.pm-media-gallery-main { position: relative; aspect-ratio: 4 / 3; background: #e5e5ea; }
+.pm-media-gallery-main .pm-media-photo { border-radius: 0; object-fit: contain; background: #f2f2f7; }
+.pm-media-badge {
+  position: absolute; left: 8px; top: 8px; padding: 2px 8px; border-radius: 10px;
+  background: #fff; color: var(--ion-color-primary); font-size: 12px; font-weight: 700;
+}
+.pm-media-thumbs { display: flex; gap: 8px; padding: 10px 12px; overflow-x: auto; }
+.pm-media-thumb-button {
+  flex: 0 0 auto; width: 64px; height: 64px; padding: 0; border: 2px solid transparent; border-radius: 12px;
+  background: none; cursor: pointer;
+}
+.pm-media-thumb-button[aria-pressed="true"] { border-color: var(--ion-color-primary); }
+.pm-media-thumb-button .pm-media-photo { border-radius: 8px; }
+.pm-media-thumb-button:focus-visible, .pm-media-add:focus-visible, .pm-media-chip:focus-visible { outline: 2px solid var(--ion-color-primary); outline-offset: 2px; }
+.pm-media-actions { display: flex; flex-wrap: wrap; gap: 4px 8px; padding: 0 12px 10px; }
+.pm-media-actions ion-button { margin: 0; min-height: 44px; }
+.pm-media-actions.pm-media-actions-loose { padding: 0 20px 4px; }
+.pm-media-actions ion-button svg { margin-right: 4px; }
+
+/* Variant B: compact hero + strip + chips */
+.pm-media-hero { display: flex; gap: 14px; align-items: center; margin: 4px 20px 12px; }
+.pm-media-hero-photo { flex: 0 0 auto; width: 96px; height: 96px; padding: 0; border: 0; background: none; }
+.pm-media-hero p { margin: 0; color: var(--pm-muted); font-size: 15px; line-height: 1.4; }
+.pm-media-strip { display: flex; gap: 8px; margin: 0 20px 8px; overflow-x: auto; padding-bottom: 4px; }
+.pm-media-strip .pm-media-thumb-button, .pm-media-add { width: 72px; height: 72px; }
+.pm-media-strip .pm-media-thumb-button { position: relative; }
+.pm-media-strip .pm-media-badge { left: 4px; top: 4px; padding: 0 6px; font-size: 11px; }
+.pm-media-add {
+  display: grid; flex: 0 0 auto; place-items: center; align-content: center; gap: 2px; border: 1.5px dashed #a1a1a6; border-radius: 10px;
+  background: #fff; color: var(--ion-color-primary); font-size: 12px; font-weight: 600; cursor: pointer;
+}
+.pm-media-chip {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border: 0; border-radius: 22px;
+  background: #fff; color: #1c1c1e; font-size: 15px; cursor: pointer;
+}
+.pm-media-chip.pm-media-code { font-family: ui-monospace, Menlo, monospace; font-variant-numeric: tabular-nums; }
+.pm-media-chip.pm-media-chip-action { color: var(--ion-color-primary); font-weight: 600; }
+
+.pm-media-code-text { font-family: ui-monospace, Menlo, monospace; font-size: 17px; letter-spacing: .04em; font-variant-numeric: tabular-nums; color: #1c1c1e; }
+.pm-media-busy { opacity: .6; pointer-events: none; }
+
+/* «Больше не покупать» */
+.pm-avoid-banner {
+  display: flex; align-items: center; gap: 10px; margin: 0 16px 12px; padding: 12px 14px; border-radius: 12px;
+  background: #fdecea; color: #7a1f17; font-size: 16px; font-weight: 600;
+}
+.pm-avoid-banner svg { flex: 0 0 auto; color: var(--pm-danger-text); }
+.pm-avoid-banner small { display: block; font-size: 13px; font-weight: 400; }
+
+/* ---------- Home entry ---------- */
+.pm-scan-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 8px 20px 0; }
+.pm-scan-tile {
+  display: grid; justify-items: center; align-content: center; gap: 6px; min-height: 112px; padding: 16px 8px; border-radius: 16px;
+  font-size: 16px; font-weight: 600; text-decoration: none; cursor: pointer;
+}
+.pm-scan-tile.pm-scan-tile-main { background: var(--ion-color-primary); color: #fff; }
+.pm-scan-tile.pm-scan-tile-second { background: #fff; color: var(--ion-color-primary); }
+.pm-scan-tile:focus-visible { outline: 2px solid var(--ion-color-primary); outline-offset: 2px; }
+
+/* ---------- scanner screen ---------- */
+.pm-scan-content { --background: #000; }
+.pm-scan-stage { position: absolute; inset: 0; display: flex; flex-direction: column; background: #000; }
+.pm-scan-camera { position: relative; flex: 1 1 auto; min-height: 0; overflow: hidden; background: #000; color: #f2f2f7; }
+.pm-scan-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.pm-scan-reticle {
+  position: absolute; left: 12%; right: 12%; top: 32%; height: 22%; max-height: 160px;
+  border: 2px solid rgba(255, 255, 255, .85); border-radius: 12px; box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .25);
+}
+.pm-scan-hint {
+  position: absolute; left: 16px; right: 16px; top: calc(32% - 40px); margin: 0; text-align: center;
+  color: #fff; font-size: 15px; text-shadow: 0 1px 2px rgba(0, 0, 0, .6);
+}
+.pm-scan-overlay {
+  position: absolute; inset: 0; display: grid; place-items: center; align-content: center; gap: 12px; padding: 24px;
+  text-align: center; color: #f2f2f7; font-size: 16px; line-height: 1.4;
+}
+.pm-scan-overlay h2 { margin: 0; font-size: 20px; font-weight: 700; color: #fff; }
+.pm-scan-overlay p { margin: 0; max-width: 34ch; }
+.pm-scan-overlay svg { color: #d1d1d6; }
+.pm-scan-torch {
+  position: absolute; right: 12px; top: 12px; display: grid; place-items: center; width: 48px; height: 48px;
+  border: 0; border-radius: 24px; background: rgba(0, 0, 0, .45); color: #fff; cursor: pointer;
+}
+.pm-scan-torch[aria-pressed="true"] { background: #fff; color: #1c1c1e; }
+.pm-scan-torch:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.pm-scan-bottom { display: flex; justify-content: center; gap: 8px; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: #000; }
+.pm-scan-bottom ion-button { margin: 0; min-height: 44px; }
+
+/* scan result bodies */
+.pm-scan-found-head { display: flex; gap: 12px; align-items: center; margin: 4px 16px 12px; }
+.pm-scan-found-head .pm-media-thumb { width: 72px; height: 72px; margin: 0; }
+.pm-scan-found-head h3 { margin: 0; font-size: 19px; font-weight: 700; color: #1c1c1e; }
+.pm-scan-found-head p { margin: 2px 0 0; color: var(--pm-muted); font-size: 14px; }
+.pm-scan-buttons { display: grid; gap: 4px; padding: 4px 16px 16px; }
+.pm-scan-buttons ion-button { margin: 0; }
+.pm-scan-buttons ion-button svg { margin-right: 6px; }
+.pm-scan-spin { display: grid; justify-items: center; gap: 12px; padding: 36px 24px; color: var(--pm-muted); text-align: center; }
+.pm-scan-off-image { width: 44px; height: 44px; margin-right: 12px; border-radius: 8px; object-fit: contain; background: #fff; }

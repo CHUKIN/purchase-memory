@@ -22,7 +22,8 @@ const screenLabelKeys: Record<string, string> = {
   "/purchases": "common.purchases",
   "/products": "common.products",
   "/analytics": "common.analytics",
-  "/needs-attention": "common.review"
+  "/needs-attention": "common.review",
+  "/scan": "productScan.scanTitle"
 };
 
 /** Router state for a link, so the opened screen can come back here. */

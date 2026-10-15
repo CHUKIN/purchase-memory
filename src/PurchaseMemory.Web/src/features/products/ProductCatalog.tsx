@@ -6,6 +6,7 @@ import type { BrandSummary, ProductCategory, ProductSummary, TagSummary } from "
 import { EmptyState, FilterButton, Footnote, ItemLink, LoadingList, Notice, Page, SectionHeader, Sheet } from "../../design-system/components";
 import { CategoryChip } from "../categories/CategoryChip";
 import { HelpLink } from "../help/HelpLink";
+import { ProductThumb } from "../product-scan/ProductPhoto";
 import { categoryPath } from "../categories/categoryText";
 import { BrandFilterRow, CategoryFilterRow, TagFilterRow } from "../filters/FilterRows";
 import { TagChips } from "../tags/TagChips";
@@ -120,6 +121,7 @@ export function ProductCatalog({
           <IonList inset className="pm-after-header">
             {products.map((product) => (
               <ItemLink key={product.id} to={`/products/${product.id}`} state={returnState}>
+                <ProductThumb productId={product.id} />
                 <IonLabel className="pm-wrap">
                   <h2>{product.name}</h2>
                   {(categories.length > 0 || (product.tags ?? []).length > 0) && (

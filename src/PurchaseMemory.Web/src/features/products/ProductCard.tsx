@@ -33,6 +33,12 @@ export interface ProductCardProps {
   readCurrentTagIds?: () => string[] | undefined;
   /** The household tag list failed to load: tags stay read-only and the card says why. */
   tagsFailed?: boolean;
+  /**
+   * Photos, barcodes and «Больше не покупать» (features/product-scan). When
+   * given, it replaces the purchase-count line and renders that line itself,
+   * so variant B can put it beside the photo.
+   */
+  media?: (intro: string) => ReactNode;
   /** More sections at the end, e.g. impressions. */
   children?: ReactNode;
 }
@@ -58,6 +64,7 @@ export function ProductCard({
   onSuggestTags,
   readCurrentTagIds,
   tagsFailed = false,
+  media,
   children
 }: ProductCardProps) {
   const { t } = useTranslation();
@@ -80,7 +87,9 @@ export function ProductCard({
   return (
     <Page title={product.name} back={back} end={<HelpLink topic="products" />}>
       {/* Shopping trips, not receipt lines — the same number the frequency block counts by. */}
-      <p className="pm-home-intro">{t("products.purchaseCount", { count: product.purchaseCount })}</p>
+      {media
+        ? media(t("products.purchaseCount", { count: product.purchaseCount }))
+        : <p className="pm-home-intro">{t("products.purchaseCount", { count: product.purchaseCount })}</p>}
       {/* Read-only summary; with editing available the sections below say it once. */}
       {((!editable && (categoryId || product.brand)) || (!tagsEditable && tags.length > 0)) && (
         <div className="pm-chip-row pm-padded">
