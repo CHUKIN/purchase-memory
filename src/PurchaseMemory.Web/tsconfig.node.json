@@ -12,5 +12,5 @@
     "noEmit": true,
     "strict": true
   },
-  "include": ["vite.config.ts", ".storybook/main.ts"]
+  "include": ["vite.config.ts", "vite.lab.config.ts", ".storybook/main.ts"]
 }

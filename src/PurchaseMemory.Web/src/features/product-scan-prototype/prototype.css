@@ -1,0 +1,102 @@
+/*
+ * Stage 1 mock screens for product photos and barcodes. Imported only by the
+ * prototype stories, so none of this reaches the production bundle.
+ */
+.pmx-photo {
+  display: grid; place-items: center; align-content: center; gap: 4px; position: relative;
+  border-radius: 10px; color: #fff; font-size: 12px; font-weight: 600; text-align: center; overflow: hidden;
+}
+.pmx-photo[data-tone="a"] { background: linear-gradient(145deg, #5b8c76, #315c4b); }
+.pmx-photo[data-tone="b"] { background: linear-gradient(145deg, #8a7bb8, #5b3fa0); }
+.pmx-photo[data-tone="c"] { background: linear-gradient(145deg, #c58a4a, #8a541f); }
+.pmx-photo[data-tone="off"] { background: linear-gradient(145deg, #8e8e93, #5a5a60); }
+.pmx-photo-main { width: 100%; aspect-ratio: 4 / 3; border-radius: 0; font-size: 14px; }
+.pmx-badge {
+  position: absolute; left: 8px; top: 8px; padding: 2px 8px; border-radius: 10px;
+  background: #fff; color: #315c4b; font-size: 12px; font-weight: 700;
+}
+
+.pmx-gallery-card { margin: 0 16px 8px; border-radius: 10px; background: #fff; overflow: hidden; }
+.pmx-thumbs { display: flex; gap: 8px; padding: 10px 12px; overflow-x: auto; }
+.pmx-thumb {
+  flex: 0 0 auto; width: 64px; height: 64px; padding: 0; border: 2px solid transparent; border-radius: 12px;
+  background: none; cursor: pointer;
+}
+.pmx-thumb[aria-pressed="true"] { border-color: var(--ion-color-primary); }
+.pmx-thumb .pmx-photo { width: 100%; height: 100%; border-radius: 8px; }
+.pmx-thumb:focus-visible { outline: 2px solid var(--ion-color-primary); outline-offset: 2px; }
+.pmx-actions { display: flex; flex-wrap: wrap; gap: 4px 8px; padding: 0 12px 10px; }
+.pmx-actions ion-button { margin: 0; min-height: 44px; }
+
+.pmx-code { font-family: ui-monospace, Menlo, monospace; font-size: 17px; letter-spacing: .04em; font-variant-numeric: tabular-nums; color: #1c1c1e; }
+.pmx-source { color: var(--pm-muted); font-size: 13px; }
+
+.pmx-hero { display: flex; gap: 14px; align-items: center; margin: 4px 20px 12px; }
+.pmx-hero .pmx-photo { flex: 0 0 auto; width: 96px; height: 96px; }
+.pmx-hero h2 { margin: 0; font-size: 20px; font-weight: 700; color: #1c1c1e; }
+.pmx-hero p { margin: 2px 0 0; color: var(--pm-muted); font-size: 15px; }
+.pmx-strip { display: flex; gap: 8px; margin: 0 20px 8px; overflow-x: auto; padding-bottom: 4px; }
+.pmx-strip .pmx-photo, .pmx-strip button.pmx-add {
+  flex: 0 0 auto; width: 72px; height: 72px;
+}
+.pmx-add {
+  display: grid; place-items: center; align-content: center; gap: 2px; border: 1.5px dashed #a1a1a6; border-radius: 10px;
+  background: #fff; color: var(--ion-color-primary); font-size: 12px; font-weight: 600; cursor: pointer;
+}
+.pmx-add:focus-visible { outline: 2px solid var(--ion-color-primary); outline-offset: 2px; }
+.pmx-chip-button {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border: 0; border-radius: 22px;
+  background: #fff; color: #1c1c1e; font-size: 15px; font-family: ui-monospace, Menlo, monospace; cursor: pointer;
+}
+.pmx-chip-button.pmx-primary { color: var(--ion-color-primary); font-family: inherit; font-weight: 600; }
+.pmx-chip-button:focus-visible { outline: 2px solid var(--ion-color-primary); outline-offset: 2px; }
+
+/* Home entry */
+.pmx-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 8px 20px 0; }
+.pmx-tile {
+  display: grid; justify-items: center; gap: 6px; min-height: 112px; padding: 16px 8px; border: 0; border-radius: 16px;
+  font-size: 16px; font-weight: 600; cursor: pointer;
+}
+.pmx-tile.pmx-tile-main { background: var(--ion-color-primary); color: #fff; }
+.pmx-tile.pmx-tile-second { background: #fff; color: var(--ion-color-primary); }
+.pmx-tile:focus-visible { outline: 2px solid var(--ion-color-primary); outline-offset: 2px; }
+
+/* Phone frame with a camera behind a bottom sheet */
+.pmx-phone {
+  position: relative; width: 390px; max-width: 100%; height: 760px; margin: 0 auto; overflow: hidden;
+  border-radius: 24px; background: #111; isolation: isolate;
+}
+.pmx-camera { position: absolute; inset: 0; display: grid; place-items: start center; padding-top: 90px; color: #d1d1d6; font-size: 14px; }
+.pmx-camera .pmx-reticle { width: 260px; height: 120px; border: 2px solid rgba(255, 255, 255, .85); border-radius: 12px; }
+.pmx-sheet {
+  position: absolute; left: 0; right: 0; bottom: 0; max-height: 82%; overflow-y: auto; border-radius: 16px 16px 0 0;
+  background: var(--pm-grouped-background); box-shadow: 0 -4px 24px rgba(0, 0, 0, .35);
+}
+.pmx-sheet.pmx-full { top: 0; max-height: none; border-radius: 0; }
+.pmx-grabber { width: 36px; height: 5px; margin: 8px auto 4px; border-radius: 3px; background: #c6c6c8; }
+.pmx-sheet-bar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; min-height: 44px; padding: 0 8px 0 16px; }
+.pmx-sheet-bar h2 { margin: 0; font-size: 17px; font-weight: 600; }
+.pmx-sheet-bar ion-button { margin: 0; min-height: 44px; }
+.pmx-sheet-bar > :last-child { justify-self: end; }
+.pmx-sheet-bar > :first-child { justify-self: start; }
+.pmx-sheet .pm-footnote { margin-inline: 20px; }
+.pmx-found-head { display: flex; gap: 12px; align-items: center; margin: 4px 16px 12px; }
+.pmx-found-head .pmx-photo { flex: 0 0 auto; width: 72px; height: 72px; }
+.pmx-found-head h3 { margin: 0; font-size: 19px; font-weight: 700; color: #1c1c1e; }
+.pmx-found-head p { margin: 2px 0 0; color: var(--pm-muted); font-size: 14px; }
+.pmx-avoid {
+  display: flex; align-items: center; gap: 10px; margin: 0 16px 12px; padding: 12px 14px; border-radius: 12px;
+  background: #fdecea; color: #7a1f17; font-size: 16px; font-weight: 600;
+}
+.pmx-avoid svg { flex: 0 0 auto; color: var(--pm-danger-text); }
+.pmx-avoid small { display: block; font-size: 13px; font-weight: 400; }
+.pmx-btns { display: grid; gap: 4px; padding: 4px 16px 16px; }
+.pmx-btns ion-button { margin: 0; }
+.pmx-search {
+  box-sizing: border-box; width: calc(100% - 32px); min-height: 44px; margin: 0 16px 8px; padding: 0 12px; border: 0; border-radius: 10px;
+  background: #e3e3e8; color: #1c1c1e; font-size: 16px;
+}
+.pmx-spin-wrap { display: grid; justify-items: center; gap: 12px; padding: 36px 24px; color: var(--pm-muted); }
+
+/* Line sheet mock */
+.pmx-line-note { margin: 0 20px 12px; color: var(--pm-muted); font-size: 14px; }
