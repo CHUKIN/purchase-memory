@@ -143,6 +143,7 @@ export function AnalyticsHistoryList({
                     slot="end"
                     fill="clear"
                     color="medium"
+                    className="pm-icon-button"
                     disabled={busy}
                     aria-label={t("analytics.history.deleteLabel", { question: item.question })}
                     onClick={() => setConfirming(item.id)}

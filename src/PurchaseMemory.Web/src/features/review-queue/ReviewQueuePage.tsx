@@ -352,6 +352,7 @@ function PendingMatchSuggestions({ item, title, categories }: { item: ReviewQueu
               <ActionButton
                 slot="end"
                 size="small"
+                className="pm-tap-button"
                 fill={index === 0 ? "solid" : "outline"}
                 loading={busy(candidate)}
                 disabled={resolve.isPending && !busy(candidate)}

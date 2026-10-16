@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.RateLimiting;
+using PurchaseMemory.Application.Analytics;
 
 namespace PurchaseMemory.Api.Auth;
 
@@ -21,8 +22,9 @@ public sealed class ReceiptUploadRateLimitOptions
 }
 
 /// <summary>
-/// Per-user token bucket for analytics questions, each of which calls a model:
-/// a burst of 20 and then one more every 3 minutes, about 20 an hour.
+/// Per-user token bucket for analytics questions that call a model: a burst of
+/// 20 and then one more every 3 minutes, about 20 an hour. A question answered
+/// from the history uses nothing; see <see cref="AnalyticsQuestionQuota"/>.
 /// </summary>
 public sealed class AnalyticsQuestionRateLimitOptions
 {
@@ -60,8 +62,6 @@ public static class ReceiptUploadRateLimiting
     /// </summary>
     public const string BackfillPolicyName = "categorization-backfill";
 
-    public const string AnalyticsPolicyName = "analytics-questions";
-
     /// <summary>
     /// Re-running a plan costs no model call, only database work: a generous
     /// per-user bucket (120 at once, then one every 30 seconds ≈ 120 an hour).
@@ -95,6 +95,10 @@ public static class ReceiptUploadRateLimiting
             throw new InvalidOperationException($"{TagSuggestionRateLimitOptions.SectionName} values must be positive.");
         }
 
+        // Not a middleware policy: whether a question costs a model call is only
+        // known after the history was looked at, so the history service asks.
+        services.AddSingleton<IAnalyticsModelQuota>(_ => new AnalyticsQuestionQuota(questions));
+
         services.AddRateLimiter(options =>
         {
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
@@ -118,18 +122,6 @@ public static class ReceiptUploadRateLimiting
                         TokenLimit = 3,
                         TokensPerPeriod = 1,
                         ReplenishmentPeriod = TimeSpan.FromMinutes(10),
-                        QueueLimit = 0,
-                        AutoReplenishment = true
-                    }));
-
-            options.AddPolicy(AnalyticsPolicyName, context =>
-                RateLimitPartition.GetTokenBucketLimiter(
-                    AppUser.UserId(context.User) ?? "anonymous",
-                    _ => new TokenBucketRateLimiterOptions
-                    {
-                        TokenLimit = questions.TokenLimit,
-                        TokensPerPeriod = questions.TokensPerPeriod,
-                        ReplenishmentPeriod = TimeSpan.FromSeconds(questions.ReplenishmentPeriodSeconds),
                         QueueLimit = 0,
                         AutoReplenishment = true
                     }));
@@ -195,4 +187,41 @@ public static class ReceiptUploadRateLimiting
 
         return services;
     }
+}
+
+/// <summary>One token bucket per user for model-backed analytics questions.</summary>
+public sealed class AnalyticsQuestionQuota : IAnalyticsModelQuota, IDisposable
+{
+    private readonly PartitionedRateLimiter<string> _limiter;
+    private readonly TimeSpan _fallbackRetryAfter;
+
+    public AnalyticsQuestionQuota(AnalyticsQuestionRateLimitOptions options)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        _fallbackRetryAfter = TimeSpan.FromSeconds(options.ReplenishmentPeriodSeconds);
+        _limiter = PartitionedRateLimiter.Create<string, string>(userId =>
+            RateLimitPartition.GetTokenBucketLimiter(
+                userId,
+                _ => new TokenBucketRateLimiterOptions
+                {
+                    TokenLimit = options.TokenLimit,
+                    TokensPerPeriod = options.TokensPerPeriod,
+                    ReplenishmentPeriod = TimeSpan.FromSeconds(options.ReplenishmentPeriodSeconds),
+                    QueueLimit = 0,
+                    AutoReplenishment = true
+                }));
+    }
+
+    public TimeSpan? TryAcquire(string userId)
+    {
+        using var lease = _limiter.AttemptAcquire(userId);
+        if (lease.IsAcquired)
+        {
+            return null;
+        }
+
+        return lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter) ? retryAfter : _fallbackRetryAfter;
+    }
+
+    public void Dispose() => _limiter.Dispose();
 }

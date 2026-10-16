@@ -1,3 +1,4 @@
+import { legacyUpcECodes } from "./barcode";
 import { openIndexedDbKeyValue, type BatchKeyValue } from "../receipts/pendingBatchStore";
 
 /**
@@ -124,7 +125,8 @@ const emptyMedia = (productId: string): ProductMedia => ({ productId, photos: []
 export function createProductMediaStore(
   openStorage: () => Promise<BatchKeyValue | null>,
   now: () => number = Date.now,
-  newId: () => string = randomId
+  newId: () => string = randomId,
+  clearWaitMs = 2000
 ): ProductMediaStore {
   let storage: Promise<BatchKeyValue | null> | null = null;
   const kv = () => {
@@ -184,10 +186,16 @@ export function createProductMediaStore(
         const entry: ProductPhoto = { id: newId(), createdAt: now(), width: photo.width, height: photo.height, size: photo.blob.size };
         // Bytes, not the Blob: older iOS versions lost Blobs kept in IndexedDB.
         await store.put(photoKey(entry.id), { bytes: await photo.blob.arrayBuffer(), type: photo.blob.type || "image/jpeg" } satisfies StoredPhotoBytes);
-        const media = await readMedia(store, productId);
-        media.photos.push(entry);
-        media.mainPhotoId ??= entry.id;
-        await store.put(mediaKey(productId), media);
+        try {
+          const media = await readMedia(store, productId);
+          media.photos.push(entry);
+          media.mainPhotoId ??= entry.id;
+          await store.put(mediaKey(productId), media);
+        } catch (error) {
+          // The list never got the photo; do not leave its bytes behind unreachable.
+          await store.delete(photoKey(entry.id)).catch(() => undefined);
+          throw error;
+        }
         return entry;
       });
     },
@@ -244,10 +252,15 @@ export function createProductMediaStore(
     async findProductByBarcode(code) {
       try {
         const store = await kv();
-        const owner = await store?.get(barcodeKey(code));
-        if (!store || typeof owner !== "string") return null;
-        const media = await readMedia(store, owner);
-        return media.barcodes.some((barcode) => barcode.code === code) ? owner : null;
+        if (!store) return null;
+        // Codes saved before UPC-E was expanded sit under their 8-digit key.
+        for (const key of [code, ...legacyUpcECodes(code)]) {
+          const owner = await store.get(barcodeKey(key));
+          if (typeof owner !== "string") continue;
+          const media = await readMedia(store, owner);
+          if (media.barcodes.some((barcode) => barcode.code === key)) return owner;
+        }
+        return null;
       } catch {
         return null;
       }
@@ -292,10 +305,21 @@ export function createProductMediaStore(
     },
 
     async clear() {
-      try {
-        await (await kv())?.clear();
-      } catch {
-        // Nothing left to protect either way.
+      // Queued behind writes already running, so a write that finishes later
+      // cannot bring photos back after sign-out.
+      // A hung write must not block sign-out: after a short wait, clear right
+      // away as well; the queued clear still runs once the queue drains.
+      const queued = write((store) => store.clear()).then(() => true, () => true);
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      const timeout = new Promise<boolean>((resolve) => { timer = setTimeout(() => resolve(false), clearWaitMs); });
+      const drained = await Promise.race([queued, timeout]);
+      clearTimeout(timer);
+      if (!drained) {
+        try {
+          await (await kv())?.clear();
+        } catch {
+          // Nothing left to protect either way.
+        }
       }
     }
   };

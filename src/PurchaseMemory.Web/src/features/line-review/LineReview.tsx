@@ -238,7 +238,7 @@ export function LineReview({ start, onClose, lines, isApproved, setApproved, onS
         <IonHeader>
           <IonToolbar>
             <IonButtons slot="start">
-              <IonButton onClick={onClose} aria-label={t("lineReview.close")}><X size={22} aria-hidden="true" /></IonButton>
+              <IonButton className="pm-icon-button" onClick={onClose} aria-label={t("lineReview.close")}><X size={22} aria-hidden="true" /></IonButton>
             </IonButtons>
             <IonTitle>
               <h2 id={titleId} className="pm-title-heading">

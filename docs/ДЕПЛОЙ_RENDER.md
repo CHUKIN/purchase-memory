@@ -117,7 +117,7 @@ Render принимает HTTPS и передаёт запрос в контей
 останавливается на первом доступном: при настроенном ключе OpenAI до Ollama дело
 не доходит. Служебные строки фабрики HTTP-клиентов (`System.Net.Http.HttpClient`)
 пишутся только с уровня Warning. С ключом Anthropic экран показывает
-«Распознавание доступно» и режим `anthropic · fallback: openai, ollama`; без него —
+«Распознавание доступно» и режим `anthropic · fallback: openai`; без него —
 `openai fallback`.
 
 ## Локальный запуск через `compose.yaml`: база в Docker-томе, не в `./data`

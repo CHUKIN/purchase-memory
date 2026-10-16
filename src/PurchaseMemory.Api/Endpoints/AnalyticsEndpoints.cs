@@ -6,8 +6,8 @@ namespace PurchaseMemory.Api.Endpoints;
 
 /// <summary>
 /// Questions about the purchase history. Only <c>ask</c> can call a model (and
-/// is rate limited per user); a question asked before reuses its saved plan
-/// instead. <c>run</c> executes a plan a person edited with the chips, and the
+/// is rate limited per user, and only when it really calls the model); a
+/// question asked before reuses its saved plan instead and costs nothing. <c>run</c> executes a plan a person edited with the chips, and the
 /// history's <c>refresh</c> recalculates a saved plan; neither calls a model and
 /// both share a generous per-user limit. Everything sits behind the fallback
 /// «approved user» policy. The history is the household's, like all data in
@@ -20,7 +20,8 @@ public static class AnalyticsEndpoints
         endpoints.MapGet("/api/analytics/context", GetContextAsync).WithName("GetAnalyticsContext");
         endpoints.MapPost("/api/analytics/ask", AskAsync)
             .WithName("AskAnalyticsQuestion")
-            .RequireRateLimiting(ReceiptUploadRateLimiting.AnalyticsPolicyName);
+            // Cheap database bucket for every ask; the model allowance is checked in the service.
+            .RequireRateLimiting(ReceiptUploadRateLimiting.AnalyticsRunPolicyName);
         endpoints.MapPost("/api/analytics/run", RunAsync)
             .WithName("RunAnalyticsPlan")
             .RequireRateLimiting(ReceiptUploadRateLimiting.AnalyticsRunPolicyName);
@@ -42,7 +43,9 @@ public static class AnalyticsEndpoints
     private static async Task<IResult> AskAsync(
         AnalyticsAskRequest? request,
         ClaimsPrincipal user,
+        HttpContext context,
         IAnalyticsHistoryService history,
+        ILoggerFactory loggerFactory,
         CancellationToken cancellationToken)
     {
         if (request is null || string.IsNullOrWhiteSpace(request.Question))
@@ -65,6 +68,17 @@ public static class AnalyticsEndpoints
                 request.AskModel ?? false,
                 AppUser.Actor(user),
                 cancellationToken));
+        }
+        catch (AnalyticsRateLimitedException limited)
+        {
+            AuthLogMessages.UploadRateLimited(loggerFactory.CreateLogger("Auth"), AppUser.UserId(user) ?? "anonymous");
+            var retryAfterSeconds = (int)Math.Ceiling((limited.RetryAfter ?? TimeSpan.FromMinutes(3)).TotalSeconds);
+            context.Response.Headers.RetryAfter = retryAfterSeconds.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            return Results.Problem(
+                title: "Too many questions",
+                detail: "Too many questions in a short time. Filters can still be changed by hand.",
+                statusCode: StatusCodes.Status429TooManyRequests,
+                extensions: new Dictionary<string, object?> { ["retryAfterSeconds"] = retryAfterSeconds });
         }
         catch (AnalyticsQuestionsDisabledException)
         {
