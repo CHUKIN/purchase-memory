@@ -444,7 +444,7 @@ export const helpRu: HelpText = {
       ],
       trouble: [
         "«Похоже, это вопрос не о покупках» — переформулируйте про траты, товары, магазины или цены.",
-        "Подряд можно задать до 20 вопросов, дальше — один раз в 3 минуты. Фильтры готового ответа можно менять и после лимита.",
+        "Подряд можно задать до 20 новых вопросов, дальше — один раз в 3 минуты. Вопрос, который уже задавали, берётся из истории и в лимит не входит; «Спросить заново» запрашивает модель и в лимит входит. Фильтры готового ответа можно менять и после лимита.",
         "Если вопросы выключены на сервере, готовый ответ всё равно можно менять фильтрами.",
         "Ответ неточный — проверьте, не остались ли строки без цены или товары без категории в «Нужно проверить».",
         "«Один из тегов не найден — этот фильтр убран»: тег удалили или такого тега нет, ответ посчитан без него. Если выбрано несколько тегов (через вопрос или MCP), учитываются только товары со всеми ними сразу."
@@ -897,7 +897,7 @@ export const helpEn: HelpText = {
       ],
       trouble: [
         "“That does not look like a question about purchases” — rephrase it around spending, products, stores or prices.",
-        "Up to 20 questions in a row, then one every 3 minutes. The filters of an existing answer still work after the limit.",
+        "Up to 20 new questions in a row, then one every 3 minutes. A question asked before is answered from the history and does not count; “Ask again” calls the model and does count. The filters of an existing answer still work after the limit.",
         "If questions are turned off on the server, an existing answer can still be changed with filters.",
         "Answer looks off — check “Needs attention” for lines without a price or products without a category.",
         "“A tag was not found — that filter was removed”: the tag was deleted or doesn't exist, and the answer is computed without it. With several tags (from a question or MCP) only products carrying all of them are counted."

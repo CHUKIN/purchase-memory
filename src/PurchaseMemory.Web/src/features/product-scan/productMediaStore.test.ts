@@ -1,6 +1,6 @@
 import "fake-indexeddb/auto";
 import { describe, expect, it } from "vitest";
-import { createMemoryStorage, openIndexedDbKeyValue } from "../receipts/pendingBatchStore";
+import { createMemoryStorage, openIndexedDbKeyValue, type BatchKeyValue } from "../receipts/pendingBatchStore";
 import { createProductMediaStore, MediaStorageUnavailableError } from "./productMediaStore";
 
 function memoryStore() {
@@ -87,5 +87,51 @@ describe("product media store", () => {
 
     await reopened.clear();
     expect(await reopened.getProductMedia("milk")).toEqual({ productId: "milk", photos: [], mainPhotoId: null, barcodes: [], avoid: null });
+  });
+
+  it("clears after the writes already in flight, so nothing comes back after sign-out", async () => {
+    const store = memoryStore();
+    const pending = store.addPhoto("milk", jpeg("late"));
+    const cleared = store.clear();
+    await Promise.all([pending, cleared]);
+    expect(await store.getProductMedia("milk")).toEqual({ productId: "milk", photos: [], mainPhotoId: null, barcodes: [], avoid: null });
+    expect(await store.getPhotoBlob("p1")).toBeNull();
+  });
+
+  it("finds a code saved as an 8-digit UPC-E by its expanded EAN-13", async () => {
+    const store = memoryStore();
+    // Stage 1b stored the raw 8 digits.
+    await store.addBarcode("milk", "01234565", "scan");
+    expect(await store.findProductByBarcode("0012345000065")).toBe("milk");
+    expect(await store.findProductByBarcode("0012345000066")).toBeNull();
+  });
+
+  it("clears at once when a hung write would block sign-out", async () => {
+    const storage = createMemoryStorage();
+    let release: () => void = () => undefined;
+    const hung = new Promise<void>((resolve) => { release = resolve; });
+    const slow: BatchKeyValue = { ...storage, put: async (key, value) => { await hung; return storage.put(key, value); } };
+    await storage.put("media:milk", { photos: [], mainPhotoId: null, barcodes: [], avoid: { since: 1 } });
+    const store = createProductMediaStore(async () => slow, () => 1, () => "p1", 10);
+    const stuck = store.setAvoid("milk", true);
+    await store.clear();
+    expect(await storage.get("media:milk")).toBeUndefined();
+    release();
+    await stuck;
+  });
+
+  it("does not leave photo bytes behind when saving the photo list fails", async () => {
+    const storage = createMemoryStorage();
+    const failing: BatchKeyValue = {
+      ...storage,
+      put: async (key, value) => {
+        if (key.startsWith("media:")) throw new Error("disk full");
+        return storage.put(key, value);
+      }
+    };
+    let id = 0;
+    const store = createProductMediaStore(async () => failing, () => 1, () => `p${++id}`);
+    await expect(store.addPhoto("milk", jpeg("orphan"))).rejects.toThrow("disk full");
+    expect(await storage.get("photo:p1")).toBeUndefined();
   });
 });

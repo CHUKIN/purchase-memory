@@ -436,7 +436,7 @@ public sealed class AnthropicStructuredVisionProviderTests
         configuration.GetSection(ReceiptRecognitionOptions.SectionName).Bind(options);
 
         Assert.Equal("anthropic", options.Pipeline);
-        Assert.Equal(["openai", "ollama"], options.FallbackPipelines);
+        Assert.Equal(["openai"], options.FallbackPipelines);
         Assert.Equal("claude-haiku-5-5", options.AnthropicModel);
         Assert.Equal(AnthropicEffort.Medium, options.AnthropicEffort);
         Assert.Equal(ReceiptAnalysisContractVersion.V4Structured, options.AnthropicReceiptContract);

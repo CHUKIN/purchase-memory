@@ -127,6 +127,43 @@ public sealed class AnalyticsHistoryEntryOutdatedException : Exception
     }
 }
 
+/// <summary>
+/// Per-user allowance for questions that really call the model. A question
+/// answered from the history never asks for it.
+/// </summary>
+public interface IAnalyticsModelQuota
+{
+    /// <summary>Takes one model call from the user's allowance; null when allowed, else how long to wait.</summary>
+    TimeSpan? TryAcquire(string userId);
+}
+
+/// <summary>The user has asked the model too many questions for now.</summary>
+public sealed class AnalyticsRateLimitedException : Exception
+{
+    public AnalyticsRateLimitedException()
+        : base("Too many analytics questions in a short time.")
+    {
+    }
+
+    public AnalyticsRateLimitedException(string message)
+        : base(message)
+    {
+    }
+
+    public AnalyticsRateLimitedException(string message, Exception innerException)
+        : base(message, innerException)
+    {
+    }
+
+    public AnalyticsRateLimitedException(TimeSpan retryAfter)
+        : this()
+    {
+        RetryAfter = retryAfter;
+    }
+
+    public TimeSpan? RetryAfter { get; }
+}
+
 public interface IAnalyticsHistoryService
 {
     /// <summary>
@@ -135,6 +172,7 @@ public interface IAnalyticsHistoryService
     /// is set («Спросить заново»); either way the existing entry is updated
     /// instead of duplicated.
     /// </summary>
+    /// <exception cref="AnalyticsRateLimitedException">The model would be called but the user's allowance is used up.</exception>
     Task<AnalyticsAskOutcome> AskAsync(
         string question,
         AnalyticsPlan? previousPlan,
@@ -171,17 +209,20 @@ public sealed partial class AnalyticsHistoryService : IAnalyticsHistoryService
 
     private readonly IAnalyticsService _analytics;
     private readonly IAnalyticsHistoryRepository _repository;
+    private readonly IAnalyticsModelQuota _quota;
     private readonly TimeProvider _timeProvider;
     private readonly ILogger<AnalyticsHistoryService> _logger;
 
     public AnalyticsHistoryService(
         IAnalyticsService analytics,
         IAnalyticsHistoryRepository repository,
+        IAnalyticsModelQuota quota,
         TimeProvider timeProvider,
         ILogger<AnalyticsHistoryService> logger)
     {
         _analytics = analytics;
         _repository = repository;
+        _quota = quota;
         _timeProvider = timeProvider;
         _logger = logger;
     }
@@ -225,6 +266,12 @@ public sealed partial class AnalyticsHistoryService : IAnalyticsHistoryService
         if (!_analytics.CanAsk)
         {
             throw new AnalyticsQuestionsDisabledException();
+        }
+
+        // Only a question that really calls the model uses the allowance.
+        if (_quota.TryAcquire(actor.UserId) is { } retryAfter)
+        {
+            throw new AnalyticsRateLimitedException(retryAfter);
         }
 
         var planned = await _analytics.AskAsync(question, previousPlan, locale, cancellationToken);

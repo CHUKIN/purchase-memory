@@ -106,6 +106,36 @@ public sealed class AnalyticsHistoryTests
     }
 
     [Fact]
+    public async Task AQuestionAnsweredFromTheHistoryDoesNotUseTheModelAllowance()
+    {
+        var planner = new FakePlanner();
+        await using var host = new AuthTestHost(
+            settings: new Dictionary<string, string?> { ["RateLimiting:AnalyticsQuestions:TokenLimit"] = "1" },
+            configureServices: services => services.AddSingleton<IAnalyticsQueryPlanner>(planner));
+        using var anna = host.CreateClientFor(AuthTestHost.Token());
+
+        // The one model call the allowance has.
+        await AskAsync(anna, new { question = "Сколько потратили в этом году?" });
+        Assert.Equal(1, planner.Calls);
+
+        // Repeating it is served from the history: never limited, however often.
+        for (var attempt = 0; attempt < 3; attempt++)
+        {
+            Assert.True((await AskAsync(anna, new { question = "Сколько потратили в этом году?" })).GetProperty("reused").GetBoolean());
+        }
+
+        Assert.Equal(1, planner.Calls);
+
+        // A new question (or an explicit «Спросить заново») needs the model, and the allowance is used up.
+        var another = await anna.PostAsJsonAsync("/api/analytics/ask", new { question = "А по магазинам за год?" }, Cancel);
+        Assert.Equal(HttpStatusCode.TooManyRequests, another.StatusCode);
+        Assert.True(another.Headers.RetryAfter is not null);
+        var again = await anna.PostAsJsonAsync("/api/analytics/ask", new { question = "Сколько потратили в этом году?", askModel = true }, Cancel);
+        Assert.Equal(HttpStatusCode.TooManyRequests, again.StatusCode);
+        Assert.Equal(1, planner.Calls);
+    }
+
+    [Fact]
     public async Task TheHistoryBelongsToTheHouseholdAndShowsWhoAskedLast()
     {
         var planner = new FakePlanner();

@@ -148,4 +148,8 @@ internal static partial class AuthLogMessages
     [LoggerMessage(EventId = 7004, Level = LogLevel.Information,
         Message = "Receipt upload rate limit hit for user {UserId}")]
     public static partial void UploadRateLimited(ILogger logger, string userId);
+
+    [LoggerMessage(EventId = 7005, Level = LogLevel.Information,
+        Message = "Analytics model question limit hit for user {UserId}")]
+    public static partial void AnalyticsQuestionRateLimited(ILogger logger, string userId);
 }
