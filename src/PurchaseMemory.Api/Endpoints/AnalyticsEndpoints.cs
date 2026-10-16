@@ -71,7 +71,9 @@ public static class AnalyticsEndpoints
         }
         catch (AnalyticsRateLimitedException limited)
         {
-            AuthLogMessages.UploadRateLimited(loggerFactory.CreateLogger("Auth"), AppUser.UserId(user) ?? "anonymous");
+            var logger = loggerFactory.CreateLogger("Auth");
+            var userId = AppUser.UserId(user) ?? "anonymous";
+            AuthLogMessages.AnalyticsQuestionRateLimited(logger, userId);
             var retryAfterSeconds = (int)Math.Ceiling((limited.RetryAfter ?? TimeSpan.FromMinutes(3)).TotalSeconds);
             context.Response.Headers.RetryAfter = retryAfterSeconds.ToString(System.Globalization.CultureInfo.InvariantCulture);
             return Results.Problem(
