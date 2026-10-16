@@ -10,7 +10,7 @@ namespace PurchaseMemory.Application.Purchases;
 /// <summary>What a person decided about a line's catalog product.</summary>
 public enum ProductLinkChoice
 {
-    /// <summary>No decision: the deterministic matcher links the line (or asks again).</summary>
+    /// <summary>No decision: the deterministic matcher links the line (flagging a doubtful product).</summary>
     Automatic,
 
     /// <summary>Link to the product given in <see cref="EditPurchaseItemCommand.ProductId"/>.</summary>
@@ -23,7 +23,7 @@ public enum ProductLinkChoice
 /// <param name="BoundingBox">Echoed back from the detail view so the receipt photo region survives an edit.</param>
 /// <param name="LineId">
 /// The saved line this one continues (its id from the detail view); null for a
-/// new line. Used only to keep the line's «checked» mark across the edit.
+/// new line. Keeps the line's «checked» mark and its impressions across the edit.
 /// </param>
 public sealed record EditPurchaseItemCommand(
     string Name,
@@ -58,8 +58,6 @@ public sealed class PurchaseConcurrencyException(Guid purchaseId)
     public Guid PurchaseId { get; } = purchaseId;
 }
 
-public sealed record PurchaseProductCandidateView(Guid ProductId, string Name, double Score);
-
 public sealed record PurchaseDetailItemView(
     int Position,
     string Name,
@@ -71,8 +69,8 @@ public sealed record PurchaseDetailItemView(
     int? DiscountedItemPosition,
     Guid? ProductId,
     string? ProductName,
-    bool PendingMatch,
-    IReadOnlyList<PurchaseProductCandidateView> Candidates,
+    // The linked product carries the «проверить» flag.
+    bool ProductNeedsReview,
     BoundingBox? BoundingBox,
     Guid Id,
     DateTimeOffset? ApprovedAt = null,
@@ -173,7 +171,8 @@ public sealed class PurchaseEditService(
         }
 
         var oldItems = draft.Items.OrderBy(item => item.Position).ToList();
-        CarryApprovals(command.Items, newItems, oldItems);
+        var continued = MatchContinuedLines(command.Items, oldItems);
+        CarryApprovals(continued, newItems, oldItems);
         var oldLinks = oldItems.Select(item => item.ProductId).ToList();
         // Lines shift when one is added or removed, so a kept link is recognised
         // by product, not by position.
@@ -290,7 +289,10 @@ public sealed class PurchaseEditService(
         }
 
         // One unit of work: purchase, receipt snapshot, audit and catalog links.
-        await purchases.SaveChangesAsync(cancellationToken);
+        // Impressions on a continued line follow it to its replacement row.
+        await purchases.SaveChangesAsync(
+            continued.ToDictionary(pair => pair.Key, pair => newItems[pair.Value].Id),
+            cancellationToken);
 
         // Lines without a person's decision go through the same matcher as a
         // fresh save; lines linked above are left alone as already linked.
@@ -311,20 +313,41 @@ public sealed class PurchaseEditService(
     }
 
     /// <summary>
-    /// A correction replaces every line row. A line that continues an approved
-    /// one (by its id) stays approved even if its content changed: the person
-    /// who edits a line is looking at it, and the swipe review counts an edit
-    /// as a check. Each old line hands its mark to at most one new line.
+    /// A correction replaces every line row. A new line continues the saved
+    /// line whose id it carries; ids that are not lines of this purchase are
+    /// ignored, and each old line is continued by at most one new line (the first).
+    /// </summary>
+    /// <returns>Old line id → position of the new line in the command.</returns>
+    private static Dictionary<Guid, int> MatchContinuedLines(
+        IReadOnlyList<EditPurchaseItemCommand> commands,
+        List<PurchaseItem> oldItems)
+    {
+        var oldIds = oldItems.Select(item => item.Id).ToHashSet();
+        var continued = new Dictionary<Guid, int>();
+        for (var position = 0; position < commands.Count; position++)
+        {
+            if (commands[position].LineId is { } lineId && oldIds.Contains(lineId))
+            {
+                continued.TryAdd(lineId, position);
+            }
+        }
+
+        return continued;
+    }
+
+    /// <summary>
+    /// A line that continues an approved one stays approved even if its content
+    /// changed: the person who edits a line is looking at it, and the swipe
+    /// review counts an edit as a check.
     /// </summary>
     private static void CarryApprovals(
-        IReadOnlyList<EditPurchaseItemCommand> commands,
+        Dictionary<Guid, int> continued,
         List<PurchaseItem> newItems,
         List<PurchaseItem> oldItems)
     {
-        var approved = oldItems.Where(item => item.IsApproved).ToDictionary(item => item.Id);
-        for (var position = 0; position < commands.Count; position++)
+        foreach (var previous in oldItems.Where(item => item.IsApproved))
         {
-            if (commands[position].LineId is { } lineId && approved.Remove(lineId, out var previous))
+            if (continued.TryGetValue(previous.Id, out var position))
             {
                 newItems[position].CarryApprovalFrom(previous);
             }
@@ -377,13 +400,9 @@ public sealed class PurchaseEditService(
     private async Task<PurchaseDetailView> CreateViewAsync(PurchaseDraft draft, CancellationToken cancellationToken)
     {
         var items = draft.Items.OrderBy(item => item.Position).ToList();
-        var pending = (await catalog.ListPendingMatchesAsync(items.Select(item => item.Id).ToList(), cancellationToken))
-            .ToDictionary(match => match.PurchaseItemId);
-        var names = await catalog.GetProductNamesAsync(
-            items.Where(item => item.ProductId is not null).Select(item => item.ProductId!.Value)
-                .Concat(pending.Values.SelectMany(match => match.Candidates).Select(candidate => candidate.ProductId))
-                .ToHashSet(),
-            cancellationToken);
+        var linkedIds = items.Where(item => item.ProductId is not null).Select(item => item.ProductId!.Value).ToHashSet();
+        var names = await catalog.GetProductNamesAsync(linkedIds, cancellationToken);
+        var flagged = await catalog.ListProductsNeedingReviewAsync(linkedIds, cancellationToken);
 
         // Photo regions live on the receipt snapshot; positions line up because
         // saving and editing both keep the two in step.
@@ -406,15 +425,7 @@ public sealed class PurchaseEditService(
                 item.DiscountedItemPosition,
                 item.ProductId,
                 item.ProductId is { } productId && names.TryGetValue(productId, out var name) ? name : null,
-                pending.ContainsKey(item.Id),
-                pending.TryGetValue(item.Id, out var match)
-                    ? match.Candidates
-                        .OrderByDescending(candidate => candidate.Score)
-                        .ThenBy(candidate => candidate.Position)
-                        .Where(candidate => names.ContainsKey(candidate.ProductId))
-                        .Select(candidate => new PurchaseProductCandidateView(candidate.ProductId, names[candidate.ProductId], candidate.Score))
-                        .ToList()
-                    : [],
+                item.ProductId is { } linkedId && flagged.Contains(linkedId),
                 boxes.GetValueOrDefault(item.Position),
                 item.Id,
                 item.ApprovedAt,

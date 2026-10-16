@@ -100,45 +100,51 @@ public sealed class PurchaseEditTests
     }
 
     [Fact]
-    public async Task PendingMatchIsResolvedByLinkingAnExistingProductAndTheStoreRemembersIt()
+    public async Task AFlaggedLineCanBeRelinkedToAnExistingProductAndTheStoreRemembersIt()
     {
         await using var host = new AuthTestHost();
         await SaveAsync(host.Services, "Biedronka", null, ("Ser Gouda plastry 150g", 1, 5m, 5m));
         var second = await SaveAsync(host.Services, "Biedronka", null, ("Ser Gouda plastry 250g", 1, 7m, 7m));
-        var queued = await FindQueueItemAsync(host.Services, ReviewQueueItemKind.PendingMatch, second.PurchaseId);
-        Assert.Equal(0, queued!.ItemPosition);
+        Guid existingId;
+        await using (var scope = host.Services.CreateAsyncScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<PurchaseMemoryDbContext>();
+            existingId = (await dbContext.Products.SingleAsync(product => product.CanonicalName == "Ser Gouda plastry 150g", Cancel)).Id;
+        }
+
         using var client = host.CreateClientFor(AuthTestHost.Token());
 
+        // Every line has a product now; a doubtful one is its own product with the flag.
         var detail = await client.GetFromJsonAsync<JsonElement>($"/api/purchases/{second.PurchaseId}", Cancel);
         var line = detail.GetProperty("items")[0];
-        Assert.True(line.GetProperty("pendingMatch").GetBoolean());
-        Assert.Equal(JsonValueKind.Null, line.GetProperty("productId").ValueKind);
-        var candidate = line.GetProperty("candidates")[0];
-        Assert.Equal("Ser Gouda plastry 150g", candidate.GetProperty("name").GetString());
-        var productId = candidate.GetProperty("productId").GetGuid();
+        Assert.True(line.GetProperty("productNeedsReview").GetBoolean());
+        Assert.Equal("Ser Gouda plastry 250g", line.GetProperty("productName").GetString());
+        var flaggedId = line.GetProperty("productId").GetGuid();
+        Assert.NotEqual(existingId, flaggedId);
 
         var body = Snapshot(detail);
         body["items"]![0]!["productLink"] = "existing";
-        body["items"]![0]!["productId"] = productId;
+        body["items"]![0]!["productId"] = existingId;
         var response = await client.PutAsJsonAsync($"/api/purchases/{second.PurchaseId}", body, Cancel);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var updated = await response.Content.ReadFromJsonAsync<JsonElement>(Cancel);
-        Assert.Equal(productId, updated.GetProperty("items")[0].GetProperty("productId").GetGuid());
-        Assert.False(updated.GetProperty("items")[0].GetProperty("pendingMatch").GetBoolean());
-        Assert.Null(await FindQueueItemAsync(host.Services, ReviewQueueItemKind.PendingMatch, second.PurchaseId));
+        Assert.Equal(existingId, updated.GetProperty("items")[0].GetProperty("productId").GetGuid());
+        Assert.False(updated.GetProperty("items")[0].GetProperty("productNeedsReview").GetBoolean());
 
         await using (var scope = host.Services.CreateAsyncScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<PurchaseMemoryDbContext>();
             var alias = await dbContext.ProductAliases.SingleAsync(alias => alias.RawText == "Ser Gouda plastry 250g", Cancel);
-            Assert.Equal(productId, alias.ProductId);
+            Assert.Equal(existingId, alias.ProductId);
             Assert.Equal(ProductAliasSource.HumanConfirmed, alias.Source);
         }
 
         // The next receipt from the same store follows the person's decision.
         var third = await SaveAsync(host.Services, "Biedronka", null, ("Ser Gouda plastry 250g", 1, 7m, 7m));
-        Assert.Null(await FindQueueItemAsync(host.Services, ReviewQueueItemKind.PendingMatch, third.PurchaseId));
+        var thirdDetail = await client.GetFromJsonAsync<JsonElement>($"/api/purchases/{third.PurchaseId}", Cancel);
+        Assert.Equal(existingId, thirdDetail.GetProperty("items")[0].GetProperty("productId").GetGuid());
+        Assert.False(thirdDetail.GetProperty("items")[0].GetProperty("productNeedsReview").GetBoolean());
     }
 
     [Fact]
@@ -155,10 +161,11 @@ public sealed class PurchaseEditTests
         var updated = await (await client.PutAsJsonAsync($"/api/purchases/{second.PurchaseId}", body, Cancel))
             .Content.ReadFromJsonAsync<JsonElement>(Cancel);
 
+        // «Создать товар» in the editor makes an ordinary product, never a flagged one.
         var line = updated.GetProperty("items")[0];
         Assert.Equal("Ser Gouda plastry 250g", line.GetProperty("productName").GetString());
-        Assert.NotEqual(detail.GetProperty("items")[0].GetProperty("candidates")[0].GetProperty("productId").GetGuid(), line.GetProperty("productId").GetGuid());
-        Assert.Null(await FindQueueItemAsync(host.Services, ReviewQueueItemKind.PendingMatch, second.PurchaseId));
+        Assert.NotEqual(detail.GetProperty("items")[0].GetProperty("productId").GetGuid(), line.GetProperty("productId").GetGuid());
+        Assert.False(line.GetProperty("productNeedsReview").GetBoolean());
     }
 
     [Fact]
@@ -317,6 +324,230 @@ public sealed class PurchaseEditTests
         var problem = await response.Content.ReadFromJsonAsync<JsonElement>(Cancel);
         var detail = problem.TryGetProperty("detail", out var value) ? value.GetString() ?? string.Empty : problem.ToString();
         Assert.Contains(expectedText, detail, StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// Regression: a line with an impression that keeps its position (an edited
+    /// price or name) used to fail the save with an EF Core circular dependency.
+    /// The impression and the «checked» mark follow the line through an edit, an
+    /// inserted line before it and a reorder; nothing else on the lines changes.
+    /// </summary>
+    [Fact]
+    public async Task ImpressionsAndApprovalsFollowTheirLineThroughEditsInsertsAndReorders()
+    {
+        await using var host = new AuthTestHost();
+        var purchase = await SaveAsync(host.Services, "Lidl", 18.00m,
+            ("MLEKO", 1, 3.00m, 3.00m), ("SER", 1, 6.00m, 6.00m), ("JAJA", 1, 9.00m, 9.00m));
+        using var client = host.CreateClientFor(AuthTestHost.Token());
+        var url = $"/api/purchases/{purchase.PurchaseId}";
+        var detail = await client.GetFromJsonAsync<JsonElement>(url, Cancel);
+        var serProductId = LineNamed(detail, "SER").GetProperty("productId").GetGuid();
+        var like = await RateAsync(client, LineNamed(detail, "SER").GetProperty("id").GetGuid(), "like", "Вкусный");
+        var dislike = await RateAsync(client, LineNamed(detail, "MLEKO").GetProperty("id").GetGuid(), "dislike", null);
+        await ApproveAsync(client, purchase.PurchaseId, LineNamed(detail, "SER").GetProperty("id").GetGuid());
+        await ApproveAsync(client, purchase.PurchaseId, LineNamed(detail, "MLEKO").GetProperty("id").GetGuid());
+        detail = await client.GetFromJsonAsync<JsonElement>(url, Cancel);
+        var serApprovedAt = LineNamed(detail, "SER").GetProperty("approvedAt").GetDateTimeOffset();
+        var mlekoApprovedAt = LineNamed(detail, "MLEKO").GetProperty("approvedAt").GetDateTimeOffset();
+
+        // 1. Same positions: SER is re-priced and renamed, MLEKO and JAJA are sent back unchanged.
+        var edited = await PutAsync(client, url, EditorBody(detail, items =>
+        {
+            items[1]!["name"] = "SER GOUDA";
+            items[1]!["unitPrice"] = 6.50m;
+            items[1]!["lineTotal"] = 6.50m;
+        }, receiptTotal: 18.50m));
+        Assert.Equal(["MLEKO", "SER GOUDA", "JAJA"], Names(edited));
+        Assert.Equal([3.00m, 6.50m, 9.00m], LineTotals(edited));
+        Assert.Equal(serProductId, edited.GetProperty("items")[1].GetProperty("productId").GetGuid());
+        await AssertFollowsAsync(client, purchase.PurchaseId, edited, like, "SER GOUDA", "Вкусный");
+        await AssertFollowsAsync(client, purchase.PurchaseId, edited, dislike, "MLEKO", null);
+        AssertApproved(edited, "SER GOUDA", serApprovedAt);
+        AssertApproved(edited, "MLEKO", mlekoApprovedAt);
+        Assert.False(LineNamed(edited, "JAJA").GetProperty("approved").GetBoolean());
+
+        // 2. A new line before them shifts every position by one.
+        var inserted = await PutAsync(client, url, EditorBody(edited, items => items.Insert(0, new JsonObject
+        {
+            ["name"] = "CHLEB", ["quantity"] = 1m, ["unit"] = "szt", ["unitPrice"] = 4.00m, ["lineTotal"] = 4.00m, ["productLink"] = "auto"
+        }), receiptTotal: 22.50m));
+        Assert.Equal(["CHLEB", "MLEKO", "SER GOUDA", "JAJA"], Names(inserted));
+        Assert.Equal([4.00m, 3.00m, 6.50m, 9.00m], LineTotals(inserted));
+        await AssertFollowsAsync(client, purchase.PurchaseId, inserted, like, "SER GOUDA", "Вкусный");
+        await AssertFollowsAsync(client, purchase.PurchaseId, inserted, dislike, "MLEKO", null);
+        AssertApproved(inserted, "SER GOUDA", serApprovedAt);
+        AssertApproved(inserted, "MLEKO", mlekoApprovedAt);
+        Assert.False(LineNamed(inserted, "CHLEB").GetProperty("approved").GetBoolean());
+
+        // 3. Swapping the two rated lines swaps their positions, not their impressions.
+        var reordered = await PutAsync(client, url, EditorBody(inserted, items =>
+        {
+            var mleko = items[1]!;
+            items.RemoveAt(1);
+            items.Insert(2, mleko);
+        }, receiptTotal: 22.50m));
+        Assert.Equal(["CHLEB", "SER GOUDA", "MLEKO", "JAJA"], Names(reordered));
+        Assert.Equal([4.00m, 6.50m, 3.00m, 9.00m], LineTotals(reordered));
+        await AssertFollowsAsync(client, purchase.PurchaseId, reordered, like, "SER GOUDA", "Вкусный");
+        await AssertFollowsAsync(client, purchase.PurchaseId, reordered, dislike, "MLEKO", null);
+        AssertApproved(reordered, "SER GOUDA", serApprovedAt);
+        AssertApproved(reordered, "MLEKO", mlekoApprovedAt);
+
+        var all = await ImpressionsAsync(client, purchase.PurchaseId);
+        Assert.Equal(2, all.Count);
+        Assert.Single((await client.GetFromJsonAsync<JsonElement>($"/api/products/{serProductId}/impressions", Cancel)).EnumerateArray());
+    }
+
+    /// <summary>
+    /// Deleting a rated line keeps the impression (the current, intended
+    /// behaviour): it stays on the purchase and its product, without a line.
+    /// The other lines keep their impressions and «checked» marks.
+    /// </summary>
+    [Fact]
+    public async Task DeletingARatedLineKeepsItsImpressionOnThePurchaseWithoutALine()
+    {
+        await using var host = new AuthTestHost();
+        var purchase = await SaveAsync(host.Services, "Lidl", 18.00m,
+            ("MLEKO", 1, 3.00m, 3.00m), ("SER", 1, 6.00m, 6.00m), ("JAJA", 1, 9.00m, 9.00m));
+        using var client = host.CreateClientFor(AuthTestHost.Token());
+        var url = $"/api/purchases/{purchase.PurchaseId}";
+        var detail = await client.GetFromJsonAsync<JsonElement>(url, Cancel);
+        var serProductId = LineNamed(detail, "SER").GetProperty("productId").GetGuid();
+        var like = await RateAsync(client, LineNamed(detail, "SER").GetProperty("id").GetGuid(), "like", "Вкусный");
+        var dislike = await RateAsync(client, LineNamed(detail, "JAJA").GetProperty("id").GetGuid(), "dislike", "Мелкие");
+        await ApproveAsync(client, purchase.PurchaseId, LineNamed(detail, "SER").GetProperty("id").GetGuid());
+        await ApproveAsync(client, purchase.PurchaseId, LineNamed(detail, "JAJA").GetProperty("id").GetGuid());
+        detail = await client.GetFromJsonAsync<JsonElement>(url, Cancel);
+        var jajaApprovedAt = LineNamed(detail, "JAJA").GetProperty("approvedAt").GetDateTimeOffset();
+
+        // SER goes; JAJA moves from position 2 to 1.
+        var updated = await PutAsync(client, url, EditorBody(detail, items => items.RemoveAt(1), receiptTotal: 12.00m));
+
+        Assert.Equal(["MLEKO", "JAJA"], Names(updated));
+        Assert.Equal([3.00m, 9.00m], LineTotals(updated));
+        await AssertFollowsAsync(client, purchase.PurchaseId, updated, dislike, "JAJA", "Мелкие");
+        AssertApproved(updated, "JAJA", jajaApprovedAt);
+        Assert.False(LineNamed(updated, "MLEKO").GetProperty("approved").GetBoolean());
+
+        var removed = (await ImpressionsAsync(client, purchase.PurchaseId)).Single(entry => entry.GetProperty("id").GetGuid() == like);
+        Assert.Equal(JsonValueKind.Null, removed.GetProperty("purchaseItemId").ValueKind);
+        Assert.Equal("like", removed.GetProperty("rating").GetString());
+        Assert.Equal("Вкусный", removed.GetProperty("note").GetString());
+        Assert.Equal("SER", removed.GetProperty("itemName").GetString());
+        var forProduct = await client.GetFromJsonAsync<JsonElement>($"/api/products/{serProductId}/impressions", Cancel);
+        Assert.Equal(like, Assert.Single(forProduct.EnumerateArray()).GetProperty("id").GetGuid());
+
+        // A later edit of the purchase does not trip over the line-less impression.
+        var again = await PutAsync(client, url, EditorBody(updated, items => items[0]!["name"] = "MLEKO 2%", receiptTotal: 12.00m));
+        Assert.Equal(["MLEKO 2%", "JAJA"], Names(again));
+        await AssertFollowsAsync(client, purchase.PurchaseId, again, dislike, "JAJA", "Мелкие");
+    }
+
+    /// <summary>
+    /// A body without line ids (an older client or a script) falls back to the
+    /// same-text match, and an unchanged-position line still saves.
+    /// </summary>
+    [Fact]
+    public async Task ABodyWithoutLineIdsKeepsImpressionsByTextAtTheSamePosition()
+    {
+        await using var host = new AuthTestHost();
+        var purchase = await SaveAsync(host.Services, "Lidl", 9.00m, ("MLEKO", 1, 3.00m, 3.00m), ("SER", 1, 6.00m, 6.00m));
+        using var client = host.CreateClientFor(AuthTestHost.Token());
+        var url = $"/api/purchases/{purchase.PurchaseId}";
+        var detail = await client.GetFromJsonAsync<JsonElement>(url, Cancel);
+        var like = await RateAsync(client, LineNamed(detail, "SER").GetProperty("id").GetGuid(), "like", null);
+
+        var updated = await PutAsync(client, url, Change(detail, body =>
+        {
+            body["items"]![1]!["unitPrice"] = 6.50m;
+            body["items"]![1]!["lineTotal"] = 6.50m;
+            body["receiptTotal"] = 9.50m;
+        }));
+
+        Assert.Equal([3.00m, 6.50m], LineTotals(updated));
+        await AssertFollowsAsync(client, purchase.PurchaseId, updated, like, "SER", null);
+    }
+
+    private static async Task<JsonElement> PutAsync(HttpClient client, string url, JsonObject body)
+    {
+        var response = await client.PutAsJsonAsync(url, body, Cancel);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        return await response.Content.ReadFromJsonAsync<JsonElement>(Cancel);
+    }
+
+    /// <summary>Like <see cref="Snapshot"/>, but each line also carries its id, as the app's editor sends it.</summary>
+    private static JsonObject EditorBody(JsonElement detail, Action<JsonArray> changeItems, decimal receiptTotal)
+    {
+        var body = Snapshot(detail);
+        var items = body["items"]!.AsArray();
+        var lines = detail.GetProperty("items").EnumerateArray().ToList();
+        for (var position = 0; position < lines.Count; position++)
+        {
+            items[position]!["id"] = lines[position].GetProperty("id").GetGuid();
+        }
+
+        changeItems(items);
+        body["receiptTotal"] = receiptTotal;
+        return body;
+    }
+
+    private static JsonElement LineNamed(JsonElement detail, string name) =>
+        detail.GetProperty("items").EnumerateArray().Single(item => item.GetProperty("name").GetString() == name);
+
+    private static List<string?> Names(JsonElement detail) =>
+        detail.GetProperty("items").EnumerateArray().Select(item => item.GetProperty("name").GetString()).ToList();
+
+    private static List<decimal> LineTotals(JsonElement detail) =>
+        detail.GetProperty("items").EnumerateArray().Select(item => item.GetProperty("lineTotal").GetDecimal()).ToList();
+
+    private static void AssertApproved(JsonElement detail, string name, DateTimeOffset approvedAt)
+    {
+        var line = LineNamed(detail, name);
+        Assert.True(line.GetProperty("approved").GetBoolean());
+        Assert.Equal(approvedAt, line.GetProperty("approvedAt").GetDateTimeOffset());
+    }
+
+    /// <summary>The impression is on the current row of the named line, with its rating and note intact.</summary>
+    private static async Task AssertFollowsAsync(
+        HttpClient client,
+        Guid purchaseId,
+        JsonElement detail,
+        Guid impressionId,
+        string lineName,
+        string? note)
+    {
+        var impression = (await ImpressionsAsync(client, purchaseId)).Single(entry => entry.GetProperty("id").GetGuid() == impressionId);
+        Assert.Equal(LineNamed(detail, lineName).GetProperty("id").GetGuid(), impression.GetProperty("purchaseItemId").GetGuid());
+        Assert.Equal(note, impression.GetProperty("note").GetString());
+    }
+
+    private static async Task<List<JsonElement>> ImpressionsAsync(HttpClient client, Guid purchaseId) =>
+        (await client.GetFromJsonAsync<JsonElement>($"/api/purchases/{purchaseId}/impressions", Cancel)).EnumerateArray().ToList();
+
+    private static async Task<Guid> RateAsync(HttpClient client, Guid purchaseItemId, string rating, string? note)
+    {
+        using var form = new MultipartFormDataContent
+        {
+            { new StringContent(purchaseItemId.ToString()), "purchaseItemId" },
+            { new StringContent(rating), "rating" }
+        };
+        if (note is not null)
+        {
+            form.Add(new StringContent(note), "note");
+        }
+
+        var response = await client.PostAsync("/api/impressions", form, Cancel);
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        return (await response.Content.ReadFromJsonAsync<JsonElement>(Cancel)).GetProperty("id").GetGuid();
+    }
+
+    private static async Task ApproveAsync(HttpClient client, Guid purchaseId, Guid lineId)
+    {
+        var response = await client.PostAsJsonAsync("/api/purchases/line-approvals", new
+        {
+            items = new[] { new { purchaseId, lineId, approved = true } }
+        }, Cancel);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
     /// <summary>The detail response turned into a PUT body, the way the editor sends it back.</summary>

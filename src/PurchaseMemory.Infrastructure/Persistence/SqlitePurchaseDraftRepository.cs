@@ -117,11 +117,38 @@ public sealed class SqlitePurchaseDraftRepository : IPurchaseDraftRepository
             .ToListAsync(cancellationToken);
     }
 
-    public async Task SaveChangesAsync(CancellationToken cancellationToken)
+    public Task SaveChangesAsync(CancellationToken cancellationToken) =>
+        SaveChangesAsync(new Dictionary<Guid, Guid>(), cancellationToken);
+
+    public async Task SaveChangesAsync(IReadOnlyDictionary<Guid, Guid> continuedLines, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(continuedLines);
+
         // A correction replaces the line rows; impressions follow their line.
-        await ProductImpressionRepository.RelinkReplacedLinesAsync(_dbContext, cancellationToken);
+        var attachments = await ProductImpressionRepository.DetachFromReplacedLinesAsync(_dbContext, continuedLines, cancellationToken);
+        if (attachments.Count == 0)
+        {
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            return;
+        }
+
+        // Swap the line rows first, then point the impressions at the new rows
+        // (see DetachFromReplacedLinesAsync for why one save cannot do both).
+        // One transaction, so nobody ever sees an impression without its line.
+        await using var transaction = _dbContext.Database.CurrentTransaction is null
+            ? await _dbContext.Database.BeginTransactionAsync(cancellationToken)
+            : null;
         await _dbContext.SaveChangesAsync(cancellationToken);
+        foreach (var (impression, lineId) in attachments)
+        {
+            impression.MoveToItem(lineId);
+        }
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+        if (transaction is not null)
+        {
+            await transaction.CommitAsync(cancellationToken);
+        }
     }
 
     private static bool Contains(string? source, string query)

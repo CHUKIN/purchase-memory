@@ -52,37 +52,21 @@ public sealed class SqliteProductCatalogRepository : IProductCatalogRepository
         _dbContext.ProductAliases.Add(productAlias);
     }
 
-    public void AddPendingMatch(PendingProductMatch pendingMatch)
+    public void AddReviewCandidates(IReadOnlyCollection<ProductReviewCandidate> candidates)
     {
-        ArgumentNullException.ThrowIfNull(pendingMatch);
-        _dbContext.PendingProductMatches.Add(pendingMatch);
+        ArgumentNullException.ThrowIfNull(candidates);
+        _dbContext.ProductReviewCandidates.AddRange(candidates);
     }
 
-    public async Task RemovePendingMatchesAsync(
-        IReadOnlyCollection<Guid> purchaseItemIds,
-        CancellationToken cancellationToken)
+    public void AddAuditEntry(ProductAuditEntry entry)
     {
-        ArgumentNullException.ThrowIfNull(purchaseItemIds);
-
-        if (purchaseItemIds.Count == 0)
-        {
-            return;
-        }
-
-        var identifiers = purchaseItemIds.ToList();
-        var stale = await _dbContext.PendingProductMatches
-            .Where(pending => identifiers.Contains(pending.PurchaseItemId))
-            .ToListAsync(cancellationToken);
-
-        if (stale.Count > 0)
-        {
-            _dbContext.PendingProductMatches.RemoveRange(stale);
-        }
+        ArgumentNullException.ThrowIfNull(entry);
+        _dbContext.ProductAuditEntries.Add(entry);
     }
 
-    public Task<int> CountPendingMatchesAsync(CancellationToken cancellationToken)
+    public Task<int> CountProductsNeedingReviewAsync(CancellationToken cancellationToken)
     {
-        return _dbContext.PendingProductMatches.CountAsync(cancellationToken);
+        return _dbContext.Products.CountAsync(product => product.NeedsReview, cancellationToken);
     }
 
     public async Task<ProductCatalogPage> ListProductsAsync(
@@ -98,6 +82,16 @@ public sealed class SqliteProductCatalogRepository : IProductCatalogRepository
         var products = ApplyClassification(
             _dbContext.Products.AsNoTracking(),
             new ProductClassificationFilter(filter.CategoryIds, filter.Uncategorized, filter.NormalizedBrand, filter.TagIds));
+
+        if (filter.NeedsReview)
+        {
+            products = products.Where(product => product.NeedsReview);
+        }
+
+        if (filter.ExcludeProductId is { } excluded)
+        {
+            products = products.Where(product => product.Id != excluded);
+        }
 
         var normalizedQuery = ProductNameNormalizer.Normalize(filter.Query);
         if (normalizedQuery.Length > 0)
@@ -130,6 +124,8 @@ public sealed class SqliteProductCatalogRepository : IProductCatalogRepository
                 product.CategoryId,
                 product.CategorySource,
                 product.Brand,
+                product.NeedsReview,
+                product.Origin,
                 PurchaseCount = _dbContext.PurchaseDrafts
                     .Count(draft => draft.Items.Any(item => item.ProductId == product.Id)),
                 LinkedItemCount = _dbContext.Set<PurchaseItem>().Count(item => item.ProductId == product.Id),
@@ -150,7 +146,9 @@ public sealed class SqliteProductCatalogRepository : IProductCatalogRepository
                     row.UpdatedAt,
                     row.CategoryId,
                     row.CategorySource,
-                    row.Brand))
+                    row.Brand,
+                    NeedsReview: row.NeedsReview,
+                    Origin: row.Origin))
                 .ToList(),
             page,
             pageSize,
@@ -254,22 +252,71 @@ public sealed class SqliteProductCatalogRepository : IProductCatalogRepository
             .ToDictionaryAsync(product => product.Id, product => product.CanonicalName, cancellationToken);
     }
 
-    public async Task<IReadOnlyList<PendingProductMatch>> ListPendingMatchesAsync(
-        IReadOnlyCollection<Guid> purchaseItemIds,
+    public async Task<IReadOnlyDictionary<Guid, IReadOnlyList<ProductReviewCandidateView>>> ListReviewCandidatesAsync(
+        IReadOnlyCollection<Guid> productIds,
         CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(purchaseItemIds);
-        if (purchaseItemIds.Count == 0)
+        ArgumentNullException.ThrowIfNull(productIds);
+        if (productIds.Count == 0)
         {
-            return [];
+            return new Dictionary<Guid, IReadOnlyList<ProductReviewCandidateView>>();
         }
 
-        var identifiers = purchaseItemIds.ToList();
-        return await _dbContext.PendingProductMatches
-            .AsNoTracking()
-            .Include(pending => pending.Candidates)
-            .Where(pending => identifiers.Contains(pending.PurchaseItemId))
+        // Flat queries and in-memory grouping keep the SQL the same on SQLite
+        // and Postgres; the inner join drops candidates whose product is gone.
+        var identifiers = productIds.Distinct().ToList();
+        var rows = await (
+                from candidate in _dbContext.ProductReviewCandidates.AsNoTracking()
+                where identifiers.Contains(candidate.ProductId)
+                join product in _dbContext.Products.AsNoTracking() on candidate.CandidateProductId equals product.Id
+                select new
+                {
+                    candidate.ProductId,
+                    candidate.Position,
+                    candidate.Score,
+                    CandidateId = product.Id,
+                    product.CanonicalName,
+                    product.Brand,
+                    product.CategoryId,
+                    PurchaseCount = _dbContext.PurchaseDrafts
+                        .Count(draft => draft.Items.Any(item => item.ProductId == product.Id))
+                })
             .ToListAsync(cancellationToken);
+
+        return rows
+            .GroupBy(row => row.ProductId)
+            .ToDictionary(
+                group => group.Key,
+                group => (IReadOnlyList<ProductReviewCandidateView>)group
+                    .OrderByDescending(row => row.Score)
+                    .ThenBy(row => row.Position)
+                    .Select(row => new ProductReviewCandidateView(
+                        row.CandidateId,
+                        row.CanonicalName,
+                        row.Brand,
+                        row.CategoryId,
+                        row.PurchaseCount,
+                        row.Score))
+                    .ToList());
+    }
+
+    public async Task<IReadOnlySet<Guid>> ListProductsNeedingReviewAsync(
+        IReadOnlyCollection<Guid> productIds,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(productIds);
+        if (productIds.Count == 0)
+        {
+            return new HashSet<Guid>();
+        }
+
+        var identifiers = productIds.Distinct().ToList();
+        var flagged = await _dbContext.Products
+            .AsNoTracking()
+            .Where(product => product.NeedsReview && identifiers.Contains(product.Id))
+            .Select(product => product.Id)
+            .ToListAsync(cancellationToken);
+        return flagged.ToHashSet();
     }
 
     public async Task<Product?> FindProductAsync(Guid productId, CancellationToken cancellationToken)

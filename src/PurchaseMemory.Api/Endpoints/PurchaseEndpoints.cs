@@ -317,8 +317,6 @@ public sealed record UpdatePurchaseRequest(
     }
 }
 
-public sealed record PurchaseProductCandidateResponse(Guid ProductId, string Name, double Score);
-
 public sealed record PurchaseDetailItemResponse(
     int Position,
     string Name,
@@ -330,8 +328,7 @@ public sealed record PurchaseDetailItemResponse(
     int? DiscountedItemPosition,
     Guid? ProductId,
     string? ProductName,
-    bool PendingMatch,
-    IReadOnlyList<PurchaseProductCandidateResponse> Candidates,
+    bool ProductNeedsReview,
     BoundingBoxPayload? BoundingBox,
     Guid Id,
     bool Approved,
@@ -374,9 +371,7 @@ public sealed record PurchaseDetailResponse(
                 item.DiscountedItemPosition,
                 item.ProductId,
                 item.ProductName,
-                item.PendingMatch,
-                item.Candidates.Select(candidate => new PurchaseProductCandidateResponse(
-                    candidate.ProductId, candidate.Name, candidate.Score)).ToList(),
+                item.ProductNeedsReview,
                 BoundingBoxPayload.FromDomain(item.BoundingBox),
                 item.Id,
                 item.ApprovedAt is not null,

@@ -10,6 +10,7 @@ import { isUsableBox } from "../receipt-photo/photoBox";
 import { discountLinks, isDiscount } from "../receipts/discountLines";
 import { LineFields, type EditableLine } from "../receipts/LinesEditor";
 import { LineProductMedia } from "../product-scan/LineProductMedia";
+import { ProductLinkRows, productStatusText, type LinkChoice } from "../purchases/ProductLinkRows";
 
 /** What the review needs from a purchase line. */
 export interface ReviewLine {
@@ -24,12 +25,16 @@ export interface ReviewLine {
   productName?: string | null;
   /** The linked product; its photos and barcodes can be added from the line's sheet. */
   productId?: string | null;
-  pendingMatch?: boolean;
+  /** The linked product carries the «проверить» flag. */
+  productNeedsReview?: boolean;
   approved?: boolean;
 }
 
-/** The fields the swipe-left editor can change. */
-export type ReviewLinePatch = Pick<EditableLine, "name" | "quantity" | "unit" | "unitPrice" | "lineTotal">;
+/**
+ * The fields the swipe-left editor can change: the line itself and, through
+ * «Изменить товар», its product (sent like the purchase editor's choice).
+ */
+export type ReviewLinePatch = Pick<EditableLine, "name" | "quantity" | "unit" | "unitPrice" | "lineTotal"> & Partial<LinkChoice>;
 
 /**
  * How the review opens: at a tapped line (`index`), or (`index: null`, the
@@ -103,6 +108,7 @@ export function LineReview({ start, onClose, lines, isApproved, setApproved, onS
   const [editing, setEditing] = useState<{ index: number; draft: ReviewLinePatch } | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const drag = useRef<{ id: number; x: number; y: number; dragging: boolean; width: number } | null>(null);
@@ -151,9 +157,20 @@ export function LineReview({ start, onClose, lines, isApproved, setApproved, onS
     if (!line || leaving || current === null) return;
     setDragX(0);
     setSaveError(null);
+    setPickerOpen(false);
     setEditing({
       index: current,
-      draft: { name: line.name, quantity: line.quantity, unit: line.unit, unitPrice: line.unitPrice, lineTotal: line.lineTotal }
+      draft: {
+        name: line.name,
+        quantity: line.quantity,
+        unit: line.unit,
+        unitPrice: line.unitPrice,
+        lineTotal: line.lineTotal,
+        productLink: line.productId ? "existing" : "auto",
+        productId: line.productId ?? null,
+        productName: line.productName ?? null,
+        productNeedsReview: Boolean(line.productNeedsReview)
+      }
     });
   };
 
@@ -345,7 +362,28 @@ export function LineReview({ start, onClose, lines, isApproved, setApproved, onS
             />
             {saveError && <Notice tone="danger" role="alert"><p>{saveError}</p></Notice>}
             {lines[editing.index] && !isDiscount(lines[editing.index]) && (
-              <LineProductMedia productId={lines[editing.index].productId} productName={lines[editing.index].productName} />
+              <>
+                {/* Every line has a product; it can be changed right here, saved with the line. */}
+                <ProductLinkRows
+                  line={{
+                    name: editing.draft.name,
+                    productLink: editing.draft.productLink ?? "auto",
+                    productId: editing.draft.productId ?? null,
+                    productName: editing.draft.productName ?? null,
+                    productNeedsReview: editing.draft.productNeedsReview
+                  }}
+                  number={editing.index + 1}
+                  pickerOpen={pickerOpen}
+                  onPickerOpenChange={setPickerOpen}
+                  onChoose={(choice) => setEditing((value) => value && { ...value, draft: { ...value.draft, ...choice } })}
+                />
+                {/* Photos and barcodes go to the product the line is saved with right now. */}
+                <LineProductMedia
+                  productId={lines[editing.index].productId}
+                  productName={lines[editing.index].productName}
+                  changed={(editing.draft.productId ?? null) !== (lines[editing.index].productId ?? null)}
+                />
+              </>
             )}
           </>
         )}
@@ -452,10 +490,10 @@ function ReviewInfo({ line, index, lines, money, locale, approved, onUnapprove }
         <div className="pm-review-discount"><span>{t("discount.after")}</span><strong>{money(afterDiscount)}</strong></div>
       )}
       {!discount && (
-        <p className={line.pendingMatch ? "pm-review-product pm-warn-text" : "pm-review-product"}>
+        <p className={line.productNeedsReview ? "pm-review-product pm-warn-text" : "pm-review-product"}>
           {line.productName
-            ? t("purchaseEdit.productLinked", { name: line.productName })
-            : line.pendingMatch ? t("purchaseEdit.productPending") : t("purchaseEdit.productUnlinked")}
+            ? productStatusText(t, { name: line.name, productLink: "existing", productName: line.productName, productNeedsReview: line.productNeedsReview })
+            : t("purchaseEdit.productUnlinked")}
         </p>
       )}
     </div>

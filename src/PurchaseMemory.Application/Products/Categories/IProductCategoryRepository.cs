@@ -55,6 +55,10 @@ public interface IProductCategoryRepository
 
     Task<IReadOnlyList<ProductAuditEntry>> ListAuditEntriesAsync(Guid productId, CancellationToken cancellationToken);
 
+    /// <summary>
+    /// Saves; a row that changed or vanished in between (a product merged
+    /// away meanwhile) surfaces as <see cref="ProductCategoryConflictException"/>.
+    /// </summary>
     Task SaveChangesAsync(CancellationToken cancellationToken);
 }
 

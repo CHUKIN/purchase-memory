@@ -130,6 +130,18 @@ export function useRememberBarcode() {
   };
 }
 
+/**
+ * After a merge on the server: this device's photos, barcodes and mark of the
+ * merged-away product move to the product it was merged into.
+ */
+export function useMoveProductMedia() {
+  const queryClient = useQueryClient();
+  return async (fromProductId: string, toProductId: string) => {
+    await store.moveProductMedia(fromProductId, toProductId);
+    await queryClient.invalidateQueries({ queryKey: productMediaQueryKey });
+  };
+}
+
 /** Attaches a code scanned in the shop to an existing product. */
 export function useLinkBarcode() {
   const queryClient = useQueryClient();

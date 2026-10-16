@@ -37,7 +37,7 @@ function page(items: ProductSummary[], overrides: Partial<ProductCatalogPage> = 
     pageSize: 30,
     totalCount: items.length,
     hasMore: false,
-    pendingMatchCount: 0,
+    needsReviewCount: 0,
     ...overrides
   };
 }
@@ -136,14 +136,40 @@ describe("ProductCatalogSection", () => {
     expect(await screen.findByRole("heading", { name: "Каталог пока пуст" })).toBeInTheDocument();
   });
 
-  it("admits how many lines are still waiting for a manual match", async () => {
-    vi.mocked(getProductCatalog).mockResolvedValue(
-      page([product("a", "Mleko")], { pendingMatchCount: 4 })
-    );
+  it("marks flagged products and turns «N товаров нужно проверить» into the filter", async () => {
+    vi.mocked(getProductCatalog).mockImplementation(async (request) => request?.needsReview
+      ? page([{ ...product("f", "ACTIV KEFI NAT 280"), needsReview: true }], { needsReviewCount: 4 })
+      : page([product("a", "Mleko"), { ...product("f", "ACTIV KEFI NAT 280"), needsReview: true }], { needsReviewCount: 4 }));
 
     renderSection();
 
-    expect(await screen.findByText(/4 позиции ждут/)).toBeInTheDocument();
+    const flagged = await screen.findByRole("link", { name: /ACTIV KEFI NAT 280/ });
+    expect(within(flagged).getByText("проверить")).toBeInTheDocument();
+    expect(within(screen.getByRole("link", { name: /Mleko/ })).queryByText("проверить")).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "4 товара нужно проверить" }));
+
+    await waitFor(() => expect(getProductCatalog).toHaveBeenLastCalledWith(expect.objectContaining({ needsReview: true })));
+    expect(await screen.findByText("1 товар")).toBeInTheDocument();
+    // The hint is the way in; with the filter on it steps aside, and the sheet shows the filter.
+    expect(screen.queryByRole("button", { name: "4 товара нужно проверить" })).not.toBeInTheDocument();
+    openFilters();
+    expect(screen.getByRole("switch", { name: "Нужно проверить" })).toBeChecked();
+  });
+
+  it("hides the hint when nothing needs checking", async () => {
+    vi.mocked(getProductCatalog).mockResolvedValue(page([product("a", "Mleko")], { needsReviewCount: 0 }));
+
+    renderSection();
+
+    await screen.findByRole("link", { name: /Mleko/ });
+    expect(screen.queryByRole("button", { name: /нужно проверить/ })).not.toBeInTheDocument();
+  });
+
+  it("reads the «Нужно проверить» filter from the URL", async () => {
+    renderSection("/products?review=1");
+
+    await waitFor(() => expect(getProductCatalog).toHaveBeenCalledWith(expect.objectContaining({ needsReview: true })));
   });
 
   it("shows the load error copy when the request fails", async () => {

@@ -9,7 +9,7 @@ import { LineReview, type ReviewLine, type ReviewLinePatch, type ReviewStart } f
 const box = { x: 0.1, y: 0.3, width: 0.8, height: 0.04 };
 const baseLines: ReviewLine[] = [
   { id: "a", name: "KAWA", quantity: 1, unit: "szt", unitPrice: 15, lineTotal: 15, kind: "product", boundingBox: box, productName: "Kawa" },
-  { id: "b", name: "MLEKO 2%", quantity: 2, unit: "szt", unitPrice: 3.49, lineTotal: 6.98, kind: "product", boundingBox: null, pendingMatch: true },
+  { id: "b", name: "MLEKO 2%", quantity: 2, unit: "szt", unitPrice: 3.49, lineTotal: 6.98, kind: "product", boundingBox: null, productId: "milk-2", productName: "MLEKO 2%", productNeedsReview: true },
   { id: "c", name: "RABAT MLEKO", quantity: null, unit: null, unitPrice: null, lineTotal: -1, kind: "discount", boundingBox: null },
   { id: "d", name: "CHLEB", quantity: 1, unit: "szt", unitPrice: 4.5, lineTotal: 4.5, kind: "product", boundingBox: box }
 ];
@@ -70,7 +70,7 @@ describe("LineReview", () => {
     expect(cardName()).toBe("MLEKO 2%");
     expect(within(card()).getByText("Строка 2")).toBeInTheDocument();
     expect(within(card()).getByText(/2 szt × 3,49/)).toBeInTheDocument();
-    expect(within(card()).getByText("Не удалось выбрать товар автоматически — выберите сами.")).toBeInTheDocument();
+    expect(within(card()).getByText("Связано с «MLEKO 2%». Товар отмечен «проверить»: он похож на другие товары")).toBeInTheDocument();
     // Its discount and the price after it, on the same card.
     expect(within(card()).getByText("RABAT MLEKO")).toBeInTheDocument();
     expect(within(card()).getByText("Цена товара после скидки:")).toBeInTheDocument();

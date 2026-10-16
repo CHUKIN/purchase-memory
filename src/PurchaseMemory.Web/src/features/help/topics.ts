@@ -41,6 +41,7 @@ export type HelpLinkId =
   | "products"
   | "scan"
   | "uncategorizedProducts"
+  | "needsReviewProducts"
   | "reviewQueue"
   | "analytics";
 
@@ -68,12 +69,12 @@ export const helpTopics: HelpTopic[] = [
   { id: "filters", group: "history", links: [link("purchases", "/purchases"), link("products", "/products")] },
   { id: "purchase-edit", group: "history", links: [link("purchases", "/purchases"), link("reviewQueue", "/needs-attention")] },
   { id: "receipt-lines-photo", group: "history", links: [link("purchases", "/purchases")] },
-  { id: "products", group: "catalog", links: [link("products", "/products")] },
+  { id: "products", group: "catalog", links: [link("products", "/products"), link("needsReviewProducts", "/products?review=1"), link("reviewQueue", "/needs-attention")] },
   { id: "product-scan", group: "catalog", links: [link("scan", "/scan"), link("products", "/products")] },
   { id: "categories", group: "catalog", links: [link("products", "/products"), link("uncategorizedProducts", "/products?category=none"), link("reviewQueue", "/needs-attention")] },
   { id: "tags", group: "catalog", links: [link("products", "/products"), link("purchases", "/purchases"), link("analytics", "/analytics"), link("reviewQueue", "/needs-attention")] },
   { id: "impressions", group: "catalog", links: [link("home", "/"), link("products", "/products")] },
-  { id: "review-queue", group: "attention", links: [link("reviewQueue", "/needs-attention")] },
+  { id: "review-queue", group: "attention", links: [link("reviewQueue", "/needs-attention"), link("needsReviewProducts", "/products?review=1")] },
   { id: "analytics", group: "analytics", links: [link("analytics", "/analytics")] },
   { id: "analytics-history", group: "analytics", links: [link("analytics", "/analytics")] },
   { id: "mcp", group: "advanced", links: [] }

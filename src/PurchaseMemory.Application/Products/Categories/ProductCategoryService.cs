@@ -160,7 +160,22 @@ public sealed class ProductCategoryService : IProductCategoryService
             }
         }
 
-        await _repository.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await _repository.SaveChangesAsync(cancellationToken);
+        }
+        catch (ProductCategoryConflictException)
+        {
+            // Most likely the product was merged into another one meanwhile:
+            // then it is simply gone, which is a 404 rather than a conflict.
+            if (await _repository.FindProductForUpdateAsync(command.ProductId, cancellationToken) is null)
+            {
+                throw new ProductNotFoundException(command.ProductId);
+            }
+
+            throw;
+        }
+
         return ToClassification(product);
     }
 

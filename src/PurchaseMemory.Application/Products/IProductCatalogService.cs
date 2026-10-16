@@ -39,6 +39,12 @@ public sealed record ProductCatalogQuery
     /// <summary>Products carrying every one of these tags; empty or <c>null</c> for any.</summary>
     public IReadOnlyCollection<Guid>? TagIds { get; init; }
 
+    /// <summary>Only products carrying the «проверить» flag.</summary>
+    public bool NeedsReview { get; init; }
+
+    /// <summary>Leaves one product out, for pickers that must not offer the product itself.</summary>
+    public Guid? ExcludeProductId { get; init; }
+
     public int Page { get; init; } = 1;
 
     public int PageSize { get; init; } = DefaultPageSize;

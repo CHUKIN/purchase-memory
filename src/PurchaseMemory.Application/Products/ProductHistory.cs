@@ -81,4 +81,21 @@ public sealed record ProductDetail(
     PurchaseMemory.Domain.Products.ProductAttributeSource? CategorySource = null,
     string? Brand = null,
     PurchaseMemory.Domain.Products.ProductAttributeSource? BrandSource = null,
-    IReadOnlyList<ProductTagSummary>? Tags = null);
+    IReadOnlyList<ProductTagSummary>? Tags = null,
+    PurchaseMemory.Domain.Products.ProductOrigin Origin = PurchaseMemory.Domain.Products.ProductOrigin.Receipt,
+    bool NeedsReview = false,
+    PurchaseMemory.Domain.Products.ProductReviewReason? ReviewReason = null,
+    // Flagged products only: what the product might really be, best first.
+    IReadOnlyList<ProductReviewCandidateView>? ReviewCandidates = null);
+
+/// <summary>
+/// An existing product a flagged product might really be, with what a person
+/// needs to recognise it: the name, brand, category and how often it was bought.
+/// </summary>
+public sealed record ProductReviewCandidateView(
+    Guid ProductId,
+    string Name,
+    string? Brand,
+    Guid? CategoryId,
+    int PurchaseCount,
+    double Score);

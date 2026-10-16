@@ -155,5 +155,17 @@ public sealed class ProductCategoryRepository : IProductCategoryRepository
             .ToListAsync(cancellationToken);
     }
 
-    public Task SaveChangesAsync(CancellationToken cancellationToken) => _dbContext.SaveChangesAsync(cancellationToken);
+    public async Task SaveChangesAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException exception)
+        {
+            throw new ProductCategoryConflictException(
+                "The product was changed at the same time. Reload and try again.",
+                exception);
+        }
+    }
 }

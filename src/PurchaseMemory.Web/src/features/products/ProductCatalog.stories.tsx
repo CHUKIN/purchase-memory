@@ -84,7 +84,7 @@ const meta = {
     onQueryChange: fn(),
     products,
     totalCount: products.length,
-    pendingMatchCount: 0,
+    needsReviewCount: 0,
     onLoadMore: fn()
   }
 } satisfies Meta<typeof ProductCatalog>;
@@ -101,8 +101,15 @@ export const PagedDesktopRu: Story = {
   render: PagedProductCatalog
 };
 
-/** Matching leaves uncertain lines unlinked; the catalog says so rather than looking complete. */
-export const WithPendingMatchesMobileRu: Story = { globals: phone, args: { pendingMatchCount: 4 } };
+/** Doubtful matches became flagged products: a «проверить» badge and the tappable way to all of them. */
+export const WithProductsToCheckMobileRu: Story = {
+  globals: phone,
+  args: {
+    needsReviewCount: 4,
+    onReviewFilterChange: fn(),
+    products: products.map((product, index) => index === 0 ? { ...product, needsReview: true } : product)
+  }
+};
 
 export const EmptyMobileRu: Story = { globals: phone, args: { products: [], totalCount: 0 } };
 export const EmptyDesktopEn: Story = { globals: { ...desktop, locale: "en" }, args: { products: [], totalCount: 0 } };

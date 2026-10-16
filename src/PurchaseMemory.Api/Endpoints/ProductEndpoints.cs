@@ -1,8 +1,20 @@
+using System.Security.Claims;
+using PurchaseMemory.Api.Auth;
 using PurchaseMemory.Application.Products;
+using PurchaseMemory.Application.Products.Categories;
 using PurchaseMemory.Application.Products.Tags;
+using PurchaseMemory.Domain.Products;
 
 namespace PurchaseMemory.Api.Endpoints;
 
+/// <summary>
+/// The catalog list and product page, plus the changes a person makes to the
+/// catalog itself: create by hand or from a barcode, rename, merge two
+/// products, settle a «проверить» flag. Data is shared by every approved user
+/// in this version (no households), so the approved-user fallback policy is
+/// the whole access rule, as for every other data endpoint. None of these
+/// calls a paid model, so none is rate limited.
+/// </summary>
 public static class ProductEndpoints
 {
     public static IEndpointRouteBuilder MapProductEndpoints(this IEndpointRouteBuilder endpoints)
@@ -10,8 +22,20 @@ public static class ProductEndpoints
         endpoints.MapGet("/api/products", GetCatalogAsync)
             .WithName("ListProducts");
 
+        endpoints.MapPost("/api/products", CreateAsync)
+            .WithName("CreateProduct");
+
         endpoints.MapGet("/api/products/{productId:guid}", GetProductAsync)
             .WithName("GetProduct");
+
+        endpoints.MapPut("/api/products/{productId:guid}/name", RenameAsync)
+            .WithName("RenameProduct");
+
+        endpoints.MapPost("/api/products/{productId:guid}/merge-into/{targetProductId:guid}", MergeAsync)
+            .WithName("MergeProduct");
+
+        endpoints.MapPost("/api/products/{productId:guid}/confirm-distinct", ConfirmDistinctAsync)
+            .WithName("ConfirmDistinctProduct");
 
         endpoints.MapGet("/api/brands", ListBrandsAsync)
             .WithName("ListBrands");
@@ -33,6 +57,8 @@ public static class ProductEndpoints
         bool? uncategorized,
         string? brand,
         string[]? tagId,
+        bool? needsReview,
+        Guid? excludeProductId,
         int? page,
         int? pageSize,
         IProductCatalogService catalog,
@@ -51,6 +77,8 @@ public static class ProductEndpoints
             Uncategorized = uncategorized ?? false,
             Brand = brand,
             TagIds = tagIds,
+            NeedsReview = needsReview ?? false,
+            ExcludeProductId = excludeProductId,
             Page = page ?? 1,
             PageSize = pageSize ?? ProductCatalogQuery.DefaultPageSize
         };
@@ -64,7 +92,7 @@ public static class ProductEndpoints
         {
             return Results.Problem(detail: exception.Message, statusCode: StatusCodes.Status400BadRequest);
         }
-        catch (PurchaseMemory.Application.Products.Categories.ProductCategoryNotFoundException exception)
+        catch (ProductCategoryNotFoundException exception)
         {
             return Results.Problem(detail: exception.Message, statusCode: StatusCodes.Status400BadRequest);
         }
@@ -73,14 +101,105 @@ public static class ProductEndpoints
             return Results.Problem(detail: exception.Message, statusCode: StatusCodes.Status400BadRequest);
         }
 
-        // The pending-match count rides on this response instead of getting its
-        // own endpoint: it is the same question («did matching work, and what is
-        // left over?»), one query, and the future review queue can still read it
-        // here before it grows a screen of its own.
-        var pendingMatchCount = await repository.CountPendingMatchesAsync(cancellationToken);
+        // The flagged-product count rides on this response instead of getting
+        // its own endpoint: it is what the catalog's tappable «N товаров нужно
+        // проверить» shows, whatever filter the page currently has.
+        var needsReviewCount = await repository.CountProductsNeedingReviewAsync(cancellationToken);
 
-        return Results.Ok(ProductCatalogResponse.FromPage(catalogPage, pendingMatchCount));
+        return Results.Ok(ProductCatalogResponse.FromPage(catalogPage, needsReviewCount));
     }
+
+    private static Task<IResult> CreateAsync(
+        CreateProductRequest request,
+        ClaimsPrincipal user,
+        IProductManagementService service,
+        CancellationToken cancellationToken) =>
+        HandleAsync(async () =>
+        {
+            var origin = request.Origin?.Trim() switch
+            {
+                null or "" => ProductOrigin.Manual,
+                var value when string.Equals(value, "manual", StringComparison.OrdinalIgnoreCase) => ProductOrigin.Manual,
+                var value when string.Equals(value, "barcode", StringComparison.OrdinalIgnoreCase) => ProductOrigin.Barcode,
+                _ => throw new ArgumentException("origin must be 'manual' or 'barcode'.")
+            };
+            var product = await service.CreateAsync(
+                new CreateProductCommand(request.Name, request.Brand, request.CategoryId, origin),
+                AppUser.Actor(user),
+                cancellationToken);
+            return Results.Created($"/api/products/{product.Id:D}", ProductSummaryResponse.From(product));
+        });
+
+    private static Task<IResult> RenameAsync(
+        Guid productId,
+        RenameProductRequest request,
+        ClaimsPrincipal user,
+        IProductManagementService service,
+        CancellationToken cancellationToken) =>
+        HandleAsync(async () => Results.Ok(ProductSummaryResponse.From(
+            await service.RenameAsync(productId, request.Name ?? string.Empty, AppUser.Actor(user), cancellationToken))));
+
+    private static Task<IResult> MergeAsync(
+        Guid productId,
+        Guid targetProductId,
+        ClaimsPrincipal user,
+        IProductManagementService service,
+        CancellationToken cancellationToken) =>
+        HandleAsync(async () =>
+        {
+            var result = await service.MergeAsync(productId, targetProductId, AppUser.Actor(user), cancellationToken);
+            return Results.Ok(new ProductMergeResponse(
+                result.SourceProductId,
+                result.SourceName,
+                result.TargetProductId,
+                result.TargetName,
+                result.MovedLineCount,
+                result.MovedAliasCount));
+        });
+
+    private static Task<IResult> ConfirmDistinctAsync(
+        Guid productId,
+        ClaimsPrincipal user,
+        IProductManagementService service,
+        CancellationToken cancellationToken) =>
+        HandleAsync(async () => Results.Ok(ProductSummaryResponse.From(
+            await service.ConfirmDistinctAsync(productId, AppUser.Actor(user), cancellationToken))));
+
+    private static async Task<IResult> HandleAsync(Func<Task<IResult>> operation)
+    {
+        try
+        {
+            return await operation();
+        }
+        catch (ProductNotFoundException exception)
+        {
+            return Results.Problem(detail: exception.Message, statusCode: StatusCodes.Status404NotFound);
+        }
+        catch (ProductConflictException exception)
+        {
+            return Results.Problem(
+                detail: exception.Message,
+                statusCode: StatusCodes.Status409Conflict,
+                extensions: exception.ExistingProductId is { } existing
+                    ? new Dictionary<string, object?> { ["existingProductId"] = existing }
+                    : null);
+        }
+        catch (ProductCategoryNotFoundException exception)
+        {
+            return Results.Problem(detail: exception.Message, statusCode: StatusCodes.Status400BadRequest);
+        }
+        catch (ArgumentException exception)
+        {
+            return Results.Problem(detail: exception.Message, statusCode: StatusCodes.Status400BadRequest);
+        }
+    }
+
+    public static string OriginToWire(ProductOrigin origin) => origin switch
+    {
+        ProductOrigin.Manual => "manual",
+        ProductOrigin.Barcode => "barcode",
+        _ => "receipt"
+    };
 
     private static async Task<IResult> GetProductAsync(
         Guid productId,
@@ -96,6 +215,58 @@ public static class ProductEndpoints
 
 public sealed record BrandResponse(string Brand, int ProductCount);
 
+public sealed record CreateProductRequest(string? Name, string? Brand, Guid? CategoryId, string? Origin);
+
+public sealed record RenameProductRequest(string? Name);
+
+/// <summary>A product right after a change; the page reloads the full detail itself.</summary>
+public sealed record ProductSummaryResponse(
+    Guid Id,
+    string Name,
+    string NormalizedName,
+    string Origin,
+    bool NeedsReview,
+    Guid? CategoryId,
+    string? CategorySource,
+    string? Brand,
+    string? BrandSource,
+    DateTimeOffset CreatedAt,
+    DateTimeOffset UpdatedAt)
+{
+    public static ProductSummaryResponse From(Product product)
+    {
+        ArgumentNullException.ThrowIfNull(product);
+        return new ProductSummaryResponse(
+            product.Id,
+            product.CanonicalName,
+            product.NormalizedName,
+            ProductEndpoints.OriginToWire(product.Origin),
+            product.NeedsReview,
+            product.CategoryId,
+            CategoryEndpoints.SourceToWire(product.CategorySource),
+            product.Brand,
+            CategoryEndpoints.SourceToWire(product.BrandSource),
+            product.CreatedAt,
+            product.UpdatedAt);
+    }
+}
+
+public sealed record ProductMergeResponse(
+    Guid SourceProductId,
+    string SourceName,
+    Guid TargetProductId,
+    string TargetName,
+    int MovedLineCount,
+    int MovedAliasCount);
+
+public sealed record ProductReviewCandidateResponse(
+    Guid ProductId,
+    string Name,
+    string? Brand,
+    Guid? CategoryId,
+    int PurchaseCount,
+    double Score);
+
 public sealed record ProductResponse(
     Guid Id,
     string Name,
@@ -108,7 +279,9 @@ public sealed record ProductResponse(
     Guid? CategoryId,
     string? CategorySource,
     string? Brand,
-    IReadOnlyList<TagResponse> Tags);
+    IReadOnlyList<TagResponse> Tags,
+    bool NeedsReview,
+    string Origin);
 
 public sealed record ProductCatalogResponse(
     IReadOnlyList<ProductResponse> Items,
@@ -116,9 +289,10 @@ public sealed record ProductCatalogResponse(
     int PageSize,
     int TotalCount,
     bool HasMore,
-    int PendingMatchCount)
+    // Products carrying the «проверить» flag in the whole catalog, whatever the filter.
+    int NeedsReviewCount)
 {
-    public static ProductCatalogResponse FromPage(ProductCatalogPage page, int pendingMatchCount)
+    public static ProductCatalogResponse FromPage(ProductCatalogPage page, int needsReviewCount)
     {
         ArgumentNullException.ThrowIfNull(page);
 
@@ -136,13 +310,15 @@ public sealed record ProductCatalogResponse(
                     entry.CategoryId,
                     CategoryEndpoints.SourceToWire(entry.CategorySource),
                     entry.Brand,
-                    (entry.Tags ?? []).Select(TagEndpoints.ToResponse).ToList()))
+                    (entry.Tags ?? []).Select(TagEndpoints.ToResponse).ToList(),
+                    entry.NeedsReview,
+                    ProductEndpoints.OriginToWire(entry.Origin)))
                 .ToList(),
             page.Page,
             page.PageSize,
             page.TotalCount,
             page.HasMore,
-            pendingMatchCount);
+            needsReviewCount);
     }
 }
 
@@ -185,7 +361,12 @@ public sealed record ProductDetailResponse(
     string? CategorySource,
     string? Brand,
     string? BrandSource,
-    IReadOnlyList<TagResponse> Tags)
+    IReadOnlyList<TagResponse> Tags,
+    string Origin,
+    bool NeedsReview,
+    string? ReviewReason,
+    // Flagged products only (empty otherwise): what it might really be, best first.
+    IReadOnlyList<ProductReviewCandidateResponse> ReviewCandidates)
 {
     public static ProductDetailResponse FromDetail(ProductDetail detail)
     {
@@ -213,7 +394,23 @@ public sealed record ProductDetailResponse(
             CategoryEndpoints.SourceToWire(detail.CategorySource),
             detail.Brand,
             CategoryEndpoints.SourceToWire(detail.BrandSource),
-            (detail.Tags ?? []).Select(TagEndpoints.ToResponse).ToList());
+            (detail.Tags ?? []).Select(TagEndpoints.ToResponse).ToList(),
+            ProductEndpoints.OriginToWire(detail.Origin),
+            detail.NeedsReview,
+            detail.ReviewReason switch
+            {
+                ProductReviewReason.AmbiguousMatch => "ambiguousMatch",
+                _ => null
+            },
+            (detail.ReviewCandidates ?? [])
+                .Select(candidate => new ProductReviewCandidateResponse(
+                    candidate.ProductId,
+                    candidate.Name,
+                    candidate.Brand,
+                    candidate.CategoryId,
+                    candidate.PurchaseCount,
+                    candidate.Score))
+                .ToList());
     }
 
     private static ProductPriceSeriesResponse ToResponse(ProductPriceSeries series)

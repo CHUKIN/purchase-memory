@@ -78,4 +78,5 @@ public sealed class ProductNotFoundException(Guid productId)
 }
 
 /// <summary>The request conflicts with the tree as it is (duplicate name, non-empty branch, depth).</summary>
-public sealed class ProductCategoryConflictException(string message) : Exception(message);
+public sealed class ProductCategoryConflictException(string message, Exception? innerException = null)
+    : Exception(message, innerException);

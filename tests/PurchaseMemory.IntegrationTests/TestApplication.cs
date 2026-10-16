@@ -36,6 +36,8 @@ internal sealed class TestApplication : IAsyncDisposable
             new FixedTimeProvider(new DateTimeOffset(2026, 7, 13, 12, 0, 0, TimeSpan.Zero)));
         services.AddScoped<IProductMatcher, ProductMatcher>();
         services.AddScoped<IProductCatalogService, ProductCatalogService>();
+        services.AddLogging();
+        services.AddScoped<IProductManagementService, ProductManagementService>();
         services.AddScoped<IPurchaseDraftService, PurchaseDraftService>();
         services.AddScoped<IProductCategoryService, ProductCategoryService>();
         services.AddScoped<PurchaseMemory.Application.Products.Tags.IProductTagService, PurchaseMemory.Application.Products.Tags.ProductTagService>();

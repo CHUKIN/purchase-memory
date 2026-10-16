@@ -132,12 +132,6 @@ export interface PurchaseView {
 /** How the backend should link a line to the catalog when a purchase is corrected. */
 export type ProductLinkChoice = "auto" | "existing" | "new";
 
-export interface PurchaseProductCandidate {
-  productId: string;
-  name: string;
-  score: number;
-}
-
 export interface PurchaseDetailItem {
   /** Stable only until the purchase is corrected; impressions follow the line across a correction. */
   id: string;
@@ -149,11 +143,11 @@ export interface PurchaseDetailItem {
   lineTotal: number | null;
   kind: ReceiptLineKind;
   discountedItemPosition: number | null;
+  /** Every product line has one; only discount lines (and very old data) are null. */
   productId: string | null;
   productName: string | null;
-  /** The matcher could not decide on its own; `candidates` lists what it considered. */
-  pendingMatch: boolean;
-  candidates: PurchaseProductCandidate[];
+  /** The linked product carries the «проверить» flag. Optional only so older fixtures stay valid. */
+  productNeedsReview?: boolean;
   boundingBox: BoundingBox | null;
   /**
    * Someone confirmed in the swipe review that the line matches the receipt.
@@ -305,10 +299,16 @@ export interface TagSuggestionsResponse {
   offeredTagCount: number;
 }
 
+/** Where a product first came from. */
+export type ProductOrigin = "receipt" | "manual" | "barcode";
+
 export interface ProductSummary {
   id: string;
   name: string;
   normalizedName: string;
+  /** The «проверить» flag. Optional only so older fixtures stay valid. */
+  needsReview?: boolean;
+  origin?: ProductOrigin;
   /** `null` is «Без категории». Optional only so older fixtures stay valid. */
   categoryId?: string | null;
   categorySource?: AttributeSource | null;
@@ -330,8 +330,49 @@ export interface ProductCatalogPage {
   pageSize: number;
   totalCount: number;
   hasMore: boolean;
-  /** Items the matcher left for a person to decide on; the queue itself is UI-4 stage 3. */
-  pendingMatchCount: number;
+  /** Flagged («проверить») products in the whole catalog, whatever the filter. */
+  needsReviewCount: number;
+}
+
+/** An existing product a flagged product might really be. */
+export interface ProductReviewCandidate {
+  productId: string;
+  name: string;
+  brand: string | null;
+  categoryId: string | null;
+  purchaseCount: number;
+  score: number;
+}
+
+export interface CreateProductRequest {
+  name: string;
+  brand?: string | null;
+  categoryId?: string | null;
+  origin: "manual" | "barcode";
+}
+
+/** What `POST /api/products`, rename and «Это другой товар» answer with. */
+export interface ProductChangeResult {
+  id: string;
+  name: string;
+  normalizedName: string;
+  origin: ProductOrigin;
+  needsReview: boolean;
+  categoryId: string | null;
+  categorySource: AttributeSource | null;
+  brand: string | null;
+  brandSource: AttributeSource | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ProductMergeResult {
+  sourceProductId: string;
+  sourceName: string;
+  targetProductId: string;
+  targetName: string;
+  movedLineCount: number;
+  movedAliasCount: number;
 }
 
 /** One receipt line's price, already reduced to «what one unit cost». */
@@ -392,6 +433,12 @@ export interface ProductDetail {
   priceSeries: ProductPriceSeries[];
   frequency: ProductFrequency | null;
   aliases: ProductAlias[];
+  origin?: ProductOrigin;
+  /** The «проверить» flag. Optional only so older fixtures stay valid. */
+  needsReview?: boolean;
+  reviewReason?: "ambiguousMatch" | null;
+  /** Flagged products only: what it might really be, best first. */
+  reviewCandidates?: ProductReviewCandidate[];
 }
 
 export type AnalyticsMetric =
@@ -554,7 +601,7 @@ export type ReviewQueueKind =
   | "unsavedReceipt"
   | "totalMismatch"
   | "missingPrice"
-  | "pendingMatch"
+  | "productNeedsReview"
   | "suggestedCategory"
   | "missingCategory";
 
@@ -575,18 +622,33 @@ export interface ReviewQueueItem {
   receiptTotal: number | null;
   linesTotal: number | null;
   affectedLineCount: number | null;
-  /** Zero-based line to focus in the purchase editor (pending match, first missing price). */
+  /** Zero-based line to focus in the purchase editor (first missing price). */
   itemPosition?: number | null;
-  /** Pending match only (empty otherwise): suggested products, best first, at most three. */
+  /** Flagged product only (empty otherwise): what it might really be, best first, at most three. */
   candidates?: ReviewQueueCandidate[];
+  /** Flagged product only: distinct purchases it appears on. */
+  purchaseCount?: number | null;
+  /**
+   * Flagged product only: it has no category either. The same card then asks
+   * for one, and the product is not listed again under «Без категории».
+   */
+  needsCategory?: boolean;
+  /*
+   * `categoryId`/`categoryName` on a flagged product: its category is only
+   * AI-suggested; the same card asks to confirm it (no «Категория не
+   * подтверждена» item for it).
+   */
 }
 
-/** A catalog product the matcher considered for an unmatched receipt line. */
+/** An existing product a flagged product might really be. */
 export interface ReviewQueueCandidate {
   productId: string;
   name: string;
   brand: string | null;
   categoryId: string | null;
+  /** Optional only so older fixtures stay valid. */
+  purchaseCount?: number;
+  score?: number;
 }
 
 export interface ReviewQueueGroup {

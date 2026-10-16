@@ -8,7 +8,6 @@ import { classifyProduct, getReviewQueue, listCategories, listTags } from "../..
 import type {
   ProductCategory,
   ReviewQueue,
-  ReviewQueueCandidate,
   ReviewQueueGroup,
   ReviewQueueItem,
   ReviewQueueKind,
@@ -35,8 +34,8 @@ import { formatMoney } from "../purchases/money";
 import { purchaseEditPath } from "../purchases/PurchaseDetailPage";
 import { tagsQueryKey } from "../tags/tagQueries";
 import { reviewQueueQueryKey } from "./reviewQueueQueries";
-import { resolvePendingMatch, StalePendingMatchError, type PendingMatchChoice } from "./resolvePendingMatch";
 import { useBackTarget, useReturnState } from "../../app/backNavigation";
+import { MergeConfirmAlert, useConfirmDistinct, useMergeProduct, type MergeRequest } from "../products/productMerge";
 import { HelpLink } from "../help/HelpLink";
 
 export const reviewQueueLimitPerKind = 20;
@@ -221,7 +220,7 @@ function ItemCard({ item, categories }: { item: ReviewQueueItem; categories: Pro
   const { t, i18n } = useTranslation();
   const title = item.title || t(`reviewQueue.untitled.${untitledKey(item.kind)}`);
   const date = new Intl.DateTimeFormat(i18n.language, { dateStyle: "medium" }).format(new Date(item.occurredAt));
-  const suggestions = item.kind === "pendingMatch" && item.purchaseId && (item.candidates?.length ?? 0) > 0;
+  const flagged = item.kind === "productNeedsReview" && item.productId !== null;
   const why = reason(item, t, i18n.language);
 
   return (
@@ -234,19 +233,21 @@ function ItemCard({ item, categories }: { item: ReviewQueueItem; categories: Pro
             <p><time dateTime={item.occurredAt}>{date}</time></p>
           </IonLabel>
         </IonItem>
-        {suggestions
-          // «Другой товар» goes under the suggestions, next to «Создать новый товар»: it is the fallback, not the first choice.
-          ? <PendingMatchSuggestions item={item} title={title} categories={categories} />
+        {flagged
+          ? <FlaggedProductSuggestions item={item} title={title} categories={categories} />
           : <ItemActions item={item} title={title} />}
       </IonList>
     </article>
   );
 }
 
-function ItemActions({ item, title }: { item: ReviewQueueItem; title: string }) {
+/**
+ * «Подтвердить» the AI's category, «Изменить» on the product's page. Used by
+ * «Категория не подтверждена» and by a flagged product whose category is only suggested.
+ */
+function SuggestedCategoryActions({ item, title }: { item: ReviewQueueItem; title: string }) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  // A screen opened from here comes back here (a receipt or purchase also after saving), with the filters as they were.
   const returnState = useReturnState();
   const confirm = useMutation({
     mutationFn: () => classifyProduct(item.productId!, { categoryId: item.categoryId }),
@@ -255,6 +256,22 @@ function ItemActions({ item, title }: { item: ReviewQueueItem; title: string }) 
       queryClient.invalidateQueries({ queryKey: ["products"] })
     ])
   });
+  const changeLabel = t("reviewQueue.changeCategory");
+  return (
+    <>
+      <IonItem button detail={false} disabled={confirm.isPending} onClick={() => confirm.mutate()} aria-label={t("reviewQueue.confirmCategoryFor", { name: title, category: item.categoryName ?? "" })}>
+        <IonLabel color="primary">{t("reviewQueue.confirmCategory")}</IonLabel>
+      </IonItem>
+      {item.productId && <ActionRow to={`/products/${item.productId}`} state={returnState} label={changeLabel} ariaLabel={`${changeLabel}: ${title}`} />}
+      {confirm.isError && <IonItem lines="none"><IonLabel className="pm-wrap pm-danger-text" role="alert">{t("reviewQueue.confirmError")}</IonLabel></IonItem>}
+    </>
+  );
+}
+
+function ItemActions({ item, title }: { item: ReviewQueueItem; title: string }) {
+  const { t } = useTranslation();
+  // A screen opened from here comes back here (a receipt or purchase also after saving), with the filters as they were.
+  const returnState = useReturnState();
 
   const receiptLink = item.receiptId
     ? <ActionRow key="receipt" to={`/receipts/${item.receiptId}`} state={returnState} label={t("reviewQueue.openReceipt")} />
@@ -278,22 +295,10 @@ function ItemActions({ item, title }: { item: ReviewQueueItem; title: string }) 
       return <>{editLink("total", "reviewQueue.fixPurchase", "reviewQueue.fixPurchaseFor")}{item.receiptId && receiptLink}</>;
     case "missingPrice":
       return <>{editLink(line === null ? undefined : `price-${line}`, "reviewQueue.fixPurchase", "reviewQueue.fixPurchaseFor")}{item.receiptId && receiptLink}</>;
-    case "pendingMatch": {
-      const focus = line === null ? undefined : `product-${line}`;
-      return (item.candidates?.length ?? 0) > 0
-        ? editLink(focus, "reviewQueue.otherProduct", "reviewQueue.otherProductFor")
-        : <>{editLink(focus, "reviewQueue.chooseProduct", "reviewQueue.chooseProductFor")}{productLink(t("reviewQueue.openSimilarProduct"))}</>;
-    }
+    case "productNeedsReview":
+      return productLink(t("reviewQueue.openProduct"));
     case "suggestedCategory":
-      return (
-        <>
-          <IonItem button detail={false} disabled={confirm.isPending} onClick={() => confirm.mutate()} aria-label={t("reviewQueue.confirmCategoryFor", { name: title, category: item.categoryName ?? "" })}>
-            <IonLabel color="primary">{t("reviewQueue.confirmCategory")}</IonLabel>
-          </IonItem>
-          {productLink(t("reviewQueue.changeCategory"))}
-          {confirm.isError && <IonItem lines="none"><IonLabel className="pm-wrap pm-danger-text" role="alert">{t("reviewQueue.confirmError")}</IonLabel></IonItem>}
-        </>
-      );
+      return <SuggestedCategoryActions item={item} title={title} />;
     case "missingCategory":
       return productLink(t("reviewQueue.chooseCategory"));
   }
@@ -309,39 +314,34 @@ function ActionRow({ to, state, label, ariaLabel }: { to: string; state?: unknow
 }
 
 /**
- * «Товар не сопоставлен» answered in place: the matcher's best guesses with a
- * one-tap «Да, это он», and «Создать новый товар». Both save the purchase
- * through the same API as the editor's picker, so the store remembers the
- * choice; the queue and the badge then refresh and the card disappears.
+ * «Тот же товар или новый?» answered in place: the flagged product's
+ * candidates with «Да, это он» (merge into it after a confirmation naming
+ * both — there is no undo), and «Это другой товар». The queue, the badge and
+ * the catalog refresh and the card disappears. A flagged product without a
+ * category gets «Выбрать категорию» (its page) in place of «Открыть товар»;
+ * one with only an AI-suggested category gets «Подтвердить» and «Изменить».
  */
-function PendingMatchSuggestions({ item, title, categories }: { item: ReviewQueueItem; title: string; categories: ProductCategory[] }) {
+function FlaggedProductSuggestions({ item, title, categories }: { item: ReviewQueueItem; title: string; categories: ProductCategory[] }) {
   const { t } = useTranslation();
-  const queryClient = useQueryClient();
-  const [choice, setChoice] = useState<PendingMatchChoice | null>(null);
-  const refreshQueue = () => queryClient.invalidateQueries({ queryKey: reviewQueueQueryKey });
-  const resolve = useMutation({
-    mutationFn: (next: PendingMatchChoice) => resolvePendingMatch(item, next),
-    onSuccess: () => Promise.all([
-      refreshQueue(),
-      queryClient.invalidateQueries({ queryKey: ["purchases"] }),
-      queryClient.invalidateQueries({ queryKey: ["products"] }),
-      item.receiptId ? queryClient.invalidateQueries({ queryKey: ["receipts", item.receiptId] }) : Promise.resolve()
-    ]),
-    // Someone already decided this line: the queue is out of date, not the person.
-    onError: (error) => error instanceof StalePendingMatchError ? refreshQueue() : undefined
-  });
-  const choose = (next: PendingMatchChoice) => { setChoice(next); resolve.mutate(next); };
-  const busy = (candidate: ReviewQueueCandidate | "new") => resolve.isPending && (candidate === "new"
-    ? choice === "new"
-    : choice !== null && choice !== "new" && choice.productId === candidate.productId);
+  const merge = useMergeProduct();
+  const distinct = useConfirmDistinct();
+  const [request, setRequest] = useState<MergeRequest | null>(null);
+  const [mergingInto, setMergingInto] = useState<string | null>(null);
   const candidates = item.candidates ?? [];
   const returnState = useReturnState();
+  const busy = merge.isPending || distinct.isPending;
+  const failed = merge.isError || distinct.isError;
+  const productId = item.productId!;
 
   return (
     <>
       <div role="list" aria-label={t("reviewQueue.suggestionsFor", { name: title })}>
         {candidates.map((candidate, index) => {
-          const details = [candidate.brand, categoryPath(t, categories, candidate.categoryId)].filter(Boolean).join(" · ");
+          const details = [
+            candidate.brand,
+            categoryPath(t, categories, candidate.categoryId),
+            candidate.purchaseCount !== undefined ? t("products.purchaseCount", { count: candidate.purchaseCount }) : null
+          ].filter(Boolean).join(" · ");
           return (
             <IonItem key={candidate.productId} role="listitem">
               <IonLabel className="pm-wrap">
@@ -354,9 +354,9 @@ function PendingMatchSuggestions({ item, title, categories }: { item: ReviewQueu
                 size="small"
                 className="pm-tap-button"
                 fill={index === 0 ? "solid" : "outline"}
-                loading={busy(candidate)}
-                disabled={resolve.isPending && !busy(candidate)}
-                onClick={() => choose({ productId: candidate.productId })}
+                loading={merge.isPending && mergingInto === candidate.productId}
+                disabled={busy && mergingInto !== candidate.productId}
+                onClick={() => setRequest({ source: { id: productId, name: title }, target: { id: candidate.productId, name: candidate.name } })}
                 aria-label={t("reviewQueue.acceptCandidateFor", { name: title, product: candidate.name })}
               >
                 {t("reviewQueue.acceptCandidate")}
@@ -365,23 +365,37 @@ function PendingMatchSuggestions({ item, title, categories }: { item: ReviewQueu
           );
         })}
       </div>
-      <IonItem button detail={false} disabled={resolve.isPending && !busy("new")} onClick={() => choose("new")} aria-label={t("reviewQueue.createProductFor", { name: title })}>
-        <IonLabel color="primary">{t("reviewQueue.createProduct")}</IonLabel>
+      <IonItem
+        button
+        detail={false}
+        disabled={busy}
+        onClick={() => distinct.mutate(productId)}
+        aria-label={t("reviewQueue.distinctProductFor", { name: title })}
+      >
+        <IonLabel color="primary">{t("reviewQueue.distinctProduct")}</IonLabel>
       </IonItem>
-      <ItemActions item={item} title={title} />
-      {resolve.isError && (
+      {/* A new product's category step is on this card too, not a second item. */}
+      {item.needsCategory
+        ? <ActionRow to={`/products/${productId}`} state={returnState} label={t("reviewQueue.chooseCategory")} ariaLabel={`${t("reviewQueue.chooseCategory")}: ${title}`} />
+        : item.categoryId
+          ? <SuggestedCategoryActions item={item} title={title} />
+          : <ActionRow to={`/products/${productId}`} state={returnState} label={t("reviewQueue.openProduct")} ariaLabel={`${t("reviewQueue.openProduct")}: ${title}`} />}
+      {failed && (
         <IonItem lines="none">
-          <IonLabel className="pm-wrap pm-danger-text" role="alert">
-            {resolve.error instanceof StalePendingMatchError ? t("reviewQueue.resolveStale") : t("reviewQueue.resolveError")}
-          </IonLabel>
+          <IonLabel className="pm-wrap pm-danger-text" role="alert">{t("reviewQueue.resolveError")}</IonLabel>
         </IonItem>
       )}
+      <MergeConfirmAlert
+        request={request}
+        onCancel={() => setRequest(null)}
+        onConfirm={(confirmed) => { setMergingInto(confirmed.target.id); merge.mutate(confirmed); }}
+      />
     </>
   );
 }
 
 function untitledKey(kind: ReviewQueueKind) {
-  return kind === "suggestedCategory" || kind === "missingCategory" || kind === "pendingMatch" ? "product" : "receipt";
+  return kind === "suggestedCategory" || kind === "missingCategory" || kind === "productNeedsReview" ? "product" : "receipt";
 }
 
 /** Why the item is here, in a few words; null where the action below already says it. */
@@ -395,9 +409,17 @@ function reason(item: ReviewQueueItem, t: Translate, locale: string): string | n
       return t("reviewQueue.kinds.missingPrice.reason", { count: item.affectedLineCount ?? 0 });
     case "suggestedCategory":
       return t("reviewQueue.kinds.suggestedCategory.reason", { category: item.categoryName ?? "—" });
-    case "pendingMatch":
-      // With suggestions, «Похоже на» and «Да, это он» say it.
-      return (item.candidates?.length ?? 0) > 0 && item.purchaseId ? null : t("reviewQueue.kinds.pendingMatch.reason");
+    case "productNeedsReview":
+      return [
+        item.needsCategory
+          ? t("reviewQueue.kinds.productNeedsReview.reasonWithCategory")
+          : item.categoryId
+            ? t("reviewQueue.kinds.productNeedsReview.reasonWithSuggestedCategory", { category: item.categoryName ?? "—" })
+            : (item.candidates ?? []).length > 0
+              ? t("reviewQueue.kinds.productNeedsReview.reason")
+              : t("reviewQueue.kinds.productNeedsReview.reasonNoCandidates"),
+        item.purchaseCount != null ? t("products.purchaseCount", { count: item.purchaseCount }) : null
+      ].filter(Boolean).join(" ");
     case "missingCategory":
       return null;
     default:

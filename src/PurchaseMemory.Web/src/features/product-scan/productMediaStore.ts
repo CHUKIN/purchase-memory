@@ -89,6 +89,13 @@ export interface ProductMediaStore {
   /** Newest first. */
   listRememberedBarcodes: () => Promise<RememberedBarcode[]>;
   forgetBarcode: (code: string) => Promise<void>;
+  /**
+   * Two products were merged on the server: the merged-away product's photos,
+   * barcodes and «Больше не покупать» join the target's on this device. The
+   * target keeps its main photo (the source's only fills an empty slot); a
+   * mark on either product marks the target. Moving nothing is a no-op.
+   */
+  moveProductMedia: (fromProductId: string, toProductId: string) => Promise<void>;
   /** Everything, e.g. on sign-out. */
   clear: () => Promise<void>;
 }
@@ -302,6 +309,27 @@ export function createProductMediaStore(
 
     forgetBarcode(code) {
       return write((store) => forget(store, code));
+    },
+
+    moveProductMedia(fromProductId, toProductId) {
+      return write(async (store) => {
+        if (fromProductId === toProductId) return;
+        const source = await readMedia(store, fromProductId);
+        if (source.photos.length === 0 && source.barcodes.length === 0 && source.avoid === null) return;
+        const target = await readMedia(store, toProductId);
+        // Photo bytes are keyed by photo id, not product, so only the lists move.
+        const photoIds = new Set(target.photos.map((photo) => photo.id));
+        target.photos.push(...source.photos.filter((photo) => !photoIds.has(photo.id)));
+        target.mainPhotoId ??= source.mainPhotoId ?? target.photos[0]?.id ?? null;
+        const codes = new Set(target.barcodes.map((barcode) => barcode.code));
+        target.barcodes.push(...source.barcodes.filter((barcode) => !codes.has(barcode.code)));
+        target.avoid = target.avoid && source.avoid
+          ? { since: Math.min(target.avoid.since, source.avoid.since) }
+          : target.avoid ?? source.avoid;
+        await store.put(mediaKey(toProductId), target);
+        for (const barcode of source.barcodes) await store.put(barcodeKey(barcode.code), toProductId);
+        await store.delete(mediaKey(fromProductId));
+      });
     },
 
     async clear() {

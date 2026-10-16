@@ -11,7 +11,7 @@ using PurchaseMemory.ProductBackfill;
 // Matches already saved purchases against the product catalog. The database path
 // is always explicit: this tool must never be able to touch the owner's real
 // database by default. Re-running it is safe — items that already carry a link
-// are skipped, aliases are reused, and pending matches are replaced, not stacked.
+// are skipped and aliases are reused, so no second product is created.
 const string ProductionOverrideFlag = "--allow-production-database";
 
 var positional = args.Where(argument => !argument.StartsWith("--", StringComparison.Ordinal)).ToList();
@@ -112,7 +112,7 @@ static async Task<int> RunAsync(string databasePath)
     Console.WriteLine($"purchases processed: {purchases.Count}");
     Console.WriteLine(
         $"outcomes: aliasHit={summary.AliasHits} autoMatched={summary.AutoMatched} " +
-        $"autoCreated={summary.AutoCreated} pending={summary.PendingReview} " +
+        $"autoCreated={summary.AutoCreated} flagged={summary.FlaggedForReview} " +
         $"alreadyLinked={summary.AlreadyLinked} skipped={summary.Skipped}");
     Console.WriteLine($"after:  {await ReadCountsAsync(dbContext)}");
     return 0;
@@ -125,7 +125,7 @@ static async Task<CatalogCounts> ReadCountsAsync(PurchaseMemoryDbContext dbConte
         await dbContext.ProductAliases.CountAsync(),
         await dbContext.Set<PurchaseItem>().CountAsync(item => item.ProductId != null),
         await dbContext.Set<PurchaseItem>().CountAsync(item => item.ProductId == null),
-        await dbContext.PendingProductMatches.CountAsync());
+        await dbContext.Products.CountAsync(product => product.NeedsReview));
 }
 
 internal sealed record CatalogCounts(
@@ -133,9 +133,9 @@ internal sealed record CatalogCounts(
     int Aliases,
     int LinkedItems,
     int UnlinkedItems,
-    int PendingMatches)
+    int FlaggedProducts)
 {
     public override string ToString() => string.Create(
         CultureInfo.InvariantCulture,
-        $"products={Products} aliases={Aliases} linkedItems={LinkedItems} unlinkedItems={UnlinkedItems} pendingMatches={PendingMatches}");
+        $"products={Products} aliases={Aliases} linkedItems={LinkedItems} unlinkedItems={UnlinkedItems} flaggedProducts={FlaggedProducts}");
 }

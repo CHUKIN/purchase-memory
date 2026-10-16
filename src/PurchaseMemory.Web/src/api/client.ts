@@ -7,14 +7,17 @@ import type {
   AnalyticsHistoryPage,
   AnalyticsPlan,
   CategorizationRunSummary,
+  CreateProductRequest,
   Impression,
   ImpressionRating,
   LineApprovalChange,
   LineApprovalResult,
   ProductCatalogPage,
   ProductCategory,
+  ProductChangeResult,
   ProductClassification,
   ProductDetail,
+  ProductMergeResult,
   ProductTag,
   PurchaseDetail,
   PurchaseFeedPage,
@@ -43,7 +46,9 @@ export class ApiError extends Error {
     /** "pending" or "blocked" when the server refused a not-approved user. */
     public readonly accessStatus: string | null = null,
     /** Machine-readable `code` of a problem response, e.g. "analyticsDisabled". */
-    public readonly code: string | null = null
+    public readonly code: string | null = null,
+    /** On a 409 from creating a product: the product that already carries the name. */
+    public readonly existingProductId: string | null = null
   ) {
     super(message);
   }
@@ -59,11 +64,19 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
   let message = `Запрос завершился с ошибкой ${response.status}.`;
   let accessStatus: string | null = null;
   let code: string | null = null;
+  let existingProductId: string | null = null;
   try {
-    const problem = (await response.json()) as { detail?: string; title?: string; accessStatus?: string; code?: string };
+    const problem = (await response.json()) as {
+      detail?: string;
+      title?: string;
+      accessStatus?: string;
+      code?: string;
+      existingProductId?: string;
+    };
     message = problem.detail ?? problem.title ?? message;
     accessStatus = problem.accessStatus ?? null;
     code = problem.code ?? null;
+    existingProductId = problem.existingProductId ?? null;
   } catch {
     // The server may return an empty or non-JSON response.
   }
@@ -78,7 +91,8 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
     response.status,
     Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter : null,
     accessStatus,
-    code
+    code,
+    existingProductId
   );
 }
 
@@ -237,6 +251,10 @@ export interface ProductCatalogRequest {
   brand?: string;
   /** A tag id. */
   tag?: string;
+  /** Only products flagged «проверить». */
+  needsReview?: boolean;
+  /** Leaves this product out (the «Объединить с…» picker). */
+  excludeProductId?: string;
   page?: number;
   pageSize?: number;
 }
@@ -246,6 +264,8 @@ export async function getProductCatalog(request_: ProductCatalogRequest = {}): P
   const query = request_.query?.trim();
   if (query) parameters.set("q", query);
   setClassificationParameters(parameters, request_.category, request_.brand, request_.tag);
+  if (request_.needsReview) parameters.set("needsReview", "true");
+  if (request_.excludeProductId) parameters.set("excludeProductId", request_.excludeProductId);
   if (request_.page && request_.page !== 1) parameters.set("page", String(request_.page));
   if (request_.pageSize) parameters.set("pageSize", String(request_.pageSize));
   const suffix = parameters.size ? `?${parameters}` : "";
@@ -266,6 +286,24 @@ const jsonBody = (method: string, body: unknown): RequestInit => ({
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify(body)
 });
+
+/** A product made by hand or from a scanned barcode; a namesake answers 409 with `existingProductId`. */
+export const createProduct = (body: CreateProductRequest) =>
+  request<ProductChangeResult>("/api/products", jsonBody("POST", body));
+
+export const renameProduct = (productId: string, name: string) =>
+  request<ProductChangeResult>(`/api/products/${encodeURIComponent(productId)}/name`, jsonBody("PUT", { name }));
+
+/** Moves everything of `productId` into `targetProductId` and deletes it. No undo. */
+export const mergeProduct = (productId: string, targetProductId: string) =>
+  request<ProductMergeResult>(
+    `/api/products/${encodeURIComponent(productId)}/merge-into/${encodeURIComponent(targetProductId)}`,
+    { method: "POST" }
+  );
+
+/** «Это другой товар»: clears the «проверить» flag and keeps the product as it is. */
+export const confirmDistinctProduct = (productId: string) =>
+  request<ProductChangeResult>(`/api/products/${encodeURIComponent(productId)}/confirm-distinct`, { method: "POST" });
 
 export const createCategory = (name: string, parentId: string | null) =>
   request<ProductCategory>("/api/categories", jsonBody("POST", { name, parentId }));

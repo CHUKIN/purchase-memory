@@ -1,8 +1,8 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter, useLocation } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { classifyProduct, getPurchase, getReviewQueue, listCategories, listTags, updatePurchase } from "../../api/client";
-import type { PurchaseDetail, PurchaseDetailItem, ReviewQueue, ReviewQueueItem, TagSummary } from "../../api/types";
+import { classifyProduct, confirmDistinctProduct, getReviewQueue, listCategories, listTags, mergeProduct } from "../../api/client";
+import type { ReviewQueue, ReviewQueueItem, TagSummary } from "../../api/types";
 import { AppProviders } from "../../app/AppProviders";
 import { sampleCategories } from "../categories/categoryFixtures";
 import { findRow, openFilters, pick, row } from "../../test/ionicHelpers";
@@ -13,8 +13,8 @@ vi.mock("../../api/client", () => ({
   classifyProduct: vi.fn(),
   listTags: vi.fn(),
   listCategories: vi.fn(),
-  getPurchase: vi.fn(),
-  updatePurchase: vi.fn()
+  mergeProduct: vi.fn(),
+  confirmDistinctProduct: vi.fn()
 }));
 
 const householdTags: TagSummary[] = [
@@ -71,57 +71,22 @@ function LocationProbe() {
   );
 }
 
-function line(overrides: Partial<PurchaseDetailItem> & Pick<PurchaseDetailItem, "position" | "name">): PurchaseDetailItem {
-  return {
-    id: `line-${overrides.position}`,
-    quantity: 1,
-    unit: "szt",
-    unitPrice: 5,
-    lineTotal: 5,
-    kind: "product",
-    discountedItemPosition: null,
-    productId: null,
-    productName: null,
-    pendingMatch: false,
-    candidates: [],
-    boundingBox: null,
-    ...overrides
-  };
-}
-
-const pendingItem = item({
-  kind: "pendingMatch",
-  id: "pendingMatch:m9",
+// A doubtful match: the line became a product of its own, flagged «проверить».
+const flaggedItem = item({
+  kind: "productNeedsReview",
+  id: "productNeedsReview:f9",
   title: "Ser Gouda 250g",
-  purchaseId: "p3",
-  receiptId: "r3",
-  productId: "g1",
-  itemPosition: 1,
+  productId: "f9",
+  purchaseCount: 2,
   candidates: [
-    { productId: "g1", name: "Ser Gouda 150g", brand: "Hochland", categoryId: "cheese" },
-    { productId: "g2", name: "Ser Edam", brand: null, categoryId: null }
+    { productId: "g1", name: "Ser Gouda 150g", brand: "Hochland", categoryId: "cheese", purchaseCount: 5, score: 0.8 },
+    { productId: "g2", name: "Ser Edam", brand: null, categoryId: null, purchaseCount: 1, score: 0.7 }
   ]
 });
 
-const pendingQueue: ReviewQueue = { totalCount: 1, groups: [{ kind: "pendingMatch", totalCount: 1, items: [pendingItem] }] };
+const flaggedQueue: ReviewQueue = { totalCount: 1, groups: [{ kind: "productNeedsReview", totalCount: 1, items: [flaggedItem] }] };
 
-// The purchase as stored: a linked line, the pending line and a discount on it.
-const storedPurchase: PurchaseDetail = {
-  id: "p3",
-  sourceReceiptId: "r3",
-  merchantName: "Biedronka",
-  purchasedAt: "2026-09-20T10:00:00Z",
-  currency: "PLN",
-  receiptTotal: 11,
-  createdAt: "2026-09-20T10:00:00Z",
-  updatedAt: "2026-09-20T10:05:00.123Z",
-  items: [
-    line({ position: 0, name: "MLEKO", productId: "milk-1", productName: "Mleko 2%", boundingBox: { x: 0.1, y: 0.2, width: 0.5, height: 0.05 } }),
-    line({ position: 1, name: "Ser Gouda 250g", unitPrice: 7, lineTotal: 7, pendingMatch: true }),
-    line({ position: 2, name: "RABAT", quantity: null, unit: null, unitPrice: null, lineTotal: -1, kind: "discount", discountedItemPosition: 1 })
-  ],
-  issues: []
-};
+const merged = { sourceProductId: "f9", sourceName: "Ser Gouda 250g", targetProductId: "g1", targetName: "Ser Gouda 150g", movedLineCount: 2, movedAliasCount: 1 };
 
 function renderPage(path = "/needs-attention") {
   render(
@@ -140,8 +105,8 @@ describe("ReviewQueuePage", () => {
     vi.mocked(classifyProduct).mockReset();
     vi.mocked(listTags).mockReset().mockResolvedValue([]);
     vi.mocked(listCategories).mockReset().mockResolvedValue([]);
-    vi.mocked(getPurchase).mockReset();
-    vi.mocked(updatePurchase).mockReset();
+    vi.mocked(mergeProduct).mockReset();
+    vi.mocked(confirmDistinctProduct).mockReset();
   });
 
   it("groups items by kind with counts, reasons and fix links", async () => {
@@ -210,20 +175,22 @@ describe("ReviewQueuePage", () => {
     expect(within(card).queryByRole("link", { name: "Открыть чек" })).not.toBeInTheDocument();
   });
 
-  it("deep-links a total mismatch and a pending match into the purchase editor", async () => {
+  it("deep-links a total mismatch into the editor and a flagged product without candidates to its card", async () => {
     vi.mocked(getReviewQueue).mockResolvedValue({
       totalCount: 2,
       groups: [
         queue.groups[0],
-        { kind: "pendingMatch", totalCount: 1, items: [item({ kind: "pendingMatch", id: "pendingMatch:m9", title: "Ser Gouda 250g", purchaseId: "p3", receiptId: "r3", productId: "g1", itemPosition: 2 })] }
+        { kind: "productNeedsReview", totalCount: 1, items: [item({ kind: "productNeedsReview", id: "productNeedsReview:f9", title: "Ser Gouda 250g", productId: "f9", purchaseCount: 1, candidates: [] })] }
       ]
     });
     renderPage();
     const mismatch = await screen.findByRole("article", { name: "Żabka" });
     expect(within(mismatch).getByRole("link", { name: "Исправить покупку «Żabka»" })).toHaveAttribute("href", "/purchases/p1?edit=1&focus=total");
-    const pending = screen.getByRole("article", { name: "Ser Gouda 250g" });
-    expect(within(pending).getByRole("link", { name: "Выбрать товар для «Ser Gouda 250g»" })).toHaveAttribute("href", "/purchases/p3?edit=1&focus=product-2");
-    expect(within(pending).getByRole("link", { name: "Открыть похожий товар: Ser Gouda 250g" })).toHaveAttribute("href", "/products/g1");
+    const flagged = screen.getByRole("article", { name: "Ser Gouda 250g" });
+    expect(flagged).toHaveTextContent("Похожих товаров больше нет. Нажмите «Это другой товар» или объедините его на странице товара. 1 покупка");
+    expect(within(flagged).getByRole("link", { name: "Открыть товар: Ser Gouda 250g" })).toHaveAttribute("href", "/products/f9");
+    expect(within(flagged).getByRole("button", { name: "«Ser Gouda 250g» — это другой товар" })).toHaveTextContent("Это другой товар");
+    expect(screen.getByRole("region", { name: "Тот же товар или новый?" })).toBeInTheDocument();
   });
 
   it("falls back to number and code when the currency code is not one Intl accepts", async () => {
@@ -264,93 +231,114 @@ describe("ReviewQueuePage", () => {
     expect(screen.getByTestId("state")).toHaveTextContent(JSON.stringify({ returnTo: "/needs-attention?tag=kid" }));
   });
 
-  describe("suggested products", () => {
+  describe("similar products", () => {
     beforeEach(() => {
       vi.mocked(listCategories).mockResolvedValue(sampleCategories);
     });
 
-    it("shows the candidates inline and keeps the picker for another product", async () => {
-      vi.mocked(getReviewQueue).mockResolvedValue(pendingQueue);
+    it("shows the flagged product's candidates with «Да, это он» and «Это другой товар»", async () => {
+      vi.mocked(getReviewQueue).mockResolvedValue(flaggedQueue);
       renderPage();
 
       const card = await screen.findByRole("article", { name: "Ser Gouda 250g" });
-      // «Похоже на» and the buttons say it; no extra sentence on the card.
-      expect(card).not.toHaveTextContent("Это один из товаров ниже?");
+      expect(card).toHaveTextContent("Сравните с похожими и нажмите «Да, это он» или «Это другой товар». 2 покупки");
       const list = within(card).getByRole("list", { name: "Похожие товары для «Ser Gouda 250g»" });
       const options = within(list).getAllByRole("listitem");
       expect(options).toHaveLength(2);
       expect(options[0]).toHaveTextContent("Ser Gouda 150g");
-      expect(options[0]).toHaveTextContent("Hochland · Молочное и яйца / Сыр");
+      expect(options[0]).toHaveTextContent("Hochland · Молочное и яйца / Сыр · 5 покупок");
       expect(within(options[0]).getByRole("link", { name: "Ser Gouda 150g" })).toHaveAttribute("href", "/products/g1");
       expect(within(options[1]).getByRole("button", { name: "Да, «Ser Gouda 250g» — это «Ser Edam»" })).toHaveTextContent("Да, это он");
-      expect(within(card).getByRole("button", { name: "Создать новый товар «Ser Gouda 250g»" })).toHaveTextContent("Создать новый товар");
-      expect(within(card).getByRole("link", { name: "Выбрать другой товар для «Ser Gouda 250g»" })).toHaveAttribute("href", "/purchases/p3?edit=1&focus=product-1");
-      expect(within(card).queryByRole("link", { name: /Открыть похожий товар/ })).not.toBeInTheDocument();
+      expect(within(card).getByRole("button", { name: "«Ser Gouda 250g» — это другой товар" })).toHaveTextContent("Это другой товар");
+      expect(within(card).getByRole("link", { name: "Открыть товар: Ser Gouda 250g" })).toHaveAttribute("href", "/products/f9");
+      // The editor is no longer the way to settle it.
+      expect(within(card).queryByRole("link", { name: /Выбрать другой товар/ })).not.toBeInTheDocument();
     });
 
-    it("links the line to a candidate in one tap and the item leaves the queue", async () => {
-      vi.mocked(getReviewQueue).mockResolvedValueOnce(pendingQueue).mockResolvedValue({ totalCount: 0, groups: [] });
-      vi.mocked(getPurchase).mockResolvedValue(storedPurchase);
-      vi.mocked(updatePurchase).mockResolvedValue(storedPurchase);
+    it("a flagged product without a category is one card that also asks for the category", async () => {
+      vi.mocked(getReviewQueue).mockResolvedValue({
+        totalCount: 1,
+        groups: [{ kind: "productNeedsReview", totalCount: 1, items: [{ ...flaggedItem, needsCategory: true }] }]
+      });
+      renderPage();
+
+      const card = await screen.findByRole("article", { name: "Ser Gouda 250g" });
+      expect(card).toHaveTextContent("Новый товар: проверьте и выберите категорию. 2 покупки");
+      expect(within(card).getAllByRole("listitem")).toHaveLength(2);
+      expect(within(card).getByRole("button", { name: "«Ser Gouda 250g» — это другой товар" })).toBeInTheDocument();
+      expect(within(card).getByRole("link", { name: "Выбрать категорию: Ser Gouda 250g" })).toHaveAttribute("href", "/products/f9");
+      expect(screen.getAllByRole("article")).toHaveLength(1);
+      expect(screen.queryByRole("region", { name: "Без категории" })).not.toBeInTheDocument();
+    });
+
+    it("a flagged product with an AI-suggested category is one card that confirms it", async () => {
+      vi.mocked(getReviewQueue).mockResolvedValueOnce({
+        totalCount: 1,
+        groups: [{ kind: "productNeedsReview", totalCount: 1, items: [{ ...flaggedItem, categoryId: "cheese", categoryName: "Сыр" }] }]
+      }).mockResolvedValue(flaggedQueue);
+      vi.mocked(classifyProduct).mockResolvedValue({} as never);
+      renderPage();
+
+      const card = await screen.findByRole("article", { name: "Ser Gouda 250g" });
+      expect(card).toHaveTextContent("Новый товар: проверьте его и подтвердите категорию «Сыр». 2 покупки");
+      expect(within(card).getAllByRole("listitem")).toHaveLength(2);
+      expect(within(card).getByRole("button", { name: "«Ser Gouda 250g» — это другой товар" })).toBeInTheDocument();
+      expect(within(card).getByRole("link", { name: "Изменить: Ser Gouda 250g" })).toHaveAttribute("href", "/products/f9");
+      expect(screen.getAllByRole("article")).toHaveLength(1);
+      expect(screen.queryByRole("region", { name: "Категория не подтверждена" })).not.toBeInTheDocument();
+
+      fireEvent.click(within(card).getByRole("button", { name: "Подтвердить категорию «Сыр» для «Ser Gouda 250g»" }));
+      await waitFor(() => expect(classifyProduct).toHaveBeenCalledWith("f9", { categoryId: "cheese" }));
+      expect(mergeProduct).not.toHaveBeenCalled();
+    });
+
+    it("«Да, это он» asks first, naming both products, then merges and the item leaves the queue", async () => {
+      vi.mocked(getReviewQueue).mockResolvedValueOnce(flaggedQueue).mockResolvedValue({ totalCount: 0, groups: [] });
+      vi.mocked(mergeProduct).mockResolvedValue(merged);
       renderPage();
 
       fireEvent.click(await screen.findByRole("button", { name: "Да, «Ser Gouda 250g» — это «Ser Gouda 150g»" }));
+      const confirm = screen.getByRole("alertdialog", { name: "Объединить товары?" });
+      expect(confirm).toHaveTextContent("Покупки, названия из чеков и теги товара «Ser Gouda 250g» перейдут в «Ser Gouda 150g». «Ser Gouda 250g» исчезнет. Отменить нельзя.");
+      expect(mergeProduct).not.toHaveBeenCalled();
+      fireEvent.click(within(confirm).getByRole("button", { name: "Объединить" }));
 
-      await waitFor(() => expect(updatePurchase).toHaveBeenCalledTimes(1));
-      expect(getPurchase).toHaveBeenCalledWith("p3");
-      expect(updatePurchase).toHaveBeenCalledWith("p3", {
-        expectedUpdatedAt: "2026-09-20T10:05:00.123Z",
-        merchantName: "Biedronka",
-        purchasedAt: "2026-09-20T10:00:00Z",
-        currency: "PLN",
-        receiptTotal: 11,
-        items: [
-          { name: "MLEKO", quantity: 1, unit: "szt", unitPrice: 5, lineTotal: 5, kind: "product", productLink: "existing", productId: "milk-1", boundingBox: { x: 0.1, y: 0.2, width: 0.5, height: 0.05 } },
-          { name: "Ser Gouda 250g", quantity: 1, unit: "szt", unitPrice: 7, lineTotal: 7, kind: "product", productLink: "existing", productId: "g1", boundingBox: null },
-          { name: "RABAT", quantity: null, unit: null, unitPrice: null, lineTotal: -1, kind: "discount", productLink: "auto", productId: null, boundingBox: null }
-        ]
-      });
+      await waitFor(() => expect(mergeProduct).toHaveBeenCalledWith("f9", "g1"));
       expect(await screen.findByRole("heading", { name: "Всё проверено" })).toBeInTheDocument();
     });
 
-    it("creates a new product named after the line", async () => {
-      vi.mocked(getReviewQueue).mockResolvedValue(pendingQueue);
-      vi.mocked(getPurchase).mockResolvedValue(storedPurchase);
-      vi.mocked(updatePurchase).mockResolvedValue(storedPurchase);
-      renderPage();
-
-      fireEvent.click(await screen.findByRole("button", { name: "Создать новый товар «Ser Gouda 250g»" }));
-
-      await waitFor(() => expect(updatePurchase).toHaveBeenCalledTimes(1));
-      const sent = vi.mocked(updatePurchase).mock.calls[0][1];
-      expect(sent.items[1]).toMatchObject({ productLink: "new", productId: null });
-      expect(sent.items[0]).toMatchObject({ productLink: "existing", productId: "milk-1" });
-    });
-
-    it("does not overwrite a line someone already decided and refreshes the queue", async () => {
-      vi.mocked(getReviewQueue).mockResolvedValue(pendingQueue);
-      vi.mocked(getPurchase).mockResolvedValue({
-        ...storedPurchase,
-        items: storedPurchase.items.map((entry) => entry.position === 1 ? { ...entry, pendingMatch: false, productId: "g2", productName: "Ser Edam" } : entry)
-      });
-      renderPage();
-
-      fireEvent.click(await screen.findByRole("button", { name: "Да, «Ser Gouda 250g» — это «Ser Gouda 150g»" }));
-
-      expect(await screen.findByRole("alert")).toHaveTextContent("Эту строку уже разобрали — очередь обновлена.");
-      expect(updatePurchase).not.toHaveBeenCalled();
-      await waitFor(() => expect(getReviewQueue).toHaveBeenCalledTimes(2));
-    });
-
-    it("keeps the card with an error when saving fails", async () => {
-      vi.mocked(getReviewQueue).mockResolvedValue(pendingQueue);
-      vi.mocked(getPurchase).mockResolvedValue(storedPurchase);
-      vi.mocked(updatePurchase).mockRejectedValue(new Error("offline"));
+    it("cancelling the confirmation merges nothing", async () => {
+      vi.mocked(getReviewQueue).mockResolvedValue(flaggedQueue);
       renderPage();
 
       fireEvent.click(await screen.findByRole("button", { name: "Да, «Ser Gouda 250g» — это «Ser Edam»" }));
+      fireEvent.click(within(screen.getByRole("alertdialog")).getByRole("button", { name: "Отмена" }));
 
-      expect(await screen.findByRole("alert")).toHaveTextContent("Не удалось связать строку с товаром. Попробуйте ещё раз.");
+      await waitFor(() => expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument());
+      expect(mergeProduct).not.toHaveBeenCalled();
+    });
+
+    it("«Это другой товар» clears the flag", async () => {
+      vi.mocked(getReviewQueue).mockResolvedValueOnce(flaggedQueue).mockResolvedValue({ totalCount: 0, groups: [] });
+      vi.mocked(confirmDistinctProduct).mockResolvedValue({} as never);
+      renderPage();
+
+      fireEvent.click(await screen.findByRole("button", { name: "«Ser Gouda 250g» — это другой товар" }));
+
+      await waitFor(() => expect(confirmDistinctProduct).toHaveBeenCalledWith("f9"));
+      expect(mergeProduct).not.toHaveBeenCalled();
+      expect(await screen.findByRole("heading", { name: "Всё проверено" })).toBeInTheDocument();
+    });
+
+    it("keeps the card with an error when saving fails", async () => {
+      vi.mocked(getReviewQueue).mockResolvedValue(flaggedQueue);
+      vi.mocked(mergeProduct).mockRejectedValue(new Error("offline"));
+      renderPage();
+
+      fireEvent.click(await screen.findByRole("button", { name: "Да, «Ser Gouda 250g» — это «Ser Edam»" }));
+      fireEvent.click(within(screen.getByRole("alertdialog")).getByRole("button", { name: "Объединить" }));
+
+      expect(await screen.findByRole("alert")).toHaveTextContent("Не удалось сохранить решение. Попробуйте ещё раз.");
       expect(screen.getByRole("article", { name: "Ser Gouda 250g" })).toBeInTheDocument();
     });
   });

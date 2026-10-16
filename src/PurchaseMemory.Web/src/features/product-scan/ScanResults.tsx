@@ -1,12 +1,12 @@
 import type { TFunction } from "i18next";
-import { IonButton, IonItem, IonLabel, IonList, IonSearchbar, IonSpinner } from "@ionic/react";
-import { useQuery } from "@tanstack/react-query";
+import { IonButton, IonInput, IonItem, IonLabel, IonList, IonSearchbar, IonSpinner } from "@ionic/react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bookmark, PackagePlus, Link2, Meh, ScanBarcode, Store, ThumbsDown, ThumbsUp, TrendingDown } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { ApiError, getProduct, getProductCatalog, listProductImpressions } from "../../api/client";
+import { ApiError, createProduct, getProduct, getProductCatalog, listProductImpressions } from "../../api/client";
 import type { ImpressionRating, ProductDetail, ProductPricePoint } from "../../api/types";
-import { Footnote, Notice, SectionHeader } from "../../design-system/components";
+import { ActionButton, Footnote, Notice, SectionHeader } from "../../design-system/components";
 import { useDebounced } from "../filters/useDebounced";
 import { impressionsQueryKey, ratingLabel } from "../impressions/impressionText";
 import { formatDate, formatMoney } from "../products/productText";
@@ -132,8 +132,10 @@ export function NotFoundResult({ code, locale, onLinked, onScanAgain }: {
   const debounced = useDebounced(query).trim();
   const [message, setMessage] = useState<{ tone: "success" | "danger"; text: string } | null>(null);
   const [busy, setBusy] = useState(false);
+  const [creating, setCreating] = useState(false);
   const link = useLinkBarcode();
   const remember = useRememberBarcode();
+  const queryClient = useQueryClient();
   const remembered = useRememberedBarcode(code);
   const off = useQuery({
     queryKey: ["open-food-facts", code],
@@ -163,12 +165,46 @@ export function NotFoundResult({ code, locale, onLinked, onScanAgain }: {
     }
   }
 
-  async function rememberCode(withOff: boolean) {
+  /**
+   * «Новый товар»: the product is created on the server (a namesake that
+   * already exists is used instead), then the code is tied to it on this
+   * device and the screen shows it as found.
+   */
+  async function createAndLink(name: string, brand: string) {
+    setBusy(true);
+    setMessage(null);
+    let productId: string;
+    try {
+      productId = (await createProduct({ name, brand: brand.trim() || null, origin: "barcode" })).id;
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 409 && error.existingProductId) {
+        productId = error.existingProductId;
+      } else {
+        setMessage({ tone: "danger", text: error instanceof ApiError && error.status === 400 ? error.message : t("productScan.createFailed") });
+        setBusy(false);
+        return;
+      }
+    }
+    await queryClient.invalidateQueries({ queryKey: ["products"] });
+    setCreating(false);
+    try {
+      const result = await link(productId, code, offProduct && name === offProduct.name ? "openFoodFacts" : "scan");
+      if (result.ok) onLinked(productId);
+      else setMessage({ tone: "danger", text: t("productScan.linkTaken") });
+    } catch {
+      setMessage({ tone: "danger", text: t("productScan.createdNotLinked") });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function rememberCode() {
     setBusy(true);
     setMessage(null);
     try {
-      await remember(code, withOff ? offProduct : null);
-      setMessage({ tone: "success", text: withOff ? t("productScan.offCreated") : t("productScan.remembered") });
+      // The Open Food Facts name is kept with the code when there is one.
+      await remember(code, offProduct);
+      setMessage({ tone: "success", text: offProduct ? t("productScan.offCreated") : t("productScan.remembered") });
     } catch {
       setMessage({ tone: "danger", text: t("productScan.saveFailed") });
     } finally {
@@ -226,24 +262,37 @@ export function NotFoundResult({ code, locale, onLinked, onScanAgain }: {
       )}
 
       <SectionHeader>{t("productScan.orNew")}</SectionHeader>
+      {creating
+        ? (
+          <NewProductForm
+            // Remounted when Open Food Facts answers, so its name fills the field.
+            key={offProduct?.name ?? ""}
+            initialName={offProduct?.name ?? ""}
+            initialBrand={offProduct?.brand ?? ""}
+            busy={busy}
+            onCreate={(name, brand) => void createAndLink(name, brand)}
+            onCancel={() => setCreating(false)}
+          />
+        )
+        : null}
       <IonList inset>
-        {/* Without a product the row is plain text, not a disabled button, so «не отвечает» stays readable. */}
-        <IonItem button={offProduct !== null} detail={offProduct !== null} disabled={offProduct !== null && busy} onClick={offProduct ? () => void rememberCode(true) : undefined}>
-          {offProduct?.imageUrl
-            ? <img slot="start" className="pm-scan-off-image" src={offProduct.imageUrl} alt="" referrerPolicy="no-referrer" />
-            : <PackagePlus slot="start" size={22} className="pm-row-icon" aria-hidden="true" />}
-          <IonLabel className="pm-wrap">
-            {/* Unavailable: a muted title (still AA contrast) instead of greying the whole row. */}
-            <h3 style={offProduct ? undefined : { color: "var(--pm-muted)" }}>{t("productScan.offCreate")}</h3>
-            <p>
-              {off.isPending ? t("productScan.offLoading")
-                : offProduct ? [offProduct.name, offProduct.brand, offProduct.quantity].filter(Boolean).join(" · ")
-                : off.data?.status === "error" ? t("productScan.offError")
-                : t("productScan.offNotFound")}
-            </p>
-          </IonLabel>
-        </IonItem>
-        <IonItem button detail lines="none" disabled={busy} onClick={() => void rememberCode(false)}>
+        {!creating && (
+          <IonItem button detail disabled={busy} onClick={() => setCreating(true)}>
+            {offProduct?.imageUrl
+              ? <img slot="start" className="pm-scan-off-image" src={offProduct.imageUrl} alt="" referrerPolicy="no-referrer" />
+              : <PackagePlus slot="start" size={22} className="pm-row-icon" aria-hidden="true" />}
+            <IonLabel className="pm-wrap">
+              <h3>{t("productScan.createProduct")}</h3>
+              <p>
+                {off.isPending ? t("productScan.offLoading")
+                  : offProduct ? t("productScan.createFromOff", { name: [offProduct.name, offProduct.brand, offProduct.quantity].filter(Boolean).join(" · ") })
+                  : off.data?.status === "error" ? t("productScan.offError")
+                  : t("productScan.offNotFound")}
+              </p>
+            </IonLabel>
+          </IonItem>
+        )}
+        <IonItem button detail lines="none" disabled={busy} onClick={() => void rememberCode()}>
           <Bookmark slot="start" size={22} className="pm-row-icon" aria-hidden="true" />
           <IonLabel className="pm-wrap">
             <h3>{t("productScan.rememberLater")}</h3>
@@ -254,6 +303,49 @@ export function NotFoundResult({ code, locale, onLinked, onScanAgain }: {
       <Footnote>{t("productScan.offHint")}</Footnote>
       <ResultButtons onScanAgain={onScanAgain} />
     </>
+  );
+}
+
+/** The name (prefilled from Open Food Facts when it knew the code) and an optional brand. */
+function NewProductForm({ initialName, initialBrand, busy, onCreate, onCancel }: {
+  initialName: string;
+  initialBrand: string;
+  busy: boolean;
+  onCreate: (name: string, brand: string) => void;
+  onCancel: () => void;
+}) {
+  const { t } = useTranslation();
+  const [name, setName] = useState(initialName);
+  const [brand, setBrand] = useState(initialBrand);
+  const clean = name.trim();
+  return (
+    <form onSubmit={(event) => { event.preventDefault(); if (clean) onCreate(clean, brand); }}>
+      <IonList inset>
+        <IonItem>
+          <IonInput
+            label={t("productScan.createNameLabel")}
+            labelPlacement="stacked"
+            value={name}
+            maxlength={500}
+            placeholder={t("productScan.createNamePlaceholder")}
+            onIonInput={(event) => setName(String(event.detail.value ?? ""))}
+          />
+        </IonItem>
+        <IonItem lines="none">
+          <IonInput
+            label={t("productScan.createBrandLabel")}
+            labelPlacement="stacked"
+            value={brand}
+            maxlength={100}
+            onIonInput={(event) => setBrand(String(event.detail.value ?? ""))}
+          />
+        </IonItem>
+      </IonList>
+      <div className="pm-scan-buttons">
+        <ActionButton expand="block" shape="round" type="submit" loading={busy} disabled={!clean}>{t("productScan.createSubmit")}</ActionButton>
+        <IonButton expand="block" shape="round" fill="clear" disabled={busy} onClick={onCancel}>{t("ui.cancel")}</IonButton>
+      </div>
+    </form>
   );
 }
 

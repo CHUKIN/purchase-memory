@@ -36,6 +36,7 @@ public static class DependencyInjection
         // historical "Sqlite" names; both providers run the same queries.
         services.AddScoped<IPurchaseDraftRepository, SqlitePurchaseDraftRepository>();
         services.AddScoped<IProductCatalogRepository, SqliteProductCatalogRepository>();
+        services.AddScoped<IProductMaintenanceRepository, ProductMaintenanceRepository>();
         services.AddScoped<IReceiptCaptureRepository, SqliteReceiptCaptureRepository>();
         services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
         services.AddScoped<PurchaseMemory.Application.Products.Tags.IProductTagRepository, ProductTagRepository>();

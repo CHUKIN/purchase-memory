@@ -17,6 +17,9 @@ public sealed class ProductMatcher : IProductMatcher
     /// </summary>
     private const int MaximumCatalogSize = 20_000;
 
+    /// <summary>Audit actor for decisions the matcher makes on its own.</summary>
+    public const string SystemActor = "system";
+
     private readonly IProductCatalogRepository _repository;
     private readonly TimeProvider _timeProvider;
 
@@ -50,11 +53,6 @@ public sealed class ProductMatcher : IProductMatcher
 
         var catalog = (await _repository.ListCatalogAsync(MaximumCatalogSize, cancellationToken)).ToList();
         var merchantProductIds = aliases.Select(alias => alias.ProductId).ToHashSet();
-
-        // A repeated run must not stack duplicates in the review queue.
-        await _repository.RemovePendingMatchesAsync(
-            items.Select(item => item.Id).ToList(),
-            cancellationToken);
 
         var summary = ProductMatchSummary.Empty;
         foreach (var item in items)
@@ -119,32 +117,49 @@ public sealed class ProductMatcher : IProductMatcher
 
             case DecisionKind.Ambiguous:
                 {
-                    _repository.AddPendingMatch(PendingProductMatch.Create(
-                        item.Id,
-                        merchantKey,
-                        item.Name,
-                        normalized,
-                        decision.Candidates
-                            .Take(ProductMatchingThresholds.MaximumRecordedCandidates)
-                            .Select((candidate, position) => PendingProductMatchCandidate.Create(
-                                position,
-                                candidate.Product.Id,
-                                candidate.Score))
-                            .ToList(),
+                    // Doubt never leaves a line without a product: it gets one
+                    // of its own, flagged, with the candidates it might really
+                    // be. A wrong merge is harder to undo than a duplicate, so
+                    // the person decides later from the flag.
+                    var product = CreateProduct(item, normalized, catalog, now);
+                    product.FlagForReview(ProductReviewReason.AmbiguousMatch, now);
+                    _repository.AddReviewCandidates(decision.Candidates
+                        .Take(ProductMatchingThresholds.MaximumRecordedCandidates)
+                        .Select((candidate, position) => ProductReviewCandidate.Create(
+                            product.Id,
+                            position,
+                            candidate.Product.Id,
+                            candidate.Score))
+                        .ToList());
+                    _repository.AddAuditEntry(ProductAuditEntry.Create(
+                        product.Id,
+                        SystemActor,
+                        null,
+                        ProductAuditEntry.ReviewField,
+                        ProductAuditChangeSource.Matching,
+                        null,
+                        nameof(ProductReviewReason.AmbiguousMatch),
                         now));
-                    return ProductMatchOutcome.PendingReview;
+                    RecordAlias(merchantKey, normalized, item.Name, product.Id, ProductAliasSource.AutoCreated, now, merchantProductIds, aliasesByText);
+                    return ProductMatchOutcome.FlaggedForReview;
                 }
 
             default:
                 {
-                    var product = Product.Create(item.Name, normalized, now);
-                    _repository.AddProduct(product);
-                    catalog.Add(product);
-                    item.LinkToProduct(product.Id);
+                    var product = CreateProduct(item, normalized, catalog, now);
                     RecordAlias(merchantKey, normalized, item.Name, product.Id, ProductAliasSource.AutoCreated, now, merchantProductIds, aliasesByText);
                     return ProductMatchOutcome.AutoCreated;
                 }
         }
+    }
+
+    private Product CreateProduct(PurchaseItem item, string normalized, List<Product> catalog, DateTimeOffset now)
+    {
+        var product = Product.Create(item.Name, normalized, now, ProductOrigin.Receipt);
+        _repository.AddProduct(product);
+        catalog.Add(product);
+        item.LinkToProduct(product.Id);
+        return product;
     }
 
     private void RecordAlias(

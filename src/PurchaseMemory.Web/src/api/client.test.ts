@@ -98,4 +98,17 @@ describe("API client categories", () => {
     expect(fetchMock.mock.calls[0][0]).toBe("/api/products?uncategorized=true&brand=%C5%81aciate");
     expect(fetchMock.mock.calls[1][0]).toBe("/api/products?categoryId=dairy");
   });
+
+  it("sends the «проверить» filter and the excluded product to the catalog, not the feed", async () => {
+    const fetchMock = vi.fn().mockImplementation(async () => jsonResponse(200, { items: [] }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await getProductCatalog({ needsReview: true });
+    await getProductCatalog({ query: "kefir", excludeProductId: "p1", pageSize: 8 });
+    await getPurchaseFeed({ query: "kefir" });
+
+    expect(fetchMock.mock.calls[0][0]).toBe("/api/products?needsReview=true");
+    expect(fetchMock.mock.calls[1][0]).toBe("/api/products?q=kefir&excludeProductId=p1&pageSize=8");
+    expect(fetchMock.mock.calls[2][0]).toBe("/api/purchases?q=kefir");
+  });
 });

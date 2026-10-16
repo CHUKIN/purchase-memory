@@ -9,7 +9,6 @@ import type {
   BoundingBox,
   ProductLinkChoice,
   PurchaseDetail,
-  PurchaseProductCandidate,
   ReceiptLineKind,
   UpdatePurchaseRequest
 } from "../../api/types";
@@ -35,6 +34,7 @@ import { reviewQueueQueryKey } from "../review-queue/reviewQueueQueries";
 import { reviewQueueReturnPath } from "../review-queue/returnToQueue";
 import { useBackTarget, useReturnState } from "../../app/backNavigation";
 import { PurchaseLineImpressions, usePurchaseImpressions } from "../impressions/ImpressionSections";
+import { impressionsQueryKey } from "../impressions/impressionText";
 import { HelpLink } from "../help/HelpLink";
 import { formatShortDate } from "./dates";
 import { formatMoney } from "./money";
@@ -219,12 +219,12 @@ function PurchaseSummary({ purchase, back, onEdit }: { purchase: PurchaseDetail;
                   <ReviewLineButton onOpen={() => openReview(index)} approved={approvals.isApproved(item)} name={item.name}>
                     <ProductLinkNote
                       text={item.productName
-                        ? t("purchaseEdit.productLinked", { name: item.productName })
-                        : item.pendingMatch ? t("purchaseEdit.productPending") : t("purchaseEdit.productUnlinked")}
+                        ? productStatusText(t, { ...item, productLink: "existing" })
+                        : t("purchaseEdit.productUnlinked")}
                       lineName={item.name}
                       productName={item.productName}
-                      pending={!item.productName && item.pendingMatch}
-                      unlinked={!item.productName && !item.pendingMatch}
+                      flagged={Boolean(item.productName && item.productNeedsReview)}
+                      unlinked={!item.productName}
                     />
                     {item.unitPrice === null && <span className="pm-line-detail" data-warn="true">{t("purchaseEdit.missingPrice")}</span>}
                   </ReviewLineButton>
@@ -325,6 +325,8 @@ function useSaveLine(purchase: PurchaseDetail, approvals: ReturnType<typeof useL
       queryClient.invalidateQueries({ queryKey: reviewQueueQueryKey }),
       queryClient.invalidateQueries({ queryKey: ["purchases", "feed"] }),
       queryClient.invalidateQueries({ queryKey: ["products"] }),
+      // Impressions follow the replaced line rows to their new ids.
+      queryClient.invalidateQueries({ queryKey: impressionsQueryKey }),
       purchase.sourceReceiptId ? queryClient.invalidateQueries({ queryKey: ["receipts", purchase.sourceReceiptId] }) : Promise.resolve()
     ]);
   };
@@ -343,8 +345,7 @@ interface EditLine {
   productLink: ProductLinkChoice;
   productId: string | null;
   productName: string | null;
-  pendingMatch: boolean;
-  candidates: PurchaseProductCandidate[];
+  productNeedsReview: boolean;
   boundingBox: BoundingBox | null;
 }
 
@@ -377,8 +378,7 @@ function toEditState(purchase: PurchaseDetail): EditState {
       productLink: item.productId ? "existing" : "auto",
       productId: item.productId,
       productName: item.productName,
-      pendingMatch: item.pendingMatch,
-      candidates: item.candidates,
+      productNeedsReview: Boolean(item.productNeedsReview),
       boundingBox: item.boundingBox
     }))
   };
@@ -448,6 +448,8 @@ function PurchaseEditor({ purchase, focus, onDone, onReload }: {
         queryClient.invalidateQueries({ queryKey: reviewQueueQueryKey }),
         queryClient.invalidateQueries({ queryKey: ["purchases", "feed"] }),
         queryClient.invalidateQueries({ queryKey: ["products"] }),
+        // Impressions follow the replaced line rows to their new ids.
+        queryClient.invalidateQueries({ queryKey: impressionsQueryKey }),
         purchase.sourceReceiptId ? queryClient.invalidateQueries({ queryKey: ["receipts", purchase.sourceReceiptId] }) : Promise.resolve()
       ]);
       onDone(true);
@@ -466,7 +468,7 @@ function PurchaseEditor({ purchase, focus, onDone, onReload }: {
     update({
       items: [...state.items, {
         key: nextKey(), id: null, name: "", quantity: kind === "product" ? 1 : null, unit: null, unitPrice: null, lineTotal: null, kind,
-        productLink: "auto", productId: null, productName: null, pendingMatch: false, candidates: [], boundingBox: null
+        productLink: "auto", productId: null, productName: null, productNeedsReview: false, boundingBox: null
       }]
     });
     setOpenLine(state.items.length);
@@ -523,7 +525,7 @@ function PurchaseEditor({ purchase, focus, onDone, onReload }: {
               text={productStatusText(t, line)}
               lineName={line.name}
               productName={line.productLink === "existing" ? line.productName : null}
-              pending={line.pendingMatch && line.productLink === "auto"}
+              flagged={line.productLink === "existing" && line.productNeedsReview}
               isNew={line.productLink === "new"}
             />
           </p>
@@ -534,7 +536,7 @@ function PurchaseEditor({ purchase, focus, onDone, onReload }: {
             number={index + 1}
             pickerOpen={pickerOpenFor === index}
             onPickerOpenChange={(open) => setPickerOpenFor(open ? index : null)}
-            onChoose={(choice) => updateItem(index, choice)}
+            onChoose={(choice) => updateItem(index, { ...choice, productNeedsReview: Boolean(choice.productNeedsReview) })}
           />
         )}
       />

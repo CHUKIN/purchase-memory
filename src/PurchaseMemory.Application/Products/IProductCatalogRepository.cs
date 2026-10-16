@@ -27,17 +27,13 @@ public interface IProductCatalogRepository
 
     void AddAlias(ProductAlias productAlias);
 
-    void AddPendingMatch(PendingProductMatch pendingMatch);
+    /// <summary>The candidates of a product the matcher flagged for review.</summary>
+    void AddReviewCandidates(IReadOnlyCollection<ProductReviewCandidate> candidates);
 
-    /// <summary>
-    /// Drops previously raised pending matches for the given purchase items so a
-    /// repeated match run cannot accumulate duplicates.
-    /// </summary>
-    Task RemovePendingMatchesAsync(
-        IReadOnlyCollection<Guid> purchaseItemIds,
-        CancellationToken cancellationToken);
+    void AddAuditEntry(ProductAuditEntry entry);
 
-    Task<int> CountPendingMatchesAsync(CancellationToken cancellationToken);
+    /// <summary>Products carrying the «проверить» flag, for the catalog's tappable hint.</summary>
+    Task<int> CountProductsNeedingReviewAsync(CancellationToken cancellationToken);
 
     /// <summary>
     /// One page of the catalog. <paramref name="query"/> is matched against both
@@ -87,9 +83,18 @@ public interface IProductCatalogRepository
         IReadOnlyCollection<Guid> productIds,
         CancellationToken cancellationToken);
 
-    /// <summary>Open pending matches (with their candidates) for the given purchase items.</summary>
-    Task<IReadOnlyList<PendingProductMatch>> ListPendingMatchesAsync(
-        IReadOnlyCollection<Guid> purchaseItemIds,
+    /// <summary>
+    /// Review candidates of each given flagged product, best first, with the
+    /// candidate's name, brand, category and purchase count. Candidates whose
+    /// product no longer exists are left out; products without any are absent.
+    /// </summary>
+    Task<IReadOnlyDictionary<Guid, IReadOnlyList<ProductReviewCandidateView>>> ListReviewCandidatesAsync(
+        IReadOnlyCollection<Guid> productIds,
+        CancellationToken cancellationToken);
+
+    /// <summary>Which of the given products carry the «проверить» flag.</summary>
+    Task<IReadOnlySet<Guid>> ListProductsNeedingReviewAsync(
+        IReadOnlyCollection<Guid> productIds,
         CancellationToken cancellationToken);
 
     Task SaveChangesAsync(CancellationToken cancellationToken);
@@ -114,7 +119,9 @@ public sealed record ProductCatalogEntry(
     ProductAttributeSource? CategorySource = null,
     string? Brand = null,
     // Filled by the catalog service from the tag links; the repository leaves it empty.
-    IReadOnlyList<ProductTagSummary>? Tags = null);
+    IReadOnlyList<ProductTagSummary>? Tags = null,
+    bool NeedsReview = false,
+    ProductOrigin Origin = ProductOrigin.Receipt);
 
 /// <summary>
 /// Already validated catalog filters. <see cref="CategoryIds"/> is the chosen
@@ -125,7 +132,11 @@ public sealed record ProductCatalogFilter(
     IReadOnlyCollection<Guid>? CategoryIds = null,
     bool Uncategorized = false,
     string? NormalizedBrand = null,
-    IReadOnlyCollection<Guid>? TagIds = null);
+    IReadOnlyCollection<Guid>? TagIds = null,
+    // Only products carrying the «проверить» flag.
+    bool NeedsReview = false,
+    // Leaves this product out (the «Объединить с…» picker must not offer the product itself).
+    Guid? ExcludeProductId = null);
 
 public sealed record ProductCatalogPage(
     IReadOnlyList<ProductCatalogEntry> Items,

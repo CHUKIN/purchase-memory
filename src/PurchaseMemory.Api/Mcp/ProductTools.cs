@@ -48,13 +48,15 @@ public sealed class ProductTools
         UseStructuredContent = true)]
     [Description(
         "Search catalog products by name or receipt wording, optionally within a category " +
-        "(a group includes its subcategories), by brand or by tag. categorySource is suggested (AI) or confirmed (human).")]
+        "(a group includes its subcategories), by brand or by tag. categorySource is suggested (AI) or confirmed (human). " +
+        "needsReview marks a product flagged «проверить»: the matcher was unsure whether it is an existing product.")]
     public async Task<IReadOnlyList<McpProductResult>> SearchProductsAsync(
         [Description("Name text to find. Empty lists products alphabetically.")] string query = "",
         [Description("Category id from list_product_categories, or null for any.")] Guid? categoryId = null,
         [Description("Brand text, or empty for any. Case and Polish diacritics are ignored.")] string brand = "",
         [Description("Only products without a category. Cannot be combined with categoryId.")] bool uncategorized = false,
         [Description("Tag id from list_tags, or null for any.")] Guid? tagId = null,
+        [Description("Only products flagged «проверить».")] bool needsReview = false,
         CancellationToken cancellationToken = default)
     {
         try
@@ -67,6 +69,7 @@ public sealed class ProductTools
                     Uncategorized = uncategorized,
                     Brand = brand,
                     TagIds = tagId is { } id ? [id] : null,
+                    NeedsReview = needsReview,
                     PageSize = 50
                 },
                 cancellationToken);
@@ -78,7 +81,8 @@ public sealed class ProductTools
                     CategoryEndpoints.SourceToWire(item.CategorySource),
                     item.Brand,
                     (item.Tags ?? []).Select(tag => tag.Name).ToList(),
-                    item.PurchaseCount))
+                    item.PurchaseCount,
+                    item.NeedsReview))
                 .ToList();
         }
         catch (ArgumentException exception)
@@ -135,4 +139,5 @@ public sealed record McpProductResult(
     string? CategorySource,
     string? Brand,
     IReadOnlyList<string> Tags,
-    int PurchaseCount);
+    int PurchaseCount,
+    bool NeedsReview);

@@ -1,9 +1,9 @@
-import { IonButton, IonLabel, IonList, IonSearchbar } from "@ionic/react";
-import { PackageSearch, SearchX } from "lucide-react";
+import { IonButton, IonItem, IonLabel, IonList, IonSearchbar, IonToggle } from "@ionic/react";
+import { CircleAlert, PackageSearch, SearchX } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { BrandSummary, ProductCategory, ProductSummary, TagSummary } from "../../api/types";
-import { EmptyState, FilterButton, Footnote, ItemLink, LoadingList, Notice, Page, SectionHeader, Sheet } from "../../design-system/components";
+import { EmptyState, FilterButton, ItemLink, LoadingList, Notice, Page, SectionHeader, Sheet } from "../../design-system/components";
 import { CategoryChip } from "../categories/CategoryChip";
 import { HelpLink } from "../help/HelpLink";
 import { ProductThumb } from "../product-scan/ProductPhoto";
@@ -12,6 +12,7 @@ import { categoryPath } from "../categories/categoryText";
 import { BrandFilterRow, CategoryFilterRow, TagFilterRow } from "../filters/FilterRows";
 import { TagChips } from "../tags/TagChips";
 import { useReturnState } from "../../app/backNavigation";
+import { ReviewFlagChip } from "./ReviewFlagChip";
 
 export interface ProductCatalogProps {
   query: string;
@@ -30,9 +31,13 @@ export interface ProductCatalogProps {
   /** Tag id, or `""` for any. */
   tagFilter?: string;
   onTagFilterChange?: (value: string) => void;
+  /** Only products flagged «проверить». */
+  reviewFilter?: boolean;
+  onReviewFilterChange?: (value: boolean) => void;
   products: ProductSummary[];
   totalCount: number;
-  pendingMatchCount: number;
+  /** Flagged products in the whole catalog; the tappable hint hides at 0. */
+  needsReviewCount: number;
   loading?: boolean;
   error?: string | null;
   hasMore?: boolean;
@@ -60,9 +65,11 @@ export function ProductCatalog({
   tags = [],
   tagFilter = "",
   onTagFilterChange,
+  reviewFilter = false,
+  onReviewFilterChange,
   products,
   totalCount,
-  pendingMatchCount,
+  needsReviewCount,
   loading = false,
   error = null,
   hasMore = false,
@@ -76,13 +83,14 @@ export function ProductCatalog({
   const [filtersOpen, setFiltersOpen] = useState(initialFiltersOpen);
   // One photo in the list gives every row a thumbnail slot, so names line up.
   const anyPhoto = useAnyMainPhoto(products.map((product) => product.id));
-  const sheetCount = [categoryFilter !== "", brandFilter.trim() !== "", tagFilter !== ""].filter(Boolean).length;
+  const sheetCount = [categoryFilter !== "", brandFilter.trim() !== "", tagFilter !== "", reviewFilter].filter(Boolean).length;
   const searching = query.trim() !== "" || sheetCount > 0;
   const filterable = onCategoryFilterChange !== undefined && onBrandFilterChange !== undefined;
   const resetSheet = () => {
     onCategoryFilterChange?.("");
     onBrandFilterChange?.("");
     onTagFilterChange?.("");
+    onReviewFilterChange?.(false);
   };
   const resetFilters = () => {
     onQueryChange("");
@@ -107,6 +115,16 @@ export function ProductCatalog({
       {loading && <LoadingList label={t("products.loading")} />}
       {!loading && error && <Notice tone="danger" role="alert"><p>{error}</p></Notice>}
 
+      {/* Doubtful matches became products of their own; this is the way to them. */}
+      {!loading && !error && needsReviewCount > 0 && !reviewFilter && onReviewFilterChange && (
+        <IonList inset>
+          <IonItem button detail onClick={() => onReviewFilterChange(true)}>
+            <CircleAlert slot="start" size={22} className="pm-row-icon pm-warning-icon" aria-hidden="true" />
+            <IonLabel className="pm-wrap">{t("products.needsReviewCount", { count: needsReviewCount })}</IonLabel>
+          </IonItem>
+        </IonList>
+      )}
+
       {!loading && !error && products.length === 0 && (
         searching
           ? (
@@ -127,8 +145,9 @@ export function ProductCatalog({
                 <ProductThumb productId={product.id} placeholder={anyPhoto} />
                 <IonLabel className="pm-wrap">
                   <h2>{product.name}</h2>
-                  {(categories.length > 0 || (product.tags ?? []).length > 0) && (
+                  {(categories.length > 0 || (product.tags ?? []).length > 0 || product.needsReview) && (
                     <div className="pm-chip-row">
+                      {product.needsReview && <ReviewFlagChip />}
                       {categories.length > 0 && <CategoryChip label={categoryPath(t, categories, product.categoryId)} source={product.categorySource ?? null} />}
                       <TagChips tags={product.tags ?? []} />
                     </div>
@@ -151,9 +170,6 @@ export function ProductCatalog({
         </>
       )}
 
-      {/* Matching deliberately leaves uncertain lines unlinked; saying so keeps the catalog honest. */}
-      {!loading && !error && pendingMatchCount > 0 && <Footnote>{t("products.pendingMatches", { count: pendingMatchCount })}</Footnote>}
-
       {footer}
 
       {filterable && (
@@ -169,6 +185,13 @@ export function ProductCatalog({
             {categories.length > 0 && <CategoryFilterRow categories={categories} category={categoryFilter} onCategoryChange={onCategoryFilterChange} />}
             <BrandFilterRow brands={brands} brand={brandFilter} onBrandChange={onBrandFilterChange} />
             {tags.length > 0 && onTagFilterChange && <TagFilterRow tags={tags} tag={tagFilter} onTagChange={onTagFilterChange} />}
+            {onReviewFilterChange && (
+              <IonItem>
+                <IonToggle checked={reviewFilter} onIonChange={(event) => onReviewFilterChange(event.detail.checked)}>
+                  {t("products.needsReviewFilter")}
+                </IonToggle>
+              </IonItem>
+            )}
           </IonList>
         </Sheet>
       )}

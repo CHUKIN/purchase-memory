@@ -5,6 +5,8 @@ namespace PurchaseMemory.Domain.Products;
 /// optional brand. The category belongs to the product rather than to any
 /// receipt line, so a correction automatically covers every past and future
 /// purchase of it. Package editions and tags belong to later stages.
+/// Every product-kind receipt line is linked to a product; a doubtful match
+/// becomes a product of its own carrying <see cref="NeedsReview"/>.
 /// </summary>
 public sealed class Product
 {
@@ -16,11 +18,12 @@ public sealed class Product
         // Required by Entity Framework Core.
     }
 
-    private Product(Guid id, string canonicalName, string normalizedName, DateTimeOffset createdAt)
+    private Product(Guid id, string canonicalName, string normalizedName, ProductOrigin origin, DateTimeOffset createdAt)
     {
         Id = id;
         CanonicalName = canonicalName;
         NormalizedName = normalizedName;
+        Origin = origin;
         CreatedAt = createdAt;
         UpdatedAt = createdAt;
     }
@@ -63,20 +66,108 @@ public sealed class Product
     /// </summary>
     public DateTimeOffset? CategorizationAttemptedAt { get; private set; }
 
+    public ProductOrigin Origin { get; private set; }
+
+    /// <summary>
+    /// The «проверить» flag: the product exists so that its receipt line is
+    /// not left without one, but a person still has to say whether it is one
+    /// of its candidates (merge) or really a product of its own.
+    /// </summary>
+    public bool NeedsReview { get; private set; }
+
+    /// <summary>Why <see cref="NeedsReview"/> is set; <c>null</c> when it is not.</summary>
+    public ProductReviewReason? ReviewReason { get; private set; }
+
     public DateTimeOffset CreatedAt { get; private set; }
 
     public DateTimeOffset UpdatedAt { get; private set; }
 
-    public static Product Create(string canonicalName, string normalizedName, DateTimeOffset createdAt)
+    public static Product Create(
+        string canonicalName,
+        string normalizedName,
+        DateTimeOffset createdAt,
+        ProductOrigin origin = ProductOrigin.Receipt)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(canonicalName);
         ArgumentException.ThrowIfNullOrWhiteSpace(normalizedName);
+
+        if (!Enum.IsDefined(origin))
+        {
+            throw new ArgumentOutOfRangeException(nameof(origin), origin, "Unknown product origin.");
+        }
 
         return new Product(
             Guid.NewGuid(),
             Truncate(canonicalName.Trim()),
             Truncate(normalizedName),
+            origin,
             createdAt);
+    }
+
+    public void FlagForReview(ProductReviewReason reason, DateTimeOffset updatedAt)
+    {
+        if (!Enum.IsDefined(reason))
+        {
+            throw new ArgumentOutOfRangeException(nameof(reason), reason, "Unknown review reason.");
+        }
+
+        NeedsReview = true;
+        ReviewReason = reason;
+        UpdatedAt = updatedAt;
+    }
+
+    /// <summary>A person settled the doubt. Returns whether the flag was set.</summary>
+    public bool ClearReviewFlag(DateTimeOffset updatedAt)
+    {
+        if (!NeedsReview)
+        {
+            return false;
+        }
+
+        NeedsReview = false;
+        ReviewReason = null;
+        UpdatedAt = updatedAt;
+        return true;
+    }
+
+    /// <summary>
+    /// Takes over what a merged-away product knew about category and brand,
+    /// each attribute on its own: this product's confirmed value wins, then
+    /// the other product's confirmed value; otherwise this product keeps what
+    /// it has (a suggestion or nothing), since a suggestion is only a guess.
+    /// Returns which attributes changed.
+    /// </summary>
+    public (bool CategoryChanged, bool BrandChanged) AbsorbClassificationFrom(Product source, DateTimeOffset updatedAt)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        if (source.Id == Id)
+        {
+            throw new ArgumentException("A product cannot absorb itself.", nameof(source));
+        }
+
+        var categoryChanged = false;
+        if (CategorySource != ProductAttributeSource.Confirmed && source.CategorySource == ProductAttributeSource.Confirmed)
+        {
+            categoryChanged = CategoryId != source.CategoryId || CategorySource != source.CategorySource;
+            CategoryId = source.CategoryId;
+            CategorySource = ProductAttributeSource.Confirmed;
+        }
+
+        var brandChanged = false;
+        if (BrandSource != ProductAttributeSource.Confirmed && source.BrandSource == ProductAttributeSource.Confirmed)
+        {
+            brandChanged = Brand != source.Brand || BrandSource != source.BrandSource;
+            Brand = source.Brand;
+            NormalizedBrand = source.NormalizedBrand;
+            BrandSource = ProductAttributeSource.Confirmed;
+        }
+
+        if (categoryChanged || brandChanged)
+        {
+            UpdatedAt = updatedAt;
+        }
+
+        return (categoryChanged, brandChanged);
     }
 
     public void Rename(string canonicalName, string normalizedName, DateTimeOffset updatedAt)
