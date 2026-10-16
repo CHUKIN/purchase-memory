@@ -9,6 +9,7 @@ import { LinePhoto, type LineViewerPhoto } from "../receipt-photo/LinePhoto";
 import { isUsableBox } from "../receipt-photo/photoBox";
 import { discountLinks, isDiscount } from "../receipts/discountLines";
 import { LineFields, type EditableLine } from "../receipts/LinesEditor";
+import { LineProductMedia } from "../product-scan/LineProductMedia";
 
 /** What the review needs from a purchase line. */
 export interface ReviewLine {
@@ -21,6 +22,8 @@ export interface ReviewLine {
   kind: ReceiptLineKind;
   boundingBox?: BoundingBox | null;
   productName?: string | null;
+  /** The linked product; its photos and barcodes can be added from the line's sheet. */
+  productId?: string | null;
   pendingMatch?: boolean;
   approved?: boolean;
 }
@@ -341,6 +344,9 @@ export function LineReview({ start, onClose, lines, isApproved, setApproved, onS
               extra={null}
             />
             {saveError && <Notice tone="danger" role="alert"><p>{saveError}</p></Notice>}
+            {lines[editing.index] && !isDiscount(lines[editing.index]) && (
+              <LineProductMedia productId={lines[editing.index].productId} productName={lines[editing.index].productName} />
+            )}
           </>
         )}
       </Sheet>

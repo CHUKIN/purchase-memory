@@ -21,6 +21,7 @@ export const helpTopicIds = [
   "purchase-edit",
   "receipt-lines-photo",
   "products",
+  "product-scan",
   "categories",
   "tags",
   "impressions",
@@ -38,6 +39,7 @@ export type HelpLinkId =
   | "purchases"
   | "needsAttentionFilter"
   | "products"
+  | "scan"
   | "uncategorizedProducts"
   | "reviewQueue"
   | "analytics";
@@ -67,6 +69,7 @@ export const helpTopics: HelpTopic[] = [
   { id: "purchase-edit", group: "history", links: [link("purchases", "/purchases"), link("reviewQueue", "/needs-attention")] },
   { id: "receipt-lines-photo", group: "history", links: [link("purchases", "/purchases")] },
   { id: "products", group: "catalog", links: [link("products", "/products")] },
+  { id: "product-scan", group: "catalog", links: [link("scan", "/scan"), link("products", "/products")] },
   { id: "categories", group: "catalog", links: [link("products", "/products"), link("uncategorizedProducts", "/products?category=none"), link("reviewQueue", "/needs-attention")] },
   { id: "tags", group: "catalog", links: [link("products", "/products"), link("purchases", "/purchases"), link("analytics", "/analytics"), link("reviewQueue", "/needs-attention")] },
   { id: "impressions", group: "catalog", links: [link("home", "/"), link("products", "/products")] },

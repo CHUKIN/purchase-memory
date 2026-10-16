@@ -19,6 +19,7 @@ import { brandsQueryKey, categoriesQueryKey } from "../categories/categoryQuerie
 import { ProductImpressionsSection } from "../impressions/ImpressionSections";
 import { tagsQueryKey } from "../tags/tagQueries";
 import { ProductCard } from "./ProductCard";
+import { ProductMediaSection } from "../product-scan/ProductMediaSection";
 import { useBackTarget } from "../../app/backNavigation";
 
 export function ProductDetailPage() {
@@ -64,6 +65,7 @@ export function ProductDetailPage() {
   const back = useBackTarget({ to: "/products", labelKey: "common.products" });
 
   if (productQuery.data) {
+    const product = productQuery.data;
     return (
       <ProductCard
         product={productQuery.data}
@@ -78,6 +80,9 @@ export function ProductDetailPage() {
         readCurrentTagIds={() => queryClient
           .getQueryData<ProductDetail>(["products", "detail", productId])?.tags?.map((tag) => tag.id)}
         tagsFailed={tagsQuery.isError}
+        media={(intro) => (
+          <ProductMediaSection productId={product.id} productName={product.name} intro={intro} locale={locale} />
+        )}
       >
         <ProductImpressionsSection productId={productQuery.data.id} locale={locale} />
       </ProductCard>

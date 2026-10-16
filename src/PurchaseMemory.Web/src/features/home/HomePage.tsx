@@ -1,6 +1,6 @@
 import { IonBadge, IonButton, IonLabel, IonList, IonProgressBar } from "@ionic/react";
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, Camera, CircleCheck, CircleEllipsis, ReceiptText } from "lucide-react";
+import { AlertTriangle, CircleCheck, CircleEllipsis, ReceiptText } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getPurchaseFeed } from "../../api/client";
@@ -8,6 +8,7 @@ import type { ReceiptStatus, ReceiptView, RecognitionStatus } from "../../api/ty
 import { ButtonLink, Footnote, ItemLink, Notice, Page, SectionHeader, StatusText } from "../../design-system/components";
 import { SettingsSheet } from "../../app/SettingsSheet";
 import { HelpWelcomeCard } from "../help/HelpWelcomeCard";
+import { HomeCaptureActions } from "../product-scan/HomeCaptureActions";
 import { UnratedPurchasesBlock } from "../impressions/ImpressionSections";
 import { PurchaseRow } from "../purchases/PurchaseRow";
 import { useReturnState } from "../../app/backNavigation";
@@ -33,7 +34,8 @@ export interface HomePageProps {
 }
 
 /**
- * «Главная»: one big «Сфотографировать чек», then only what needs the user
+ * «Главная»: «Сфотографировать чек» and «Сканировать» (two looks, see
+ * product-scan/scanVariant.ts), then only what needs the user
  * now — receipts in flight, the review queue, recent lines to rate — and the
  * last few purchases. Help and sign-out sit behind «Ещё».
  */
@@ -62,11 +64,7 @@ export function HomePage({ recognition, recognitionFailed = false, receipts, rec
         </IonButton>
       )}
     >
-      <div className="pm-primary-block">
-        <ButtonLink to="/purchases/new" state={returnState} expand="block" shape="round" size="large">
-          <Camera aria-hidden="true" size={22} />&nbsp;{t("common.captureReceipt")}
-        </ButtonLink>
-      </div>
+      <HomeCaptureActions />
       <div role="status">
         {recognitionDown && <Footnote tone="warning">{t("productionHome.recognitionOffline")}</Footnote>}
       </div>

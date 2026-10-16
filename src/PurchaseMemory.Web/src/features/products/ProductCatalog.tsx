@@ -6,6 +6,8 @@ import type { BrandSummary, ProductCategory, ProductSummary, TagSummary } from "
 import { EmptyState, FilterButton, Footnote, ItemLink, LoadingList, Notice, Page, SectionHeader, Sheet } from "../../design-system/components";
 import { CategoryChip } from "../categories/CategoryChip";
 import { HelpLink } from "../help/HelpLink";
+import { ProductThumb } from "../product-scan/ProductPhoto";
+import { useAnyMainPhoto } from "../product-scan/useProductMedia";
 import { categoryPath } from "../categories/categoryText";
 import { BrandFilterRow, CategoryFilterRow, TagFilterRow } from "../filters/FilterRows";
 import { TagChips } from "../tags/TagChips";
@@ -72,6 +74,8 @@ export function ProductCatalog({
   const { t } = useTranslation();
   const returnState = useReturnState();
   const [filtersOpen, setFiltersOpen] = useState(initialFiltersOpen);
+  // One photo in the list gives every row a thumbnail slot, so names line up.
+  const anyPhoto = useAnyMainPhoto(products.map((product) => product.id));
   const sheetCount = [categoryFilter !== "", brandFilter.trim() !== "", tagFilter !== ""].filter(Boolean).length;
   const searching = query.trim() !== "" || sheetCount > 0;
   const filterable = onCategoryFilterChange !== undefined && onBrandFilterChange !== undefined;
@@ -120,6 +124,7 @@ export function ProductCatalog({
           <IonList inset className="pm-after-header">
             {products.map((product) => (
               <ItemLink key={product.id} to={`/products/${product.id}`} state={returnState}>
+                <ProductThumb productId={product.id} placeholder={anyPhoto} />
                 <IonLabel className="pm-wrap">
                   <h2>{product.name}</h2>
                   {(categories.length > 0 || (product.tags ?? []).length > 0) && (

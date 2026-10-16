@@ -190,6 +190,15 @@ const objectStoreName = "batch";
 
 /** IndexedDB behind {@link BatchKeyValue}; null when the browser has none or refuses to open it. */
 export function openIndexedDbStorage(): Promise<BatchKeyValue | null> {
+  return openIndexedDbKeyValue(databaseName, objectStoreName);
+}
+
+/**
+ * One IndexedDB database with a single object store, as a {@link BatchKeyValue}.
+ * Also used by the product photo/barcode store; null when the browser has no
+ * IndexedDB or refuses to open it.
+ */
+export function openIndexedDbKeyValue(databaseName: string, objectStoreName: string): Promise<BatchKeyValue | null> {
   return new Promise((resolve) => {
     let request: IDBOpenDBRequest;
     try {

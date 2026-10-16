@@ -20,6 +20,8 @@ const ProductsPage = lazyPage(() => import("../features/products/ProductsPage").
 const ProductDetailPage = lazyPage(() => import("../features/products/ProductDetailPage").then((module) => ({ default: module.ProductDetailPage })));
 const AnalyticsPage = lazyPage(() => import("../features/analytics/AnalyticsPage").then((module) => ({ default: module.AnalyticsPage })));
 const ReviewQueuePage = lazyPage(() => import("../features/review-queue/ReviewQueuePage").then((module) => ({ default: module.ReviewQueuePage })));
+// The barcode decoder is a further lazy import inside this screen, on first camera start.
+const ScanPage = lazyPage(() => import("../features/product-scan/ScanPage").then((module) => ({ default: module.ScanPage })));
 const HelpPage = lazyPage(() => import("../features/help/HelpPage").then((module) => ({ default: module.HelpPage })));
 
 export function App() {
@@ -85,6 +87,7 @@ export function AppRoutes() {
             <Route path="/products/:productId" element={<ProductDetailPage />} />
             <Route path="/analytics" element={<AnalyticsPage />} />
             <Route path="/needs-attention" element={<ReviewQueuePage />} />
+            <Route path="/scan" element={<ScanPage />} />
             <Route path="/help" element={<HelpPage />} />
             <Route path="*" element={<Navigate replace to="/" />} />
           </Routes>
