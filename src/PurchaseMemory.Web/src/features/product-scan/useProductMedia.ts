@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { compressPhoto } from "./compressImage";
 import {
@@ -28,6 +28,18 @@ export function useProductMedia(productId: string | null | undefined) {
     queryFn: () => store.getProductMedia(productId ?? ""),
     enabled: Boolean(productId),
     staleTime: Infinity
+  });
+}
+
+/** Whether any of these products has a main photo; a list then keeps a thumbnail slot on every row. */
+export function useAnyMainPhoto(productIds: string[]): boolean {
+  return useQueries({
+    queries: productIds.map((productId) => ({
+      queryKey: mediaKey(productId),
+      queryFn: () => store.getProductMedia(productId),
+      staleTime: Infinity
+    })),
+    combine: (results) => results.some((result) => Boolean(result.data?.mainPhotoId))
   });
 }
 

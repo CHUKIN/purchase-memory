@@ -19,12 +19,13 @@ export function ProductPhotoImage({ photoId, alt, className = "" }: { photoId: s
 /**
  * The product's main photo as a small square at the start of a list row.
  * Renders nothing when the product has no photo, so rows without photos look
- * as before.
+ * as before; `placeholder` keeps a grey tile instead, so a list where some
+ * rows have photos stays aligned.
  */
-export function ProductThumb({ productId, slot = "start" }: { productId: string; slot?: string }) {
+export function ProductThumb({ productId, slot = "start", placeholder = false }: { productId: string; slot?: string; placeholder?: boolean }) {
   const media = useProductMedia(productId);
   const mainPhotoId = media.data?.mainPhotoId ?? null;
-  if (!mainPhotoId) return null;
+  if (!mainPhotoId && !placeholder) return null;
   return (
     <span slot={slot} className="pm-media-thumb" aria-hidden="true">
       <ProductPhotoImage photoId={mainPhotoId} alt="" />

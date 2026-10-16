@@ -40,16 +40,43 @@ export function BarcodeCamera({ active = true, paused = false, onCode, onManual 
   const [torchSupported, setTorchSupported] = useState(false);
   const [torchOn, setTorchOn] = useState(false);
   const [attempt, setAttempt] = useState(0);
+  /** The stream died while a result was open; start it again once the result closes. */
+  const restartOnResumeRef = useRef(false);
 
-  useEffect(() => { pausedRef.current = paused; }, [paused]);
+  useEffect(() => {
+    pausedRef.current = paused;
+    if (!paused && restartOnResumeRef.current) {
+      restartOnResumeRef.current = false;
+      setAttempt((value) => value + 1);
+    }
+  }, [paused]);
   useEffect(() => { onCodeRef.current = onCode; }, [onCode]);
 
   useEffect(() => {
     if (!active) return;
     let cancelled = false;
     let stream: MediaStream | null = null;
+    let running = false;
     const video = videoRef.current;
+    restartOnResumeRef.current = false;
     setState("starting");
+
+    // iOS ends or freezes the camera when the app goes to the background or
+    // another app takes the camera. Only this run's listeners can restart it,
+    // and cleanup removes them, so nothing restarts after unmount or `active=false`.
+    const restart = () => {
+      if (cancelled) return;
+      if (pausedRef.current) restartOnResumeRef.current = true;
+      else setAttempt((value) => value + 1);
+    };
+    const onTrackEnded = () => restart();
+    const onVisible = () => {
+      if (cancelled || !running || document.visibilityState !== "visible" || !stream || !video) return;
+      const track = stream.getVideoTracks()[0];
+      if (!track || track.readyState === "ended") { restart(); return; }
+      if (video.paused) video.play().catch(restart);
+    };
+    document.addEventListener("visibilitychange", onVisible);
 
     void (async () => {
       if (!window.isSecureContext) { setState("insecure"); return; }
@@ -73,6 +100,7 @@ export function BarcodeCamera({ active = true, paused = false, onCode, onManual 
 
       const track = stream.getVideoTracks()[0] ?? null;
       trackRef.current = track;
+      track?.addEventListener("ended", onTrackEnded);
       setTorchSupported(Boolean((track?.getCapabilities?.() as TorchCapabilities | undefined)?.torch));
 
       let decoder: BarcodeDecoder;
@@ -85,6 +113,7 @@ export function BarcodeCamera({ active = true, paused = false, onCode, onManual 
         return;
       }
       if (cancelled) return;
+      running = true;
       setState("running");
 
       // Last sighting of each code. A code fires again only after it has been
@@ -125,6 +154,8 @@ export function BarcodeCamera({ active = true, paused = false, onCode, onManual 
 
     return () => {
       cancelled = true;
+      document.removeEventListener("visibilitychange", onVisible);
+      stream?.getVideoTracks().forEach((track) => track.removeEventListener("ended", onTrackEnded));
       stream?.getTracks().forEach((track) => track.stop());
       if (video) video.srcObject = null;
       trackRef.current = null;

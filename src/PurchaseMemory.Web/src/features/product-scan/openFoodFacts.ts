@@ -14,9 +14,13 @@ export type OffLookup =
 
 const fields = "product_name,brands,image_front_small_url,quantity";
 
-export async function lookupOpenFoodFacts(code: string, signal?: AbortSignal): Promise<OffLookup> {
+/** A slow answer in the shop is no answer: after this the result says the database is not answering. */
+export const offTimeoutMs = 6000;
+
+export async function lookupOpenFoodFacts(code: string, signal?: AbortSignal, timeoutMs = offTimeoutMs): Promise<OffLookup> {
+  const { signal: limited, dispose } = withTimeout(signal, timeoutMs);
   try {
-    const response = await fetch(`https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(code)}?fields=${fields}`, { signal });
+    const response = await fetch(`https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(code)}?fields=${fields}`, { signal: limited });
     // 404 is how Open Food Facts says "no such product".
     if (response.status === 404) return { status: "notFound" };
     if (!response.ok) return { status: "error" };
@@ -32,7 +36,25 @@ export async function lookupOpenFoodFacts(code: string, signal?: AbortSignal): P
     return hint.name || hint.brand ? { status: "found", product: hint } : { status: "notFound" };
   } catch {
     return { status: "error" };
+  } finally {
+    dispose();
   }
+}
+
+/** The caller's signal (react-query cancels on unmount) plus a timeout; `AbortSignal.any` is missing on older iOS. */
+function withTimeout(signal: AbortSignal | undefined, timeoutMs: number): { signal: AbortSignal; dispose: () => void } {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(new DOMException("Open Food Facts did not answer in time.", "TimeoutError")), timeoutMs);
+  const onAbort = () => controller.abort(signal?.reason);
+  if (signal?.aborted) onAbort();
+  else signal?.addEventListener("abort", onAbort, { once: true });
+  return {
+    signal: controller.signal,
+    dispose: () => {
+      clearTimeout(timer);
+      signal?.removeEventListener("abort", onAbort);
+    }
+  };
 }
 
 /** Only https images from Open Food Facts' own hosts are shown. */

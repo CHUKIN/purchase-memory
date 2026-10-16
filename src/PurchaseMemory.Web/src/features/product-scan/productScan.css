@@ -50,7 +50,8 @@
 .pm-media-chip.pm-media-code { font-family: ui-monospace, Menlo, monospace; font-variant-numeric: tabular-nums; }
 .pm-media-chip.pm-media-chip-action { color: var(--ion-color-primary); font-weight: 600; }
 
-.pm-media-code-text { font-family: ui-monospace, Menlo, monospace; font-size: 17px; letter-spacing: .04em; font-variant-numeric: tabular-nums; color: #1c1c1e; }
+/* Inherits the size of the line it sits in; never breaks between digit groups. */
+.pm-media-code-text { font-family: ui-monospace, Menlo, monospace; font-size: inherit; white-space: nowrap; letter-spacing: .04em; font-variant-numeric: tabular-nums; color: #1c1c1e; }
 .pm-media-busy { opacity: .6; pointer-events: none; }
 
 /* «Больше не покупать» */

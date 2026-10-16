@@ -1,6 +1,6 @@
 import { IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar } from "@ionic/react";
 import { Keyboard } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { useBackTarget, useReturnState } from "../../app/backNavigation";
@@ -12,6 +12,9 @@ import { FoundResult, NotFoundResult, Searching } from "./ScanResults";
 import { useScanVariant } from "./scanVariant";
 import { useBarcodeOwner } from "./useProductMedia";
 import "./productScan.css";
+
+/** How long a just-closed code is ignored, while the camera restarts with the pack still in view. */
+const closedRepeatMs = 3000;
 
 /**
  * «Сканировать» in the shop: the rear camera reads a barcode, and the screen
@@ -36,11 +39,25 @@ export function ScanPage() {
   const owner = useBarcodeOwner(code);
   const productId = linkedProductId ?? owner.data ?? null;
 
-  const onCode = useCallback((next: string) => {
+  /**
+   * The code whose result was just closed. Variant A stops the camera under a
+   * result, so a restarted camera has no memory of the pack still in front of
+   * it; this keeps that pack from reopening the same result at once.
+   */
+  const closedRef = useRef<{ code: string; at: number } | null>(null);
+
+  const showCode = useCallback((next: string) => {
+    closedRef.current = null;
     setLinkedProductId(null);
     setCode(next);
   }, []);
+  const onCode = useCallback((next: string) => {
+    const closed = closedRef.current;
+    if (closed && closed.code === next && Date.now() - closed.at < closedRepeatMs) return;
+    showCode(next);
+  }, [showCode]);
   const scanAgain = () => {
+    if (code !== null) closedRef.current = { code, at: Date.now() };
     setCode(null);
     setLinkedProductId(null);
   };
@@ -51,7 +68,8 @@ export function ScanPage() {
   };
   const fromManual = (next: string) => {
     setManualOpen(false);
-    onCode(next);
+    // Typed on purpose: shown even if it is the code just closed.
+    showCode(next);
   };
 
   const title = code === null ? t("productScan.scanTitle")

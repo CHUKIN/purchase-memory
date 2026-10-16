@@ -312,12 +312,12 @@ export const helpRu: HelpText = {
       title: "Фото, штрихкод и скан в магазине",
       summary: "Сфотографируйте упаковку и привяжите штрихкод к товару один раз. Потом в магазине наведите камеру на штрихкод — приложение покажет, покупали ли вы этот товар, когда, где и почём, и как он вам.",
       steps: [
-        "Фото товара: откройте карточку товара и нажмите «Сфотографировать» (или «Снять») либо «Из галереи». Нажмите на фото, чтобы «Сделать главным» или «Удалить фото». Главное фото видно в списке «Товары».",
+        "Фото товара: откройте карточку товара. В варианте A под большим фото есть «Сфотографировать» и «Из галереи», а для показанного фото — «Сделать главным» и «Удалить фото»; другое фото выбирается миниатюрой. В варианте B — «Снять» над лентой фото и «+ Добавить» в её конце (из галереи); нажмите на фото в ленте, чтобы появились «Сделать главным» и «Удалить фото». Главное фото видно в списке «Товары».",
         "Штрихкод: в карточке товара нажмите «Сканировать штрихкод» (или «Сканировать» рядом со штрихкодами) и наведите камеру. Не читается — кнопка с клавиатурой вверху, «Ввести код вручную», цифры под штрихкодом и «Добавить».",
         "Из покупки: нажмите на строку, проведите карточку влево («Исправить строку») — внизу окна «Строка N» есть «Сфотографировать товар», «Выбрать фото из галереи» и «Сканировать штрихкод». Фото и код попадут в карточку товара, к которому привязана строка.",
         "В магазине: на «Главной» нажмите «Сканировать штрихкод» (или плитку «Сканировать») и наведите камеру на штрихкод.",
         "Знакомый товар: видны последняя покупка (дата, магазин, цена), где было дешевле всего, ваша оценка и отметка «Больше не покупать». Дальше — «Открыть карточку товара» или «Сканировать ещё».",
-        "Новый штрихкод: найдите свой товар по названию и нажмите «Привязать». Если товара ещё нет в покупках — «Создать из базы продуктов» (название из Open Food Facts) или «Запомнить на потом».",
+        "Новый штрихкод: найдите свой товар по названию и нажмите «Привязать». Если товара ещё нет в покупках — «Запомнить с названием из базы» (название из Open Food Facts) или «Запомнить на потом».",
         "«Больше не покупать»: включите переключатель в карточке товара. Отметка красная — и в карточке, и при скане.",
         "Два вида экранов: «Ещё» на «Главной» → «Вид фото и сканера» → «Вариант A» или «Вариант B». A — большая галерея и плитки «Чек» / «Сканировать», результат скана на весь экран; B — компактная карточка, кнопка под чеком и результат шторкой над камерой."
       ],
@@ -325,7 +325,7 @@ export const helpRu: HelpText = {
         "Пока фото, штрихкоды, отметки «Больше не покупать» и запомненные коды хранятся только на этом телефоне: второй участник их не видит, а при выходе из приложения («Выйти») они удаляются. Общее хранение на сервере появится следующим этапом.",
         "Один штрихкод — один товар; у товара может быть несколько штрихкодов и фото.",
         "Фото уменьшается до размера около 200 КБ — этого хватает, чтобы узнать упаковку.",
-        "Товары по-прежнему появляются только из чеков: «Создать из базы продуктов» и «Запомнить на потом» запоминают код, а привязать его можно, когда товар появится в покупках.",
+        "Товары по-прежнему появляются только из чеков: «Запомнить с названием из базы» и «Запомнить на потом» только запоминают код, а привязать его можно, когда товар появится в покупках.",
         "В базу Open Food Facts уходит только штрихкод. Её данные — подсказка: польских товаров там не все, названия бывают неточными."
       ],
       trouble: [
@@ -765,12 +765,12 @@ export const helpEn: HelpText = {
       title: "Photo, barcode and scanning in the shop",
       summary: "Take a photo of the package and link its barcode to the product once. Later, in the shop, point the camera at the barcode — the app shows whether you bought it, when, where and for how much, and how you liked it.",
       steps: [
-        "Product photo: open the product card and press “Take photo” (or “Shoot”) or “From library”. Tap a photo to “Make main” or “Delete photo”. The main photo shows in the Products list.",
+        "Product photo: open the product card. In variant A the big photo has “Take photo” and “From library” under it, plus “Make main” and “Delete photo” for the photo shown; pick another photo by its thumbnail. In variant B there is “Shoot” above the photo strip and “+ Add” at its end (from the library); tap a photo in the strip to get “Make main” and “Delete photo”. The main photo shows in the Products list.",
         "Barcode: on the product card press “Scan barcode” (or “Scan” next to the barcodes) and point the camera. If it won't read, press the keyboard button at the top, “Type the code”, enter the digits under the barcode and press “Add”.",
         "From a purchase: tap a line, swipe the card left (“Correct the line”) — the “Line N” sheet has “Take a product photo”, “Pick a photo from the library” and “Scan barcode” at the bottom. They go to the card of the product the line is linked to.",
         "In the shop: on Home press “Scan barcode” (or the “Scan” tile) and point the camera at the barcode.",
         "A known product shows the last purchase (date, store, price), where it was cheapest, your rating and the “Don't buy again” mark. Then “Open product card” or “Scan another”.",
-        "A new barcode: find your product by name and press “Link”. If the product is not in your purchases yet — “Create from the product database” (name from Open Food Facts) or “Remember for later”.",
+        "A new barcode: find your product by name and press “Link”. If the product is not in your purchases yet — “Remember with the database name” (name from Open Food Facts) or “Remember for later”.",
         "“Don't buy again”: turn on the switch on the product card. The mark is red on the card and in the scan result.",
         "Two looks: “More” on Home → “Photo and scanner look” → “Variant A” or “Variant B”. A has a big gallery and the “Receipt” / “Scan” tiles, the scan result full screen; B has a compact card, a button under the receipt button and the result as a sheet over the camera."
       ],
@@ -778,7 +778,7 @@ export const helpEn: HelpText = {
         "For now photos, barcodes, “Don't buy again” marks and remembered codes are kept on this phone only: the other member does not see them, and “Sign out” deletes them. Shared storage on the server comes in the next stage.",
         "One barcode belongs to one product; a product can have several barcodes and photos.",
         "Photos are shrunk to about 200 KB — enough to recognise the package.",
-        "Products still come only from receipts: “Create from the product database” and “Remember for later” keep the code, and you link it once the product is in your purchases.",
+        "Products still come only from receipts: “Remember with the database name” and “Remember for later” only keep the code, and you link it once the product is in your purchases.",
         "Only the barcode is sent to Open Food Facts. Its data is a hint: it does not know every Polish product, and names can be off."
       ],
       trouble: [

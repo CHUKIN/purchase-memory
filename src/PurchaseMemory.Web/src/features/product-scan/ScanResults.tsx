@@ -227,12 +227,14 @@ export function NotFoundResult({ code, locale, onLinked, onScanAgain }: {
 
       <SectionHeader>{t("productScan.orNew")}</SectionHeader>
       <IonList inset>
-        <IonItem button={offProduct !== null} detail={offProduct !== null} disabled={busy || offProduct === null} onClick={offProduct ? () => void rememberCode(true) : undefined}>
+        {/* Without a product the row is plain text, not a disabled button, so «не отвечает» stays readable. */}
+        <IonItem button={offProduct !== null} detail={offProduct !== null} disabled={offProduct !== null && busy} onClick={offProduct ? () => void rememberCode(true) : undefined}>
           {offProduct?.imageUrl
             ? <img slot="start" className="pm-scan-off-image" src={offProduct.imageUrl} alt="" referrerPolicy="no-referrer" />
             : <PackagePlus slot="start" size={22} className="pm-row-icon" aria-hidden="true" />}
           <IonLabel className="pm-wrap">
-            <h3>{t("productScan.offCreate")}</h3>
+            {/* Unavailable: a muted title (still AA contrast) instead of greying the whole row. */}
+            <h3 style={offProduct ? undefined : { color: "var(--pm-muted)" }}>{t("productScan.offCreate")}</h3>
             <p>
               {off.isPending ? t("productScan.offLoading")
                 : offProduct ? [offProduct.name, offProduct.brand, offProduct.quantity].filter(Boolean).join(" · ")
