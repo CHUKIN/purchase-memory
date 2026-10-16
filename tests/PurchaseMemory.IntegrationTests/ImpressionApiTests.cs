@@ -320,6 +320,31 @@ public sealed class ImpressionApiTests
         Assert.False(moves.ContainsKey(c));
     }
 
+    [Fact]
+    public void ALineTheEditorContinuesWinsOverTextAndIsNotTakenByIt()
+    {
+        var renamed = Guid.NewGuid();
+        var deleted = Guid.NewGuid();
+        var unrated = Guid.NewGuid();
+        var toDiscount = Guid.NewGuid();
+        var newRenamed = Guid.NewGuid();
+        var newUnrated = Guid.NewGuid();
+        var newDiscount = Guid.NewGuid();
+
+        var moves = ImpressionRelinking.Match(
+            [new(renamed, 0, "SER", false), new(deleted, 1, "MLEKO", false), new(unrated, 2, "JAJA", false), new(toDiscount, 3, "KAWA", false)],
+            [new(newRenamed, 0, "SER GOUDA", false), new(newUnrated, 1, "MLEKO", false), new(newDiscount, 2, "KAWA", true)],
+            new Dictionary<Guid, Guid> { [renamed] = newRenamed, [unrated] = newUnrated, [toDiscount] = newDiscount });
+
+        // Renamed, yet the same line.
+        Assert.Equal(newRenamed, moves[renamed]);
+        // The deleted MLEKO does not take the row that continues JAJA, even with the same text.
+        Assert.False(moves.ContainsKey(deleted));
+        Assert.Equal(newUnrated, moves[unrated]);
+        // A line turned into a discount loses its line link and does not fall back to text.
+        Assert.False(moves.ContainsKey(toDiscount));
+    }
+
     private static Task<HttpResponseMessage> CreateAsync(
         HttpClient client,
         Guid purchaseItemId,

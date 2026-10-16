@@ -1,10 +1,17 @@
-import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { describe, expect, it, vi } from "vitest";
 import type { ProductDetail, ProductPricePoint, ProductPriceSeries } from "../../api/types";
+import { getProductCatalog } from "../../api/client";
 import { AppProviders } from "../../app/AppProviders";
 import { sampleCategories } from "../categories/categoryFixtures";
+import { dialog } from "../../test/ionicHelpers";
 import { ProductCard } from "./ProductCard";
+
+vi.mock("../../api/client", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../../api/client")>();
+  return { ...actual, getProductCatalog: vi.fn() };
+});
 
 function point(purchasedAt: string, merchantName: string | null, unitPrice: number): ProductPricePoint {
   return { purchasedAt, merchantName, unitPrice, purchaseId: `${purchasedAt}-${unitPrice}` };
@@ -367,5 +374,92 @@ describe("ProductCard", () => {
 
     await waitFor(() => expect(screen.getByRole("button", { name: "Предложить теги" })).toBeEnabled());
     expect(screen.queryByRole("button", { name: "Добавить тег «веган»" })).not.toBeInTheDocument();
+  });
+
+  describe("«проверить» and merging", () => {
+    const flagged = () => detail({
+      id: "f9",
+      name: "ACTIV KEFI NAT 280",
+      needsReview: true,
+      reviewReason: "ambiguousMatch",
+      reviewCandidates: [
+        { productId: "k1", name: "ACTIV KEFI BOR 280", brand: "Activia", categoryId: null, purchaseCount: 6, score: 0.75 }
+      ]
+    });
+
+    function renderWithActions(product: ProductDetail) {
+      const actions = { onMergeInto: vi.fn(async () => undefined), onConfirmDistinct: vi.fn(async () => undefined) };
+      render(
+        <AppProviders locale="ru">
+          <MemoryRouter>
+            <ProductCard product={product} locale="ru-RU" reviewActions={actions} />
+          </MemoryRouter>
+        </AppProviders>
+      );
+      return actions;
+    }
+
+    it("shows the flag with the candidates; «Да, это он» merges only after a confirmation naming both", async () => {
+      const actions = renderWithActions(flagged());
+
+      const banner = screen.getByRole("region", { name: "Нужно проверить" });
+      expect(banner).toHaveTextContent("ACTIV KEFI BOR 280");
+      expect(banner).toHaveTextContent("Activia · 6 покупок");
+      expect(within(banner).getByRole("link", { name: "ACTIV KEFI BOR 280" })).toHaveAttribute("href", "/products/k1");
+
+      fireEvent.click(within(banner).getByRole("button", { name: "Да, «ACTIV KEFI NAT 280» — это «ACTIV KEFI BOR 280»" }));
+      const confirm = screen.getByRole("alertdialog", { name: "Объединить товары?" });
+      expect(confirm).toHaveTextContent("Покупки, названия из чеков и теги товара «ACTIV KEFI NAT 280» перейдут в «ACTIV KEFI BOR 280». «ACTIV KEFI NAT 280» исчезнет.");
+      expect(actions.onMergeInto).not.toHaveBeenCalled();
+      fireEvent.click(within(confirm).getByRole("button", { name: "Объединить" }));
+
+      await waitFor(() => expect(actions.onMergeInto).toHaveBeenCalledWith({ id: "k1", name: "ACTIV KEFI BOR 280" }));
+    });
+
+    it("«Это другой товар» settles the flag without merging", async () => {
+      const actions = renderWithActions(flagged());
+
+      fireEvent.click(screen.getByRole("button", { name: "«ACTIV KEFI NAT 280» — это другой товар" }));
+
+      await waitFor(() => expect(actions.onConfirmDistinct).toHaveBeenCalledTimes(1));
+      expect(actions.onMergeInto).not.toHaveBeenCalled();
+    });
+
+    it("says so when settling fails", async () => {
+      const actions = renderWithActions(flagged());
+      actions.onConfirmDistinct.mockRejectedValueOnce(new Error("offline"));
+
+      fireEvent.click(screen.getByRole("button", { name: "«ACTIV KEFI NAT 280» — это другой товар" }));
+
+      expect(await screen.findByRole("alert")).toHaveTextContent("Не удалось сохранить.");
+    });
+
+    it("has no banner for an ordinary product, and only the mark without actions", () => {
+      renderWithActions(detail());
+      expect(screen.queryByRole("region", { name: "Нужно проверить" })).not.toBeInTheDocument();
+      cleanup();
+
+      renderCard(flagged());
+      expect(screen.queryByRole("region", { name: "Нужно проверить" })).not.toBeInTheDocument();
+      expect(screen.getByText("проверить")).toBeInTheDocument();
+    });
+
+    it("«Объединить с…» finds another product (never itself), confirms and merges", async () => {
+      vi.mocked(getProductCatalog).mockResolvedValue({
+        items: [{ id: "m2", name: "Mleko Łaciate 3,2% 1 l", normalizedName: "mleko laciate 3 2 1 l", purchaseCount: 9, linkedItemCount: 9, aliasCount: 2, createdAt: "", updatedAt: "" }],
+        page: 1, pageSize: 8, totalCount: 1, hasMore: false, needsReviewCount: 0
+      });
+      const actions = renderWithActions(detail());
+
+      fireEvent.click(screen.getByRole("button", { name: "Объединить с…" }));
+      const picker = dialog("Объединить с товаром");
+      expect(picker).toHaveTextContent("Куда перенести «Mleko Łaciate 3,2% 1L»?");
+      fireEvent.change(within(picker).getByLabelText("Найти товар"), { target: { value: "mleko" } });
+      fireEvent.click(await within(picker).findByRole("button", { name: "Объединить с «Mleko Łaciate 3,2% 1 l»" }));
+      expect(getProductCatalog).toHaveBeenCalledWith({ query: "mleko", excludeProductId: "a", pageSize: 8 });
+
+      fireEvent.click(within(screen.getByRole("alertdialog", { name: "Объединить товары?" })).getByRole("button", { name: "Объединить" }));
+      await waitFor(() => expect(actions.onMergeInto).toHaveBeenCalledWith({ id: "m2", name: "Mleko Łaciate 3,2% 1 l" }));
+    });
   });
 });

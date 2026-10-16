@@ -32,16 +32,15 @@ function item(overrides: Partial<ReviewQueueItem> & Pick<ReviewQueueItem, "kind"
 }
 
 const pendingGouda = item({
-  kind: "pendingMatch",
-  id: "pendingMatch:m1",
+  kind: "productNeedsReview",
+  id: "productNeedsReview:f1",
   title: "Ser Gouda plastry 250g",
-  purchaseId: "p3",
-  productId: "g1",
-  itemPosition: 2,
+  productId: "f1",
+  purchaseCount: 1,
   candidates: [
-    { productId: "g1", name: "Ser Gouda plastry 150g", brand: "Hochland", categoryId: "cheese" },
-    { productId: "g2", name: "Ser Gouda w plastrach Mlekovita 300g — opakowanie rodzinne", brand: "Mlekovita", categoryId: "cheese" },
-    { productId: "g3", name: "Ser Edam plastry", brand: null, categoryId: null }
+    { productId: "g1", name: "Ser Gouda plastry 150g", brand: "Hochland", categoryId: "cheese", purchaseCount: 7, score: 0.8 },
+    { productId: "g2", name: "Ser Gouda w plastrach Mlekovita 300g — opakowanie rodzinne", brand: "Mlekovita", categoryId: "cheese", purchaseCount: 2, score: 0.7 },
+    { productId: "g3", name: "Ser Edam plastry", brand: null, categoryId: null, purchaseCount: 1, score: 0.64 }
   ]
 });
 
@@ -57,7 +56,7 @@ const wholeQueue: ReviewQueue = {
         item({ kind: "totalMismatch", id: "totalMismatch:p2", title: "Żabka", purchaseId: "p2", currency: "PLN", receiptTotal: 20, linesTotal: 15 })
       ]
     },
-    { kind: "pendingMatch", totalCount: 1, items: [pendingGouda] },
+    { kind: "productNeedsReview", totalCount: 1, items: [pendingGouda] },
     { kind: "suggestedCategory", totalCount: 1, items: [item({ kind: "suggestedCategory", id: "suggestedCategory:j1", title: "Sok jabłkowy Kubuś 0,3 l", productId: "j1", categoryId: "juice", categoryName: "Соки" })] },
     { kind: "missingCategory", totalCount: 1, items: [item({ kind: "missingCategory", id: "missingCategory:y1", title: "Jogurt Danio waniliowy", productId: "y1" })] }
   ]
@@ -135,15 +134,27 @@ export const WholeQueueDesktop: Story = {
   globals: { viewport: { value: "desktop", isRotated: false } }
 };
 
-/** «Товар не сопоставлен» with three suggested products, a long name and one without brand or category. */
+/** «Тот же товар или новый?»: a flagged product with three candidates, a long name and one without brand or category. */
 export const SuggestionsMobile: Story = {
-  args: { queue: { totalCount: 1, groups: [{ kind: "pendingMatch", totalCount: 1, items: [pendingGouda] }] } },
+  args: { queue: { totalCount: 1, groups: [{ kind: "productNeedsReview", totalCount: 1, items: [pendingGouda] }] } },
   globals: { viewport: { value: "phone", isRotated: false } }
 };
 
 export const SuggestionsDesktopEn: Story = {
-  args: { queue: { totalCount: 1, groups: [{ kind: "pendingMatch", totalCount: 1, items: [pendingGouda] }] } },
+  args: { queue: { totalCount: 1, groups: [{ kind: "productNeedsReview", totalCount: 1, items: [pendingGouda] }] } },
   globals: { viewport: { value: "desktop", isRotated: false }, locale: "en" }
+};
+
+/** A new flagged product without a category: one card with the candidates and «Выбрать категорию». */
+export const NewProductWithoutCategoryMobile: Story = {
+  args: { queue: { totalCount: 1, groups: [{ kind: "productNeedsReview", totalCount: 1, items: [{ ...pendingGouda, needsCategory: true }] }] } },
+  globals: { viewport: { value: "phone", isRotated: false } }
+};
+
+/** A new flagged product the AI already gave a category: one card with the candidates, «Подтвердить» and «Изменить». */
+export const NewProductWithSuggestedCategoryMobile: Story = {
+  args: { queue: { totalCount: 1, groups: [{ kind: "productNeedsReview", totalCount: 1, items: [{ ...pendingGouda, categoryId: "cheese", categoryName: "Сыр" }] }] } },
+  globals: { viewport: { value: "phone", isRotated: false } }
 };
 
 export const KidsMobile: Story = {

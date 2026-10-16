@@ -42,4 +42,11 @@ public interface IPurchaseDraftRepository
         CancellationToken cancellationToken);
 
     Task SaveChangesAsync(CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Saves a correction that replaced line rows. <paramref name="continuedLines"/>
+    /// maps a removed line's id to the new line that continues it, as the editor
+    /// stated; the line's impressions follow it even if its text changed.
+    /// </summary>
+    Task SaveChangesAsync(IReadOnlyDictionary<Guid, Guid> continuedLines, CancellationToken cancellationToken);
 }

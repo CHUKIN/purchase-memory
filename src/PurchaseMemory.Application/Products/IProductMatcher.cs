@@ -27,8 +27,11 @@ public enum ProductMatchOutcome
     /// <summary>Nothing plausible existed, so a new product bootstrapped the catalog.</summary>
     AutoCreated = 3,
 
-    /// <summary>Ambiguous or grey-zone: left unlinked with a pending match raised.</summary>
-    PendingReview = 4,
+    /// <summary>
+    /// Ambiguous or grey-zone: the line got a new product of its own carrying
+    /// the «проверить» flag and the candidates it might really be.
+    /// </summary>
+    FlaggedForReview = 4,
 
     /// <summary>The item name normalized to nothing, so it carries no usable key.</summary>
     Skipped = 5
@@ -38,20 +41,20 @@ public sealed record ProductMatchSummary(
     int AliasHits,
     int AutoMatched,
     int AutoCreated,
-    int PendingReview,
+    int FlaggedForReview,
     int AlreadyLinked,
     int Skipped)
 {
     public static readonly ProductMatchSummary Empty = new(0, 0, 0, 0, 0, 0);
 
-    public int Total => AliasHits + AutoMatched + AutoCreated + PendingReview + AlreadyLinked + Skipped;
+    public int Total => AliasHits + AutoMatched + AutoCreated + FlaggedForReview + AlreadyLinked + Skipped;
 
     public ProductMatchSummary Add(ProductMatchOutcome outcome) => outcome switch
     {
         ProductMatchOutcome.AliasHit => this with { AliasHits = AliasHits + 1 },
         ProductMatchOutcome.AutoMatched => this with { AutoMatched = AutoMatched + 1 },
         ProductMatchOutcome.AutoCreated => this with { AutoCreated = AutoCreated + 1 },
-        ProductMatchOutcome.PendingReview => this with { PendingReview = PendingReview + 1 },
+        ProductMatchOutcome.FlaggedForReview => this with { FlaggedForReview = FlaggedForReview + 1 },
         ProductMatchOutcome.AlreadyLinked => this with { AlreadyLinked = AlreadyLinked + 1 },
         ProductMatchOutcome.Skipped => this with { Skipped = Skipped + 1 },
         _ => throw new ArgumentOutOfRangeException(nameof(outcome), outcome, null)
@@ -65,7 +68,7 @@ public sealed record ProductMatchSummary(
             AliasHits + other.AliasHits,
             AutoMatched + other.AutoMatched,
             AutoCreated + other.AutoCreated,
-            PendingReview + other.PendingReview,
+            FlaggedForReview + other.FlaggedForReview,
             AlreadyLinked + other.AlreadyLinked,
             Skipped + other.Skipped);
     }

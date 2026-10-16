@@ -197,7 +197,7 @@ describe("impressions", () => {
     vi.mocked(createImpression).mockResolvedValue(history[0]);
     const item = {
       id: "line1", position: 0, name: "MLEKO 2%", quantity: 1, unit: "szt", unitPrice: 3.49, lineTotal: 3.49, kind: "product" as const,
-      discountedItemPosition: null, productId: "milk", productName: "Mleko", pendingMatch: false, candidates: [], boundingBox: null
+      discountedItemPosition: null, productId: "milk", productName: "Mleko", productNeedsReview: false, boundingBox: null
     };
     renderWithApp(<PurchaseLineImpressions item={item} impressions={[...history, impression({ id: "other", purchaseItemId: "line9" })]} locale="ru-RU" />);
 

@@ -67,6 +67,46 @@ describe("product media store", () => {
     expect((await store.getProductMedia("milk")).avoid).toBeNull();
   });
 
+  it("moves a merged-away product's photos, barcodes and mark to the target", async () => {
+    const store = memoryStore();
+    await store.addPhoto("kefir-nat", jpeg("source"));
+    await store.addBarcode("kefir-nat", "5900512320045", "scan");
+    await store.setAvoid("kefir-nat", true);
+    await store.addPhoto("kefir", jpeg("target"));
+    await store.addBarcode("kefir", "5900512320046", "manual");
+
+    await store.moveProductMedia("kefir-nat", "kefir");
+
+    const target = await store.getProductMedia("kefir");
+    expect(target.photos.map((photo) => photo.id)).toEqual(["p2", "p1"]);
+    // The target keeps its own main photo.
+    expect(target.mainPhotoId).toBe("p2");
+    expect(target.barcodes.map((barcode) => barcode.code)).toEqual(["5900512320046", "5900512320045"]);
+    expect(target.avoid).not.toBeNull();
+    expect(await store.findProductByBarcode("5900512320045")).toBe("kefir");
+    expect(await (await store.getPhotoBlob("p1"))?.text()).toBe("source");
+    const source = await store.getProductMedia("kefir-nat");
+    expect(source.photos).toEqual([]);
+    expect(source.barcodes).toEqual([]);
+    expect(source.avoid).toBeNull();
+
+    // Nothing to move is harmless, and so is moving onto itself.
+    await store.moveProductMedia("kefir-nat", "kefir");
+    await store.moveProductMedia("kefir", "kefir");
+    expect((await store.getProductMedia("kefir")).photos).toHaveLength(2);
+  });
+
+  it("gives a target without photos the source's main photo", async () => {
+    const store = memoryStore();
+    await store.addPhoto("source", jpeg("one"));
+    await store.addPhoto("source", jpeg("two"));
+    await store.setMainPhoto("source", "p2");
+
+    await store.moveProductMedia("source", "target");
+
+    expect((await store.getProductMedia("target")).mainPhotoId).toBe("p2");
+  });
+
   it("reads empty and refuses writes without storage", async () => {
     const store = createProductMediaStore(async () => null);
     expect(await store.getProductMedia("milk")).toEqual({ productId: "milk", photos: [], mainPhotoId: null, barcodes: [], avoid: null });

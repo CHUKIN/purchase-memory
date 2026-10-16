@@ -236,9 +236,21 @@ public sealed class ProductImpressionRepository(PurchaseMemoryDbContext dbContex
 
     /// <summary>
     /// Called before a purchase save: impressions on line rows that are about
-    /// to be deleted move to the replacement rows (see <see cref="ImpressionRelinking"/>).
+    /// to be deleted are detached from them, and the replacement row each one
+    /// belongs to (see <see cref="ImpressionRelinking"/>) is returned for the
+    /// caller to attach once the replacement rows are stored.
     /// </summary>
-    internal static async Task RelinkReplacedLinesAsync(PurchaseMemoryDbContext dbContext, CancellationToken cancellationToken)
+    /// <remarks>
+    /// Attaching in the same save as the row swap cannot work: the new row
+    /// usually takes the old row's (purchase, position), so the old row must be
+    /// deleted before the new one is inserted; the impression can point at the
+    /// new row only after that insert, yet must leave the old row before its
+    /// delete. EF Core rejects that as a circular dependency.
+    /// </remarks>
+    internal static async Task<IReadOnlyList<(ProductImpression Impression, Guid LineId)>> DetachFromReplacedLinesAsync(
+        PurchaseMemoryDbContext dbContext,
+        IReadOnlyDictionary<Guid, Guid> continuedLines,
+        CancellationToken cancellationToken)
     {
         dbContext.ChangeTracker.DetectChanges();
         var entries = dbContext.ChangeTracker.Entries<PurchaseItem>().ToList();
@@ -248,7 +260,7 @@ public sealed class ProductImpressionRepository(PurchaseMemoryDbContext dbContex
             .ToDictionary(group => group.Key, group => group.Select(entry => ImpressionLineRef.From(entry.Entity)).ToList());
         if (removed.Count == 0)
         {
-            return;
+            return [];
         }
 
         var removedIds = removed.Values.SelectMany(lines => lines).Select(line => (Guid?)line.Id).ToList();
@@ -257,7 +269,7 @@ public sealed class ProductImpressionRepository(PurchaseMemoryDbContext dbContex
             .ToListAsync(cancellationToken);
         if (impressions.Count == 0)
         {
-            return;
+            return [];
         }
 
         var added = entries
@@ -267,15 +279,25 @@ public sealed class ProductImpressionRepository(PurchaseMemoryDbContext dbContex
         var moves = new Dictionary<Guid, Guid>();
         foreach (var (purchaseId, lines) in removed)
         {
-            foreach (var (from, to) in ImpressionRelinking.Match(lines, added.GetValueOrDefault(purchaseId) ?? []))
+            foreach (var (from, to) in ImpressionRelinking.Match(lines, added.GetValueOrDefault(purchaseId) ?? [], continuedLines))
             {
                 moves[from] = to;
             }
         }
 
+        var attachments = new List<(ProductImpression Impression, Guid LineId)>();
         foreach (var impression in impressions)
         {
-            impression.MoveToItem(moves.TryGetValue(impression.PurchaseItemId!.Value, out var target) ? target : null);
+            if (moves.TryGetValue(impression.PurchaseItemId!.Value, out var target))
+            {
+                attachments.Add((impression, target));
+            }
+
+            // Without a replacement the impression stays on its purchase and
+            // product, just no longer on a line.
+            impression.MoveToItem(null);
         }
+
+        return attachments;
     }
 }

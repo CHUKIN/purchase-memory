@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { ApiError, fetchProtectedBlob, getProductCatalog, getPurchase, getReceipt, postLineApprovals, updatePurchase } from "../../api/client";
+import { ApiError, fetchProtectedBlob, getProduct, getProductCatalog, getPurchase, getReceipt, postLineApprovals, updatePurchase } from "../../api/client";
 import type { PurchaseDetail, ReceiptView } from "../../api/types";
 import { AppProviders } from "../../app/AppProviders";
 import { dialog } from "../../test/ionicHelpers";
@@ -14,6 +14,7 @@ vi.mock("../../api/client", async (importOriginal) => {
     getPurchase: vi.fn(),
     updatePurchase: vi.fn(),
     getProductCatalog: vi.fn(),
+    getProduct: vi.fn(),
     listPurchaseImpressions: vi.fn(() => Promise.resolve([])),
     createImpression: vi.fn(),
     deleteImpression: vi.fn(),
@@ -35,12 +36,12 @@ const purchase: PurchaseDetail = {
   items: [
     {
       id: "line-kawa", position: 0, name: "KAWA", quantity: 1, unit: "szt", unitPrice: 15, lineTotal: 15, kind: "product",
-      discountedItemPosition: null, productId: "coffee", productName: "Kawa", pendingMatch: false, candidates: [], boundingBox: null
+      discountedItemPosition: null, productId: "coffee", productName: "Kawa", productNeedsReview: false, boundingBox: null
     },
     {
       id: "line-gouda", position: 1, name: "Ser Gouda 250g", quantity: 1, unit: "szt", unitPrice: null, lineTotal: 3, kind: "product",
-      discountedItemPosition: null, productId: null, productName: null, pendingMatch: true,
-      candidates: [{ productId: "gouda150", name: "Ser Gouda 150g", score: 0.8 }], boundingBox: null
+      // A doubtful match: the line got a product of its own, flagged «проверить».
+      discountedItemPosition: null, productId: "gouda250", productName: "Ser Gouda 250g", productNeedsReview: true, boundingBox: null
     }
   ],
   issues: [
@@ -77,6 +78,7 @@ describe("PurchaseDetailPage", () => {
     vi.mocked(getPurchase).mockReset().mockResolvedValue(purchase);
     vi.mocked(updatePurchase).mockReset();
     vi.mocked(getProductCatalog).mockReset();
+    vi.mocked(getProduct).mockReset();
   });
 
   it("shows the saved purchase with its issues and switches to edit mode", async () => {
@@ -84,7 +86,8 @@ describe("PurchaseDetailPage", () => {
 
     expect(await screen.findByRole("heading", { level: 1, name: "Żabka" })).toBeInTheDocument();
     expect(screen.getByText("Связано с «Kawa»")).toBeInTheDocument();
-    expect(screen.getByText("Не удалось выбрать товар автоматически — выберите сами.")).toBeInTheDocument();
+    expect(screen.getByText("Связано с «Ser Gouda 250g». Товар отмечен «проверить»: он похож на другие товары")).toBeInTheDocument();
+    expect(screen.getByText("проверить")).toBeInTheDocument();
     expect(screen.getByText("Нет цены")).toBeInTheDocument();
     expect(screen.getByText("Сумма строк не сходится с итогом чека")).toBeInTheDocument();
     // No photo, no photo section (and no sentence about it).
@@ -117,7 +120,7 @@ describe("PurchaseDetailPage", () => {
     expect(body.expectedUpdatedAt).toBe(purchase.updatedAt);
     expect(body.receiptTotal).toBe(20);
     expect(body.items[0]).toMatchObject({ name: "KAWA", lineTotal: 17, productLink: "existing", productId: "coffee" });
-    expect(body.items[1]).toMatchObject({ name: "Ser Gouda 250g", productLink: "auto", productId: null });
+    expect(body.items[1]).toMatchObject({ name: "Ser Gouda 250g", productLink: "existing", productId: "gouda250" });
     expect(await screen.findByText("Исправления сохранены.")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Сохранить" })).not.toBeInTheDocument();
   });
@@ -164,12 +167,21 @@ describe("PurchaseDetailPage", () => {
     expect(await screen.findByText("Исправления сохранены.")).toBeInTheDocument();
   });
 
-  it("opens the product choice for a pending line and links the chosen candidate", async () => {
+  it("opens the product choice for a flagged line with its similar products and links one", async () => {
+    vi.mocked(getProduct).mockResolvedValue({
+      id: "gouda250", name: "Ser Gouda 250g", needsReview: true,
+      reviewCandidates: [{ productId: "gouda150", name: "Ser Gouda 150g", brand: null, categoryId: null, purchaseCount: 4, score: 0.8 }]
+    } as never);
     vi.mocked(updatePurchase).mockResolvedValue(purchase);
     renderAt("/purchases/p1?edit=1&focus=product-1");
 
     const picker = await screen.findByRole("heading", { name: "Выбрать товар для строки 2" });
-    fireEvent.click(within(picker.closest("[role=dialog]") as HTMLElement).getByRole("button", { name: "Выбрать «Ser Gouda 150g»" }));
+    const pickerDialog = picker.closest("[role=dialog]") as HTMLElement;
+    // Before typing: the matcher's candidates of the flagged product.
+    expect(await within(pickerDialog).findByRole("heading", { name: "Похожие товары" })).toBeInTheDocument();
+    expect(getProduct).toHaveBeenCalledWith("gouda250");
+    expect(getProductCatalog).not.toHaveBeenCalled();
+    fireEvent.click(within(pickerDialog).getByRole("button", { name: "Выбрать «Ser Gouda 150g»" }));
 
     const sheet = dialog("Строка 2");
     expect(within(sheet).getByText("Связано с «Ser Gouda 150g»")).toBeInTheDocument();
@@ -192,7 +204,7 @@ describe("PurchaseDetailPage", () => {
   it("searches the catalog or creates a new product for a line", async () => {
     vi.mocked(getProductCatalog).mockResolvedValue({
       items: [{ id: "cheese", name: "Ser żółty", normalizedName: "ser zolty", purchaseCount: 3, linkedItemCount: 3, aliasCount: 1, createdAt: "", updatedAt: "" }],
-      page: 1, pageSize: 8, totalCount: 1, hasMore: false, pendingMatchCount: 0
+      page: 1, pageSize: 8, totalCount: 1, hasMore: false, needsReviewCount: 0
     } as never);
     vi.mocked(updatePurchase).mockResolvedValue(purchase);
     renderAt("/purchases/p1?edit=1&focus=product-1");
@@ -396,6 +408,36 @@ describe("PurchaseDetailPage swipe review of the lines", () => {
 
     await waitFor(() => expect(within(card()).getByRole("heading", { level: 3, name: "Ser Gouda 250g" })).toBeInTheDocument());
     expect(screen.getByRole("button", { name: /^KAWA, проверено/ })).toBeInTheDocument();
+  });
+
+  it("swipe left can change the line's product right in the sheet", async () => {
+    vi.mocked(getProductCatalog).mockResolvedValue({
+      items: [{ id: "gouda150", name: "Ser Gouda 150g", normalizedName: "ser gouda 150 g", purchaseCount: 4, linkedItemCount: 4, aliasCount: 1, createdAt: "", updatedAt: "" }],
+      page: 1, pageSize: 8, totalCount: 1, hasMore: false, needsReviewCount: 1
+    } as never);
+    vi.mocked(updatePurchase).mockResolvedValue(withPhoto);
+    renderAt("/purchases/p1");
+    fireEvent.click(await screen.findByRole("button", { name: /^Ser Gouda 250g.*сверить с чеком$/ }));
+    // The card says the product is flagged.
+    expect(within(card()).getByText("Связано с «Ser Gouda 250g». Товар отмечен «проверить»: он похож на другие товары")).toBeInTheDocument();
+
+    fireEvent.click(within(dialog()).getByRole("button", { name: "Исправить строку" }));
+    const form = dialog("Строка 2");
+    expect(within(form).getByText("Связано с «Ser Gouda 250g». Товар отмечен «проверить»: он похож на другие товары")).toBeInTheDocument();
+    fireEvent.click(within(form).getByRole("button", { name: "Выбрать товар для строки 2" }));
+    const picker = dialog("Выбрать товар для строки 2");
+    fireEvent.change(within(picker).getByLabelText("Найти товар"), { target: { value: "gouda" } });
+    fireEvent.click(await within(picker).findByRole("button", { name: "Выбрать «Ser Gouda 150g»" }));
+
+    expect(within(dialog("Строка 2")).getByText("Связано с «Ser Gouda 150g»")).toBeInTheDocument();
+    // Photos and barcodes wait for the save: the new product is not the line's yet.
+    expect(within(dialog("Строка 2")).getByText(/Товар строки изменится после сохранения/)).toBeInTheDocument();
+    fireEvent.click(within(dialog("Строка 2")).getByRole("button", { name: "Сохранить" }));
+
+    await waitFor(() => expect(updatePurchase).toHaveBeenCalledTimes(1));
+    const body = vi.mocked(updatePurchase).mock.calls[0][1];
+    expect(body.items[1]).toMatchObject({ id: "line-gouda", productLink: "existing", productId: "gouda150" });
+    expect(body.items[0]).toMatchObject({ productLink: "existing", productId: "coffee" });
   });
 
   it("explains a conflict while correcting a line from the review", async () => {

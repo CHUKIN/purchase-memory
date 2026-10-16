@@ -37,6 +37,7 @@ builder.Services.AddSingleton(runtimePaths);
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<IProductMatcher, ProductMatcher>();
 builder.Services.AddScoped<IProductCatalogService, ProductCatalogService>();
+builder.Services.AddScoped<IProductManagementService, ProductManagementService>();
 builder.Services.AddScoped<IPurchaseDraftService, PurchaseDraftService>();
 builder.Services.AddScoped<IPurchaseEditService, PurchaseEditService>();
 builder.Services.AddScoped<IPurchaseLineApprovalService, PurchaseLineApprovalService>();

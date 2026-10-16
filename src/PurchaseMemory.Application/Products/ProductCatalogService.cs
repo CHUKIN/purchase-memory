@@ -52,7 +52,9 @@ public sealed class ProductCatalogService : IProductCatalogService
             classification.CategoryIds,
             classification.Uncategorized,
             classification.NormalizedBrand,
-            classification.TagIds);
+            classification.TagIds,
+            query.NeedsReview,
+            query.ExcludeProductId);
         var page = await _repository.ListProductsAsync(filter, query.Page, query.PageSize, cancellationToken);
 
         var tags = await _tags.ListTagsForProductsAsync(
@@ -88,6 +90,9 @@ public sealed class ProductCatalogService : IProductCatalogService
         var aliases = await _repository.ListAliasesForProductAsync(productId, cancellationToken);
         var summary = ProductPriceHistoryCalculator.Summarize(facts);
         var tags = await _tags.ListTagsForProductsAsync([product.Id], cancellationToken);
+        var candidates = product.NeedsReview
+            ? await _repository.ListReviewCandidatesAsync([product.Id], cancellationToken)
+            : null;
 
         return new ProductDetail(
             product.Id,
@@ -105,6 +110,10 @@ public sealed class ProductCatalogService : IProductCatalogService
             product.CategorySource,
             product.Brand,
             product.BrandSource,
-            tags.TryGetValue(product.Id, out var found) ? found : []);
+            tags.TryGetValue(product.Id, out var found) ? found : [],
+            product.Origin,
+            product.NeedsReview,
+            product.ReviewReason,
+            candidates is not null && candidates.TryGetValue(product.Id, out var reviewCandidates) ? reviewCandidates : []);
     }
 }

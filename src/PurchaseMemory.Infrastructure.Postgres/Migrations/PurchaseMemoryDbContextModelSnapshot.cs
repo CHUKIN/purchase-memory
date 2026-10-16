@@ -145,67 +145,6 @@ namespace PurchaseMemory.Infrastructure.Postgres.Migrations
                     b.ToTable("product_impressions", "purchase_memory");
                 });
 
-            modelBuilder.Entity("PurchaseMemory.Domain.Products.PendingProductMatch", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("MerchantKey")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<string>("NormalizedItemName")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<Guid>("PurchaseItemId")
-                        .HasColumnType("uuid");
-
-                    b.Property<long>("RaisedAt")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("RawItemName")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PurchaseItemId")
-                        .IsUnique();
-
-                    b.ToTable("pending_product_matches", "purchase_memory");
-                });
-
-            modelBuilder.Entity("PurchaseMemory.Domain.Products.PendingProductMatchCandidate", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("PendingProductMatchId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("Position")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uuid");
-
-                    b.Property<double>("Score")
-                        .HasColumnType("double precision");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("PendingProductMatchId", "Position")
-                        .IsUnique();
-
-                    b.ToTable("pending_product_match_candidates", "purchase_memory");
-                });
-
             modelBuilder.Entity("PurchaseMemory.Domain.Products.Product", b =>
                 {
                     b.Property<Guid>("Id")
@@ -237,6 +176,9 @@ namespace PurchaseMemory.Infrastructure.Postgres.Migrations
                     b.Property<long>("CreatedAt")
                         .HasColumnType("bigint");
 
+                    b.Property<bool>("NeedsReview")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("NormalizedBrand")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
@@ -246,12 +188,25 @@ namespace PurchaseMemory.Infrastructure.Postgres.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
+                    b.Property<string>("Origin")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasDefaultValue("Receipt");
+
+                    b.Property<string>("ReviewReason")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
                     b.Property<long>("UpdatedAt")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("NeedsReview");
 
                     b.HasIndex("NormalizedBrand");
 
@@ -949,6 +904,33 @@ namespace PurchaseMemory.Infrastructure.Postgres.Migrations
                         });
                 });
 
+            modelBuilder.Entity("PurchaseMemory.Domain.Products.ProductReviewCandidate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CandidateProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<double>("Score")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CandidateProductId");
+
+                    b.HasIndex("ProductId", "Position")
+                        .IsUnique();
+
+                    b.ToTable("product_review_candidates", "purchase_memory");
+                });
+
             modelBuilder.Entity("PurchaseMemory.Domain.Products.ProductTag", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1336,30 +1318,6 @@ namespace PurchaseMemory.Infrastructure.Postgres.Migrations
                         .OnDelete(DeleteBehavior.SetNull);
                 });
 
-            modelBuilder.Entity("PurchaseMemory.Domain.Products.PendingProductMatch", b =>
-                {
-                    b.HasOne("PurchaseMemory.Domain.Purchases.PurchaseItem", null)
-                        .WithMany()
-                        .HasForeignKey("PurchaseItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("PurchaseMemory.Domain.Products.PendingProductMatchCandidate", b =>
-                {
-                    b.HasOne("PurchaseMemory.Domain.Products.PendingProductMatch", null)
-                        .WithMany("Candidates")
-                        .HasForeignKey("PendingProductMatchId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PurchaseMemory.Domain.Products.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("PurchaseMemory.Domain.Products.Product", b =>
                 {
                     b.HasOne("PurchaseMemory.Domain.Products.ProductCategory", null)
@@ -1392,6 +1350,21 @@ namespace PurchaseMemory.Infrastructure.Postgres.Migrations
                         .WithMany()
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("PurchaseMemory.Domain.Products.ProductReviewCandidate", b =>
+                {
+                    b.HasOne("PurchaseMemory.Domain.Products.Product", null)
+                        .WithMany()
+                        .HasForeignKey("CandidateProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PurchaseMemory.Domain.Products.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PurchaseMemory.Domain.Products.ProductTagLink", b =>
@@ -1505,11 +1478,6 @@ namespace PurchaseMemory.Infrastructure.Postgres.Migrations
                         .HasForeignKey("ReceiptCaptureId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("PurchaseMemory.Domain.Products.PendingProductMatch", b =>
-                {
-                    b.Navigation("Candidates");
                 });
 
             modelBuilder.Entity("PurchaseMemory.Domain.Purchases.PurchaseDraft", b =>

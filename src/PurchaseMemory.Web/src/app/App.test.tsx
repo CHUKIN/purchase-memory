@@ -12,7 +12,7 @@ vi.mock("../api/client", () => ({
   listRecentReceipts: vi.fn().mockResolvedValue([]),
   listMyUnsavedReceipts: vi.fn().mockResolvedValue([]),
   getPurchaseFeed: vi.fn().mockResolvedValue({ items: [], page: 1, pageSize: 20, totalCount: 0, hasMore: false, truncated: false }),
-  getProductCatalog: vi.fn().mockResolvedValue({ items: [], page: 1, pageSize: 30, totalCount: 0, hasMore: false, pendingMatchCount: 0 }),
+  getProductCatalog: vi.fn().mockResolvedValue({ items: [], page: 1, pageSize: 30, totalCount: 0, hasMore: false, needsReviewCount: 0 }),
   listCategories: vi.fn().mockResolvedValue([]),
   listBrands: vi.fn().mockResolvedValue([]),
   listTags: vi.fn().mockResolvedValue([]),

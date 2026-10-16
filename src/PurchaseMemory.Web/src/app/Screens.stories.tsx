@@ -45,21 +45,20 @@ const purchaseDetail: PurchaseDetail = {
   items: [
     {
       id: "line-1", position: 0, name: longProduct, quantity: 2, unit: "szt", unitPrice: 8.99, lineTotal: 17.98, kind: "product",
-      discountedItemPosition: null, productId: "product-long", productName: longProduct, pendingMatch: false, candidates: [], boundingBox: null,
+      discountedItemPosition: null, productId: "product-long", productName: longProduct, productNeedsReview: false, boundingBox: null,
       approved: true, approvedAt: "2026-08-25T08:00:00Z", approvedByEmail: "anna@example.com"
     },
     {
       id: "line-2", position: 1, name: "RABAT Ser Gouda Mlekovita", quantity: null, unit: null, unitPrice: null, lineTotal: -3.6, kind: "discount",
-      discountedItemPosition: 0, productId: null, productName: null, pendingMatch: false, candidates: [], boundingBox: null
+      discountedItemPosition: 0, productId: null, productName: null, productNeedsReview: false, boundingBox: null
     },
     {
       id: "line-3", position: 2, name: "Woda mineralna niegazowana Żywiec Zdrój 6×1,5L zgrzewka", quantity: 1, unit: "op", unitPrice: null, lineTotal: 1199.99, kind: "product",
-      discountedItemPosition: null, productId: null, productName: null, pendingMatch: true,
-      candidates: [{ productId: "water", name: "Woda Żywiec Zdrój niegazowana 1,5L", score: 0.82 }], boundingBox: null
+      discountedItemPosition: null, productId: "water-pack", productName: "Woda mineralna niegazowana Żywiec Zdrój 6×1,5L zgrzewka", productNeedsReview: true, boundingBox: null
     },
     {
       id: "line-4", position: 3, name: "BULKA KAJZERKA", quantity: 4, unit: "szt", unitPrice: 0.59, lineTotal: 2.36, kind: "product",
-      discountedItemPosition: null, productId: null, productName: null, pendingMatch: false, candidates: [], boundingBox: null
+      discountedItemPosition: null, productId: null, productName: null, productNeedsReview: false, boundingBox: null
     }
   ],
   issues: [
@@ -108,7 +107,7 @@ const catalog: ProductCatalogPage = {
   pageSize: 20,
   totalCount: 2,
   hasMore: false,
-  pendingMatchCount: 3
+  needsReviewCount: 3
 };
 
 const points = [
@@ -221,11 +220,11 @@ const reviewQueue: ReviewQueue = {
     { kind: "totalMismatch", totalCount: 1, items: [queueItem({ kind: "totalMismatch", id: "totalMismatch:p1", title: longMerchant, receiptId: "receipt-1", purchaseId: "purchase-long", currency: "PLN", receiptTotal: 1284.32, linesTotal: 1214.37 })] },
     { kind: "missingPrice", totalCount: 1, items: [queueItem({ kind: "missingPrice", id: "missingPrice:p1", title: longMerchant, purchaseId: "purchase-long", affectedLineCount: 1, itemPosition: 2 })] },
     {
-      kind: "pendingMatch", totalCount: 1, items: [queueItem({
-        kind: "pendingMatch", id: "pendingMatch:p1", title: "Woda mineralna niegazowana Żywiec Zdrój 6×1,5L zgrzewka", purchaseId: "purchase-long", productId: "water", itemPosition: 2,
+      kind: "productNeedsReview", totalCount: 1, items: [queueItem({
+        kind: "productNeedsReview", id: "productNeedsReview:water-pack", title: "Woda mineralna niegazowana Żywiec Zdrój 6×1,5L zgrzewka", productId: "water-pack", purchaseCount: 1,
         candidates: [
-          { productId: "water", name: "Woda Żywiec Zdrój niegazowana 1,5L", brand: "Żywiec Zdrój", categoryId: "milk" },
-          { productId: "product-long", name: longProduct, brand: longBrand, categoryId: "own-child" }
+          { productId: "water", name: "Woda Żywiec Zdrój niegazowana 1,5L", brand: "Żywiec Zdrój", categoryId: "milk", purchaseCount: 12, score: 0.82 },
+          { productId: "product-long", name: longProduct, brand: longBrand, categoryId: "own-child", purchaseCount: 3, score: 0.66 }
         ]
       })]
     },

@@ -1,7 +1,8 @@
 namespace PurchaseMemory.Domain.Products;
 
 /// <summary>
-/// Append-only record of a change to a product's category, brand or tags. It mirrors
+/// Append-only record of a change to a product's category, brand, tags, name,
+/// «проверить» flag, its creation by hand or a merge. It mirrors
 /// the receipt review audit trail, but belongs to the product: a category is a
 /// property of the product, not of any one receipt.
 /// </summary>
@@ -10,6 +11,19 @@ public sealed class ProductAuditEntry
     public const string CategoryField = "category";
     public const string BrandField = "brand";
     public const string TagsField = "tags";
+    public const string NameField = "name";
+
+    /// <summary>The «проверить» flag was raised or cleared.</summary>
+    public const string ReviewField = "review";
+
+    /// <summary>A person created the product by hand or from a barcode.</summary>
+    public const string CreatedField = "created";
+
+    /// <summary>
+    /// Another product was merged into this one. Old value describes the
+    /// merged-away product, new value this one, both as «name (id)».
+    /// </summary>
+    public const string MergeField = "merge";
     public const int MaximumValueLength = 500;
 
     private ProductAuditEntry()
@@ -84,5 +98,8 @@ public enum ProductAuditChangeSource
     CategoryDeleted = 2,
 
     /// <summary>A tag the product carried was deleted, so the product lost it.</summary>
-    TagDeleted = 3
+    TagDeleted = 3,
+
+    /// <summary>The deterministic matcher created the product with the «проверить» flag.</summary>
+    Matching = 4
 }

@@ -12,6 +12,8 @@ import { ProductTags } from "../tags/ProductTags";
 import { TagChips } from "../tags/TagChips";
 import { PriceHistoryChart } from "./PriceHistoryChart";
 import { formatDate, formatMoney, unitName, unitShortName } from "./productText";
+import { MergeWithSection, ProductReviewBanner, type ProductReviewActions } from "./ProductReviewSection";
+import { ReviewFlagChip } from "./ReviewFlagChip";
 
 export interface ProductCardProps {
   product: ProductDetail;
@@ -39,6 +41,11 @@ export interface ProductCardProps {
    * so variant B can put it beside the photo.
    */
   media?: (intro: string) => ReactNode;
+  /**
+   * Merge and «Это другой товар»: enables the «проверить» banner's buttons
+   * and «Объединить с…». Without it a flagged product only shows its mark.
+   */
+  reviewActions?: ProductReviewActions;
   /** More sections at the end, e.g. impressions. */
   children?: ReactNode;
 }
@@ -65,6 +72,7 @@ export function ProductCard({
   readCurrentTagIds,
   tagsFailed = false,
   media,
+  reviewActions,
   children
 }: ProductCardProps) {
   const { t } = useTranslation();
@@ -86,13 +94,16 @@ export function ProductCard({
 
   return (
     <Page title={product.name} back={back} end={<HelpLink topic="products" />}>
+      {/* First on the screen: the open question comes before photos and barcodes. */}
+      {reviewActions && <ProductReviewBanner product={product} categories={categories} actions={reviewActions} />}
       {/* Shopping trips, not receipt lines — the same number the frequency block counts by. */}
       {media
         ? media(t("products.purchaseCount", { count: product.purchaseCount }))
         : <p className="pm-home-intro">{t("products.purchaseCount", { count: product.purchaseCount })}</p>}
       {/* Read-only summary; with editing available the sections below say it once. */}
-      {((!editable && (categoryId || product.brand)) || (!tagsEditable && tags.length > 0)) && (
+      {((!editable && (categoryId || product.brand)) || (!tagsEditable && tags.length > 0) || (product.needsReview && !reviewActions)) && (
         <div className="pm-chip-row pm-padded">
+          {product.needsReview && !reviewActions && <ReviewFlagChip />}
           {!editable && (categoryId || product.brand) && <CategoryChip label={categoryPath(t, categories, categoryId)} source={product.categorySource ?? null} />}
           {!editable && product.brand && <span className="pm-chip pm-none">{product.brand}</span>}
           {!tagsEditable && <TagChips tags={tags} />}
@@ -178,6 +189,8 @@ export function ProductCard({
           </IonList>
         </section>
       )}
+
+      {reviewActions && <MergeWithSection product={product} actions={reviewActions} />}
 
       {children}
     </Page>

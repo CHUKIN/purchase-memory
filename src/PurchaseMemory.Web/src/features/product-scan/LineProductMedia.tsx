@@ -12,18 +12,26 @@ import { useProductMedia, useProductMediaActions } from "./useProductMedia";
 import "./productScan.css";
 
 /**
- * «Товар» in a purchase line's sheet: with the line linked to a product, a
- * photo or a barcode taken here goes straight to that product's card. An
- * unlinked line first needs its product.
+ * Photos and barcodes in a purchase line's sheet: a photo or a barcode taken
+ * here goes straight to the card of the product the line is saved with. Every
+ * product line has one; only after «Изменить товар» (until the line is saved)
+ * or for very old unlinked data is there nothing to attach to.
  */
-export function LineProductMedia({ productId, productName }: { productId: string | null | undefined; productName: string | null | undefined }) {
+export function LineProductMedia({ productId, productName, changed = false }: {
+  productId: string | null | undefined;
+  productName: string | null | undefined;
+  /** The person picked another product that is not saved yet. */
+  changed?: boolean;
+}) {
   const { t } = useTranslation();
   return (
     <section aria-labelledby="line-product-media">
       <SectionHeader id="line-product-media">{t("productScan.lineProductTitle")}</SectionHeader>
-      {productId && productName
-        ? <LinkedLineMedia productId={productId} productName={productName} />
-        : <Footnote tone="warning">{t("productScan.lineNotLinked")}</Footnote>}
+      {changed
+        ? <Footnote>{t("productScan.lineProductChanged")}</Footnote>
+        : productId && productName
+          ? <LinkedLineMedia productId={productId} productName={productName} />
+          : <Footnote tone="warning">{t("productScan.lineNotLinked")}</Footnote>}
     </section>
   );
 }

@@ -22,7 +22,7 @@ public sealed class ProductMatchingTests
 
         Assert.Equal(2, await dbContext.Products.CountAsync(TestContext.Current.CancellationToken));
         Assert.Equal(2, await dbContext.ProductAliases.CountAsync(TestContext.Current.CancellationToken));
-        Assert.Empty(await dbContext.PendingProductMatches.ToListAsync(TestContext.Current.CancellationToken));
+        Assert.False(await dbContext.Products.AnyAsync(product => product.NeedsReview, TestContext.Current.CancellationToken));
         Assert.All(
             await dbContext.Set<PurchaseItem>().ToListAsync(TestContext.Current.CancellationToken),
             item => Assert.NotNull(item.ProductId));
@@ -76,11 +76,12 @@ public sealed class ProductMatchingTests
         Assert.Equal(ProductAliasSource.AutoCreated, aliases[0].Source);
         Assert.Equal(ProductAliasSource.AutoMatched, aliases[1].Source);
         Assert.All(items, item => Assert.Equal(products[0].Id, item.ProductId));
-        Assert.Empty(await dbContext.PendingProductMatches.ToListAsync(TestContext.Current.CancellationToken));
+        Assert.False(products[0].NeedsReview);
+        Assert.Empty(await dbContext.ProductReviewCandidates.ToListAsync(TestContext.Current.CancellationToken));
     }
 
     [Fact]
-    public async Task AGreyZoneCandidateRaisesAPendingMatchInsteadOfGuessing()
+    public async Task AGreyZoneCandidateGetsAFlaggedProductOfItsOwnInsteadOfAGuess()
     {
         await using var application = await TestApplication.CreateAsync();
 
@@ -90,20 +91,57 @@ public sealed class ProductMatchingTests
         await using var scope = application.Services.CreateAsyncScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<PurchaseMemoryDbContext>();
 
-        var pending = await dbContext.PendingProductMatches
-            .Include(match => match.Candidates)
-            .SingleAsync(TestContext.Current.CancellationToken);
-        var unmatchedItem = await dbContext.Set<PurchaseItem>()
+        var existing = await dbContext.Products
+            .SingleAsync(product => product.CanonicalName == "Ser Gouda plastry 150g", TestContext.Current.CancellationToken);
+        var flagged = await dbContext.Products
+            .SingleAsync(product => product.CanonicalName == "Ser Gouda plastry 250g", TestContext.Current.CancellationToken);
+        var line = await dbContext.Set<PurchaseItem>()
             .SingleAsync(item => item.Name == "Ser Gouda plastry 250g", TestContext.Current.CancellationToken);
 
-        // A different package size is a different product until a person says otherwise.
-        Assert.Single(await dbContext.Products.ToListAsync(TestContext.Current.CancellationToken));
-        Assert.Null(unmatchedItem.ProductId);
-        Assert.Equal(unmatchedItem.Id, pending.PurchaseItemId);
-        Assert.Equal("biedronka", pending.MerchantKey);
-        Assert.Equal("ser gouda plastry 250 g", pending.NormalizedItemName);
-        var candidate = Assert.Single(pending.Candidates);
-        Assert.InRange(candidate.Score, ProductMatchingThresholds.PlausibleCandidate, 1.0);
+        // A different package size is a different product until a person says
+        // otherwise — but the line is never left without a product.
+        Assert.Equal(flagged.Id, line.ProductId);
+        Assert.True(flagged.NeedsReview);
+        Assert.Equal(ProductReviewReason.AmbiguousMatch, flagged.ReviewReason);
+        Assert.Equal(ProductOrigin.Receipt, flagged.Origin);
+        Assert.Equal("ser gouda plastry 250 g", flagged.NormalizedName);
+        Assert.False(existing.NeedsReview);
+
+        var alias = await dbContext.ProductAliases
+            .SingleAsync(entry => entry.ProductId == flagged.Id, TestContext.Current.CancellationToken);
+        Assert.Equal(("biedronka", "ser gouda plastry 250 g", ProductAliasSource.AutoCreated), (alias.MerchantKey, alias.NormalizedText, alias.Source));
+
+        var candidate = await dbContext.ProductReviewCandidates.SingleAsync(TestContext.Current.CancellationToken);
+        Assert.Equal((flagged.Id, existing.Id, 0), (candidate.ProductId, candidate.CandidateProductId, candidate.Position));
+        Assert.InRange(candidate.Score, ProductMatchingThresholds.PlausibleCandidate, ProductMatchingThresholds.ConfidentMatch);
+
+        var audit = await dbContext.ProductAuditEntries
+            .SingleAsync(entry => entry.ProductId == flagged.Id, TestContext.Current.CancellationToken);
+        Assert.Equal((ProductAuditEntry.ReviewField, ProductAuditChangeSource.Matching, "system"), (audit.FieldName, audit.Source, audit.Actor));
+    }
+
+    [Fact]
+    public async Task TheSameDoubtfulWordingLaterHitsTheFlaggedProductsAlias()
+    {
+        await using var application = await TestApplication.CreateAsync();
+
+        await SavePurchaseAsync(application, "Biedronka", "ACTIV KEFI BOR 280");
+        // Twice in one receipt and once more later: one flagged product, not three.
+        await SavePurchaseAsync(application, "Biedronka", "ACTIV KEFI NAT 280", "ACTIV KEFI NAT 280");
+        await SavePurchaseAsync(application, "Biedronka", "ACTIV KEFI NAT 280");
+
+        await using var scope = application.Services.CreateAsyncScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<PurchaseMemoryDbContext>();
+
+        var flagged = await dbContext.Products.SingleAsync(product => product.NeedsReview, TestContext.Current.CancellationToken);
+        Assert.Equal("ACTIV KEFI NAT 280", flagged.CanonicalName);
+        Assert.Equal(2, await dbContext.Products.CountAsync(TestContext.Current.CancellationToken));
+        var lines = await dbContext.Set<PurchaseItem>()
+            .Where(item => item.Name == "ACTIV KEFI NAT 280")
+            .ToListAsync(TestContext.Current.CancellationToken);
+        Assert.Equal(3, lines.Count);
+        Assert.All(lines, item => Assert.Equal(flagged.Id, item.ProductId));
+        Assert.Single(await dbContext.ProductReviewCandidates.ToListAsync(TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -117,12 +155,13 @@ public sealed class ProductMatchingTests
         await using var scope = application.Services.CreateAsyncScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<PurchaseMemoryDbContext>();
 
-        var pending = await dbContext.PendingProductMatches
-            .Include(match => match.Candidates)
-            .SingleAsync(TestContext.Current.CancellationToken);
-
-        Assert.Single(pending.Candidates);
-        Assert.Single(await dbContext.Products.ToListAsync(TestContext.Current.CancellationToken));
+        var flagged = await dbContext.Products.SingleAsync(product => product.NeedsReview, TestContext.Current.CancellationToken);
+        Assert.Equal("Woda Żywiec niegazowana 1,5L", flagged.CanonicalName);
+        Assert.Equal(2, await dbContext.Products.CountAsync(TestContext.Current.CancellationToken));
+        Assert.Single(await dbContext.ProductReviewCandidates.ToListAsync(TestContext.Current.CancellationToken));
+        Assert.All(
+            await dbContext.Set<PurchaseItem>().ToListAsync(TestContext.Current.CancellationToken),
+            item => Assert.NotNull(item.ProductId));
     }
 
     [Fact]
@@ -140,7 +179,7 @@ public sealed class ProductMatchingTests
         var dbContext = scope.ServiceProvider.GetRequiredService<PurchaseMemoryDbContext>();
 
         Assert.Equal(2, await dbContext.Products.CountAsync(TestContext.Current.CancellationToken));
-        Assert.Empty(await dbContext.PendingProductMatches.ToListAsync(TestContext.Current.CancellationToken));
+        Assert.False(await dbContext.Products.AnyAsync(product => product.NeedsReview, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -180,7 +219,7 @@ public sealed class ProductMatchingTests
     }
 
     [Fact]
-    public async Task TheCatalogReadPathReportsLinkedItemsAndThePendingQueueSize()
+    public async Task TheCatalogReadPathReportsLinkedItemsAndTheFlaggedProducts()
     {
         await using var application = await TestApplication.CreateAsync();
 
@@ -192,17 +231,26 @@ public sealed class ProductMatchingTests
         var repository = scope.ServiceProvider.GetRequiredService<IProductCatalogRepository>();
 
         var page = await repository.ListProductsAsync(new ProductCatalogFilter(null), 1, 50, TestContext.Current.CancellationToken);
-        var pendingCount = await repository.CountPendingMatchesAsync(TestContext.Current.CancellationToken);
+        var flaggedCount = await repository.CountProductsNeedingReviewAsync(TestContext.Current.CancellationToken);
 
-        Assert.Equal(2, page.TotalCount);
+        // The 500 g line is a product of its own now, carrying the flag.
+        Assert.Equal(3, page.TotalCount);
         Assert.False(page.HasMore);
         var gouda = page.Items.Single(entry => entry.NormalizedName == "ser gouda 250 g");
         Assert.Equal(2, gouda.LinkedItemCount);
         Assert.Equal(1, gouda.AliasCount);
-        Assert.Equal(1, pendingCount);
+        Assert.False(gouda.NeedsReview);
+        Assert.Equal(1, flaggedCount);
+        Assert.True(page.Items.Single(entry => entry.NormalizedName == "ser gouda 500 g").NeedsReview);
 
         var filtered = await repository.ListProductsAsync(new ProductCatalogFilter("GOUDA"), 1, 50, TestContext.Current.CancellationToken);
-        Assert.Equal(1, filtered.TotalCount);
+        Assert.Equal(2, filtered.TotalCount);
+        var onlyFlagged = await repository.ListProductsAsync(
+            new ProductCatalogFilter(null, NeedsReview: true), 1, 50, TestContext.Current.CancellationToken);
+        Assert.Equal("ser gouda 500 g", Assert.Single(onlyFlagged.Items).NormalizedName);
+        var withoutGouda = await repository.ListProductsAsync(
+            new ProductCatalogFilter("GOUDA", ExcludeProductId: gouda.ProductId), 1, 50, TestContext.Current.CancellationToken);
+        Assert.DoesNotContain(withoutGouda.Items, entry => entry.ProductId == gouda.ProductId);
     }
 
     [Fact]
@@ -263,7 +311,7 @@ public sealed class ProductMatchingTests
         Assert.Equal(product.Id, alias.ProductId);
         Assert.Null(discount.ProductId);
         Assert.Equal(0, discount.DiscountedItemPosition);
-        Assert.Empty(await dbContext.PendingProductMatches.ToListAsync(TestContext.Current.CancellationToken));
+        Assert.False(await dbContext.Products.AnyAsync(entry => entry.NeedsReview, TestContext.Current.CancellationToken));
         Assert.Throws<InvalidOperationException>(() => discount.LinkToProduct(product.Id));
     }
 
@@ -328,13 +376,15 @@ public sealed class ProductMatchingTests
             .Select(item => $"{item.Name}->{item.ProductId}")
             .ToListAsync(TestContext.Current.CancellationToken);
 
-        var pending = await dbContext.PendingProductMatches
-            .OrderBy(match => match.NormalizedItemName)
-            .Select(match => match.NormalizedItemName)
+        var flagged = await dbContext.Products
+            .Where(product => product.NeedsReview)
+            .OrderBy(product => product.NormalizedName)
+            .Select(product => product.NormalizedName)
             .ToListAsync(TestContext.Current.CancellationToken);
+        var candidates = await dbContext.ProductReviewCandidates.CountAsync(TestContext.Current.CancellationToken);
 
         return string.Join(
             "\n",
-            [.. products, "--", .. aliases, "--", .. links, "--", .. pending]);
+            [.. products, "--", .. aliases, "--", .. links, "--", .. flagged, $"candidates={candidates}"]);
     }
 }

@@ -22,12 +22,15 @@ public sealed class ReviewQueueTools(IReviewQueueService service)
         UseStructuredContent = true)]
     [Description(
         "What in the stored purchases still needs a person: failed or unsaved receipts, purchases whose lines " +
-        "do not add up to the receipt total or lack prices, unmatched receipt lines, and products with an " +
+        "do not add up to the receipt total or lack prices, products flagged «проверить» (productNeedsReview: " +
+        "the matcher was unsure, candidates lists what it might really be; needsCategory=true means it has no " +
+        "category either, categoryId/categoryName set means its category is only AI-suggested; such a product is " +
+        "then not listed again as missingCategory or suggestedCategory), and products with an " +
         "unconfirmed (AI-suggested) or missing category. Grouped by kind with total counts. Optional filters, " +
         "combinable: categoryId (from list_product_categories; a group includes its subcategories, an " +
         "AI-suggested category counts) or uncategorized=true, and tagIds (ids from list_tags; a product needs " +
         "all of them). A filter keeps only items about matching products: the product itself for category " +
-        "items, any linked line for total and price items. Unsaved or failed receipts and unmatched lines have " +
+        "and flagged-product items, any linked line for total and price items. Unsaved or failed receipts have " +
         "no product, so any filter leaves them out; totals are then the filtered counts.")]
     public async Task<ReviewQueueResponse> ListReviewQueueAsync(
         [Description("Maximum items returned per kind, 1-100.")] int limitPerKind = ReviewQueueService.DefaultLimitPerKind,

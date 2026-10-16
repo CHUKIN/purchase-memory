@@ -96,6 +96,7 @@ public static class CategoryEndpoints
                 ProductAuditChangeSource.Human => "human",
                 ProductAuditChangeSource.Suggestion => "suggestion",
                 ProductAuditChangeSource.TagDeleted => "tagDeleted",
+                ProductAuditChangeSource.Matching => "matching",
                 _ => "categoryDeleted"
             },
             entry.OldValue,

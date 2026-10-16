@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PackageSearch } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import {
   ApiError,
   classifyProduct,
@@ -21,6 +21,8 @@ import { tagsQueryKey } from "../tags/tagQueries";
 import { ProductCard } from "./ProductCard";
 import { ProductMediaSection } from "../product-scan/ProductMediaSection";
 import { useBackTarget } from "../../app/backNavigation";
+import { useToast } from "../../app/toasts";
+import { useConfirmDistinct, useMergeProduct, type MergeSide } from "./productMerge";
 
 export function ProductDetailPage() {
   const { t, i18n } = useTranslation();
@@ -63,6 +65,23 @@ export function ProductDetailPage() {
     return tag;
   };
   const back = useBackTarget({ to: "/products", labelKey: "common.products" });
+  const navigate = useNavigate();
+  const location = useLocation();
+  const showToast = useToast();
+  const merge = useMergeProduct();
+  const confirmDistinct = useConfirmDistinct();
+  const reviewActions = {
+    onMergeInto: async (target: MergeSide) => {
+      const current = productQuery.data;
+      if (!current) return;
+      await merge.mutateAsync({ source: { id: current.id, name: current.name }, target });
+      showToast({ id: `product-merged-${Date.now()}`, message: t("products.merged", { name: target.name }), tone: "success" });
+      // This product is gone: its page is replaced by the target's, so «Назад»
+      // never lands on a «not found», and goes where this page would have gone.
+      navigate(`/products/${encodeURIComponent(target.id)}`, { replace: true, state: location.state as unknown });
+    },
+    onConfirmDistinct: () => confirmDistinct.mutateAsync(productId)
+  };
 
   if (productQuery.data) {
     const product = productQuery.data;
@@ -80,6 +99,7 @@ export function ProductDetailPage() {
         readCurrentTagIds={() => queryClient
           .getQueryData<ProductDetail>(["products", "detail", productId])?.tags?.map((tag) => tag.id)}
         tagsFailed={tagsQuery.isError}
+        reviewActions={reviewActions}
         media={(intro) => (
           <ProductMediaSection productId={product.id} productName={product.name} intro={intro} locale={locale} />
         )}

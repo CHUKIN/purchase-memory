@@ -24,13 +24,28 @@ public enum ReviewQueueItemKind
     /// <summary>A saved purchase with lines that have no price.</summary>
     MissingPrice,
 
-    /// <summary>A receipt line the matcher could not link to a product on its own.</summary>
-    PendingMatch,
+    /// <summary>
+    /// A product the matcher created with the «проверить» flag: it looks like
+    /// one or more existing products, and a person says whether it is one of
+    /// them (merge) or a product of its own. When it has no category either
+    /// (<see cref="ReviewQueueItem.NeedsCategory"/>) or only an AI-suggested
+    /// one (<see cref="ReviewQueueItem.CategoryId"/> and
+    /// <see cref="ReviewQueueItem.CategoryName"/> set), this one item also
+    /// carries that step instead of a second <see cref="MissingCategory"/> or
+    /// <see cref="SuggestedCategory"/> item.
+    /// </summary>
+    ProductNeedsReview,
 
-    /// <summary>The AI suggested a category and nobody has confirmed it yet.</summary>
+    /// <summary>
+    /// The AI suggested a category and nobody has confirmed it yet. Never for
+    /// a flagged product: its <see cref="ProductNeedsReview"/> item says so.
+    /// </summary>
     SuggestedCategory,
 
-    /// <summary>Nobody (person or AI) has given the product a category.</summary>
+    /// <summary>
+    /// Nobody (person or AI) has given the product a category. Never for a
+    /// flagged product: its <see cref="ProductNeedsReview"/> item says so.
+    /// </summary>
     MissingCategory
 }
 
@@ -47,19 +62,30 @@ public sealed record ReviewQueueItem(
     Guid? ReceiptId = null,
     Guid? PurchaseId = null,
     Guid? ProductId = null,
+    // Suggested category; for a flagged product only when its category is AI-suggested.
     Guid? CategoryId = null,
     string? CategoryName = null,
     string? Currency = null,
     decimal? ReceiptTotal = null,
     decimal? LinesTotal = null,
     int? AffectedLineCount = null,
-    // The line to focus when the purchase editor opens (pending match, first missing price).
+    // The line to focus when the purchase editor opens (first missing price).
     int? ItemPosition = null,
-    // Pending match only: the products the matcher weighed, best first (at most MaximumCandidates).
-    IReadOnlyList<ReviewQueueCandidate>? Candidates = null);
+    // Flagged product only: the products it might really be, best first (at most MaximumCandidates).
+    IReadOnlyList<ReviewQueueCandidate>? Candidates = null,
+    // Flagged product only: distinct purchases it appears on.
+    int? PurchaseCount = null,
+    // Flagged product only: it has no category either, so the card also asks for one.
+    bool NeedsCategory = false);
 
-/// <summary>A catalog product the matcher considered for an unmatched line.</summary>
-public sealed record ReviewQueueCandidate(Guid ProductId, string Name, string? Brand, Guid? CategoryId);
+/// <summary>An existing product a flagged product might really be.</summary>
+public sealed record ReviewQueueCandidate(
+    Guid ProductId,
+    string Name,
+    string? Brand,
+    Guid? CategoryId,
+    int PurchaseCount = 0,
+    double Score = 0);
 
 /// <summary>
 /// What the «Нужно проверить» screen narrows the queue to. Same meaning as the
@@ -99,14 +125,11 @@ public sealed record ReviewPurchaseFact(
     // Catalog products the purchase's lines are linked to; only the tag filter reads them.
     IReadOnlyCollection<Guid>? ProductIds = null);
 
-public sealed record ReviewPendingMatchFact(
+public sealed record ReviewFlaggedProductFact(
     Guid Id,
-    string RawItemName,
-    DateTimeOffset RaisedAt,
-    Guid PurchaseId,
-    Guid? SourceReceiptId,
-    Guid? BestCandidateProductId,
-    int? ItemPosition = null,
+    string Name,
+    DateTimeOffset CreatedAt,
+    int PurchaseCount,
     // Best first; products that no longer exist are already left out.
     IReadOnlyList<ReviewQueueCandidate>? Candidates = null);
 
@@ -121,14 +144,14 @@ public sealed record ReviewProductFact(
 public sealed record ReviewQueueFacts(
     IReadOnlyList<ReviewReceiptFact> Receipts,
     IReadOnlyList<ReviewPurchaseFact> Purchases,
-    IReadOnlyList<ReviewPendingMatchFact> PendingMatches,
+    IReadOnlyList<ReviewFlaggedProductFact> FlaggedProducts,
     IReadOnlyList<ReviewProductFact> Products);
 
 public interface IReviewQueueRepository
 {
     /// <summary>
     /// Loads failed/unsaved receipts, the most recent <paramref name="maximumPurchases"/>
-    /// purchases with their lines, pending matches and products lacking a confirmed category.
+    /// purchases with their lines, flagged products and products lacking a confirmed category.
     /// </summary>
     Task<ReviewQueueFacts> LoadFactsAsync(int maximumPurchases, CancellationToken cancellationToken);
 }
@@ -177,7 +200,7 @@ public sealed class ReviewQueueService(
     /// <summary>A household never gets near this; it only bounds a runaway scan.</summary>
     public const int MaximumScannedPurchases = 5000;
 
-    /// <summary>How many suggested products a «товар не сопоставлен» card offers.</summary>
+    /// <summary>How many candidate products a «нужно проверить товар» card offers.</summary>
     public const int MaximumCandidates = 3;
 
     public Task<ReviewQueueResult> GetAsync(int limitPerKind, CancellationToken cancellationToken) =>
@@ -231,10 +254,10 @@ public sealed class ReviewQueueService(
     /// <summary>
     /// Categories and tags belong to products, so a queue item matches a
     /// filter only through a catalog product: the product itself for the two
-    /// category kinds, and any linked line of the purchase for «сумма не
-    /// сходится» and «нет цены» (the same rule as the purchase feed). Receipts
-    /// that are not saved yet and lines still waiting to be matched have no
-    /// product, so a filter never shows them — not even through a candidate.
+    /// category kinds and for a flagged product (never through a candidate),
+    /// and any linked line of the purchase for «сумма не сходится» and «нет
+    /// цены» (the same rule as the purchase feed). Receipts that are not saved
+    /// yet have no product, so a filter never shows them.
     /// <paramref name="matchingProducts"/> is the products passing the filter,
     /// or <c>null</c> for no filter.
     /// </summary>
@@ -256,7 +279,7 @@ public sealed class ReviewQueueService(
     private static bool MatchesProducts(ReviewQueueItem item, IReadOnlySet<Guid> matchingProducts, HashSet<Guid> matchingPurchases) =>
         item.Kind switch
         {
-            ReviewQueueItemKind.SuggestedCategory or ReviewQueueItemKind.MissingCategory =>
+            ReviewQueueItemKind.SuggestedCategory or ReviewQueueItemKind.MissingCategory or ReviewQueueItemKind.ProductNeedsReview =>
                 item.ProductId is { } productId && matchingProducts.Contains(productId),
             ReviewQueueItemKind.TotalMismatch or ReviewQueueItemKind.MissingPrice =>
                 item.PurchaseId is { } purchaseId && matchingPurchases.Contains(purchaseId),
@@ -322,23 +345,32 @@ public sealed class ReviewQueueService(
             }
         }
 
-        foreach (var match in facts.PendingMatches)
+        // One product, one item: a flagged product whose category is missing
+        // or only suggested carries that step on its own card, so the badge
+        // counts it once. Its category items below are skipped.
+        var flaggedIds = facts.FlaggedProducts.Select(product => product.Id).ToHashSet();
+        var categoryFacts = facts.Products.ToDictionary(product => product.Id);
+
+        foreach (var flagged in facts.FlaggedProducts)
         {
+            var category = categoryFacts.GetValueOrDefault(flagged.Id);
+            var suggested = category is not null && IsSuggestedCategory(category);
             items.Add(new ReviewQueueItem(
-                ReviewQueueItemKind.PendingMatch,
-                Key(ReviewQueueItemKind.PendingMatch, match.Id),
-                match.RawItemName,
-                match.RaisedAt,
-                ReceiptId: match.SourceReceiptId,
-                PurchaseId: match.PurchaseId,
-                ProductId: match.BestCandidateProductId,
-                ItemPosition: match.ItemPosition,
-                Candidates: (match.Candidates ?? []).Take(MaximumCandidates).ToList()));
+                ReviewQueueItemKind.ProductNeedsReview,
+                Key(ReviewQueueItemKind.ProductNeedsReview, flagged.Id),
+                flagged.Name,
+                flagged.CreatedAt,
+                ProductId: flagged.Id,
+                CategoryId: suggested ? category!.CategoryId : null,
+                CategoryName: suggested ? category!.CategoryName : null,
+                Candidates: (flagged.Candidates ?? []).Take(MaximumCandidates).ToList(),
+                PurchaseCount: flagged.PurchaseCount,
+                NeedsCategory: category is not null && IsMissingCategory(category)));
         }
 
-        foreach (var product in facts.Products)
+        foreach (var product in facts.Products.Where(product => !flaggedIds.Contains(product.Id)))
         {
-            if (product.CategorySource == Domain.Products.ProductAttributeSource.Suggested && product.CategoryId is not null)
+            if (IsSuggestedCategory(product))
             {
                 items.Add(new ReviewQueueItem(
                     ReviewQueueItemKind.SuggestedCategory,
@@ -349,7 +381,7 @@ public sealed class ReviewQueueService(
                     CategoryId: product.CategoryId,
                     CategoryName: product.CategoryName));
             }
-            else if (product.CategoryId is null && product.CategorySource != Domain.Products.ProductAttributeSource.Confirmed)
+            else if (IsMissingCategory(product))
             {
                 items.Add(new ReviewQueueItem(
                     ReviewQueueItemKind.MissingCategory,
@@ -362,6 +394,12 @@ public sealed class ReviewQueueService(
 
         return items;
     }
+
+    private static bool IsSuggestedCategory(ReviewProductFact product) =>
+        product.CategorySource == Domain.Products.ProductAttributeSource.Suggested && product.CategoryId is not null;
+
+    private static bool IsMissingCategory(ReviewProductFact product) =>
+        product.CategoryId is null && product.CategorySource != Domain.Products.ProductAttributeSource.Confirmed;
 
     private static string Key(ReviewQueueItemKind kind, Guid id) =>
         $"{char.ToLowerInvariant(kind.ToString()[0])}{kind.ToString()[1..]}:{id:D}";

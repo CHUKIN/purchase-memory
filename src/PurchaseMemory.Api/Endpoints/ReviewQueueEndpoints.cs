@@ -93,10 +93,20 @@ public sealed record ReviewQueueItemResponse(
     decimal? LinesTotal,
     int? AffectedLineCount,
     int? ItemPosition,
-    // Pending match only (empty otherwise): the suggested products, best first.
-    IReadOnlyList<ReviewQueueCandidateResponse> Candidates);
+    // Flagged product only (empty otherwise): what it might really be, best first.
+    IReadOnlyList<ReviewQueueCandidateResponse> Candidates,
+    // Flagged product only: distinct purchases it appears on.
+    int? PurchaseCount,
+    // Flagged product only: it has no category either; the same item asks for one.
+    bool NeedsCategory);
 
-public sealed record ReviewQueueCandidateResponse(Guid ProductId, string Name, string? Brand, Guid? CategoryId);
+public sealed record ReviewQueueCandidateResponse(
+    Guid ProductId,
+    string Name,
+    string? Brand,
+    Guid? CategoryId,
+    int PurchaseCount,
+    double Score);
 
 public sealed record ReviewQueueGroupResponse(string Kind, int TotalCount, IReadOnlyList<ReviewQueueItemResponse> Items);
 
@@ -126,8 +136,15 @@ public sealed record ReviewQueueResponse(int TotalCount, IReadOnlyList<ReviewQue
                         item.ItemPosition,
                         (item.Candidates ?? [])
                             .Select(candidate => new ReviewQueueCandidateResponse(
-                                candidate.ProductId, candidate.Name, candidate.Brand, candidate.CategoryId))
-                            .ToList()))
+                                candidate.ProductId,
+                                candidate.Name,
+                                candidate.Brand,
+                                candidate.CategoryId,
+                                candidate.PurchaseCount,
+                                candidate.Score))
+                            .ToList(),
+                        item.PurchaseCount,
+                        item.NeedsCategory))
                     .ToList()))
             .ToList());
 }

@@ -20,7 +20,7 @@ public sealed class PurchaseMemoryDbContext(DbContextOptions<PurchaseMemoryDbCon
 
     public DbSet<ProductAlias> ProductAliases => Set<ProductAlias>();
 
-    public DbSet<PendingProductMatch> PendingProductMatches => Set<PendingProductMatch>();
+    public DbSet<ProductReviewCandidate> ProductReviewCandidates => Set<ProductReviewCandidate>();
 
     public DbSet<ProductCategory> ProductCategories => Set<ProductCategory>();
 
@@ -123,6 +123,15 @@ public sealed class PurchaseMemoryDbContext(DbContextOptions<PurchaseMemoryDbCon
         product.Property(entity => entity.BrandSource).HasConversion<string>().HasMaxLength(20);
         product.HasIndex(entity => entity.CategoryId);
         product.HasIndex(entity => entity.NormalizedBrand);
+        // Rows that existed before the column came from receipts and were never flagged.
+        product.Property(entity => entity.Origin)
+            .HasConversion<string>()
+            .HasMaxLength(20)
+            .HasDefaultValue(ProductOrigin.Receipt)
+            .HasSentinel((ProductOrigin)(-1))
+            .IsRequired();
+        product.Property(entity => entity.ReviewReason).HasConversion<string>().HasMaxLength(30);
+        product.HasIndex(entity => entity.NeedsReview);
 
         // The service moves products out of a category before deleting it; the
         // SetNull rule is only the database's last line of defence.
@@ -221,7 +230,7 @@ public sealed class PurchaseMemoryDbContext(DbContextOptions<PurchaseMemoryDbCon
             .OnDelete(DeleteBehavior.Cascade);
 
         // A corrected purchase replaces its line rows. The repository moves
-        // impressions to the replacement line first; SetNull only keeps a
+        // impressions to the replacement line in the same transaction; SetNull only keeps a
         // missed one alive (still attached to the purchase) instead of deleting it.
         impression
             .HasOne<PurchaseItem>()
@@ -270,42 +279,24 @@ public sealed class PurchaseMemoryDbContext(DbContextOptions<PurchaseMemoryDbCon
             .HasForeignKey(entity => entity.ProductId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        var pendingMatch = modelBuilder.Entity<PendingProductMatch>();
-        pendingMatch.ToTable("pending_product_matches");
-        pendingMatch.HasKey(entity => entity.Id);
-        pendingMatch.Property(entity => entity.Id).ValueGeneratedNever();
-        pendingMatch.Property(entity => entity.MerchantKey).HasMaxLength(200).IsRequired();
-        pendingMatch.Property(entity => entity.RawItemName).HasMaxLength(ProductAlias.MaximumTextLength).IsRequired();
-        pendingMatch
-            .Property(entity => entity.NormalizedItemName)
-            .HasMaxLength(ProductAlias.MaximumTextLength)
-            .IsRequired();
-        pendingMatch.Property(entity => entity.RaisedAt).HasConversion(dateTimeOffsetConverter);
-        pendingMatch.HasIndex(entity => entity.PurchaseItemId).IsUnique();
-        pendingMatch
-            .HasOne<PurchaseItem>()
-            .WithMany()
-            .HasForeignKey(entity => entity.PurchaseItemId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        pendingMatch
-            .HasMany(entity => entity.Candidates)
-            .WithOne()
-            .HasForeignKey("PendingProductMatchId")
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
-
-        pendingMatch.Navigation(entity => entity.Candidates).UsePropertyAccessMode(PropertyAccessMode.Field);
-
-        var pendingCandidate = modelBuilder.Entity<PendingProductMatchCandidate>();
-        pendingCandidate.ToTable("pending_product_match_candidates");
-        pendingCandidate.HasKey(entity => entity.Id);
-        pendingCandidate.Property(entity => entity.Id).ValueGeneratedNever();
-        pendingCandidate.HasIndex("PendingProductMatchId", nameof(PendingProductMatchCandidate.Position)).IsUnique();
-        pendingCandidate
+        // The candidate list of a flagged product. Both links cascade: the list
+        // goes with the flagged product, and a candidate that is deleted
+        // (merged away) simply stops being offered.
+        var reviewCandidate = modelBuilder.Entity<ProductReviewCandidate>();
+        reviewCandidate.ToTable("product_review_candidates");
+        reviewCandidate.HasKey(entity => entity.Id);
+        reviewCandidate.Property(entity => entity.Id).ValueGeneratedNever();
+        reviewCandidate.HasIndex(entity => new { entity.ProductId, entity.Position }).IsUnique();
+        reviewCandidate.HasIndex(entity => entity.CandidateProductId);
+        reviewCandidate
             .HasOne<Product>()
             .WithMany()
             .HasForeignKey(entity => entity.ProductId)
+            .OnDelete(DeleteBehavior.Cascade);
+        reviewCandidate
+            .HasOne<Product>()
+            .WithMany()
+            .HasForeignKey(entity => entity.CandidateProductId)
             .OnDelete(DeleteBehavior.Cascade);
 
         var receipt = modelBuilder.Entity<ReceiptCapture>();

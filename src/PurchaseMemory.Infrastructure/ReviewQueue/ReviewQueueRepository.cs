@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using PurchaseMemory.Application.Purchases;
 using PurchaseMemory.Application.ReviewQueue;
 using PurchaseMemory.Domain.Products;
-using PurchaseMemory.Domain.Purchases;
 using PurchaseMemory.Domain.Receipts;
 using PurchaseMemory.Infrastructure.Persistence;
 
@@ -67,36 +66,26 @@ public sealed class ReviewQueueRepository(PurchaseMemoryDbContext dbContext) : I
                     .ToHashSet()))
             .ToList();
 
-        var pendingMatches = await (
-                from match in dbContext.PendingProductMatches.AsNoTracking()
-                join item in dbContext.Set<PurchaseItem>() on match.PurchaseItemId equals item.Id
-                join draft in dbContext.PurchaseDrafts on EF.Property<Guid>(item, "PurchaseDraftId") equals draft.Id
-                select new
-                {
-                    match.Id,
-                    match.RawItemName,
-                    match.RaisedAt,
-                    PurchaseId = draft.Id,
-                    draft.SourceReceiptId,
-                    item.Position,
-                    BestCandidate = match.Candidates
-                        .OrderByDescending(candidate => candidate.Score)
-                        .ThenBy(candidate => candidate.Position)
-                        .Select(candidate => (Guid?)candidate.ProductId)
-                        .FirstOrDefault()
-                })
+        var flaggedProducts = await dbContext.Products
+            .AsNoTracking()
+            .Where(product => product.NeedsReview)
+            .Select(product => new
+            {
+                product.Id,
+                product.CanonicalName,
+                product.CreatedAt,
+                PurchaseCount = dbContext.PurchaseDrafts
+                    .Count(draft => draft.Items.Any(item => item.ProductId == product.Id))
+            })
             .ToListAsync(cancellationToken);
-        var candidates = await LoadCandidatesAsync(pendingMatches.Select(match => match.Id).ToList(), cancellationToken);
-        var pendingMatchFacts = pendingMatches
-            .Select(match => new ReviewPendingMatchFact(
-                match.Id,
-                match.RawItemName,
-                match.RaisedAt,
-                match.PurchaseId,
-                match.SourceReceiptId,
-                match.BestCandidate,
-                match.Position,
-                candidates.GetValueOrDefault(match.Id, [])))
+        var candidates = await LoadCandidatesAsync(flaggedProducts.Select(product => product.Id).ToList(), cancellationToken);
+        var flaggedFacts = flaggedProducts
+            .Select(product => new ReviewFlaggedProductFact(
+                product.Id,
+                product.CanonicalName,
+                product.CreatedAt,
+                product.PurchaseCount,
+                candidates.GetValueOrDefault(product.Id, [])))
             .ToList();
 
         var products = await (
@@ -114,52 +103,59 @@ public sealed class ReviewQueueRepository(PurchaseMemoryDbContext dbContext) : I
                     product.UpdatedAt))
             .ToListAsync(cancellationToken);
 
-        return new ReviewQueueFacts(receipts, purchases, pendingMatchFacts, products);
+        return new ReviewQueueFacts(receipts, purchases, flaggedFacts, products);
     }
 
     /// <summary>
-    /// The products each pending match weighed, best first, with what a person
-    /// needs to recognise them. Two flat queries instead of a nested projection
-    /// keep the SQL identical on SQLite and Postgres; candidates whose product
-    /// is gone are skipped, as in the purchase editor.
+    /// What each flagged product might really be, best first, with what a
+    /// person needs to recognise it. Flat queries instead of a nested
+    /// projection keep the SQL identical on SQLite and Postgres; candidates
+    /// whose product is gone are skipped.
     /// </summary>
     private async Task<Dictionary<Guid, IReadOnlyList<ReviewQueueCandidate>>> LoadCandidatesAsync(
-        List<Guid> matchIds,
+        List<Guid> productIds,
         CancellationToken cancellationToken)
     {
-        if (matchIds.Count == 0)
+        if (productIds.Count == 0)
         {
             return [];
         }
 
-        var rows = await dbContext.Set<PendingProductMatchCandidate>()
+        var rows = await dbContext.ProductReviewCandidates
             .AsNoTracking()
-            .Where(candidate => matchIds.Contains(EF.Property<Guid>(candidate, "PendingProductMatchId")))
-            .Select(candidate => new
-            {
-                MatchId = EF.Property<Guid>(candidate, "PendingProductMatchId"),
-                candidate.ProductId,
-                candidate.Score,
-                candidate.Position
-            })
+            .Where(candidate => productIds.Contains(candidate.ProductId))
+            .Select(candidate => new { candidate.ProductId, candidate.CandidateProductId, candidate.Score, candidate.Position })
             .ToListAsync(cancellationToken);
 
-        var productIds = rows.Select(row => row.ProductId).Distinct().ToList();
+        var candidateIds = rows.Select(row => row.CandidateProductId).Distinct().ToList();
         var products = await dbContext.Products
             .AsNoTracking()
-            .Where(product => productIds.Contains(product.Id))
-            .Select(product => new ReviewQueueCandidate(product.Id, product.CanonicalName, product.Brand, product.CategoryId))
-            .ToDictionaryAsync(product => product.ProductId, cancellationToken);
+            .Where(product => candidateIds.Contains(product.Id))
+            .Select(product => new
+            {
+                product.Id,
+                product.CanonicalName,
+                product.Brand,
+                product.CategoryId,
+                PurchaseCount = dbContext.PurchaseDrafts
+                    .Count(draft => draft.Items.Any(item => item.ProductId == product.Id))
+            })
+            .ToDictionaryAsync(product => product.Id, cancellationToken);
 
         return rows
-            .Where(row => products.ContainsKey(row.ProductId))
-            .GroupBy(row => row.MatchId)
+            .Where(row => products.ContainsKey(row.CandidateProductId))
+            .GroupBy(row => row.ProductId)
             .ToDictionary(
                 group => group.Key,
                 group => (IReadOnlyList<ReviewQueueCandidate>)group
                     .OrderByDescending(row => row.Score)
                     .ThenBy(row => row.Position)
-                    .Select(row => products[row.ProductId])
+                    .Select(row =>
+                    {
+                        var product = products[row.CandidateProductId];
+                        return new ReviewQueueCandidate(
+                            product.Id, product.CanonicalName, product.Brand, product.CategoryId, product.PurchaseCount, row.Score);
+                    })
                     .ToList());
     }
 }
