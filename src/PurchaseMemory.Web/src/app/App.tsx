@@ -7,6 +7,7 @@ import { getRecognitionStatus, getReviewQueueCount, listRecentReceipts } from ".
 import type { ReceiptStatus, RecognitionStatus } from "../api/types";
 import { reviewQueueCountQueryKey, reviewQueueQueryKey } from "../features/review-queue/reviewQueueQueries";
 import { AppShell } from "./AppShell/AppShell";
+import { PlaceMemory } from "./PlaceMemory";
 import { lazyPage, ScreenErrorBoundary } from "./lazyPage";
 import { ToastNavigationBridge, useToast } from "./toasts";
 
@@ -75,6 +76,7 @@ export function AppRoutes() {
   return (
     <AppShell reviewCount={reviewCountQuery.data?.totalCount ?? null}>
       <ToastNavigationBridge />
+      <PlaceMemory />
       <ScreenErrorBoundary resetKey={location.pathname}>
         <Suspense fallback={<PageLoading />}>
           <Routes>

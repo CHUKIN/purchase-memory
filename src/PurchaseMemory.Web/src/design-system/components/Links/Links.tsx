@@ -72,11 +72,25 @@ export function browserHistoryIndex(): number | null {
   return typeof index === "number" ? index : null;
 }
 
-export function BackButton({ target }: { target: BackTarget }) {
+/**
+ * Goes back as the back chevron does: a history step to the named screen when
+ * there is one (keeping its scroll), otherwise opens its address.
+ */
+export function useBack(target: BackTarget): () => void {
   const navigate = useNavigate();
   const location = useLocation();
-  const href = useHref(target.to);
   const canGoBack = target.preferHistory === true && location.key !== "default";
+  return () => {
+    const current = browserHistoryIndex();
+    if (target.historyIndex !== undefined && current !== null && current > target.historyIndex) navigate(target.historyIndex - current);
+    else if (canGoBack) navigate(-1);
+    else navigate(target.to, { state: target.state });
+  };
+}
+
+export function BackButton({ target }: { target: BackTarget }) {
+  const href = useHref(target.to);
+  const goBack = useBack(target);
   // Only the chevron shows: a long screen title needs the room once it collapses
   // into the bar. The previous screen's name stays the accessible name.
   return (
@@ -86,10 +100,7 @@ export function BackButton({ target }: { target: BackTarget }) {
       onClick={(event: MouseEvent<HTMLElement>) => {
         if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
         event.preventDefault();
-        const current = browserHistoryIndex();
-        if (target.historyIndex !== undefined && current !== null && current > target.historyIndex) navigate(target.historyIndex - current);
-        else if (canGoBack) navigate(-1);
-        else navigate(target.to, { state: target.state });
+        goBack();
       }}
     >
       <ChevronLeft size={28} aria-hidden="true" className="pm-back-chevron" />

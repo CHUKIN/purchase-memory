@@ -2,6 +2,7 @@ import { IonActionSheet, IonButton, IonItem, IonLabel, IonList, IonRadio, IonRad
 import { Camera, Ellipsis, Images, RotateCcw } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useReturnState } from "../../app/backNavigation";
 import { ButtonLink, Footnote, ItemLink, PrimaryButton, SectionHeader } from "../../design-system/components";
 import { HelpLink } from "../help/HelpLink";
 import type { BatchPhotoState } from "./useReceiptBatchUpload";
@@ -172,6 +173,7 @@ function ModeOption({ value, title, disabled, last = false }: { value: CaptureMo
 
 function BatchPhotoStatus({ state, number, running, onRetry }: { state: BatchPhotoState; number: number; running: boolean; onRetry?: (index: number) => void }) {
   const { t } = useTranslation();
+  const returnState = useReturnState();
   const label = {
     waiting: running ? t("receiptCapture.statusWaiting") : t("receiptCapture.statusNotSent"),
     uploading: t("receiptCapture.statusUploading"),
@@ -188,7 +190,7 @@ function BatchPhotoStatus({ state, number, running, onRetry }: { state: BatchPho
       <span className={["pm-status", tone].filter(Boolean).join(" ")}>{label}</span>
       {state.status === "failed" && state.message && <small>{state.message}</small>}
       {(state.status === "uploaded" || state.status === "duplicate") && (
-        <ButtonLink to={`/receipts/${state.receiptId}`} size="small" fill="clear" className="pm-inline-button">{t("receiptCapture.openReceipt")}</ButtonLink>
+        <ButtonLink to={`/receipts/${state.receiptId}`} state={returnState} size="small" fill="clear" className="pm-inline-button">{t("receiptCapture.openReceipt")}</ButtonLink>
       )}
       {canRetry && (
         <IonButton size="small" fill="clear" className="pm-inline-button" disabled={running} aria-label={t("receiptCapture.retryPhoto", { number })} onClick={() => onRetry(number - 1)}>

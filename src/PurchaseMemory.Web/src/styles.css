@@ -325,6 +325,8 @@ ion-button.pm-tap-button { min-height: 44px; margin-top: 0; margin-bottom: 0; }
 .pm-review-figures strong { flex: none; color: var(--ion-text-color, #000); font-size: 20px; }
 .pm-review-figures strong.pm-discount-amount { color: var(--pm-success-text); }
 .pm-review-discount { display: flex; justify-content: space-between; gap: 12px; color: var(--pm-muted); font-size: 14px; font-variant-numeric: tabular-nums; }
+.pm-review-open-product { justify-self: start; text-align: start; min-height: 44px; margin: 0; padding: 0 4px 0 0; border: 0; background: none; color: var(--ion-color-primary); font: inherit; font-size: 15px; cursor: pointer; }
+.pm-review-open-product:focus-visible { outline: 2px solid var(--ion-color-primary); outline-offset: 2px; border-radius: 6px; }
 .pm-review-product { display: -webkit-box; margin: 0; overflow: hidden; color: var(--pm-muted); font-size: 13px; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 .pm-review-actions { display: flex; flex: none; align-items: center; justify-content: center; gap: 24px; }
 .pm-review-back { width: 44px; height: 44px; margin: 0; --padding-start: 0; --padding-end: 0; }
@@ -361,6 +363,7 @@ ion-button.pm-tap-button { min-height: 44px; margin-top: 0; margin-bottom: 0; }
 }
 .pm-line-locate:focus-visible { outline: 2px solid var(--ion-color-primary); outline-offset: 2px; border-radius: 6px; }
 .pm-line-locate .pm-line-name { display: block; color: var(--ion-text-color, #000); font-size: 16px; overflow-wrap: anywhere; }
+.pm-line-product-link { margin: 0 -8px 0 0; --color: var(--ion-color-primary); }
 .pm-line-locate .pm-line-detail { display: block; margin-top: 2px; color: var(--pm-muted); font-size: 14px; }
 .pm-line-locate .pm-line-detail[data-warn="true"], .pm-link-note[data-warn="true"] { color: var(--pm-warning-text); }
 

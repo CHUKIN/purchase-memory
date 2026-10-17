@@ -70,12 +70,17 @@ export type LinkChoice = Pick<LinkableLine, "productLink" | "productId" | "produ
  * product, or «decide automatically after saving». Used by the purchase
  * editor and by the swipe review's «correct this line».
  */
-export function ProductLinkRows({ line, number, pickerOpen, onPickerOpenChange, onChoose }: {
+export function ProductLinkRows({ line, number, pickerOpen, onPickerOpenChange, onChoose, onOpenProduct }: {
   line: LinkableLine;
   number: number;
   pickerOpen: boolean;
   onPickerOpenChange: (open: boolean) => void;
   onChoose: (choice: LinkChoice) => void;
+  /**
+   * Opens the linked product's card. Given only when leaving the screen loses
+   * nothing (no unsaved edits); shown only for a line linked to a product.
+   */
+  onOpenProduct?: () => void;
 }) {
   const { t } = useTranslation();
   const flagged = line.productLink === "existing" && Boolean(line.productNeedsReview);
@@ -87,6 +92,11 @@ export function ProductLinkRows({ line, number, pickerOpen, onPickerOpenChange, 
           {flagged && <CircleAlert slot="start" size={20} className="pm-row-icon pm-warning-icon" aria-hidden="true" />}
           <IonLabel className={["pm-wrap", flagged ? "pm-warn-text" : ""].filter(Boolean).join(" ")}>{productStatusText(t, line)}</IonLabel>
         </IonItem>
+        {onOpenProduct && line.productLink === "existing" && line.productId && (
+          <IonItem button detail onClick={onOpenProduct} aria-label={t("purchaseEdit.openProduct", { name: line.productName ?? line.name })}>
+            <IonLabel color="primary">{t("purchaseEdit.openProductShort")}</IonLabel>
+          </IonItem>
+        )}
         <IonItem button detail lines="none" onClick={() => onPickerOpenChange(true)} aria-label={t("purchaseEdit.chooseProduct", { number })}>
           <IonLabel color="primary">{t("purchaseEdit.changeProduct")}</IonLabel>
         </IonItem>

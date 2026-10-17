@@ -1,7 +1,7 @@
 import { IonButton, IonInput, IonItem, IonLabel, IonList, IonNote } from "@ionic/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AlertTriangle, CalendarClock, CircleCheck, ListChecks, Pencil, ReceiptText } from "lucide-react";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { AlertTriangle, CalendarClock, CircleCheck, ListChecks, Package, Pencil, ReceiptText } from "lucide-react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router";
 import { ApiError, getPurchase, updatePurchase } from "../../api/client";
@@ -33,6 +33,8 @@ import { ReceiptDiscountLine } from "../receipts/ReceiptDiscountLine";
 import { reviewQueueQueryKey } from "../review-queue/reviewQueueQueries";
 import { reviewQueueReturnPath } from "../review-queue/returnToQueue";
 import { useBackTarget, useReturnState } from "../../app/backNavigation";
+import { useOpenProduct } from "../../app/openProduct";
+import { useArrivalPlace, withoutPlace } from "../../app/place";
 import { PurchaseLineImpressions, usePurchaseImpressions } from "../impressions/ImpressionSections";
 import { impressionsQueryKey } from "../impressions/impressionText";
 import { HelpLink } from "../help/HelpLink";
@@ -76,7 +78,8 @@ export function PurchaseDetailPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const queueReturnPath = reviewQueueReturnPath(location.state);
-  const keepState = { state: location.state as unknown };
+  // The remembered place belongs to the arrival only; switching view ↔ edit must not replay it.
+  const keepState = { state: withoutPlace(location.state) };
   const startEditing = () => setSearchParameters({ edit: "1" }, keepState);
   const stopEditing = (saved: boolean) => {
     if (saved) showToast({ id: `purchase-saved-${Date.now()}`, message: t("purchaseEdit.saved"), tone: "success" });
@@ -122,10 +125,13 @@ function PurchaseSummary({ purchase, back, onEdit }: { purchase: PurchaseDetail;
   const approvals = useLineApprovals(purchase, purchaseQueryKey(purchase.id));
   // Tapping a line opens the swipe review at it; the header button at the
   // first line nobody has checked.
-  const [review, setReview] = useState<ReviewStart | null>(null);
+  // Coming back from a product (or a fresh reload of the same place) reopens the review at the line that was open.
+  const arrival = useArrivalPlace();
+  const [review, setReview] = useState<ReviewStart | null>(() => arrival?.line !== undefined ? { index: arrival.line, nonce: 1 } : null);
   const openReview = (index: number | null) => setReview((current) => ({ index, nonce: (current?.nonce ?? 0) + 1 }));
   const saveLine = useSaveLine(purchase, approvals);
   const returnState = useReturnState();
+  const openProduct = useOpenProduct();
   const total = purchase.items.length;
 
   return (
@@ -231,6 +237,18 @@ function PurchaseSummary({ purchase, back, onEdit }: { purchase: PurchaseDetail;
                   {impressions.data && <PurchaseLineImpressions item={item} impressions={impressions.data} locale={locale} />}
                 </IonLabel>
                 <IonNote slot="end" className="pm-amount">{money(item.lineTotal)}</IonNote>
+                {item.productId && (
+                  <ButtonLink
+                    slot="end"
+                    to={`/products/${encodeURIComponent(item.productId)}`}
+                    state={returnState}
+                    fill="clear"
+                    className="pm-icon-button pm-line-product-link"
+                    aria-label={t("purchaseEdit.openProduct", { name: item.productName ?? item.name })}
+                  >
+                    <Package size={20} aria-hidden="true" />
+                  </ButtonLink>
+                )}
               </IonItem>
             );
           })}
@@ -246,6 +264,7 @@ function PurchaseSummary({ purchase, back, onEdit }: { purchase: PurchaseDetail;
         onSaveLine={saveLine}
         photo={photo}
         currency={purchase.currency}
+        onOpenProduct={openProduct}
       />
 
       {/* No photo, no section: the purchase simply was saved without one. */}
@@ -417,7 +436,10 @@ function PurchaseEditor({ purchase, focus, onDone, onReload }: {
   const [state, setState] = useState(() => toEditState(purchase));
   const [validation, setValidation] = useState<string | null>(null);
   const target = parseFocus(focus);
-  const [openLine, setOpenLine] = useState<number | null>(() => target && target.kind !== "total" ? target.line : null);
+  // A review-queue focus wins; otherwise coming back from a product reopens the line sheet that was open.
+  const arrival = useArrivalPlace();
+  const [openLine, setOpenLine] = useState<number | null>(() => target && target.kind !== "total" ? target.line : arrival?.line ?? null);
+  const openProduct = useOpenProduct();
   const [lineFocus] = useState<LineFocus | null>(() => target?.kind === "price" ? "price" : null);
   const [pickerOpenFor, setPickerOpenFor] = useState<number | null>(() => target?.kind === "product" ? target.line : null);
   const totalRef = useRef<HTMLIonInputElement>(null);
@@ -481,6 +503,11 @@ function PurchaseEditor({ purchase, focus, onDone, onReload }: {
   };
 
   const currency = state.currency.trim().toUpperCase() || null;
+  // Leaving for a product card would drop unsaved edits, so the link shows only while nothing is changed.
+  const unchanged = useMemo(
+    () => JSON.stringify(toRequest(purchase, state)) === JSON.stringify(toRequest(purchase, toEditState(purchase))),
+    [purchase, state]
+  );
   const conflict = save.error instanceof ApiError && save.error.status === 409;
 
   return (
@@ -537,6 +564,9 @@ function PurchaseEditor({ purchase, focus, onDone, onReload }: {
             pickerOpen={pickerOpenFor === index}
             onPickerOpenChange={(open) => setPickerOpenFor(open ? index : null)}
             onChoose={(choice) => updateItem(index, { ...choice, productNeedsReview: Boolean(choice.productNeedsReview) })}
+            onOpenProduct={unchanged && line.productId
+              ? () => openProduct(line.productId!, index)
+              : undefined}
           />
         )}
       />

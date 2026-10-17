@@ -27,13 +27,13 @@ const receiptPhotoUrl =
 const row = (top: number, height = 34) => ({ x: 0.05, y: top / 900, width: 0.88, height: height / 900 });
 
 const lines: ReviewLine[] = [
-  { id: "1", name: "MLEKO 3,2%", quantity: 1, unit: "szt", unitPrice: 4.49, lineTotal: 4.49, kind: "product", boundingBox: row(176), productName: "Mleko 3,2%" },
+  { id: "1", name: "MLEKO 3,2%", quantity: 1, unit: "szt", unitPrice: 4.49, lineTotal: 4.49, kind: "product", boundingBox: row(176), productId: "milk", productName: "Mleko 3,2%" },
   { id: "2", name: "CHLEB ŻYTNI", quantity: 1, unit: "szt", unitPrice: 6.99, lineTotal: 6.99, kind: "product", boundingBox: row(236), productId: "bread", productName: "Chleb żytni", productNeedsReview: true },
-  { id: "3", name: "MASŁO EXTRA", quantity: 2, unit: "szt", unitPrice: 8.99, lineTotal: 17.98, kind: "product", boundingBox: row(296), productName: "Masło extra 200 g" },
+  { id: "3", name: "MASŁO EXTRA", quantity: 2, unit: "szt", unitPrice: 8.99, lineTotal: 17.98, kind: "product", boundingBox: row(296), productId: "butter", productName: "Masło extra 200 g" },
   { id: "4", name: "OPUST", quantity: null, unit: null, unitPrice: null, lineTotal: -2, kind: "discount", boundingBox: row(346) },
   {
     id: "5", name: "SER GOUDA PLASTRY MLECZARNIA REGIONALNA WĘDZONY 250G ×2 PROMOCJA", quantity: 1, unit: "szt", unitPrice: 9.99, lineTotal: 9.99,
-    kind: "product", boundingBox: row(410, 50), productName: "Ser gouda plastry 250 g"
+    kind: "product", boundingBox: row(410, 50), productId: "gouda", productName: "Ser gouda plastry 250 g"
   },
   // Added by hand: recognition never placed it.
   { id: "6", name: "Пакет", quantity: 1, unit: null, unitPrice: 0.5, lineTotal: 0.5, kind: "product", boundingBox: null }
@@ -78,6 +78,7 @@ const meta = {
     isApproved: () => false,
     setApproved: fn(),
     onSaveLine: fn(async () => undefined),
+    onOpenProduct: fn(),
     photo: { photo: { url: receiptPhotoUrl, croppable: true }, failed: false },
     currency: "PLN",
     startAt: 0,

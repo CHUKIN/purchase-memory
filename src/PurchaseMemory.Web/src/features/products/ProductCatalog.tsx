@@ -11,7 +11,7 @@ import { useAnyMainPhoto } from "../product-scan/useProductMedia";
 import { categoryPath } from "../categories/categoryText";
 import { BrandFilterRow, CategoryFilterRow, TagFilterRow } from "../filters/FilterRows";
 import { TagChips } from "../tags/TagChips";
-import { useReturnState } from "../../app/backNavigation";
+import { useOriginBack, useReturnState } from "../../app/backNavigation";
 import { ReviewFlagChip } from "./ReviewFlagChip";
 
 export interface ProductCatalogProps {
@@ -80,6 +80,8 @@ export function ProductCatalog({
 }: ProductCatalogProps) {
   const { t } = useTranslation();
   const returnState = useReturnState();
+  // A tab root has no back button, except when a detail screen sent the person here («Товары в этой категории»).
+  const back = useOriginBack();
   const [filtersOpen, setFiltersOpen] = useState(initialFiltersOpen);
   // One photo in the list gives every row a thumbnail slot, so names line up.
   const anyPhoto = useAnyMainPhoto(products.map((product) => product.id));
@@ -100,6 +102,7 @@ export function ProductCatalog({
   return (
     <Page
       title={t("products.pageTitle")}
+      back={back}
       end={<><HelpLink topic="products" />{filterable && <FilterButton count={sheetCount} onClick={() => setFiltersOpen(true)} />}</>}
       search={(
         <IonSearchbar

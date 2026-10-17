@@ -261,6 +261,7 @@ export const helpRu: HelpText = {
         "На странице покупки сверху — дата и итог, ниже со значком ⚠ — что стоит проверить. У каждой строки товара есть товар из каталога; его название видно, только если оно отличается от строки. Отметка «проверить» — товар похож на другие товары, разберите его в «Нужно проверить» или в карточке товара.",
         "В правке сверху видно, сходятся ли строки с итогом чека и какая разница. Строки без цены подсвечены.",
         "Выбор товара запоминается для этого магазина: в следующий раз такая строка свяжется сама.",
+        "Рядом с суммой каждой строки — значок коробки («Открыть товар «…»»): он открывает карточку товара, а «Назад» в карточке возвращает на эту покупку, к той же строке. В правке то же делает «Открыть товар» в окне строки, пока вы ничего не изменили (правка не должна потеряться: сначала «Сохранить»).",
         "Если у покупки есть фото чека, правки попадают в историю изменений чека (кнопка «Показать историю изменений»)."
       ],
       trouble: [
@@ -276,7 +277,8 @@ export const helpRu: HelpText = {
         "Сверьте фото и данные под ним. Строка верна — проведите карточку вправо или нажмите зелёную кнопку с галочкой («Строка верна»). Откроется следующая непроверенная строка.",
         "Что-то не так — проведите карточку влево или нажмите кнопку с карандашом («Исправить строку»), поправьте название, количество, цену или сумму и нажмите «Сохранить». Не тот товар — там же «Изменить товар». Исправленная строка тоже считается проверенной.",
         "Мелко? Разведите два пальца на фото или нажмите на него дважды — фото увеличится, рамка останется на строке. Пока фото увеличено, карточка не листается; уменьшите его, чтобы листать дальше.",
-        "Стрелка назад внизу слева возвращает к предыдущей строке. На компьютере: → — верно, ← — исправить, Backspace — назад."
+        "Стрелка назад внизу слева возвращает к предыдущей строке. На компьютере: → — верно, ← — исправить, Backspace — назад.",
+        "Под данными строки — «Открыть товар»: откроется карточка товара (то же — «Открыть товар» в окне «Строка N», пока вы ничего не меняли). «Назад» в карточке возвращает проверку к той же строке."
       ],
       see: [
         "Вверху — сколько строк проверено, например «3/12». Проверенные строки в списке покупки отмечены галочкой.",
@@ -306,6 +308,7 @@ export const helpRu: HelpText = {
         "Последняя покупка (крупно — цена в прошлый раз), минимальная и средняя цена, как часто покупаем. Средняя цена — по покупкам: каждая покупка весит одинаково, независимо от количества и числа строк в чеке.",
         "График «Как менялась цена» и та же таблица числами. Цены за разные единицы (штука, килограмм) считаются отдельно.",
         "«Названия на чеках» — все варианты написания товара по магазинам.",
+        "«Последние покупки» — покупки этого товара, новые сверху (только те, где цена прочитана): нажмите на строку, чтобы открыть покупку. «Назад» возвращает туда, откуда вы пришли, и по возможности на то же место на экране; в очень длинных списках место может сдвинуться. Из результата сканера «Назад» приводит к камере, а не к результату.",
         "При объединении к оставшемуся товару переходят все покупки, названия из чеков, теги, впечатления и история изменений; фото, штрихкоды и «Больше не покупать» с этого телефона тоже переходят. Подтверждённые человеком категория и бренд оставшегося товара сохраняются, иначе берутся подтверждённые у второго. Итоги в «Аналитике» не меняются.",
         "После «Да, это он» или «Объединить» следующие чеки с тем же названием сразу попадут в оставшийся товар."
       ],
@@ -725,6 +728,7 @@ export const helpEn: HelpText = {
         "The purchase page starts with the date and total, then what is worth checking, marked ⚠. Every product line has a catalog product; its name shows only when it differs from the line. The “check” mark means the product looks like other products — sort it out in “Needs attention” or on the product card.",
         "While correcting, the top shows whether the lines add up to the receipt total and by how much they differ. Lines without a price are highlighted.",
         "Your product choice is remembered for that store: next time such a line links by itself.",
+        "Next to every line's amount there is a box icon (“Open product “…””) that opens the product card, and “Back” on the card returns to this purchase at the same line. While correcting, “Open product” in the line's sheet does the same as long as you have changed nothing (so no edit is lost: press “Save” first).",
         "If the purchase has a receipt photo, changes go into the receipt's change history (“Show change history”)."
       ],
       trouble: [
@@ -740,7 +744,8 @@ export const helpEn: HelpText = {
         "Compare the photo and the details below it. The line is right — swipe the card right or press the green tick (“Line is right”). The next unchecked line opens.",
         "Something is wrong — swipe left or press the pencil (“Correct the line”), fix the name, quantity, price or sum and press “Save”. Wrong product — “Change product” is right there. A corrected line counts as checked too.",
         "Too small? Pinch the photo or double-tap it — the outline stays on the line. While the photo is zoomed the card does not swipe; zoom out to go on.",
-        "The back arrow at the bottom left returns to the previous line. On a computer: → right, ← correct, Backspace back."
+        "The back arrow at the bottom left returns to the previous line. On a computer: → right, ← correct, Backspace back.",
+        "Under the line's details there is “Open product”: it opens the product card (so does “Open product” in the “Line N” sheet while you have changed nothing). “Back” on the card returns the review to the same line."
       ],
       see: [
         "At the top: how many lines are checked, e.g. “3/12”. Checked lines have a tick in the purchase's list.",
@@ -770,6 +775,7 @@ export const helpEn: HelpText = {
         "Last purchase (the big figure is the last price), lowest and average price, how often we buy it. The average is per purchase: every purchase weighs the same, whatever the quantity or the number of lines.",
         "A “How the price moved” chart and the same table in numbers. Prices per different units (piece, kilogram) are counted separately.",
         "“Receipt spellings” — every spelling of the product by store.",
+        "“Latest purchases” — this product's purchases, newest first (only those where the price was read): tap a row to open the purchase. “Back” returns to where you came from, and where possible to the same place on the screen; in very long lists the place may shift. From a scan result, “Back” leads to the camera, not to the result.",
         "A merge moves every purchase, receipt spelling, tag, impression and the change history to the remaining product; photos, barcodes and “Don't buy again” on this phone move too. The remaining product keeps its person-confirmed category and brand, otherwise the other product's confirmed ones are taken. Totals in “Insights” do not change.",
         "After “Yes, this one” or “Merge”, later receipts with the same spelling go straight to the remaining product."
       ],

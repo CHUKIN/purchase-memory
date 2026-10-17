@@ -18,7 +18,7 @@ import {
 import { BrandFilterRow, CategoryFilterRow, TagFilterRow } from "../filters/FilterRows";
 import { HelpLink } from "../help/HelpLink";
 import { PurchaseRow } from "./PurchaseRow";
-import { useReturnState } from "../../app/backNavigation";
+import { useOriginBack, useReturnState } from "../../app/backNavigation";
 
 export interface PurchaseFeedFilters {
   query: string;
@@ -100,6 +100,8 @@ export function PurchaseFeed({
 }: PurchaseFeedProps) {
   const { t } = useTranslation();
   const returnState = useReturnState();
+  // A tab root has no back button, except when a detail screen sent the person here («Покупки в этой категории»).
+  const back = useOriginBack();
   const [filtersOpen, setFiltersOpen] = useState(initialFiltersOpen);
   const filtered = hasActiveFilters(filters);
   const update = (patch: Partial<PurchaseFeedFilters>) => onFiltersChange({ ...filters, ...patch });
@@ -108,6 +110,7 @@ export function PurchaseFeed({
   return (
     <Page
       title={t("common.purchases")}
+      back={back}
       end={<><HelpLink topic="feed" /><FilterButton count={sheetFilterCount(filters)} onClick={() => setFiltersOpen(true)} /></>}
       search={(
         <IonSearchbar

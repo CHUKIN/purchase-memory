@@ -2,6 +2,7 @@ import { IonItem, IonLabel, IonList, IonNote } from "@ionic/react";
 import { useQuery } from "@tanstack/react-query";
 import { ReceiptText } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useReturnState } from "../../app/backNavigation";
 import { listMyUnsavedReceipts } from "../../api/client";
 import type { ReceiptView } from "../../api/types";
 import { ActionButton, Footnote, ItemLink, Notice, SectionHeader, StatusText, type PurchaseStatus } from "../../design-system/components";
@@ -39,6 +40,7 @@ export function RecentUploads() {
 
 export function RecentUploadsList({ receipts }: { receipts: ReceiptView[] }) {
   const { t, i18n } = useTranslation();
+  const returnState = useReturnState();
   if (receipts.length === 0) return null;
   const time = new Intl.DateTimeFormat(i18n.resolvedLanguage === "en" ? "en" : "ru", { hour: "2-digit", minute: "2-digit" });
   return (
@@ -46,7 +48,7 @@ export function RecentUploadsList({ receipts }: { receipts: ReceiptView[] }) {
       <SectionHeader id="recent-uploads-heading" action={<HelpLink topic="capture-batch" />}>{t("receiptCapture.recentTitle")}</SectionHeader>
       <IonList inset className="pm-after-header">
         {receipts.map((receipt) => (
-          <ItemLink key={receipt.id} to={`/receipts/${receipt.id}`}>
+          <ItemLink key={receipt.id} to={`/receipts/${receipt.id}`} state={returnState}>
             <ReceiptText slot="start" size={22} className="pm-row-icon" aria-hidden="true" />
             <IonLabel className="pm-wrap">
               <h3>{receipt.snapshot?.merchantName ?? t("receiptJobs.receipt")}</h3>

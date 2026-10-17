@@ -2,11 +2,12 @@ import { IonItem, IonLabel, IonList, IonNote } from "@ionic/react";
 import { Receipt } from "lucide-react";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import type { ProductCategory, ProductDetail, ProductPriceSeries, ProductTag, TagSuggestionsResponse, TagSummary } from "../../api/types";
+import type { ProductCategory, ProductDetail, ProductPricePoint, ProductPriceSeries, ProductTag, TagSuggestionsResponse, TagSummary } from "../../api/types";
 import { EmptyState, Footnote, ItemLink, Notice, Page, SectionHeader, type BackTarget } from "../../design-system/components";
 import { CategoryChip } from "../categories/CategoryChip";
 import { categoryPath } from "../categories/categoryText";
 import { ProductClassification, type ClassificationChange } from "../categories/ProductClassification";
+import { useReturnState } from "../../app/backNavigation";
 import { HelpLink } from "../help/HelpLink";
 import { ProductTags } from "../tags/ProductTags";
 import { TagChips } from "../tags/TagChips";
@@ -76,7 +77,9 @@ export function ProductCard({
   children
 }: ProductCardProps) {
   const { t } = useTranslation();
+  const returnState = useReturnState();
   const [primarySeries, ...otherSeries] = product.priceSeries;
+  const recentPurchases = latestPurchases(product.priceSeries);
   const categoryId = product.categoryId ?? null;
   const editable = Boolean(onClassify) && categories.length > 0;
   const tags = product.tags ?? [];
@@ -129,6 +132,28 @@ export function ProductCard({
         </section>
       )}
 
+      {recentPurchases.length > 0 && (
+        <section aria-labelledby="product-purchases-title">
+          <SectionHeader id="product-purchases-title">{t("products.purchasesTitle")}</SectionHeader>
+          <IonList inset className="pm-after-header">
+            {recentPurchases.map((purchase, index) => (
+              <ItemLink
+                key={purchase.purchaseId}
+                to={`/purchases/${encodeURIComponent(purchase.purchaseId)}`}
+                state={returnState}
+                lines={index === recentPurchases.length - 1 ? "none" : undefined}
+              >
+                <IonLabel className="pm-wrap">
+                  <h3>{purchase.merchantName ?? t("products.unknownStore")}</h3>
+                  <p>{formatDate(locale, purchase.purchasedAt)}</p>
+                </IonLabel>
+                <IonNote slot="end" className="pm-amount">{formatMoney(locale, purchase.currency, purchase.unitPrice)}</IonNote>
+              </ItemLink>
+            ))}
+          </IonList>
+        </section>
+      )}
+
       {product.unpricedItemCount > 0 && <Footnote>{t("products.unpricedNote", { count: product.unpricedItemCount })}</Footnote>}
 
       {editable && onClassify && (
@@ -166,7 +191,7 @@ export function ProductCard({
           <SectionHeader>{t("filters.relatedLabel")}</SectionHeader>
           <IonList inset className="pm-after-header">
             {related.map((link, index) => (
-              <ItemLink key={link.to} to={link.to} lines={index === related.length - 1 ? "none" : undefined}>
+              <ItemLink key={link.to} to={link.to} state={returnState} lines={index === related.length - 1 ? "none" : undefined}>
                 <IonLabel className="pm-wrap">{link.label}</IonLabel>
               </ItemLink>
             ))}
@@ -195,6 +220,21 @@ export function ProductCard({
       {children}
     </Page>
   );
+}
+
+/** Most recent shopping trips that bought the product (one row per purchase), newest first. */
+const latestPurchaseCount = 8;
+
+function latestPurchases(series: ProductPriceSeries[]) {
+  const byPurchase = new Map<string, ProductPricePoint & { currency: string | null }>();
+  for (const one of series) {
+    for (const point of one.points) {
+      if (!byPurchase.has(point.purchaseId)) byPurchase.set(point.purchaseId, { ...point, currency: one.currency });
+    }
+  }
+  return [...byPurchase.values()]
+    .sort((a, b) => b.purchasedAt.localeCompare(a.purchasedAt))
+    .slice(0, latestPurchaseCount);
 }
 
 function PrimarySeries({
