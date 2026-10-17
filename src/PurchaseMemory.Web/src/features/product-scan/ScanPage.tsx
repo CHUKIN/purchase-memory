@@ -4,7 +4,7 @@ import { useCallback, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { useBackTarget, useReturnState } from "../../app/backNavigation";
-import { BackButton, Sheet } from "../../design-system/components";
+import { BackButton, Sheet, useBack } from "../../design-system/components";
 import { HelpLink } from "../help/HelpLink";
 import { BarcodeCamera } from "./BarcodeCamera";
 import { ManualBarcodeForm } from "./ManualBarcodeForm";
@@ -31,6 +31,7 @@ export function ScanPage() {
   const variant = useScanVariant();
   const navigate = useNavigate();
   const back = useBackTarget({ to: "/", labelKey: "common.home" });
+  const goBack = useBack(back);
   const returnState = useReturnState();
   const [code, setCode] = useState<string | null>(null);
   const [manualOpen, setManualOpen] = useState(false);
@@ -96,7 +97,7 @@ export function ScanPage() {
           <IonButtons slot="end">
             <HelpLink topic="product-scan" />
             {full
-              ? <IonButton strong onClick={() => navigate(back.to)}>{t("ui.done")}</IonButton>
+              ? <IonButton strong onClick={goBack}>{t("ui.done")}</IonButton>
               : (
                 <IonButton className="pm-icon-button" onClick={() => setManualOpen(true)} aria-label={t("productScan.manualEntry")}>
                   <Keyboard size={22} aria-hidden="true" />

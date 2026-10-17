@@ -2,6 +2,7 @@ import { IonButton, IonItem, IonLabel, IonList, IonSearchbar } from "@ionic/reac
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router";
+import { useReturnState } from "../../app/backNavigation";
 import { ItemLink, Page, SectionHeader } from "../../design-system/components";
 import type { HelpTopicText } from "./helpText";
 import { helpGroupIds, helpTopics, isHelpTopicId, type HelpTopic } from "./topics";
@@ -113,6 +114,8 @@ export function HelpPage() {
 
 function TopicCard({ topic, text }: { topic: HelpTopic; text: HelpTopicText }) {
   const { t } = useTranslation();
+  // A screen opened from a topic link goes back to the help page, to the same topic.
+  const returnState = useReturnState();
   return (
     <article id={topic.id} className="pm-help-topic" aria-labelledby={`${topic.id}-title`}>
       <h3 id={`${topic.id}-title`} tabIndex={-1}>{text.title}</h3>
@@ -125,7 +128,7 @@ function TopicCard({ topic, text }: { topic: HelpTopic; text: HelpTopicText }) {
           <h4>{t("help.ui.linksTitle")}</h4>
           <IonList lines="full" className="pm-help-links">
             {topic.links.map((link) => (
-              <ItemLink key={link.to} to={link.to}><IonLabel>{t(`help.links.${link.id}`)}</IonLabel></ItemLink>
+              <ItemLink key={link.to} to={link.to} state={returnState}><IonLabel>{t(`help.links.${link.id}`)}</IonLabel></ItemLink>
             ))}
           </IonList>
         </>

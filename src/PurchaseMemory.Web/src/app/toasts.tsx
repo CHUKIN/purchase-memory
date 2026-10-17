@@ -2,6 +2,7 @@ import { IonToast } from "@ionic/react";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
+import { useReturnState } from "./backNavigation";
 
 export interface ToastMessage {
   /** Same id twice is shown once (a receipt finishing is reported once). */
@@ -85,8 +86,12 @@ export function useToast(): (toast: ToastMessage) => void {
 export function ToastNavigationBridge() {
   const context = useContext(ToastContext);
   const navigate = useNavigate();
+  // The screen the toast was tapped on is where «Назад» from the receipt leads.
+  const returnState = useReturnState();
+  const returnStateRef = useRef(returnState);
+  returnStateRef.current = returnState;
   useEffect(() => {
-    context?.setNavigator((to) => navigate(to));
+    context?.setNavigator((to) => navigate(to, { state: returnStateRef.current }));
     return () => context?.setNavigator(null);
   }, [context, navigate]);
   return null;

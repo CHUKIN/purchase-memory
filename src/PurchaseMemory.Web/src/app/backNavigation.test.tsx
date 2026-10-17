@@ -114,5 +114,6 @@ describe("readReturnState", () => {
     expect(backLabelKey("/purchases?tag=kid")).toBe("common.purchases");
     expect(backLabelKey("/needs-attention")).toBe("common.review");
     expect(backLabelKey("/receipts/r1")).toBe("ui.back");
+    expect(backLabelKey("/help#products")).toBe("help.ui.title");
   });
 });

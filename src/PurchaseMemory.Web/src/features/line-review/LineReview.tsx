@@ -58,6 +58,11 @@ export interface LineReviewProps {
   /** Null: the purchase has no receipt photo. */
   photo: LineViewerPhoto | null;
   currency: string | null;
+  /**
+   * Opens a line's product card. The screen remembers which line was open, so
+   * «Назад» brings the review back to the same card. Omitted: no such link.
+   */
+  onOpenProduct?: (productId: string, lineIndex: number) => void;
 }
 
 interface Session {
@@ -84,7 +89,7 @@ function uncheckedOrder(lines: ReviewLine[], isApproved: (line: ReviewLine) => b
  * — correct it, and saving counts as checked. Marks are kept on the phone at
  * once and reach the server in batches (see `approvalSync.ts`).
  */
-export function LineReview({ start, onClose, lines, isApproved, setApproved, onSaveLine, photo, currency }: LineReviewProps) {
+export function LineReview({ start, onClose, lines, isApproved, setApproved, onSaveLine, photo, currency, onOpenProduct }: LineReviewProps) {
   const { t, i18n } = useTranslation();
   const locale = i18n.resolvedLanguage === "en" ? "en-GB" : "ru-RU";
   const titleId = useId();
@@ -321,6 +326,7 @@ export function LineReview({ start, onClose, lines, isApproved, setApproved, onS
                     locale={locale}
                     approved={isApproved(line)}
                     onUnapprove={() => setApproved(line.id, false)}
+                    onOpenProduct={onOpenProduct}
                   />
                 </div>
                 <div className="pm-review-actions">
@@ -376,6 +382,10 @@ export function LineReview({ start, onClose, lines, isApproved, setApproved, onS
                   pickerOpen={pickerOpen}
                   onPickerOpenChange={setPickerOpen}
                   onChoose={(choice) => setEditing((value) => value && { ...value, draft: { ...value.draft, ...choice } })}
+                  // Leaving with unsaved changes would lose them: the link appears only while the draft equals the saved line.
+                  onOpenProduct={onOpenProduct && isUnchanged(editing.draft, lines[editing.index]) && lines[editing.index].productId
+                    ? () => onOpenProduct(lines[editing.index].productId!, editing.index)
+                    : undefined}
                 />
                 {/* Photos and barcodes go to the product the line is saved with right now. */}
                 <LineProductMedia
@@ -390,6 +400,15 @@ export function LineReview({ start, onClose, lines, isApproved, setApproved, onS
       </Sheet>
     </>
   );
+}
+
+function isUnchanged(draft: ReviewLinePatch, line: ReviewLine): boolean {
+  return draft.name === line.name
+    && draft.quantity === line.quantity
+    && draft.unit === line.unit
+    && draft.unitPrice === line.unitPrice
+    && draft.lineTotal === line.lineTotal
+    && (draft.productId ?? null) === (line.productId ?? null);
 }
 
 function pickPatch(patch: Partial<EditableLine>): Partial<ReviewLinePatch> {
@@ -442,7 +461,7 @@ function ReviewPhoto({ line, index, photo, photoRatio, onPhotoRatio, onZoomChang
   );
 }
 
-function ReviewInfo({ line, index, lines, money, locale, approved, onUnapprove }: {
+function ReviewInfo({ line, index, lines, money, locale, approved, onUnapprove, onOpenProduct }: {
   line: ReviewLine;
   index: number;
   lines: ReviewLine[];
@@ -450,6 +469,7 @@ function ReviewInfo({ line, index, lines, money, locale, approved, onUnapprove }
   locale: string;
   approved: boolean;
   onUnapprove: () => void;
+  onOpenProduct?: LineReviewProps["onOpenProduct"];
 }) {
   const { t } = useTranslation();
   const name = line.name.trim() || t("lines.untitled");
@@ -490,11 +510,23 @@ function ReviewInfo({ line, index, lines, money, locale, approved, onUnapprove }
         <div className="pm-review-discount"><span>{t("discount.after")}</span><strong>{money(afterDiscount)}</strong></div>
       )}
       {!discount && (
-        <p className={line.productNeedsReview ? "pm-review-product pm-warn-text" : "pm-review-product"}>
-          {line.productName
-            ? productStatusText(t, { name: line.name, productLink: "existing", productName: line.productName, productNeedsReview: line.productNeedsReview })
-            : t("purchaseEdit.productUnlinked")}
-        </p>
+        <>
+          <p className={line.productNeedsReview ? "pm-review-product pm-warn-text" : "pm-review-product"}>
+            {line.productName
+              ? productStatusText(t, { name: line.name, productLink: "existing", productName: line.productName, productNeedsReview: line.productNeedsReview })
+              : t("purchaseEdit.productUnlinked")}
+          </p>
+          {line.productId && line.productName && onOpenProduct && (
+            <button
+              type="button"
+              className="pm-review-open-product"
+              onClick={() => onOpenProduct(line.productId!, index)}
+              aria-label={t("purchaseEdit.openProduct", { name: line.productName })}
+            >
+              {t("purchaseEdit.openProductShort")}
+            </button>
+          )}
+        </>
       )}
     </div>
   );

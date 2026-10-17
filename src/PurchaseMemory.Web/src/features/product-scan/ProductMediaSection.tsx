@@ -3,6 +3,7 @@ import { IonActionSheet, IonButton, IonItem, IonLabel, IonList, IonToggle } from
 import { Ban, Camera, ImagePlus, Plus, ScanBarcode, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useReturnState } from "../../app/backNavigation";
 import { useToast } from "../../app/toasts";
 import { ButtonLink, EmptyState, Footnote, Notice, SectionHeader } from "../../design-system/components";
 import { formatBarcode } from "./barcode";
@@ -141,11 +142,13 @@ export function ProductMediaSection({ productId, productName, intro, locale }: P
 
 function ErrorNotice({ error }: { error: { text: string; otherProductId?: string } }) {
   const { t } = useTranslation();
+  // The other product's card comes back to this one.
+  const returnState = useReturnState();
   return (
     <Notice tone="danger" role="alert">
       <p>{error.text}</p>
       {error.otherProductId && (
-        <ButtonLink to={`/products/${error.otherProductId}`} fill="clear" size="small">{t("productScan.barcodeTakenOpen")}</ButtonLink>
+        <ButtonLink to={`/products/${error.otherProductId}`} state={returnState} fill="clear" size="small">{t("productScan.barcodeTakenOpen")}</ButtonLink>
       )}
     </Notice>
   );

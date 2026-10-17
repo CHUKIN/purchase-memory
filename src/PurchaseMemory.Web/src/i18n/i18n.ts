@@ -589,6 +589,7 @@ export const resources = {
         unpricedNote_many: "В {{count}} позициях цену прочитать не удалось, они не учтены в расчётах.",
         unpricedNote_other: "В {{count}} позициях цену прочитать не удалось, они не учтены в расчётах.",
         aliasesTitle: "Названия на чеках",
+        purchasesTitle: "Последние покупки",
         aliasUnknownMerchant: "Без магазина",
         units: {
           szt: "штуку",
@@ -1055,6 +1056,8 @@ export const resources = {
         productUnlinkedShort: "Без товара",
         chooseProduct: "Выбрать товар для строки {{number}}",
         changeProduct: "Изменить товар",
+        openProduct: "Открыть товар «{{name}}»",
+        openProductShort: "Открыть товар",
         candidates: "Похожие товары",
         searchProduct: "Найти товар",
         searchPlaceholder: "Название товара",
@@ -1763,6 +1766,7 @@ export const resources = {
         unpricedNote_one: "{{count}} line had an unreadable price and is left out of these numbers.",
         unpricedNote_other: "{{count}} lines had unreadable prices and are left out of these numbers.",
         aliasesTitle: "Receipt spellings",
+        purchasesTitle: "Latest purchases",
         aliasUnknownMerchant: "No store",
         units: {
           szt: "piece",
@@ -2201,6 +2205,8 @@ export const resources = {
         productUnlinkedShort: "No product",
         chooseProduct: "Choose the product for line {{number}}",
         changeProduct: "Change product",
+        openProduct: "Open product “{{name}}”",
+        openProductShort: "Open product",
         candidates: "Similar products",
         searchProduct: "Find a product",
         searchPlaceholder: "Product name",

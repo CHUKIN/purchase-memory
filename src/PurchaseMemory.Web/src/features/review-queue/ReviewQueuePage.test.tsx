@@ -214,7 +214,7 @@ describe("ReviewQueuePage", () => {
     const card = await screen.findByRole("article", { name: "Lidl" });
     fireEvent.click(within(card).getByRole("link", { name: "Открыть чек" }));
     expect(screen.getByTestId("pathname")).toHaveTextContent("/receipts/r7");
-    expect(screen.getByTestId("state")).toHaveTextContent(JSON.stringify({ returnTo: "/needs-attention?tag=kid" }));
+    expect(screen.getByTestId("state")).toHaveTextContent(JSON.stringify({ returnTo: "/needs-attention?tag=kid", returnKey: "default" }));
   });
 
   it("opens the purchase editor with the way back to the queue and its filters", async () => {
@@ -228,7 +228,7 @@ describe("ReviewQueuePage", () => {
     const card = await screen.findByRole("article", { name: "Żabka" });
     fireEvent.click(within(card).getByRole("link", { name: "Исправить покупку «Żabka»" }));
     expect(screen.getByTestId("pathname")).toHaveTextContent("/purchases/p1");
-    expect(screen.getByTestId("state")).toHaveTextContent(JSON.stringify({ returnTo: "/needs-attention?tag=kid" }));
+    expect(screen.getByTestId("state")).toHaveTextContent(JSON.stringify({ returnTo: "/needs-attention?tag=kid", returnKey: "default" }));
   });
 
   describe("similar products", () => {

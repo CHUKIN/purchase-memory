@@ -1,5 +1,5 @@
 import { useCallback, useLayoutEffect, useMemo, useRef } from "react";
-import { useSearchParams } from "react-router";
+import { useLocation, useSearchParams } from "react-router";
 
 /**
  * Keeps a flat set of string filters in the address bar, so a filtered view
@@ -13,6 +13,9 @@ export function useUrlFilters<T extends { [K in keyof T]: string }>(
   sanitize: (values: T) => T = (values) => values
 ): [T, (patch: Partial<T>) => void] {
   const [searchParams, setSearchParams] = useSearchParams();
+  // The entry keeps its router state (where «Назад» leads), whatever the filters do.
+  const state = useRef<unknown>(undefined);
+  state.current = useLocation().state as unknown;
   // React Router hands a functional update the params of the last render, so
   // two updates in one event would overwrite each other. The newest params
   // written here are kept until the next render catches up.
@@ -44,7 +47,7 @@ export function useUrlFilters<T extends { [K in keyof T]: string }>(
       else parameters.set(key, value);
     }
     latest.current = parameters;
-    setSearchParams(parameters, { replace: true });
+    setSearchParams(parameters, { replace: true, state: state.current });
   }, [setSearchParams]);
 
   return [values, update];
