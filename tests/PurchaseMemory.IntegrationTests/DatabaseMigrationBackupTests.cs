@@ -26,9 +26,9 @@ public sealed class DatabaseMigrationBackupTests
             }
 
             var backup = Assert.Single(Directory.GetFiles(Path.Combine(directory, "backups")));
-            Assert.Equal("purchases-20260924T153005Z-before-20261016150110_AddProductReviewFlag.db", Path.GetFileName(backup));
+            Assert.Equal("purchases-20260924T153005Z-before-20261018155538_AddReceiptTextHighlight.db", Path.GetFileName(backup));
             Assert.Equal(PreviousMigration, await LastMigrationAsync(backup));
-            Assert.Equal("20261016150110_AddProductReviewFlag", await LastMigrationAsync(databasePath));
+            Assert.Equal("20261018155538_AddReceiptTextHighlight", await LastMigrationAsync(databasePath));
 
             // Nothing pending any more: a restart must not stack backups.
             await using (var provider = Services(databasePath))

@@ -1,8 +1,9 @@
 import { ZoomIn, ZoomOut } from "lucide-react";
 import { useLayoutEffect, useRef, useState, type CSSProperties, type RefObject } from "react";
 import { useTranslation } from "react-i18next";
-import type { BoundingBox } from "../../api/types";
-import { fitSize, fitWindow, imageOffset, isUsableBox, relativeTo, wholePhoto, type ReceiptPhoto } from "./photoBox";
+import type { BoundingBox, TextPolygon } from "../../api/types";
+import { fitSize, fitWindow, highlightBounds, imageOffset, lineHighlight, relativeTo, wholePhoto, type ReceiptPhoto } from "./photoBox";
+import { TextHighlight } from "./TextHighlight";
 import { usePinchZoom } from "./usePinchZoom";
 
 /** The receipt photo as a screen has it: still loading, failed, or ready. */
@@ -13,8 +14,10 @@ export interface LineViewerPhoto {
 
 export interface LinePhotoProps {
   photo: ReceiptPhoto;
-  /** Where the line is on the photo; anything unusable shows the whole photo. */
+  /** Where recognition placed the line; the fallback when its printed words are unknown. */
   box: BoundingBox | null | undefined;
+  /** The line's printed words (Azure outlines); preferred over `box`. */
+  shapes?: TextPolygon[] | null;
   /** Alt text for the fragment with the outlined line. */
   focusAlt: string;
   /** Alt text for the whole photo, shown when the line cannot be placed. */
@@ -33,9 +36,9 @@ export interface LinePhotoProps {
   note?: string | null;
 }
 
-/** Whether `LinePhoto` will outline this box on this photo. */
-export function canHighlight(photo: ReceiptPhoto, box: BoundingBox | null | undefined): box is BoundingBox {
-  return photo.croppable && isUsableBox(box);
+/** Whether `LinePhoto` will highlight this line on this photo. */
+export function canHighlight(photo: ReceiptPhoto, box: BoundingBox | null | undefined, shapes?: TextPolygon[] | null): boolean {
+  return lineHighlight(photo, box, shapes) !== null;
 }
 
 /** Until the photo answers, a typical receipt shape keeps the layout steady. */
@@ -43,22 +46,24 @@ const assumedRatio = 0.75;
 
 /**
  * The receipt photo around one line, as large as the space it is given: the
- * line across the width with neighbouring rows above and below, outlined and
- * the rest dimmed. Pinch, drag and double-tap zoom it (or the corner button);
+ * line across the width with neighbouring rows above and below, highlighted
+ * and the rest dimmed. The highlight follows the printed words when the server
+ * found them (`shapes`, "combo" style), otherwise it is the recognition box. Pinch, drag and double-tap zoom it (or the corner button);
  * the outline zooms with the photo. Without a usable box (or on a multi-photo
  * receipt) it shows the whole photo with nothing outlined, so it never points
  * at the wrong place. The outline appears only once the photo's real
  * proportions are known.
  */
-export function LinePhoto({ photo, box, focusAlt, wholeAlt, photoRatio, onPhotoRatio, onZoomChange, resetKey, note = null }: LinePhotoProps) {
+export function LinePhoto({ photo, box, shapes = null, focusAlt, wholeAlt, photoRatio, onPhotoRatio, onZoomChange, resetKey, note = null }: LinePhotoProps) {
   const { t } = useTranslation();
   const spaceRef = useRef<HTMLDivElement>(null);
   const space = useSpaceSize(spaceRef);
   const zoom = usePinchZoom({ resetKey, onZoomChange });
-  const highlighted = canHighlight(photo, box);
+  const highlight = lineHighlight(photo, box, shapes);
+  const highlighted = highlight !== null;
   const ratio = photoRatio ?? assumedRatio;
   const aspect = space ? space.width / space.height : 1.2;
-  const view = highlighted ? fitWindow(box, ratio, aspect) : wholePhoto;
+  const view = highlight ? fitWindow(highlightBounds(highlight), ratio, aspect) : wholePhoto;
   const frameStyle: CSSProperties = space
     ? fitSize(view, ratio, space.width, space.height)
     : { width: "100%", aspectRatio: `${(ratio * view.width) / view.height}` };
@@ -74,6 +79,7 @@ export function LinePhoto({ photo, box, focusAlt, wholeAlt, photoRatio, onPhotoR
         ref={zoom.frameRef}
         style={frameStyle}
         data-highlighted={highlighted}
+        data-highlight={highlight?.kind ?? "none"}
         data-zoomed={zoom.zoomed}
         {...zoom.handlers}
       >
@@ -86,8 +92,11 @@ export function LinePhoto({ photo, box, focusAlt, wholeAlt, photoRatio, onPhotoR
             onLoad={(event) => measure(event.currentTarget)}
             style={imageOffset(view)}
           />
-          {highlighted && photoRatio !== null && (
-            <div className="pm-locator-highlight" style={relativeTo(box, view)} aria-hidden="true" />
+          {highlight?.kind === "text" && photoRatio !== null && (
+            <TextHighlight shapes={highlight.shapes} view={view} photoRatio={photoRatio} />
+          )}
+          {highlight?.kind === "box" && photoRatio !== null && (
+            <div className="pm-locator-highlight" style={relativeTo(highlight.box, view)} aria-hidden="true" />
           )}
         </div>
         {/* Inside the frame: it stays on the photo however narrow it is, clear of the zoom button below. */}

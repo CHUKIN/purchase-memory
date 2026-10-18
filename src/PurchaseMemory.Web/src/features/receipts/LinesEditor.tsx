@@ -11,11 +11,11 @@ import {
 import { Plus, Trash2 } from "lucide-react";
 import { useRef, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import type { BoundingBox, ReceiptLineKind } from "../../api/types";
+import type { BoundingBox, ReceiptLineKind, TextPolygon } from "../../api/types";
 import { DecimalInput, SectionHeader, Sheet } from "../../design-system/components";
 import { formatMoney, formatQuantity } from "../purchases/money";
 import { LinePhoto, type LineViewerPhoto } from "../receipt-photo/LinePhoto";
-import { isUsableBox } from "../receipt-photo/photoBox";
+import { hasLocation } from "../receipt-photo/photoBox";
 import { discountLinks, isDiscount } from "./discountLines";
 import { DiscountFields, ReceiptDiscountLine } from "./ReceiptDiscountLine";
 
@@ -30,6 +30,11 @@ export interface EditableLine {
   kind?: ReceiptLineKind;
   /** Where recognition found the line on the receipt photo; kept through edits. */
   boundingBox?: BoundingBox | null;
+  /**
+   * The line's printed words on the photo (from the server, re-matched by it
+   * after a save); shown instead of the box when present.
+   */
+  textPolygons?: TextPolygon[] | null;
 }
 
 /** The field to focus when a line sheet opens from a review-queue link. */
@@ -194,12 +199,13 @@ function SheetPhoto({ line, lineKey, photo, photoRatio, onPhotoRatio }: {
   if (!photo.photo) {
     return <p className="pm-footnote" role={photo.failed ? "alert" : undefined}>{photo.failed ? t("lineReview.photoFailed") : t("lineReview.photoLoading")}</p>;
   }
-  const note = !photo.photo.croppable ? t("lineReview.multiPart") : isUsableBox(line.boundingBox) ? null : t("lineReview.noBox");
+  const note = !photo.photo.croppable ? t("lineReview.multiPart") : hasLocation(line.boundingBox, line.textPolygons) ? null : t("lineReview.noBox");
   return (
     <div className="pm-sheet-photo">
       <LinePhoto
         photo={photo.photo}
         box={line.boundingBox}
+        shapes={line.textPolygons}
         focusAlt={t("lineReview.photoLineAlt", { name })}
         wholeAlt={t("lineReview.photoWholeAlt")}
         photoRatio={photoRatio}

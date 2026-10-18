@@ -31,13 +31,18 @@ public enum PurchaseDraftIssueType
 /// Where the recognized value sits on the receipt photo, when recognition
 /// returned a usable box. <c>null</c> means the UI shows the whole photo.
 /// </param>
+/// <param name="TextPolygons">
+/// The item's printed words on the photo (Azure outlines), when found; the UI
+/// then highlights them instead of <paramref name="BoundingBox"/>.
+/// </param>
 public sealed record PurchaseDraftIssue(
     PurchaseDraftIssueType Type,
     int? ItemPosition,
     string? ItemName,
     string RecognizedValue,
     string SuggestedFix,
-    BoundingBox? BoundingBox = null);
+    BoundingBox? BoundingBox = null,
+    IReadOnlyList<TextPolygon>? TextPolygons = null);
 
 /// <summary>
 /// The subset of an item that issue detection needs. Both the saved purchase
@@ -50,7 +55,8 @@ public sealed record PurchaseDraftIssueItem(
     decimal? UnitPrice,
     decimal? LineTotal,
     BoundingBox? BoundingBox = null,
-    ReceiptLineKind Kind = ReceiptLineKind.Product);
+    ReceiptLineKind Kind = ReceiptLineKind.Product,
+    IReadOnlyList<TextPolygon>? TextPolygons = null);
 
 /// <summary>
 /// The single place where "does this draft need attention?" is decided.
@@ -80,7 +86,8 @@ public static class PurchaseDraftIssueDetector
                 item.Name,
                 FormatPartialPrice(item, currency),
                 "Set the price for this item or remove it.",
-                item.BoundingBox));
+                item.BoundingBox,
+                item.TextPolygons));
         }
 
         // A total comparison is only meaningful once every line contributes a

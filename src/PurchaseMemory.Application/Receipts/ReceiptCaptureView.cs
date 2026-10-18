@@ -11,7 +11,9 @@ public sealed record ReceiptCaptureItemView(
     decimal? LineTotal,
     BoundingBox? BoundingBox = null,
     ReceiptLineKind Kind = ReceiptLineKind.Product,
-    int? DiscountedItemPosition = null);
+    int? DiscountedItemPosition = null,
+    IReadOnlyList<TextPolygon>? TextPolygons = null,
+    ReceiptBoxSource BoxSource = ReceiptBoxSource.Recognition);
 
 public sealed record ReceiptImagePartView(
     int Position,

@@ -52,7 +52,9 @@ internal sealed class AuthTestHost : WebApplicationFactory<Program>
             // Never a paid model call from a test, even if OPENAI_API_KEY or ANTHROPIC_API_KEY is set.
             ["Categorization:Enabled"] = "false",
             ["Analytics:Enabled"] = "false",
-            ["TagSuggestions:Enabled"] = "false"
+            ["TagSuggestions:Enabled"] = "false",
+            // Never an Azure call either, even if AZURE_DOCINTEL_* is set.
+            ["TextLocation:Enabled"] = "false"
         };
         // Opt-in real backends (see ExternalTestServices); explicit settings win.
         _postgres = PostgresTestDatabase.TryCreate();

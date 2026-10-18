@@ -13,3 +13,8 @@ highlight). Reference only — not reviewed as production code.
   `spotlight`, `underline`, `combo` = the owner's choice, `today`).
   Deps: numpy, opencv-python-headless, pillow (use a venv outside the repo).
 - Outputs (images of receipts) go to `OUT` outside the repo — never commit them.
+- Test fixtures of the C# port (`tests/PurchaseMemory.IntegrationTests/TestData/`,
+  checked by `ReceiptTextMatcherTests`): `make_pairs.py REPO OUT.json` (ground
+  truth → Haiku item pairs via `score_items.score_receipt`, stdlib only) and
+  `make_reference.py REPO analyze.py SCRATCH OUT.json` (the lines and "combo"
+  outlines `analyze.py` itself picks; needs the venv above).

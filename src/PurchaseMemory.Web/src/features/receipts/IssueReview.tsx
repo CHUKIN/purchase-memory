@@ -12,7 +12,8 @@ import type {
 } from "../../api/types";
 import { DecimalInput, EmptyState, Footnote, PrimaryButton, SectionHeader } from "../../design-system/components";
 import { isIssueResolved, issueCopy, issueKey } from "../issues/issueText";
-import { imageOffset, padBox, type ReceiptPhoto } from "../receipt-photo/photoBox";
+import { highlightBounds, imageOffset, lineHighlight, padBox, type ReceiptPhoto } from "../receipt-photo/photoBox";
+import { TextHighlight } from "../receipt-photo/TextHighlight";
 
 /** The receipt photo an issue card can point at (see `ReceiptPhoto`). */
 export type IssueReviewPhoto = ReceiptPhoto;
@@ -206,7 +207,10 @@ function IssuePhoto({ issue, photo }: { issue: PurchaseDraftIssue; photo: IssueR
 
   if (!photo) return null;
 
-  const box = photo.croppable ? padBox(issue.boundingBox) : null;
+  // The printed words of the item when the server found them (cropped to them
+  // and highlighted like a line), otherwise just the recognition box's fragment.
+  const highlight = lineHighlight(photo, issue.boundingBox, issue.textPolygons);
+  const box = highlight ? padBox(highlightBounds(highlight)) : null;
   return (
     <IonItem lines="full">
       <div className="pm-issue-photo">
@@ -222,6 +226,9 @@ function IssuePhoto({ issue, photo }: { issue: PurchaseDraftIssue; photo: IssueR
                 onLoad={(event) => setPhotoRatio(event.currentTarget.naturalWidth / Math.max(event.currentTarget.naturalHeight, 1))}
                 style={imageOffset(box)}
               />
+              {highlight?.kind === "text" && photoRatio !== null && (
+                <TextHighlight shapes={highlight.shapes} view={box} photoRatio={photoRatio} />
+              )}
             </div>
           )}
       </div>

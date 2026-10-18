@@ -1,4 +1,4 @@
-import type { BoundingBox } from "../../api/types";
+import type { BoundingBox, TextPolygon } from "../../api/types";
 
 /**
  * The stored receipt photo a recognized value can be pointed at.
@@ -29,6 +29,67 @@ export function isUsableBox(box: BoundingBox | null | undefined): box is Boundin
     box.x + box.width <= 1.001 &&
     box.y + box.height <= 1.001
   );
+}
+
+/** The outlines the UI can draw: at least three points each, every value a fraction of the photo. */
+export function usableShapes(shapes: TextPolygon[] | null | undefined): TextPolygon[] {
+  if (!Array.isArray(shapes)) return [];
+  return shapes.filter(
+    (shape) =>
+      Array.isArray(shape) &&
+      shape.length >= 6 &&
+      shape.length % 2 === 0 &&
+      shape.every((value) => typeof value === "number" && Number.isFinite(value) && value >= 0 && value <= 1)
+  );
+}
+
+/** The axis-aligned box around all outlines (they are already padded around the words). */
+export function shapesBounds(shapes: TextPolygon[]): BoundingBox | null {
+  if (shapes.length === 0) return null;
+  let left = 1;
+  let top = 1;
+  let right = 0;
+  let bottom = 0;
+  for (const shape of shapes) {
+    for (let index = 0; index < shape.length; index += 2) {
+      left = Math.min(left, shape[index]);
+      right = Math.max(right, shape[index]);
+      top = Math.min(top, shape[index + 1]);
+      bottom = Math.max(bottom, shape[index + 1]);
+    }
+  }
+  return right > left && bottom > top ? { x: left, y: top, width: right - left, height: bottom - top } : null;
+}
+
+/**
+ * What a line's highlight points at: its printed words when the server found
+ * them, otherwise the recognition box, otherwise nothing (the whole photo).
+ * Multi-photo receipts never get one (see `ReceiptPhoto`).
+ */
+export type LineHighlight =
+  | { kind: "text"; shapes: TextPolygon[]; bounds: BoundingBox }
+  | { kind: "box"; box: BoundingBox };
+
+export function lineHighlight(
+  photo: ReceiptPhoto,
+  box: BoundingBox | null | undefined,
+  shapes: TextPolygon[] | null | undefined
+): LineHighlight | null {
+  if (!photo.croppable) return null;
+  const usable = usableShapes(shapes);
+  const bounds = shapesBounds(usable);
+  if (bounds) return { kind: "text", shapes: usable, bounds };
+  return isUsableBox(box) ? { kind: "box", box } : null;
+}
+
+/** The region a highlight covers, for the crop window. */
+export function highlightBounds(highlight: LineHighlight): BoundingBox {
+  return highlight.kind === "text" ? highlight.bounds : highlight.box;
+}
+
+/** Whether a line can be placed on the photo at all (words or a usable box). */
+export function hasLocation(box: BoundingBox | null | undefined, shapes: TextPolygon[] | null | undefined): boolean {
+  return usableShapes(shapes).length > 0 || isUsableBox(box);
 }
 
 /** Widens a tight row box a little so the fragment keeps some visual context. */

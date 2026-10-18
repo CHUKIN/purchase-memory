@@ -1,6 +1,7 @@
 using PurchaseMemory.Application.Products;
 using PurchaseMemory.Application.Products.Categories;
 using PurchaseMemory.Application.Receipts;
+using PurchaseMemory.Application.Receipts.TextLocation;
 using PurchaseMemory.Domain.Products;
 using PurchaseMemory.Domain.Purchases;
 using PurchaseMemory.Domain.Receipts;
@@ -74,7 +75,9 @@ public sealed record PurchaseDetailItemView(
     BoundingBox? BoundingBox,
     Guid Id,
     DateTimeOffset? ApprovedAt = null,
-    string? ApprovedByEmail = null);
+    string? ApprovedByEmail = null,
+    IReadOnlyList<TextPolygon>? TextPolygons = null,
+    ReceiptBoxSource BoxSource = ReceiptBoxSource.Recognition);
 
 public sealed record PurchaseDetailView(
     Guid PurchaseId,
@@ -106,7 +109,8 @@ public sealed class PurchaseEditService(
     IReceiptCaptureRepository receipts,
     IProductMatcher matcher,
     IProductCategorizationDispatcher categorization,
-    TimeProvider timeProvider) : IPurchaseEditService
+    TimeProvider timeProvider,
+    IReceiptTextHighlighter? textHighlighter = null) : IPurchaseEditService
 {
     public const int MaximumItems = 500;
 
@@ -282,6 +286,11 @@ public sealed class PurchaseEditService(
                 command.ReceiptTotal,
                 receiptItems,
                 now);
+            if (textHighlighter is not null)
+            {
+                await textHighlighter.RefreshAsync(receipt, cancellationToken);
+            }
+
             if (auditEntries.Count > 0)
             {
                 receipt.AppendReviewAuditEntries(auditEntries);
@@ -409,8 +418,8 @@ public sealed class PurchaseEditService(
         var receipt = draft.SourceReceiptId is { } receiptId
             ? await receipts.FindByIdAsync(receiptId, cancellationToken)
             : null;
-        var boxes = receipt is not null && receipt.Items.Count == items.Count
-            ? receipt.Items.ToDictionary(item => item.Position, item => item.BoundingBox)
+        var regions = receipt is not null && receipt.Items.Count == items.Count
+            ? receipt.Items.ToDictionary(item => item.Position)
             : [];
 
         var views = items
@@ -426,10 +435,12 @@ public sealed class PurchaseEditService(
                 item.ProductId,
                 item.ProductId is { } productId && names.TryGetValue(productId, out var name) ? name : null,
                 item.ProductId is { } linkedId && flagged.Contains(linkedId),
-                boxes.GetValueOrDefault(item.Position),
+                regions.GetValueOrDefault(item.Position)?.BoundingBox,
                 item.Id,
                 item.ApprovedAt,
-                item.ApprovedByEmail))
+                item.ApprovedByEmail,
+                regions.GetValueOrDefault(item.Position) is { TextPolygons.Count: > 0 } region ? region.TextPolygons : null,
+                regions.GetValueOrDefault(item.Position)?.BoxSource ?? ReceiptBoxSource.Recognition))
             .ToList();
 
         return new PurchaseDetailView(
@@ -446,7 +457,7 @@ public sealed class PurchaseEditService(
                 draft.ReceiptTotal,
                 draft.Currency,
                 views.Select(item => new PurchaseDraftIssueItem(
-                    item.Position, item.Name, item.UnitPrice, item.LineTotal, item.BoundingBox, item.Kind)).ToList(),
+                    item.Position, item.Name, item.UnitPrice, item.LineTotal, item.BoundingBox, item.Kind, item.TextPolygons)).ToList(),
                 receipt?.ReceiptTotalBoundingBox));
     }
 }

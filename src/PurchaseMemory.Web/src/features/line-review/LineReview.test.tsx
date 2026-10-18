@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import { AppProviders } from "../../app/AppProviders";
 import { dialog } from "../../test/ionicHelpers";
 import type { LineViewerPhoto } from "../receipt-photo/LinePhoto";
+import { fitWindow, shapesBounds } from "../receipt-photo/photoBox";
 import { LineReview, type ReviewLine, type ReviewLinePatch, type ReviewStart } from "./LineReview";
 
 const box = { x: 0.1, y: 0.3, width: 0.8, height: 0.04 };
@@ -50,6 +51,7 @@ function Harness({ start: initialStart, approved = [], lines = baseLines, onSave
 }
 
 const card = () => screen.getByTestId("line-review-card");
+const percent = (value: string) => Number.parseFloat(value.replace("%", ""));
 const cardName = () => within(card()).getByRole("heading", { level: 3 }).textContent;
 const marks = () => screen.getByTestId("marks").textContent;
 
@@ -212,7 +214,7 @@ describe("LineReview", () => {
 
   it("zooms the photo with a double tap and keeps the outline inside the zoomed layer", async () => {
     render(<Harness start={{ index: 0, nonce: 1 }} />);
-    const image = within(card()).getByRole("img", { name: "Фото чека, рамкой отмечена строка «KAWA»" });
+    const image = within(card()).getByRole("img", { name: "Фото чека, выделена строка «KAWA»" });
     act(() => {
       Object.defineProperty(image, "naturalWidth", { value: 750, configurable: true });
       Object.defineProperty(image, "naturalHeight", { value: 1000, configurable: true });
@@ -229,6 +231,45 @@ describe("LineReview", () => {
     expect(frame).toHaveAttribute("data-zoomed", "true");
     expect(layer.style.transform).toContain("scale(2.5)");
     expect(screen.getByRole("button", { name: "Уменьшить фото" })).toBeInTheDocument();
+  });
+
+  it("highlights the printed words when the server found them, and falls back to the box otherwise", async () => {
+    const words = [[0.1, 0.62, 0.5, 0.6, 0.5, 0.64, 0.1, 0.66], [0.4, 0.6, 0.9, 0.58, 0.9, 0.62, 0.4, 0.64]];
+    const lines = baseLines.map((line, index) => (index === 0 ? { ...line, textPolygons: words } : line));
+    render(<Harness start={{ index: 0, nonce: 1 }} lines={lines} />);
+    const image = within(card()).getByRole("img", { name: "Фото чека, выделена строка «KAWA»" });
+    act(() => {
+      Object.defineProperty(image, "naturalWidth", { value: 750, configurable: true });
+      Object.defineProperty(image, "naturalHeight", { value: 1000, configurable: true });
+      fireEvent.load(image);
+    });
+    const frame = image.closest(".pm-photo-frame") as HTMLElement;
+    const layer = image.parentElement as HTMLElement;
+    expect(frame).toHaveAttribute("data-highlight", "text");
+    // Inside the zoom layer, so it zooms and pans with the photo.
+    const svg = layer.querySelector("svg.pm-text-highlight") as SVGSVGElement;
+    expect(svg).not.toBeNull();
+    expect(svg.querySelectorAll(".pm-text-highlight-edge")).toHaveLength(2);
+    expect(layer.querySelector(".pm-locator-highlight")).toBeNull();
+    expect(within(card()).queryByText(/не найдено/)).not.toBeInTheDocument();
+    // The window follows the words (y 0.58–0.66), not the recognition box (y 0.3).
+    const view = fitWindow(shapesBounds(words)!, 0.75, 1.2);
+    expect(percent(image.style.top)).toBeCloseTo((-100 * view.y) / view.height, 6);
+    expect(view.y).toBeGreaterThan(0.3);
+
+  });
+
+  it("keeps today's frame for a line with only a recognition box", () => {
+    render(<Harness start={{ index: 3, nonce: 1 }} />);
+    expect(cardName()).toBe("CHLEB");
+    const boxImage = within(card()).getByRole("img");
+    act(() => {
+      Object.defineProperty(boxImage, "naturalWidth", { value: 750, configurable: true });
+      Object.defineProperty(boxImage, "naturalHeight", { value: 1000, configurable: true });
+      fireEvent.load(boxImage);
+    });
+    expect(boxImage.closest(".pm-photo-frame")).toHaveAttribute("data-highlight", "box");
+    expect(boxImage.parentElement!.querySelector(".pm-locator-highlight")).not.toBeNull();
   });
 
   it("sizes the photo by layout, not by the card's flying transform, line after line", async () => {

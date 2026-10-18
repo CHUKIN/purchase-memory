@@ -17,6 +17,7 @@ using PurchaseMemory.Application.Products.Categories;
 using PurchaseMemory.Application.Products.Tags;
 using PurchaseMemory.Application.Purchases;
 using PurchaseMemory.Application.Receipts;
+using PurchaseMemory.Application.Receipts.TextLocation;
 using PurchaseMemory.Application.ReviewQueue;
 using PurchaseMemory.Infrastructure;
 using PurchaseMemory.Infrastructure.Analytics;
@@ -26,6 +27,7 @@ using PurchaseMemory.Infrastructure.Persistence;
 using PurchaseMemory.Infrastructure.Processing;
 using PurchaseMemory.Infrastructure.Recognition;
 using PurchaseMemory.Infrastructure.Tagging;
+using PurchaseMemory.Infrastructure.TextLocation;
 using Serilog;
 using Serilog.Events;
 
@@ -93,6 +95,27 @@ builder.Services.AddSingleton(serviceProvider => new AnalyticsSettings(TimeZoneI
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 builder.Services.AddScoped<IAnalyticsHistoryService, AnalyticsHistoryService>();
 builder.Services.AddScoped<IReviewQueueService, ReviewQueueService>();
+// Printed-text highlight (Azure prebuilt-read word outlines). Off without
+// AZURE_DOCINTEL_ENDPOINT / AZURE_DOCINTEL_KEY; the doorbell is registered
+// before the infrastructure, whose no-op default then stays unused.
+builder.Services
+    .AddOptions<ReceiptTextLocationOptions>()
+    .Bind(builder.Configuration.GetSection(ReceiptTextLocationOptions.SectionName))
+    .Validate(options => options.IsValid(), "TextLocation: limits are out of range (see ReceiptTextLocationOptions).")
+    .ValidateOnStart();
+builder.Services.AddSingleton(serviceProvider =>
+    serviceProvider.GetRequiredService<Microsoft.Extensions.Options.IOptions<ReceiptTextLocationOptions>>().Value);
+builder.Services
+    .AddOptions<AzureDocumentIntelligenceOptions>()
+    .Bind(builder.Configuration.GetSection(AzureDocumentIntelligenceOptions.SectionName));
+builder.Services
+    .AddHttpClient<IReceiptTextLocator, AzureDocumentIntelligenceTextLocator>(AzureDocumentIntelligenceTextLocator.HttpClientName)
+    .ConfigurePrimaryHttpMessageHandler(AzureDocumentIntelligenceTextLocator.CreatePrimaryHandler);
+builder.Services.AddSingleton<ChannelReceiptTextLocationSignal>();
+builder.Services.AddSingleton<IReceiptTextLocationSignal>(serviceProvider =>
+    serviceProvider.GetRequiredService<ChannelReceiptTextLocationSignal>());
+builder.Services.AddScoped<IReceiptTextLocationService, ReceiptTextLocationService>();
+builder.Services.AddHostedService<ReceiptTextLocationWorker>();
 var databaseSettings = StorageSetup.ResolveDatabase(builder.Configuration, runtimePaths);
 builder.Services.AddPurchaseMemoryInfrastructure(databaseSettings);
 builder.Services.AddProblemDetails();

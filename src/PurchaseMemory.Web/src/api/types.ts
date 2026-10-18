@@ -13,6 +13,19 @@ export interface BoundingBox {
 }
 
 /**
+ * One outline around printed words of a line, as flat `[x0, y0, x1, y1, …]`
+ * pairs in the same photo fractions as `BoundingBox`. A line's highlight is the
+ * union of its outlines, so it follows a tilted or two-row printed line.
+ */
+export type TextPolygon = number[];
+
+/**
+ * Where a line's highlight comes from: the rectangle recognition returned
+ * (`recognition`), or the printed words Azure found for the line (`azure`).
+ */
+export type BoxSource = "recognition" | "azure";
+
+/**
  * A discount ("OPUST", "RABAT") is its own line right under its product, with a
  * negative `lineTotal`, so all lines still add up to the receipt total.
  */
@@ -25,6 +38,13 @@ export interface ReceiptItemSnapshot {
   unitPrice: number | null;
   lineTotal: number | null;
   boundingBox?: BoundingBox | null;
+  /**
+   * Output only: the line's printed words on the photo, when the server found
+   * them; preferred over `boundingBox`. The server re-matches them after every
+   * save, so they are never sent back.
+   */
+  textPolygons?: TextPolygon[] | null;
+  boxSource?: BoxSource;
   /** Omitted by older payloads; the backend then treats a negative amount as a discount. */
   kind?: ReceiptLineKind;
   /**
@@ -56,6 +76,8 @@ export interface PurchaseDraftIssue {
   suggestedFix: string;
   /** Where the value is on the photo, when recognition returned a usable box. */
   boundingBox?: BoundingBox | null;
+  /** The item's printed words on the photo, when found; preferred over `boundingBox`. */
+  textPolygons?: TextPolygon[] | null;
 }
 
 export interface ReceiptView {
@@ -149,6 +171,9 @@ export interface PurchaseDetailItem {
   /** The linked product carries the «проверить» flag. Optional only so older fixtures stay valid. */
   productNeedsReview?: boolean;
   boundingBox: BoundingBox | null;
+  /** The line's printed words on the photo (see `ReceiptItemSnapshot.textPolygons`). */
+  textPolygons?: TextPolygon[] | null;
+  boxSource?: BoxSource;
   /**
    * Someone confirmed in the swipe review that the line matches the receipt.
    * Always sent by the server; optional so older fixtures stay valid.

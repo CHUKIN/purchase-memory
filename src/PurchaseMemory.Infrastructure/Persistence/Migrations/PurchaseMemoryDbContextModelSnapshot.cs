@@ -1138,6 +1138,22 @@ namespace PurchaseMemory.Infrastructure.Persistence.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
+                    b.Property<long?>("TextLocationAttemptedAt")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TextLocationAttempts")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TextLocationCalls")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("TextLocationStatus")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT")
+                        .HasDefaultValue("NotRequested");
+
                     b.Property<long>("UpdatedAt")
                         .HasColumnType("INTEGER");
 
@@ -1158,6 +1174,8 @@ namespace PurchaseMemory.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("Status");
 
+                    b.HasIndex("TextLocationStatus");
+
                     b.ToTable("receipt_captures", (string)null);
                 });
 
@@ -1165,6 +1183,13 @@ namespace PurchaseMemory.Infrastructure.Persistence.Migrations
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("TEXT");
+
+                    b.Property<string>("BoxSource")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT")
+                        .HasDefaultValue("Recognition");
 
                     b.Property<int?>("DiscountedItemPosition")
                         .HasColumnType("INTEGER");
@@ -1193,6 +1218,10 @@ namespace PurchaseMemory.Infrastructure.Persistence.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("ReceiptCaptureId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TextPolygons")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Unit")
@@ -1291,6 +1320,34 @@ namespace PurchaseMemory.Infrastructure.Persistence.Migrations
                     b.HasIndex("ReceiptCaptureId", "OccurredAt");
 
                     b.ToTable("receipt_review_audit_entries", (string)null);
+                });
+
+            modelBuilder.Entity("PurchaseMemory.Domain.Receipts.ReceiptTextLayout", b =>
+                {
+                    b.Property<Guid>("ReceiptCaptureId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("CreatedAt")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Lines")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("PageHeight")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("PageWidth")
+                        .HasColumnType("REAL");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ReceiptCaptureId");
+
+                    b.ToTable("receipt_text_layouts", (string)null);
                 });
 
             modelBuilder.Entity("PurchaseMemory.Domain.Impressions.ProductImpression", b =>
@@ -1470,6 +1527,15 @@ namespace PurchaseMemory.Infrastructure.Persistence.Migrations
                     b.HasOne("PurchaseMemory.Domain.Receipts.ReceiptCapture", null)
                         .WithMany("ReviewAuditEntries")
                         .HasForeignKey("ReceiptCaptureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PurchaseMemory.Domain.Receipts.ReceiptTextLayout", b =>
+                {
+                    b.HasOne("PurchaseMemory.Domain.Receipts.ReceiptCapture", null)
+                        .WithOne()
+                        .HasForeignKey("PurchaseMemory.Domain.Receipts.ReceiptTextLayout", "ReceiptCaptureId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

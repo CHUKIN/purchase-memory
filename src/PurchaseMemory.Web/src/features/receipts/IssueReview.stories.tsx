@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useEffect, useState } from "react";
 import { fn } from "storybook/test";
 import type { PurchaseDraftIssue, ReceiptReviewAuditEntry, ReceiptSnapshot } from "../../api/types";
+import { storyBox, storyOutlines, tiltedReceiptUrl } from "../receipt-photo/storyReceipt";
 import { IssueReview, type IssueReviewProps } from "./IssueReview";
 
 const snapshot: ReceiptSnapshot = {
@@ -129,6 +130,19 @@ export const PhotoFragment: Story = {
     snapshot: completeSnapshot,
     issues: [{ ...mismatch, boundingBox: { x: 0.05, y: 0.8, width: 0.62, height: 0.045 } }],
     photo
+  },
+  globals: phone
+};
+
+/**
+ * The item's printed words were found (Azure): the card crops to them and
+ * highlights them like the line review does ("combo"), on a tilted photo.
+ */
+export const PhotoFragmentPrintedText: Story = {
+  args: {
+    snapshot,
+    issues: [{ ...missingPrice, boundingBox: storyBox("bread"), textPolygons: storyOutlines("bread") }],
+    photo: { url: tiltedReceiptUrl, croppable: true }
   },
   globals: phone
 };
