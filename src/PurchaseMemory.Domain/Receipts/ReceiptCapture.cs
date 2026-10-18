@@ -98,6 +98,17 @@ public sealed class ReceiptCapture
 
     public string? UploadedByEmail { get; private set; }
 
+    /// <summary>Background text location (Azure word outlines); see <see cref="ReceiptTextLayout"/>.</summary>
+    public ReceiptTextLocationStatus TextLocationStatus { get; private set; }
+
+    /// <summary>Tries that count toward the retry limit (service outages are given back).</summary>
+    public int TextLocationAttempts { get; private set; }
+
+    /// <summary>Every call sent to the text-location service for this receipt (the monthly budget).</summary>
+    public int TextLocationCalls { get; private set; }
+
+    public DateTimeOffset? TextLocationAttemptedAt { get; private set; }
+
     public IReadOnlyCollection<ReceiptCaptureItem> Items => _items;
 
     public IReadOnlyCollection<ReceiptImagePart> ImageParts => _imageParts;
@@ -244,6 +255,76 @@ public sealed class ReceiptCapture
         SavedPurchaseId = purchaseId;
         Status = ReceiptProcessingStatus.Saved;
         UpdatedAt = updatedAt;
+    }
+
+    /// <summary>
+    /// Sets each line's printed-text outlines by position (lines missing from
+    /// the map fall back to the recognition box). A background enrichment, so
+    /// <see cref="UpdatedAt"/> is left alone.
+    /// </summary>
+    public void ApplyTextHighlights(IReadOnlyDictionary<int, IReadOnlyList<TextPolygon>> polygonsByPosition)
+    {
+        ArgumentNullException.ThrowIfNull(polygonsByPosition);
+        foreach (var item in _items)
+        {
+            item.ShowPrintedText(polygonsByPosition.TryGetValue(item.Position, out var polygons) ? polygons : []);
+        }
+    }
+
+    /// <summary>
+    /// Recorded (and saved) before the service is called: the call counts
+    /// toward the monthly budget and the retry limit, and the receipt reads as
+    /// a passing failure until an outcome is recorded — so a crash, a malformed
+    /// answer or a failed save afterwards can never cause an uncounted retry.
+    /// </summary>
+    public void BeginTextLocationCall(DateTimeOffset calledAt)
+    {
+        TextLocationCalls++;
+        TextLocationAttempts++;
+        TextLocationAttemptedAt = calledAt;
+        TextLocationStatus = ReceiptTextLocationStatus.Failed;
+    }
+
+    /// <summary>The call returned a layout (stored separately).</summary>
+    public void RecordTextLocated()
+    {
+        TextLocationStatus = ReceiptTextLocationStatus.Located;
+    }
+
+    /// <summary>
+    /// The call (or its handling) failed. A passing failure is retried later, a
+    /// lasting one (or the last allowed try) stops further calls for this receipt.
+    /// </summary>
+    public void RecordTextLocationFailed(bool lasting, int maximumAttempts)
+    {
+        TextLocationStatus = lasting || TextLocationAttempts >= maximumAttempts
+            ? ReceiptTextLocationStatus.Unavailable
+            : ReceiptTextLocationStatus.Failed;
+    }
+
+    /// <summary>
+    /// The service was not usable at all (rate limit, refused key): not the
+    /// receipt's fault, so the try is given back and it waits for its turn
+    /// again. The call itself stays counted in <see cref="TextLocationCalls"/>.
+    /// </summary>
+    public void ReleaseTextLocationAttempt()
+    {
+        TextLocationAttempts = Math.Max(0, TextLocationAttempts - 1);
+        TextLocationStatus = ReceiptTextLocationStatus.NotRequested;
+    }
+
+    /// <summary>The photo could not be read from storage: a try without a call.</summary>
+    public void RecordTextLocationNotSent(DateTimeOffset attemptedAt, int maximumAttempts)
+    {
+        TextLocationAttempts++;
+        TextLocationAttemptedAt = attemptedAt;
+        RecordTextLocationFailed(lasting: false, maximumAttempts);
+    }
+
+    /// <summary>Never sent to the service (several photos, unusable photo); costs no call.</summary>
+    public void MarkTextLocationUnavailable()
+    {
+        TextLocationStatus = ReceiptTextLocationStatus.Unavailable;
     }
 
     private void ReplaceRecognizedDetails(

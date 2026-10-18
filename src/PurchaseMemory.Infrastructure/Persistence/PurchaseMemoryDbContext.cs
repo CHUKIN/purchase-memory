@@ -16,6 +16,8 @@ public sealed class PurchaseMemoryDbContext(DbContextOptions<PurchaseMemoryDbCon
 
     public DbSet<ReceiptCapture> ReceiptCaptures => Set<ReceiptCapture>();
 
+    public DbSet<ReceiptTextLayout> ReceiptTextLayouts => Set<ReceiptTextLayout>();
+
     public DbSet<Product> Products => Set<Product>();
 
     public DbSet<ProductAlias> ProductAliases => Set<ProductAlias>();
@@ -318,8 +320,16 @@ public sealed class PurchaseMemoryDbContext(DbContextOptions<PurchaseMemoryDbCon
         receipt.Property(capture => capture.UpdatedAt).HasConversion(dateTimeOffsetConverter);
         receipt.Property(capture => capture.UploadedByUserId).HasMaxLength(200);
         receipt.Property(capture => capture.UploadedByEmail).HasMaxLength(320);
+        receipt.Property(capture => capture.TextLocationStatus)
+            .HasConversion<string>()
+            .HasMaxLength(20)
+            .HasDefaultValue(ReceiptTextLocationStatus.NotRequested)
+            .HasSentinel((ReceiptTextLocationStatus)(-1))
+            .IsRequired();
+        receipt.Property(capture => capture.TextLocationAttemptedAt).HasConversion(nullableDateTimeOffsetConverter);
         receipt.HasIndex(capture => capture.ImageSha256).IsUnique();
         receipt.HasIndex(capture => capture.Status);
+        receipt.HasIndex(capture => capture.TextLocationStatus);
         receipt.HasIndex(capture => capture.CreatedAt);
 
         receipt
@@ -361,7 +371,31 @@ public sealed class PurchaseMemoryDbContext(DbContextOptions<PurchaseMemoryDbCon
         receiptItem.OwnsOne(captureItem => captureItem.BoundingBox);
         ConfigureLineKind(receiptItem.Property(captureItem => captureItem.Kind));
         receiptItem.Property(captureItem => captureItem.DiscountedItemPosition);
+        receiptItem.Property(captureItem => captureItem.TextPolygons)
+            .HasConversion(TextLayoutJson.PolygonsConverter, TextLayoutJson.PolygonsComparer)
+            .IsRequired();
+        receiptItem.Property(captureItem => captureItem.BoxSource)
+            .HasConversion<string>()
+            .HasMaxLength(20)
+            .HasDefaultValue(ReceiptBoxSource.Recognition)
+            .HasSentinel((ReceiptBoxSource)(-1))
+            .IsRequired();
         receiptItem.HasIndex("ReceiptCaptureId", nameof(ReceiptCaptureItem.Position)).IsUnique();
+
+        var textLayout = modelBuilder.Entity<ReceiptTextLayout>();
+        textLayout.ToTable("receipt_text_layouts");
+        textLayout.HasKey(layout => layout.ReceiptCaptureId);
+        textLayout.Property(layout => layout.ReceiptCaptureId).ValueGeneratedNever();
+        textLayout.Property(layout => layout.Source).HasMaxLength(100).IsRequired();
+        textLayout.Property(layout => layout.Lines)
+            .HasConversion(TextLayoutJson.LinesConverter, TextLayoutJson.LinesComparer)
+            .IsRequired();
+        textLayout.Property(layout => layout.CreatedAt).HasConversion(dateTimeOffsetConverter);
+        textLayout
+            .HasOne<ReceiptCapture>()
+            .WithOne()
+            .HasForeignKey<ReceiptTextLayout>(layout => layout.ReceiptCaptureId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         var imagePart = modelBuilder.Entity<ReceiptImagePart>();
         imagePart.ToTable("receipt_image_parts");

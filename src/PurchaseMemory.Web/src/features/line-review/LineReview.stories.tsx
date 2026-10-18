@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { IonButton } from "@ionic/react";
 import { useState } from "react";
 import { fn } from "storybook/test";
+import { storyBox, storyOutlines, tiltedReceiptUrl } from "../receipt-photo/storyReceipt";
 import { LineReview, type LineReviewProps, type ReviewLine } from "./LineReview";
 
 /**
@@ -123,3 +124,37 @@ export const Landscape: Story = { globals: { viewport: { value: "phoneLandscape"
 
 /** The same on a regular iPhone (390 × 844). */
 export const LargerPhone: Story = { globals: { viewport: { value: "phone", isRotated: false } } };
+
+/*
+ * Printed-text highlight (plan #1 stage 1.3, "combo"): the server found the
+ * line's words with Azure, so the highlight follows the tilted print — pale
+ * yellow over the words, a thin outline, the rest dimmed lightly.
+ */
+const tiltedPhoto = { photo: { url: tiltedReceiptUrl, croppable: true }, failed: false };
+const printedLines: ReviewLine[] = [
+  { ...lines[0], boundingBox: storyBox("milk"), textPolygons: storyOutlines("milk") },
+  { ...lines[1], boundingBox: storyBox("bread"), textPolygons: storyOutlines("bread") },
+  // No words found for this one (Azure off, or the line not matched): today's frame.
+  { ...lines[2], boundingBox: storyBox("butter") },
+  { ...lines[3], boundingBox: storyBox("discount"), textPolygons: storyOutlines("discount") },
+  { ...lines[4], boundingBox: storyBox("goudaName", 50), textPolygons: storyOutlines("goudaName", "goudaPrice") },
+  lines[5]
+];
+
+/** The line's printed words highlighted on a tilted photo. */
+export const PrintedText: Story = { args: { lines: printedLines, photo: tiltedPhoto } };
+
+/** Name on one row, price on the next: both rows highlighted, the window fits both. */
+export const PrintedTextTwoRows: Story = { args: { lines: printedLines, photo: tiltedPhoto, startAt: 4 } };
+
+/** Zoomed in: the highlight zooms with the photo, its outline stays thin. */
+export const PrintedTextZoomed: Story = {
+  args: { lines: printedLines, photo: tiltedPhoto },
+  play: async ({ canvasElement }) => {
+    const button = canvasElement.ownerDocument.querySelector<HTMLButtonElement>(".pm-photo-zoom");
+    button?.click();
+  }
+};
+
+/** Fallback on the same photo: no printed words for this line, so the recognition frame as before. */
+export const PrintedTextFallback: Story = { args: { lines: printedLines, photo: tiltedPhoto, startAt: 2 } };

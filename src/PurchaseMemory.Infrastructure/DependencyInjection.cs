@@ -7,6 +7,7 @@ using PurchaseMemory.Application.Products;
 using PurchaseMemory.Application.Products.Categories;
 using PurchaseMemory.Application.Purchases;
 using PurchaseMemory.Application.Receipts;
+using PurchaseMemory.Application.Receipts.TextLocation;
 using PurchaseMemory.Application.ReviewQueue;
 using PurchaseMemory.Infrastructure.Analytics;
 using PurchaseMemory.Infrastructure.Persistence;
@@ -44,6 +45,10 @@ public static class DependencyInjection
         services.AddScoped<IAnalyticsHistoryRepository, AnalyticsHistoryRepository>();
         services.AddScoped<IReviewQueueRepository, ReviewQueue.ReviewQueueRepository>();
         services.AddScoped<IProductImpressionRepository, ProductImpressionRepository>();
+        services.AddScoped<IReceiptTextLayoutRepository, ReceiptTextLayoutRepository>();
+        services.AddScoped<IReceiptTextHighlighter, ReceiptTextHighlighter>();
+        // The API replaces this with the worker's doorbell.
+        services.TryAddSingleton<IReceiptTextLocationSignal, NullReceiptTextLocationSignal>();
 
         // The API replaces this with a background worker; tools and tests keep
         // saving purchases without ever calling a model.

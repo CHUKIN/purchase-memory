@@ -180,6 +180,28 @@ describe("IssueReview receipt fragment", () => {
     expect(percent(fragment.style.top)).toBeCloseTo((-100 * 0.385) / 0.08, 6);
   });
 
+  it("crops to the item's printed words and highlights them once the photo's shape is known", () => {
+    const words = [[0.2, 0.5, 0.6, 0.48, 0.6, 0.52, 0.2, 0.54], [0.5, 0.56, 0.7, 0.56, 0.7, 0.6, 0.5, 0.6]];
+    renderReview({
+      snapshot: snapshot({ items: [{ name: "Mleko", quantity: 1, unit: null, unitPrice: 4, lineTotal: 4 }, { name: "Chleb", quantity: 1, unit: null, unitPrice: null, lineTotal: null }] }),
+      issues: [{ ...missingPrice, boundingBox: { x: 0.1, y: 0.1, width: 0.8, height: 0.05 }, textPolygons: words }],
+      photo
+    });
+
+    const fragment = screen.getByAltText("Фрагмент фотографии чека с этим значением");
+    // Bounds of the outlines (0.2..0.7 × 0.48..0.6), padded like a box — not the recognition box.
+    expect(percent(fragment.style.width)).toBeCloseTo(100 / 0.54, 6);
+    expect(percent(fragment.style.left)).toBeCloseTo((-100 * 0.18) / 0.54, 6);
+    expect(document.querySelector(".pm-text-highlight")).toBeNull();
+
+    Object.defineProperty(fragment, "naturalWidth", { value: 750, configurable: true });
+    Object.defineProperty(fragment, "naturalHeight", { value: 1000, configurable: true });
+    fireEvent.load(fragment);
+    const svg = document.querySelector("svg.pm-text-highlight");
+    expect(svg).not.toBeNull();
+    expect(svg!.querySelectorAll(".pm-text-highlight-edge")).toHaveLength(2);
+  });
+
   it("falls back to the whole photo when the issue has no coordinates", () => {
     renderReview({ issues: [boxed(null)], photo });
 

@@ -281,6 +281,27 @@ public sealed record BoundingBoxPayload(double X, double Y, double Width, double
     public BoundingBox? ToDomain() => BoundingBox.TryCreate(X, Y, Width, Height);
 }
 
+/// <summary>
+/// Output only: a line's printed words as outlines (<c>[[x0, y0, x1, y1, …], …]</c>
+/// in photo fractions, like <see cref="BoundingBoxPayload"/>) and where its
+/// highlight comes from. The server re-matches outlines itself after every
+/// edit, so clients never send them back.
+/// </summary>
+public static class TextHighlightWire
+{
+    public const string Recognition = "recognition";
+    public const string Azure = "azure";
+
+    public static IReadOnlyList<IReadOnlyList<double>>? ToWire(IReadOnlyList<TextPolygon>? polygons) =>
+        polygons is null || polygons.Count == 0 ? null : polygons.Select(polygon => polygon.Points).ToList();
+
+    public static string ToWire(ReceiptBoxSource source) => source switch
+    {
+        ReceiptBoxSource.Azure => Azure,
+        _ => Recognition
+    };
+}
+
 /// <param name="Kind">
 /// "product" or "discount". Optional on input: without it a negative amount
 /// means a discount. <paramref name="DiscountedItemPosition"/> is output only;
@@ -294,7 +315,9 @@ public sealed record ReviewReceiptItemRequest(
     decimal? LineTotal,
     BoundingBoxPayload? BoundingBox = null,
     string? Kind = null,
-    int? DiscountedItemPosition = null);
+    int? DiscountedItemPosition = null,
+    IReadOnlyList<IReadOnlyList<double>>? TextPolygons = null,
+    string? BoxSource = null);
 
 /// <summary>
 /// Line kinds cross the REST wire as the same lowercase strings the PWA types
@@ -411,7 +434,9 @@ public sealed record ReceiptResponse(
                     item.LineTotal,
                     BoundingBoxPayload.FromDomain(item.BoundingBox),
                     ReceiptLineKindWire.ToWire(item.Kind),
-                    item.DiscountedItemPosition)).ToList(),
+                    item.DiscountedItemPosition,
+                    TextHighlightWire.ToWire(item.TextPolygons),
+                    TextHighlightWire.ToWire(item.BoxSource))).ToList(),
                 BoundingBoxPayload.FromDomain(view.ReceiptTotalBoundingBox))
             : null;
 

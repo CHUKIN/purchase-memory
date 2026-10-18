@@ -1,0 +1,933 @@
+{
+ "source": "score_items.score_receipt(ground_truth_items.json, haiku-prod-v4-medium)",
+ "receipts": {
+  "01": {
+   "groundTruth": [
+    {
+     "name": "…dostawy 1 szt",
+     "lineTotal": 5.98
+    },
+    {
+     "name": "Placki ziemniaczane 8 szt.",
+     "lineTotal": 17.99
+    },
+    {
+     "name": "4 pory roku Średnia",
+     "lineTotal": 53.99
+    },
+    {
+     "name": "Pudełko na pizzę 30 1 szt",
+     "lineTotal": 2.01
+    }
+   ],
+   "pairs": [
+    {
+     "groundTruthIndex": 0,
+     "haikuIndex": 0
+    },
+    {
+     "groundTruthIndex": 1,
+     "haikuIndex": 1
+    },
+    {
+     "groundTruthIndex": 2,
+     "haikuIndex": 2
+    },
+    {
+     "groundTruthIndex": 3,
+     "haikuIndex": 3
+    }
+   ]
+  },
+  "03": {
+   "groundTruth": [
+    {
+     "name": "KERRYGOLD MASŁ 200",
+     "lineTotal": 9.99
+    },
+    {
+     "name": "CZACHO JAJA 10",
+     "lineTotal": 12.99
+    },
+    {
+     "name": "PIĄT MLEKO 2% 1",
+     "lineTotal": 5.69
+    },
+    {
+     "name": "GULASZ CIELĘCY KG.MC",
+     "lineTotal": 57.84
+    },
+    {
+     "name": "KABACZEK",
+     "lineTotal": 7.67
+    },
+    {
+     "name": "LEER SER ORIGI 100",
+     "lineTotal": 5.99
+    },
+    {
+     "name": "MOWI ŁOSOS INT 100",
+     "lineTotal": 22.49
+    },
+    {
+     "name": "JANA SEREK CZE 120",
+     "lineTotal": 2.65
+    },
+    {
+     "name": "LEER SER ORIGI 100",
+     "lineTotal": 5.99
+    },
+    {
+     "name": "LEER SER LIGHT 100",
+     "lineTotal": 6.99
+    },
+    {
+     "name": "BAK JOGURT DRA 135",
+     "lineTotal": 3.29
+    },
+    {
+     "name": "GOSH DESER 125",
+     "lineTotal": 2.99
+    },
+    {
+     "name": "POL MŁ MĄK TORT 1",
+     "lineTotal": 4.62
+    },
+    {
+     "name": "ŁACIATE ŚMIETA 500",
+     "lineTotal": 12.99
+    },
+    {
+     "name": "NEST CHEER PŁA 250",
+     "lineTotal": 7.55
+    },
+    {
+     "name": "NEST CHOC PŁAT 250",
+     "lineTotal": 7.78
+    },
+    {
+     "name": "JOGO JOG B/CUK 150",
+     "lineTotal": 2.99
+    },
+    {
+     "name": "MEL SKROB ZIEM 500",
+     "lineTotal": 5.42
+    },
+    {
+     "name": "ROLN OCET 10% 500",
+     "lineTotal": 4.27
+    },
+    {
+     "name": "WEDE CHAŁ ORZE 50",
+     "lineTotal": 2.99
+    },
+    {
+     "name": "PROT BATON TWA 40",
+     "lineTotal": 2.59
+    },
+    {
+     "name": "PRES ŚMIETANKA 100",
+     "lineTotal": 4.49
+    },
+    {
+     "name": "PAPRYKA BIAŁ CORNO",
+     "lineTotal": 1.64
+    },
+    {
+     "name": "PRES ŚMIETANKA 100",
+     "lineTotal": 4.49
+    },
+    {
+     "name": "OETK EKST WAN 30",
+     "lineTotal": 6.99
+    },
+    {
+     "name": "OETK PROSZ PIEC 30",
+     "lineTotal": 0.89
+    },
+    {
+     "name": "WEDE CHAŁ ORZE 50",
+     "lineTotal": 2.99
+    }
+   ],
+   "pairs": [
+    {
+     "groundTruthIndex": 0,
+     "haikuIndex": 0
+    },
+    {
+     "groundTruthIndex": 1,
+     "haikuIndex": 1
+    },
+    {
+     "groundTruthIndex": 2,
+     "haikuIndex": 2
+    },
+    {
+     "groundTruthIndex": 3,
+     "haikuIndex": 3
+    },
+    {
+     "groundTruthIndex": 4,
+     "haikuIndex": 4
+    },
+    {
+     "groundTruthIndex": 5,
+     "haikuIndex": 5
+    },
+    {
+     "groundTruthIndex": 6,
+     "haikuIndex": 6
+    },
+    {
+     "groundTruthIndex": 7,
+     "haikuIndex": 7
+    },
+    {
+     "groundTruthIndex": 8,
+     "haikuIndex": 8
+    },
+    {
+     "groundTruthIndex": 9,
+     "haikuIndex": 9
+    },
+    {
+     "groundTruthIndex": 10,
+     "haikuIndex": 10
+    },
+    {
+     "groundTruthIndex": 11,
+     "haikuIndex": 11
+    },
+    {
+     "groundTruthIndex": 12,
+     "haikuIndex": 12
+    },
+    {
+     "groundTruthIndex": 13,
+     "haikuIndex": 13
+    },
+    {
+     "groundTruthIndex": 14,
+     "haikuIndex": 14
+    },
+    {
+     "groundTruthIndex": 15,
+     "haikuIndex": 15
+    },
+    {
+     "groundTruthIndex": 16,
+     "haikuIndex": 16
+    },
+    {
+     "groundTruthIndex": 17,
+     "haikuIndex": 17
+    },
+    {
+     "groundTruthIndex": 18,
+     "haikuIndex": 18
+    },
+    {
+     "groundTruthIndex": 19,
+     "haikuIndex": 19
+    },
+    {
+     "groundTruthIndex": 20,
+     "haikuIndex": 20
+    },
+    {
+     "groundTruthIndex": 21,
+     "haikuIndex": 21
+    },
+    {
+     "groundTruthIndex": 22,
+     "haikuIndex": 22
+    },
+    {
+     "groundTruthIndex": 23,
+     "haikuIndex": 23
+    },
+    {
+     "groundTruthIndex": 24,
+     "haikuIndex": 24
+    },
+    {
+     "groundTruthIndex": 25,
+     "haikuIndex": 25
+    },
+    {
+     "groundTruthIndex": 26,
+     "haikuIndex": 26
+    }
+   ]
+  },
+  "04": {
+   "groundTruth": [
+    {
+     "name": "Fairy Kapsułki Lemon",
+     "lineTotal": 84.99
+    },
+    {
+     "name": "Ogórki grunt. PL luz",
+     "lineTotal": 1.8
+    },
+    {
+     "name": "Pure Parówki z ind.",
+     "lineTotal": 6.49
+    },
+    {
+     "name": "Persil Kapsułki 60pr",
+     "lineTotal": 51.99
+    },
+    {
+     "name": "Sał. batawska korzeń",
+     "lineTotal": 5.99
+    },
+    {
+     "name": "Lay's Chipsy",
+     "lineTotal": 8.29
+    },
+    {
+     "name": "PrzysnackiChipsy w..",
+     "lineTotal": 6.99
+    },
+    {
+     "name": "Reklamówka 50µ",
+     "lineTotal": 0.65
+    }
+   ],
+   "pairs": [
+    {
+     "groundTruthIndex": 0,
+     "haikuIndex": 0
+    },
+    {
+     "groundTruthIndex": 1,
+     "haikuIndex": 2
+    },
+    {
+     "groundTruthIndex": 2,
+     "haikuIndex": 4
+    },
+    {
+     "groundTruthIndex": 3,
+     "haikuIndex": 5
+    },
+    {
+     "groundTruthIndex": 4,
+     "haikuIndex": 6
+    },
+    {
+     "groundTruthIndex": 5,
+     "haikuIndex": 7
+    },
+    {
+     "groundTruthIndex": 6,
+     "haikuIndex": 8
+    },
+    {
+     "groundTruthIndex": 7,
+     "haikuIndex": 9
+    }
+   ]
+  },
+  "09": {
+   "groundTruth": [
+    {
+     "name": "C_SZPINAK BABY 125G",
+     "lineTotal": 5.99
+    },
+    {
+     "name": "A_WODA MINER BORJOM",
+     "lineTotal": 7.49
+    },
+    {
+     "name": "C_MAŚLANKA 420G BUT",
+     "lineTotal": 2.89
+    },
+    {
+     "name": "B_WILKIN RASPBERRY",
+     "lineTotal": 35.99
+    },
+    {
+     "name": "C_KEDYMEX-RZODKIEWE",
+     "lineTotal": 15.28
+    },
+    {
+     "name": "C_MIÓD PSZCZ. WIELO",
+     "lineTotal": 13.99
+    },
+    {
+     "name": "A_CHUST DO HIG INT",
+     "lineTotal": 9.99
+    },
+    {
+     "name": "A_KAWA O SMAKU ORZE",
+     "lineTotal": 35.99
+    },
+    {
+     "name": "C_MOWI ŁOSOŚ WĘDZ.",
+     "lineTotal": 25.99
+    },
+    {
+     "name": "C_KUKURYDZA ŚWIEŻA",
+     "lineTotal": 13.98
+    },
+    {
+     "name": "C_SER CHEDDAR WHITE",
+     "lineTotal": 9.9
+    }
+   ],
+   "pairs": [
+    {
+     "groundTruthIndex": 0,
+     "haikuIndex": 0
+    },
+    {
+     "groundTruthIndex": 1,
+     "haikuIndex": 1
+    },
+    {
+     "groundTruthIndex": 2,
+     "haikuIndex": 2
+    },
+    {
+     "groundTruthIndex": 3,
+     "haikuIndex": 3
+    },
+    {
+     "groundTruthIndex": 4,
+     "haikuIndex": 4
+    },
+    {
+     "groundTruthIndex": 5,
+     "haikuIndex": 5
+    },
+    {
+     "groundTruthIndex": 6,
+     "haikuIndex": 6
+    },
+    {
+     "groundTruthIndex": 7,
+     "haikuIndex": 7
+    },
+    {
+     "groundTruthIndex": 8,
+     "haikuIndex": 8
+    },
+    {
+     "groundTruthIndex": 9,
+     "haikuIndex": 9
+    },
+    {
+     "groundTruthIndex": 10,
+     "haikuIndex": 10
+    }
+   ]
+  },
+  "11": {
+   "groundTruth": [
+    {
+     "name": "C#SER RAJSKI WLOSZC",
+     "lineTotal": 7.99
+    },
+    {
+     "name": "C#SER TWARD.DZIUGAS",
+     "lineTotal": 3.95
+    },
+    {
+     "name": "C#SER TWARD.DZIUGAS",
+     "lineTotal": 3.95
+    },
+    {
+     "name": "C#FILET Z KURCZAKA",
+     "lineTotal": 17.05
+    },
+    {
+     "name": "C#POLĘDWICA Z DORSZ",
+     "lineTotal": 22.74
+    },
+    {
+     "name": "C#JOGURT MOVENPICK",
+     "lineTotal": 11.5
+    },
+    {
+     "name": "C#DESER SATINO BAKO",
+     "lineTotal": 3.35
+    },
+    {
+     "name": "C#DESER SATINO BAKO",
+     "lineTotal": 3.35
+    },
+    {
+     "name": "A#BATONIK TWAROG MA",
+     "lineTotal": 3.25
+    },
+    {
+     "name": "A#TORBA RECYKLING",
+     "lineTotal": 0.79
+    }
+   ],
+   "pairs": [
+    {
+     "groundTruthIndex": 0,
+     "haikuIndex": 0
+    },
+    {
+     "groundTruthIndex": 1,
+     "haikuIndex": 1
+    },
+    {
+     "groundTruthIndex": 2,
+     "haikuIndex": 3
+    },
+    {
+     "groundTruthIndex": 3,
+     "haikuIndex": 4
+    },
+    {
+     "groundTruthIndex": 4,
+     "haikuIndex": 5
+    },
+    {
+     "groundTruthIndex": 5,
+     "haikuIndex": 6
+    },
+    {
+     "groundTruthIndex": 6,
+     "haikuIndex": 7
+    },
+    {
+     "groundTruthIndex": 7,
+     "haikuIndex": 8
+    },
+    {
+     "groundTruthIndex": 8,
+     "haikuIndex": 9
+    },
+    {
+     "groundTruthIndex": 9,
+     "haikuIndex": 10
+    }
+   ]
+  },
+  "16": {
+   "groundTruth": [
+    {
+     "name": "UDO Z KURC 339863C",
+     "lineTotal": 11.26
+    },
+    {
+     "name": "POMIDOR KO 627810C",
+     "lineTotal": 11.99
+    },
+    {
+     "name": "OGOREK DŁU 306053C",
+     "lineTotal": 3.99
+    },
+    {
+     "name": "ZIEMNIAKI W 33980C",
+     "lineTotal": 7.42
+    },
+    {
+     "name": "PIECZARKI 196413C",
+     "lineTotal": 5.69
+    },
+    {
+     "name": "SER KROLEW 643509C",
+     "lineTotal": 7.04
+    },
+    {
+     "name": "LOSOS PORCJ 962162",
+     "lineTotal": 37.9
+    },
+    {
+     "name": "PĄCZEK FAN 528249",
+     "lineTotal": 9.9
+    },
+    {
+     "name": "BANAN 34041C",
+     "lineTotal": 2.15
+    },
+    {
+     "name": "SZPINAK 253865C",
+     "lineTotal": 5.99
+    },
+    {
+     "name": "KUKURYDZA 157373C",
+     "lineTotal": 12.96
+    },
+    {
+     "name": "SOCZEWICA 979480C",
+     "lineTotal": 14.38
+    },
+    {
+     "name": "PASTA PRZ 157845A",
+     "lineTotal": 14.98
+    },
+    {
+     "name": "SZYNKA Z P 695097C",
+     "lineTotal": 6.34
+    },
+    {
+     "name": ") TOREBKI 507205A",
+     "lineTotal": 7.58
+    },
+    {
+     "name": "PIERNIKI S 145954C",
+     "lineTotal": 5.79
+    }
+   ],
+   "pairs": [
+    {
+     "groundTruthIndex": 0,
+     "haikuIndex": 0
+    },
+    {
+     "groundTruthIndex": 1,
+     "haikuIndex": 1
+    },
+    {
+     "groundTruthIndex": 2,
+     "haikuIndex": 2
+    },
+    {
+     "groundTruthIndex": 3,
+     "haikuIndex": 3
+    },
+    {
+     "groundTruthIndex": 4,
+     "haikuIndex": 4
+    },
+    {
+     "groundTruthIndex": 5,
+     "haikuIndex": 5
+    },
+    {
+     "groundTruthIndex": 6,
+     "haikuIndex": 6
+    },
+    {
+     "groundTruthIndex": 7,
+     "haikuIndex": 7
+    },
+    {
+     "groundTruthIndex": 8,
+     "haikuIndex": 8
+    },
+    {
+     "groundTruthIndex": 9,
+     "haikuIndex": 9
+    },
+    {
+     "groundTruthIndex": 10,
+     "haikuIndex": 10
+    },
+    {
+     "groundTruthIndex": 11,
+     "haikuIndex": 11
+    },
+    {
+     "groundTruthIndex": 12,
+     "haikuIndex": 12
+    },
+    {
+     "groundTruthIndex": 13,
+     "haikuIndex": 13
+    },
+    {
+     "groundTruthIndex": 14,
+     "haikuIndex": 14
+    },
+    {
+     "groundTruthIndex": 15,
+     "haikuIndex": 15
+    }
+   ]
+  },
+  "17": {
+   "groundTruth": [
+    {
+     "name": "UDO Z KURC 339863C",
+     "lineTotal": 11.26
+    },
+    {
+     "name": "POMIDOR KO 627810C",
+     "lineTotal": 11.99
+    },
+    {
+     "name": "OGOREK DŁU 306053C",
+     "lineTotal": 3.99
+    },
+    {
+     "name": "ZIEMNIAKI W 33980C",
+     "lineTotal": 7.42
+    },
+    {
+     "name": "PIECZARKI 196413C",
+     "lineTotal": 5.69
+    },
+    {
+     "name": "SER KROLEW 643509C",
+     "lineTotal": 7.04
+    },
+    {
+     "name": "LOSOS PORCJ 962162",
+     "lineTotal": 37.9
+    },
+    {
+     "name": "PĄCZEK FAN 528249",
+     "lineTotal": 9.9
+    },
+    {
+     "name": "BANAN 34041C",
+     "lineTotal": 2.15
+    },
+    {
+     "name": "SZPINAK 253865C",
+     "lineTotal": 5.99
+    },
+    {
+     "name": "KUKURYDZA 157373C",
+     "lineTotal": 12.96
+    },
+    {
+     "name": "SOCZEWICA 979480C",
+     "lineTotal": 14.38
+    },
+    {
+     "name": "PASTA PRZ 157845A",
+     "lineTotal": 14.98
+    },
+    {
+     "name": "SZYNKA Z P 695097C",
+     "lineTotal": 6.34
+    },
+    {
+     "name": ") TOREBKI 507205A",
+     "lineTotal": 7.58
+    },
+    {
+     "name": "PIERNIKI S 145954C",
+     "lineTotal": 5.79
+    }
+   ],
+   "pairs": [
+    {
+     "groundTruthIndex": 0,
+     "haikuIndex": 0
+    },
+    {
+     "groundTruthIndex": 1,
+     "haikuIndex": 1
+    },
+    {
+     "groundTruthIndex": 2,
+     "haikuIndex": 2
+    },
+    {
+     "groundTruthIndex": 3,
+     "haikuIndex": 3
+    },
+    {
+     "groundTruthIndex": 4,
+     "haikuIndex": 4
+    },
+    {
+     "groundTruthIndex": 5,
+     "haikuIndex": 5
+    },
+    {
+     "groundTruthIndex": 6,
+     "haikuIndex": 6
+    },
+    {
+     "groundTruthIndex": 7,
+     "haikuIndex": 7
+    },
+    {
+     "groundTruthIndex": 8,
+     "haikuIndex": 8
+    },
+    {
+     "groundTruthIndex": 9,
+     "haikuIndex": 9
+    },
+    {
+     "groundTruthIndex": 10,
+     "haikuIndex": 10
+    },
+    {
+     "groundTruthIndex": 11,
+     "haikuIndex": 11
+    },
+    {
+     "groundTruthIndex": 12,
+     "haikuIndex": 12
+    },
+    {
+     "groundTruthIndex": 13,
+     "haikuIndex": 13
+    },
+    {
+     "groundTruthIndex": 14,
+     "haikuIndex": 14
+    },
+    {
+     "groundTruthIndex": 15,
+     "haikuIndex": 15
+    }
+   ]
+  },
+  "18": {
+   "groundTruth": [
+    {
+     "name": "A_PAKOWANIE",
+     "lineTotal": 2.0
+    },
+    {
+     "name": "C_PODUDZIE Z KURCZ.",
+     "lineTotal": 13.0
+    },
+    {
+     "name": "C_SMIETANA 18% 200G",
+     "lineTotal": 2.59
+    },
+    {
+     "name": "C_MC POMARAŃCZE LUZ",
+     "lineTotal": 7.0
+    },
+    {
+     "name": "C_MC SOCZEWICA 500G",
+     "lineTotal": 6.65
+    },
+    {
+     "name": "C_SER KROLEWSKI SIE",
+     "lineTotal": 14.3
+    },
+    {
+     "name": "A_MYDŁO W PŁ DOVE 5",
+     "lineTotal": 10.99
+    },
+    {
+     "name": "C_MC JAJA ZIELONÓŻK",
+     "lineTotal": 11.79
+    },
+    {
+     "name": "C_MOWI ŁOSOŚ WĘDZ.",
+     "lineTotal": 30.89
+    },
+    {
+     "name": "C_SZYNKA KRAKUS 100",
+     "lineTotal": 14.5
+    },
+    {
+     "name": "C_KAPUSTA BIAŁA LUZ",
+     "lineTotal": 8.73
+    },
+    {
+     "name": "C_MC MIX SAŁAT Z SA",
+     "lineTotal": 4.45
+    },
+    {
+     "name": "C_JZN ZIEMNIAK JADA",
+     "lineTotal": 6.99
+    },
+    {
+     "name": "C_NAPOJ ALPRO 1L MI",
+     "lineTotal": 11.99
+    },
+    {
+     "name": "C_MARCHEW LUZ",
+     "lineTotal": 0.94
+    },
+    {
+     "name": "C_ZUPA VIFON 70G KU",
+     "lineTotal": 3.9
+    },
+    {
+     "name": "C_CHLEB TOSTOWY PEŁ",
+     "lineTotal": 6.49
+    },
+    {
+     "name": "C_MASLO EKSTRA MAZU",
+     "lineTotal": 9.49
+    }
+   ],
+   "pairs": [
+    {
+     "groundTruthIndex": 0,
+     "haikuIndex": 0
+    },
+    {
+     "groundTruthIndex": 1,
+     "haikuIndex": 1
+    },
+    {
+     "groundTruthIndex": 2,
+     "haikuIndex": 2
+    },
+    {
+     "groundTruthIndex": 3,
+     "haikuIndex": 3
+    },
+    {
+     "groundTruthIndex": 4,
+     "haikuIndex": 4
+    },
+    {
+     "groundTruthIndex": 5,
+     "haikuIndex": 5
+    },
+    {
+     "groundTruthIndex": 6,
+     "haikuIndex": 6
+    },
+    {
+     "groundTruthIndex": 7,
+     "haikuIndex": 7
+    },
+    {
+     "groundTruthIndex": 8,
+     "haikuIndex": 8
+    },
+    {
+     "groundTruthIndex": 9,
+     "haikuIndex": 9
+    },
+    {
+     "groundTruthIndex": 10,
+     "haikuIndex": 10
+    },
+    {
+     "groundTruthIndex": 11,
+     "haikuIndex": 11
+    },
+    {
+     "groundTruthIndex": 12,
+     "haikuIndex": 12
+    },
+    {
+     "groundTruthIndex": 13,
+     "haikuIndex": 13
+    },
+    {
+     "groundTruthIndex": 14,
+     "haikuIndex": 14
+    },
+    {
+     "groundTruthIndex": 15,
+     "haikuIndex": 15
+    },
+    {
+     "groundTruthIndex": 16,
+     "haikuIndex": 16
+    },
+    {
+     "groundTruthIndex": 17,
+     "haikuIndex": 17
+    }
+   ]
+  }
+ }
+}

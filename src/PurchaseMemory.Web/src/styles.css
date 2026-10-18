@@ -279,6 +279,15 @@ ion-button.pm-tap-button { min-height: 44px; margin-top: 0; margin-bottom: 0; }
   animation: pm-locator-in .2s ease-out;
 }
 @keyframes pm-locator-in { from { opacity: 0; } to { opacity: 1; } }
+/* The printed words of the line ("combo", TextHighlight): pale yellow over the ink, thin outline, the rest dimmed ×0.70. */
+.pm-text-highlight { position: absolute; display: block; overflow: visible; pointer-events: none; animation: pm-locator-in .2s ease-out; }
+.pm-text-highlight-dim { fill: #000; opacity: .3; }
+.pm-text-highlight-fill { fill: rgb(255, 196, 0); opacity: .45; mix-blend-mode: multiply; }
+/* Drawn twice as wide as it shows: the inner half is masked away. Stays ~2px on screen while zoomed. */
+.pm-text-highlight-edge {
+  fill: none; stroke: var(--ion-color-warning, #9c5a14); stroke-width: calc(4px / var(--pm-zoom, 1)); stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
 .pm-photo-zoom {
   position: absolute; z-index: 1; right: 6px; bottom: 6px; display: grid; place-items: center; width: 44px; height: 44px; padding: 0;
   border: 0; border-radius: 50%; color: #fff; background: rgba(0, 0, 0, .5); cursor: pointer;

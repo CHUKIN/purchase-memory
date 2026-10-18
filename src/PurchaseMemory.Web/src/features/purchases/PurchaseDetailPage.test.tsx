@@ -325,7 +325,7 @@ describe("PurchaseDetailPage swipe review of the lines", () => {
     expect(within(review).getByLabelText("Проверено 0 из 2")).toBeInTheDocument();
     expect(within(card()).getByRole("heading", { level: 3, name: "KAWA" })).toBeInTheDocument();
     expect(within(card()).getByText("Связано с «Kawa»")).toBeInTheDocument();
-    expect(await within(card()).findByRole("img", { name: "Фото чека, рамкой отмечена строка «KAWA»" })).toHaveAttribute("src", "blob:receipt-photo");
+    expect(await within(card()).findByRole("img", { name: "Фото чека, выделена строка «KAWA»" })).toHaveAttribute("src", "blob:receipt-photo");
   });
 
   it("shows a line without a box on the whole photo, and a multi-photo receipt without an outline", async () => {
@@ -463,7 +463,7 @@ describe("PurchaseDetailPage swipe review of the lines", () => {
     renderAt("/purchases/p1?edit=1");
 
     fireEvent.click(await screen.findByRole("button", { name: /^KAWA/ }));
-    expect(await within(dialog("Строка 1")).findByRole("img", { name: "Фото чека, рамкой отмечена строка «KAWA»" })).toBeInTheDocument();
+    expect(await within(dialog("Строка 1")).findByRole("img", { name: "Фото чека, выделена строка «KAWA»" })).toBeInTheDocument();
     expect(within(dialog("Строка 1")).queryByRole("button", { name: "Показать на фото" })).not.toBeInTheDocument();
   });
 

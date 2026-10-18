@@ -2,11 +2,11 @@ import { IonButton, IonButtons, IonContent, IonHeader, IonModal, IonTitle, IonTo
 import { Check, CircleCheck, Pencil, RotateCcw, Undo2, X } from "lucide-react";
 import { useEffect, useId, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 import { useTranslation } from "react-i18next";
-import type { BoundingBox, ReceiptLineKind } from "../../api/types";
+import type { BoundingBox, ReceiptLineKind, TextPolygon } from "../../api/types";
 import { ActionButton, Notice, Sheet } from "../../design-system/components";
 import { formatMoney, formatQuantity } from "../purchases/money";
 import { LinePhoto, type LineViewerPhoto } from "../receipt-photo/LinePhoto";
-import { isUsableBox } from "../receipt-photo/photoBox";
+import { hasLocation } from "../receipt-photo/photoBox";
 import { discountLinks, isDiscount } from "../receipts/discountLines";
 import { LineFields, type EditableLine } from "../receipts/LinesEditor";
 import { LineProductMedia } from "../product-scan/LineProductMedia";
@@ -22,6 +22,8 @@ export interface ReviewLine {
   lineTotal: number | null;
   kind: ReceiptLineKind;
   boundingBox?: BoundingBox | null;
+  /** The line's printed words on the photo, when the server found them. */
+  textPolygons?: TextPolygon[] | null;
   productName?: string | null;
   /** The linked product; its photos and barcodes can be added from the line's sheet. */
   productId?: string | null;
@@ -443,12 +445,13 @@ function ReviewPhoto({ line, index, photo, photoRatio, onPhotoRatio, onZoomChang
   }
   const note = !photo.photo.croppable
     ? t("lineReview.multiPart")
-    : isUsableBox(line.boundingBox) ? null : t("lineReview.noBox");
+    : hasLocation(line.boundingBox, line.textPolygons) ? null : t("lineReview.noBox");
   return (
     <div className="pm-review-photo">
       <LinePhoto
         photo={photo.photo}
         box={line.boundingBox}
+        shapes={line.textPolygons}
         focusAlt={t("lineReview.photoLineAlt", { name })}
         wholeAlt={t("lineReview.photoWholeAlt")}
         photoRatio={photoRatio}

@@ -1144,6 +1144,22 @@ namespace PurchaseMemory.Infrastructure.Postgres.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
+                    b.Property<long?>("TextLocationAttemptedAt")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("TextLocationAttempts")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TextLocationCalls")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("TextLocationStatus")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasDefaultValue("NotRequested");
+
                     b.Property<long>("UpdatedAt")
                         .HasColumnType("bigint");
 
@@ -1164,6 +1180,8 @@ namespace PurchaseMemory.Infrastructure.Postgres.Migrations
 
                     b.HasIndex("Status");
 
+                    b.HasIndex("TextLocationStatus");
+
                     b.ToTable("receipt_captures", "purchase_memory");
                 });
 
@@ -1171,6 +1189,13 @@ namespace PurchaseMemory.Infrastructure.Postgres.Migrations
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("BoxSource")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasDefaultValue("Recognition");
 
                     b.Property<int?>("DiscountedItemPosition")
                         .HasColumnType("integer");
@@ -1200,6 +1225,10 @@ namespace PurchaseMemory.Infrastructure.Postgres.Migrations
 
                     b.Property<Guid>("ReceiptCaptureId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("TextPolygons")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Unit")
                         .HasMaxLength(30)
@@ -1297,6 +1326,34 @@ namespace PurchaseMemory.Infrastructure.Postgres.Migrations
                     b.HasIndex("ReceiptCaptureId", "OccurredAt");
 
                     b.ToTable("receipt_review_audit_entries", "purchase_memory");
+                });
+
+            modelBuilder.Entity("PurchaseMemory.Domain.Receipts.ReceiptTextLayout", b =>
+                {
+                    b.Property<Guid>("ReceiptCaptureId")
+                        .HasColumnType("uuid");
+
+                    b.Property<long>("CreatedAt")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Lines")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<double>("PageHeight")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("PageWidth")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("ReceiptCaptureId");
+
+                    b.ToTable("receipt_text_layouts", "purchase_memory");
                 });
 
             modelBuilder.Entity("PurchaseMemory.Domain.Impressions.ProductImpression", b =>
@@ -1476,6 +1533,15 @@ namespace PurchaseMemory.Infrastructure.Postgres.Migrations
                     b.HasOne("PurchaseMemory.Domain.Receipts.ReceiptCapture", null)
                         .WithMany("ReviewAuditEntries")
                         .HasForeignKey("ReceiptCaptureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PurchaseMemory.Domain.Receipts.ReceiptTextLayout", b =>
+                {
+                    b.HasOne("PurchaseMemory.Domain.Receipts.ReceiptCapture", null)
+                        .WithOne()
+                        .HasForeignKey("PurchaseMemory.Domain.Receipts.ReceiptTextLayout", "ReceiptCaptureId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

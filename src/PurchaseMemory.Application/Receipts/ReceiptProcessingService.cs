@@ -1,4 +1,5 @@
 using PurchaseMemory.Application.Purchases;
+using PurchaseMemory.Application.Receipts.TextLocation;
 using PurchaseMemory.Domain.Receipts;
 
 namespace PurchaseMemory.Application.Receipts;
@@ -13,14 +14,20 @@ public sealed class ReceiptProcessingService : IReceiptProcessingService
     private readonly IReceiptProcessingDispatcher _processingDispatcher;
     private readonly IPurchaseDraftService _purchaseDraftService;
     private readonly TimeProvider _timeProvider;
+    private readonly IReceiptTextHighlighter? _textHighlighter;
+    private readonly IReceiptTextLocationSignal _textLocationSignal;
 
+    /// <param name="textHighlighter">Re-matches printed-text outlines after a review; optional (tools, tests).</param>
+    /// <param name="textLocationSignal">Wakes the background text location once a receipt is recognised.</param>
     public ReceiptProcessingService(
         IReceiptCaptureRepository receiptRepository,
         IReceiptImageStore imageStore,
         IReceiptExtractor extractor,
         IReceiptProcessingDispatcher processingDispatcher,
         IPurchaseDraftService purchaseDraftService,
-        TimeProvider timeProvider)
+        TimeProvider timeProvider,
+        IReceiptTextHighlighter? textHighlighter = null,
+        IReceiptTextLocationSignal? textLocationSignal = null)
     {
         _receiptRepository = receiptRepository;
         _imageStore = imageStore;
@@ -28,6 +35,8 @@ public sealed class ReceiptProcessingService : IReceiptProcessingService
         _processingDispatcher = processingDispatcher;
         _purchaseDraftService = purchaseDraftService;
         _timeProvider = timeProvider;
+        _textHighlighter = textHighlighter;
+        _textLocationSignal = textLocationSignal ?? new NullReceiptTextLocationSignal();
     }
 
     public async Task<UploadReceiptResult> UploadAsync(
@@ -183,6 +192,7 @@ public sealed class ReceiptProcessingService : IReceiptProcessingService
                 extraction.ReceiptTotalBoundingBox);
 
             await _receiptRepository.SaveChangesAsync(cancellationToken);
+            _textLocationSignal.Notify();
             return CreateView(receipt);
         }
         catch (ReceiptExtractionException exception)
@@ -304,6 +314,10 @@ public sealed class ReceiptProcessingService : IReceiptProcessingService
             reviewedItems,
             now,
             command.ReceiptTotalBoundingBox);
+        if (_textHighlighter is not null)
+        {
+            await _textHighlighter.RefreshAsync(receipt, cancellationToken);
+        }
 
         if (auditEntries.Count > 0)
         {
@@ -431,7 +445,9 @@ public sealed class ReceiptProcessingService : IReceiptProcessingService
                 item.LineTotal,
                 item.BoundingBox,
                 item.Kind,
-                item.DiscountedItemPosition))
+                item.DiscountedItemPosition,
+                item.TextPolygons.Count == 0 ? null : item.TextPolygons,
+                item.BoxSource))
             .ToList();
         var imageParts = receipt.ImageParts
             .OrderBy(part => part.Position)
@@ -479,7 +495,8 @@ public sealed class ReceiptProcessingService : IReceiptProcessingService
                         item.UnitPrice,
                         item.LineTotal,
                         item.BoundingBox,
-                        item.Kind))
+                        item.Kind,
+                        item.TextPolygons))
                     .ToList(),
                 receipt.ReceiptTotalBoundingBox),
             receipt.UploadedByUserId,

@@ -10,6 +10,7 @@ import type {
   ProductLinkChoice,
   PurchaseDetail,
   ReceiptLineKind,
+  TextPolygon,
   UpdatePurchaseRequest
 } from "../../api/types";
 import { useToast } from "../../app/toasts";
@@ -366,6 +367,7 @@ interface EditLine {
   productName: string | null;
   productNeedsReview: boolean;
   boundingBox: BoundingBox | null;
+  textPolygons?: TextPolygon[] | null;
 }
 
 interface EditState {
@@ -398,7 +400,8 @@ function toEditState(purchase: PurchaseDetail): EditState {
       productId: item.productId,
       productName: item.productName,
       productNeedsReview: Boolean(item.productNeedsReview),
-      boundingBox: item.boundingBox
+      boundingBox: item.boundingBox,
+      textPolygons: item.textPolygons ?? null
     }))
   };
 }

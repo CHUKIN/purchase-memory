@@ -36,5 +36,7 @@
     <None Include="../../docs/contracts/receipt-extract-result-v3.schema.json"
           Link="receipt-extract-result-v3.schema.json"
           CopyToOutputDirectory="PreserveNewest" />
+    <!-- Ground-truth pairs for the offline highlight matching check (stage 1.3). -->
+    <None Include="TestData/**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

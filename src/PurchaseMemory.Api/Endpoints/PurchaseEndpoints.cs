@@ -203,7 +203,8 @@ public sealed record PurchaseDraftIssueResponse(
     string? ItemName,
     string RecognizedValue,
     string SuggestedFix,
-    BoundingBoxPayload? BoundingBox)
+    BoundingBoxPayload? BoundingBox,
+    IReadOnlyList<IReadOnlyList<double>>? TextPolygons = null)
 {
     public static PurchaseDraftIssueResponse FromIssue(PurchaseDraftIssue issue)
     {
@@ -215,7 +216,8 @@ public sealed record PurchaseDraftIssueResponse(
             issue.ItemName,
             issue.RecognizedValue,
             issue.SuggestedFix,
-            BoundingBoxPayload.FromDomain(issue.BoundingBox));
+            BoundingBoxPayload.FromDomain(issue.BoundingBox),
+            TextHighlightWire.ToWire(issue.TextPolygons));
     }
 
     private static string MapType(PurchaseDraftIssueType type) => type switch
@@ -333,7 +335,9 @@ public sealed record PurchaseDetailItemResponse(
     Guid Id,
     bool Approved,
     DateTimeOffset? ApprovedAt,
-    string? ApprovedByEmail);
+    string? ApprovedByEmail,
+    IReadOnlyList<IReadOnlyList<double>>? TextPolygons = null,
+    string BoxSource = TextHighlightWire.Recognition);
 
 public sealed record PurchaseDetailResponse(
     Guid Id,
@@ -376,7 +380,9 @@ public sealed record PurchaseDetailResponse(
                 item.Id,
                 item.ApprovedAt is not null,
                 item.ApprovedAt,
-                item.ApprovedByEmail)).ToList(),
+                item.ApprovedByEmail,
+                TextHighlightWire.ToWire(item.TextPolygons),
+                TextHighlightWire.ToWire(item.BoxSource))).ToList(),
             view.Issues.Select(PurchaseDraftIssueResponse.FromIssue).ToList());
     }
 }

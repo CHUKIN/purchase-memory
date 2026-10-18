@@ -877,9 +877,9 @@ export const resources = {
         noPhoto: "У этой покупки нет фото чека.",
         photoLoading: "Загружаем фото чека…",
         photoFailed: "Фото чека не загрузилось.",
-        multiPart: "Чек из нескольких фото — показано первое, без рамки.",
+        multiPart: "Чек из нескольких фото — показано первое, без выделения строки.",
         noBox: "Место строки не найдено — показан весь чек.",
-        photoLineAlt: "Фото чека, рамкой отмечена строка «{{name}}»",
+        photoLineAlt: "Фото чека, выделена строка «{{name}}»",
         photoWholeAlt: "Фото чека целиком",
         zoomIn: "Увеличить фото",
         zoomOut: "Уменьшить фото"
@@ -2042,9 +2042,9 @@ export const resources = {
         noPhoto: "This purchase has no receipt photo.",
         photoLoading: "Loading the receipt photo…",
         photoFailed: "The receipt photo did not load.",
-        multiPart: "A receipt in several photos — the first is shown, without an outline.",
+        multiPart: "A receipt in several photos — the first is shown, without a highlight.",
         noBox: "The line was not found on the photo — the whole receipt is shown.",
-        photoLineAlt: "Receipt photo with the line “{{name}}” outlined",
+        photoLineAlt: "Receipt photo with the line “{{name}}” highlighted",
         photoWholeAlt: "The whole receipt photo",
         zoomIn: "Zoom in on the photo",
         zoomOut: "Zoom out of the photo"

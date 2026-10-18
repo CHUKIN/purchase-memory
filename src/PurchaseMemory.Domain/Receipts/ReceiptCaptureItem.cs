@@ -61,6 +61,31 @@ public sealed class ReceiptCaptureItem
     /// </summary>
     public int? DiscountedItemPosition { get; private set; }
 
+    /// <summary>
+    /// Outlines of this line's printed words (Azure), when the line was found
+    /// in the receipt's text layout; empty otherwise. <see cref="BoundingBox"/>
+    /// stays as the fallback.
+    /// </summary>
+    public IReadOnlyList<TextPolygon> TextPolygons { get; private set; } = [];
+
+    /// <summary><see cref="ReceiptBoxSource.Azure"/> exactly when <see cref="TextPolygons"/> is not empty.</summary>
+    public ReceiptBoxSource BoxSource { get; private set; }
+
+    /// <summary>Points the highlight at the printed words; an empty list falls back to the recognition box.</summary>
+    public void ShowPrintedText(IReadOnlyList<TextPolygon> polygons)
+    {
+        ArgumentNullException.ThrowIfNull(polygons);
+        if (polygons.Count == 0)
+        {
+            TextPolygons = [];
+            BoxSource = ReceiptBoxSource.Recognition;
+            return;
+        }
+
+        TextPolygons = polygons.ToArray();
+        BoxSource = ReceiptBoxSource.Azure;
+    }
+
     public static ReceiptCaptureItem Create(
         int position,
         string name,
