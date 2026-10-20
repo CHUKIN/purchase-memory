@@ -19,6 +19,7 @@ import {
   useImperativeHandle,
   useRef,
   useState,
+  type KeyboardEvent,
   type ReactNode
 } from "react";
 
@@ -356,10 +357,17 @@ function press(handler: ((value?: unknown) => unknown) | undefined, value: unkno
   else if (result !== false) dismiss();
 }
 
+/** Escape dismisses like Ionic's: only once `canDismiss` (a boolean or an async check) allows it. */
 export function IonModal(props: Props) {
-  useDismissOnClose(Boolean(props.isOpen), props.onDidDismiss);
+  const dismiss = useDismissOnClose(Boolean(props.isOpen), props.onDidDismiss);
   if (!props.isOpen) return null;
-  return <div role="dialog" aria-modal="true" {...dom(props)}>{props.children}</div>;
+  const onKeyDown = async (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== "Escape") return;
+    const check = props.canDismiss as boolean | ((data?: unknown, role?: string) => Promise<boolean>) | undefined;
+    const allowed = typeof check === "function" ? await check(undefined, "backdrop") : check !== false;
+    if (allowed) dismiss({ role: "backdrop" });
+  };
+  return <div role="dialog" aria-modal="true" {...dom(props)} onKeyDown={(event) => void onKeyDown(event)}>{props.children}</div>;
 }
 
 interface OverlayButton {

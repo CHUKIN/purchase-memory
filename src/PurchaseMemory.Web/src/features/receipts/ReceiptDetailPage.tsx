@@ -1,10 +1,11 @@
 import { IonInput, IonItem, IonLabel, IonList, IonNote } from "@ionic/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { ChevronRight, ListChecks } from "lucide-react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate, useParams } from "react-router";
-import { getReceipt, processReceipt, reviewReceipt, saveReceipt } from "../../api/client";
-import type { ReceiptItemSnapshot, ReceiptSnapshot, ReceiptView } from "../../api/types";
+import { getPurchase, getReceipt, processReceipt, reviewReceipt, saveReceipt } from "../../api/client";
+import type { PurchaseDetail, ReceiptItemSnapshot, ReceiptSnapshot, ReceiptView } from "../../api/types";
 import { useAuthorizedImageUrl } from "../../auth/useAuthorizedImageUrl";
 import {
   DateField,
@@ -19,12 +20,16 @@ import { HelpLink } from "../help/HelpLink";
 import { reviewQueueQueryKey } from "../review-queue/reviewQueueQueries";
 import { reviewQueueReturnPath } from "../review-queue/returnToQueue";
 import { useBackTarget, useReturnState } from "../../app/backNavigation";
+import type { LineApprovalSync } from "../line-review/approvalSync";
+import { firstProblemIndex } from "../line-review/lineChecks";
+import { useApprovalSync } from "../line-review/useLineApprovals";
+import type { LineViewerPhoto } from "../receipt-photo/LinePhoto";
+import type { ReceiptPhoto } from "../receipt-photo/photoBox";
+import { CaptureLineReview } from "./CaptureLineReview";
 import { isDiscount } from "./discountLines";
-import { IssueReview, type IssueReviewPhoto } from "./IssueReview";
 import { LinesEditor } from "./LinesEditor";
 import { ReceiptProgress } from "./ReceiptProgress";
 import { messageOf } from "./receiptErrors";
-import type { LineViewerPhoto } from "../receipt-photo/LinePhoto";
 
 export function ReceiptDetailPage() {
   const { receiptId = "" } = useParams();
@@ -36,11 +41,15 @@ export function ReceiptDetailPage() {
   const back = useBackTarget({ to: "/", labelKey: "common.home" });
   const returnState = useReturnState();
   const queryClient = useQueryClient();
+  const approvalSync = useApprovalSync();
   const [snapshot, setSnapshot] = useState<ReceiptSnapshot | null>(null);
+  // «Верно, дальше» marks, one per line of `snapshot`; they become the saved purchase's marks.
+  const [checked, setChecked] = useState<boolean[]>([]);
+  const [lineIndex, setLineIndex] = useState(0);
   const [warningsConfirmed, setWarningsConfirmed] = useState(false);
-  // Issue-based review is the entry point whenever the receipt has issues; the
-  // full editor is reached only by an explicit action and then stays open.
-  const [fullEditorRequested, setFullEditorRequested] = useState(false);
+  // The line carousel is the entry point; the full editor (store, date,
+  // total and the lines as a list) is opened explicitly and can be left again.
+  const [fullEditorOpen, setFullEditorOpen] = useState(false);
   const initializedEditorReceiptId = useRef<string | null>(null);
   const receiptQuery = useQuery({
     queryKey: ["receipts", receiptId],
@@ -55,10 +64,11 @@ export function ReceiptDetailPage() {
   useEffect(() => {
     if (receiptQuery.data?.snapshot && initializedEditorReceiptId.current !== receiptQuery.data.id) {
       setSnapshot(receiptQuery.data.snapshot);
+      setChecked(receiptQuery.data.snapshot.items.map(() => false));
+      setLineIndex(firstProblemIndex(receiptQuery.data.snapshot.items));
       initializedEditorReceiptId.current = receiptQuery.data.id;
     }
   }, [receiptQuery.data]);
-  const showIssueReview = !fullEditorRequested && (receiptQuery.data?.issues.length ?? 0) > 0;
   const retry = useMutation({
     mutationFn: () => processReceipt(receiptId),
     onSuccess: (receipt) => {
@@ -69,25 +79,33 @@ export function ReceiptDetailPage() {
   const save = useMutation({
     mutationFn: async () => {
       if (!snapshot) throw new Error(t("legacyCapture.unknownError"));
+      let sent = snapshot;
+      let marks = checked;
       if (!warningsConfirmed) {
         const reviewed = await reviewReceipt(receiptId, normalizeSnapshot(snapshot));
         queryClient.setQueryData(["receipts", receiptId], reviewed);
         void queryClient.invalidateQueries({ queryKey: ["receipts", receiptId, "auditTrail"] });
-        setSnapshot(reviewed.snapshot);
-        // Issue review only claims to answer structured issues, so unrelated
-        // warnings (an unrecognized store, say) must not block saving there.
-        const blocking = showIssueReview ? reviewed.issues.length > 0 : reviewed.warnings.length > 0;
+        if (reviewed.snapshot) {
+          sent = reviewed.snapshot;
+          // If the server changed how many lines there are, the marks cannot be matched to lines any more.
+          if (reviewed.snapshot.items.length !== snapshot.items.length) marks = reviewed.snapshot.items.map(() => false);
+          setSnapshot(reviewed.snapshot);
+          setChecked(marks);
+        }
+        // The carousel only claims to answer structured issues, so unrelated
+        // warnings (an unrecognized store, say) must not block saving there;
+        // the full editor shows every warning and asks about them.
+        const blocking = fullEditorOpen ? reviewed.warnings.length > 0 : reviewed.issues.length > 0;
         if (blocking) {
-          // The first save turns into a confirmation step in both modes. In
-          // issue review the cards normally gate the button long before this,
-          // so it only fires when the server disagrees with the client's own
-          // resolution check — and then a second, deliberate tap must still
-          // get through, or that disagreement would be an inescapable dead end.
+          // The first save turns into a confirmation step: what is left is
+          // listed, and a second, deliberate tap saves anyway.
           setWarningsConfirmed(true);
           return false;
         }
       }
-      await saveReceipt(receiptId);
+      const purchase = await saveReceipt(receiptId);
+      // Not awaited: the marks follow the purchase in the background.
+      void queueDraftApprovals(approvalSync, purchase.id, sent.items, marks);
       return true;
     },
     onSuccess: (saved) => {
@@ -102,6 +120,21 @@ export function ReceiptDetailPage() {
   const photoSource = useAuthorizedImageUrl(receipt?.sourceImageUrl);
   const canSave = useMemo(() => snapshot !== null && snapshot.items.length > 0 && snapshot.items.every((item) => item.name.trim()), [snapshot]);
   const updateSnapshot = (next: ReceiptSnapshot) => { setSnapshot(next); setWarningsConfirmed(false); };
+  const updateItem = (index: number, patch: Partial<ReceiptItemSnapshot>) => {
+    if (!snapshot) return;
+    updateSnapshot({ ...snapshot, items: snapshot.items.map((item, position) => position === index ? { ...item, ...patch } : item) });
+  };
+  const removeItem = (index: number) => {
+    if (!snapshot) return;
+    updateSnapshot({ ...snapshot, items: snapshot.items.filter((_, position) => position !== index) });
+    setChecked((current) => current.filter((_, position) => position !== index));
+    setLineIndex((current) => Math.max(0, Math.min(current > index ? current - 1 : current, snapshot.items.length - 2)));
+  };
+  const addItem = () => {
+    if (!snapshot) return;
+    updateSnapshot({ ...snapshot, items: [...snapshot.items, emptyItem()] });
+    setChecked((current) => [...current, false]);
+  };
 
   if (receiptQuery.isPending) {
     return <Page title={t("receiptJobs.receipt")} back={back}><LoadingList label={t("receiptProgress.loading")} rows={2} /></Page>;
@@ -121,33 +154,112 @@ export function ReceiptDetailPage() {
       : receipt.status === "saved"
         ? t("receiptProgress.titleSaved")
         : t("receiptProgress.titleActive");
+  const reviewing = receipt.status === "ready" && snapshot !== null;
+  const carousel = reviewing && !fullEditorOpen;
+  const photo: LineViewerPhoto | null = receipt.sourceImageUrl ? { photo: receiptPhoto(receipt, photoSource.src), failed: photoSource.failed } : null;
+  const saveButton = (
+    <PrimaryButton disabled={!canSave} loading={save.isPending} onClick={() => save.mutate()}>
+      {save.isPending ? t("legacyCapture.saving") : warningsConfirmed ? t("legacyCapture.saveAnyway") : t("legacyCapture.savePurchase")}
+    </PrimaryButton>
+  );
   // The title says where the receipt is; the «?» explains the rest.
   return (
-    <Page title={title} back={back} end={receipt.status === "ready" ? <HelpLink topic="review-save" /> : <HelpLink topic="recognition" />}>
-      <ReceiptProgress receipt={receipt} retrying={retry.isPending} onRetry={receipt.status === "failed" || receipt.status === "uploaded" ? () => retry.mutate() : undefined} />
-      {retry.isError && <Notice tone="danger" role="alert"><p>{messageOf(t, retry.error, t("legacyCapture.unknownError"))}</p></Notice>}
-      {receipt.status === "saved" && (
+    <Page
+      title={title}
+      back={back}
+      // The carousel needs the height: a compact title, like the approved mock.
+      largeTitle={!carousel}
+      end={receipt.status === "ready" ? <HelpLink topic="review-save" /> : <HelpLink topic="recognition" />}
+      footer={carousel && (
         <>
-          <IonList inset>
-            {receipt.savedPurchaseId && <ItemLink to={`/purchases/${receipt.savedPurchaseId}`} state={returnState}><IonLabel color="primary">{t("receiptProgress.openPurchase")}</IonLabel></ItemLink>}
-            <ItemLink to="/purchases" lines="none"><IonLabel color="primary">{t("receiptProgress.openPurchases")}</IonLabel></ItemLink>
-          </IonList>
+          <button type="button" className="pm-footer-link" onClick={() => setFullEditorOpen(true)}>
+            {t("receiptReview.storeDateTotal")}
+            <ChevronRight size={16} aria-hidden="true" />
+          </button>
+          {saveButton}
         </>
       )}
-      {receipt.status === "ready" && snapshot && (
-        showIssueReview
-          ? <IssueReview snapshot={snapshot} onSnapshotChange={updateSnapshot} issues={receipt.issues} onOpenFullEditor={() => setFullEditorRequested(true)} onSave={() => save.mutate()} busy={save.isPending} canSave={Boolean(canSave)} photo={receiptPhoto(receipt, photoSource.src)} receiptId={receipt.id} />
-          : <ReviewForm snapshot={snapshot} setSnapshot={updateSnapshot} warnings={receipt.warnings} warningsConfirmed={warningsConfirmed} busy={save.isPending} canSave={Boolean(canSave)} onSave={() => save.mutate()} photo={receipt.sourceImageUrl ? { photo: receiptPhoto(receipt, photoSource.src), failed: photoSource.failed } : null} />
+    >
+      {/* A recognized draft shows its photo in the carousel; the thumbnails stay only for a receipt in several photos. */}
+      {(!reviewing || receipt.imageParts.length > 1) && (
+        <ReceiptProgress receipt={receipt} retrying={retry.isPending} onRetry={receipt.status === "failed" || receipt.status === "uploaded" ? () => retry.mutate() : undefined} />
+      )}
+      {retry.isError && <Notice tone="danger" role="alert"><p>{messageOf(t, retry.error, t("legacyCapture.unknownError"))}</p></Notice>}
+      {receipt.status === "saved" && (
+        <IonList inset>
+          {receipt.savedPurchaseId && <ItemLink to={`/purchases/${receipt.savedPurchaseId}`} state={returnState}><IonLabel color="primary">{t("receiptProgress.openPurchase")}</IonLabel></ItemLink>}
+          <ItemLink to="/purchases" lines="none"><IonLabel color="primary">{t("receiptProgress.openPurchases")}</IonLabel></ItemLink>
+        </IonList>
+      )}
+      {reviewing && (
+        carousel
+          ? (
+            <CaptureLineReview
+              snapshot={snapshot}
+              index={lineIndex}
+              onIndexChange={setLineIndex}
+              onChangeItem={updateItem}
+              onRemoveItem={removeItem}
+              checked={checked}
+              onCheckedChange={(index, value) => setChecked((current) => current.map((mark, position) => position === index ? value : mark))}
+              onUseLinesTotal={(receiptTotal) => updateSnapshot({ ...snapshot, receiptTotal })}
+              remainingIssues={warningsConfirmed ? receipt.issues : null}
+              photo={photo}
+              receiptId={receipt.id}
+            />
+          )
+          : (
+            <ReviewForm
+              snapshot={snapshot}
+              setSnapshot={updateSnapshot}
+              onRemoveItem={removeItem}
+              onAddItem={addItem}
+              warnings={receipt.warnings}
+              saveButton={saveButton}
+              onBackToLines={() => setFullEditorOpen(false)}
+              photo={photo}
+            />
+          )
       )}
       {save.isError && <Notice tone="danger" role="alert"><p>{messageOf(t, save.error, t("legacyCapture.unknownError"))}</p></Notice>}
     </Page>
   );
 }
 
+/**
+ * Gives the saved purchase the draft's «Верно, дальше» marks, through the
+ * same batched queue as the purchase's own line review. The saved lines have
+ * ids of their own, so the marks are moved over only when the purchase has
+ * exactly the draft's lines in the same order (same names and sums);
+ * otherwise they were only a visual aid on the draft screen.
+ */
+export async function queueDraftApprovals(sync: LineApprovalSync, purchaseId: string, draftItems: ReceiptItemSnapshot[], marks: boolean[]) {
+  if (!marks.some(Boolean)) return;
+  let saved: PurchaseDetail;
+  try {
+    saved = await getPurchase(purchaseId);
+  } catch {
+    return;
+  }
+  if (!sameLines(saved.items, draftItems)) return;
+  marks.forEach((mark, position) => { if (mark) sync.set(purchaseId, saved.items[position].id, true); });
+}
+
+function sameLines(saved: PurchaseDetail["items"], draft: ReceiptItemSnapshot[]): boolean {
+  if (saved.length !== draft.length) return false;
+  return saved.every((item, position) => {
+    const other = draft[position];
+    const sameTotal = item.lineTotal === null || other.lineTotal === null
+      ? item.lineTotal === other.lineTotal
+      : Math.abs(item.lineTotal - other.lineTotal) < 0.005;
+    return item.name.trim() === other.name.trim() && sameTotal;
+  });
+}
+
 // A bounding box describes one image, so a multi-part receipt only ever shows
 // the first photo whole. A receipt always has at least one stored part.
 // The photo URL is protected, so it arrives here already resolved to a blob URL.
-function receiptPhoto(receipt: ReceiptView, photoSrc: string | null): IssueReviewPhoto | null {
+function receiptPhoto(receipt: ReceiptView, photoSrc: string | null): ReceiptPhoto | null {
   if (!receipt.sourceImageUrl || !photoSrc) return null;
   return { url: photoSrc, croppable: receipt.imageParts.length <= 1 };
 }
@@ -155,11 +267,20 @@ function receiptPhoto(receipt: ReceiptView, photoSrc: string | null): IssueRevie
 const emptyItem = (): ReceiptItemSnapshot => ({ name: "", quantity: null, unit: null, unitPrice: null, lineTotal: null, kind: "product" });
 
 /** The full draft editor: store, date, currency and total, then every line. */
-function ReviewForm({ snapshot, setSnapshot, warnings, warningsConfirmed, busy, canSave, onSave, photo }: { snapshot: ReceiptSnapshot; setSnapshot: (snapshot: ReceiptSnapshot) => void; warnings: string[]; warningsConfirmed: boolean; busy: boolean; canSave: boolean; onSave: () => void; photo: LineViewerPhoto | null }) {
+function ReviewForm({ snapshot, setSnapshot, onRemoveItem, onAddItem, warnings, saveButton, onBackToLines, photo }: {
+  snapshot: ReceiptSnapshot;
+  setSnapshot: (snapshot: ReceiptSnapshot) => void;
+  onRemoveItem: (index: number) => void;
+  onAddItem: () => void;
+  warnings: string[];
+  saveButton: ReactNode;
+  onBackToLines: () => void;
+  photo: LineViewerPhoto | null;
+}) {
   const { t } = useTranslation();
   const [openLine, setOpenLine] = useState<number | null>(null);
   const updateItem = (index: number, patch: Partial<ReceiptItemSnapshot>) => setSnapshot({ ...snapshot, items: snapshot.items.map((item, position) => position === index ? { ...item, ...patch } : item) });
-  const removeItem = (index: number) => { setSnapshot({ ...snapshot, items: snapshot.items.filter((_, position) => position !== index) }); setOpenLine(null); };
+  const removeItem = (index: number) => { onRemoveItem(index); setOpenLine(null); };
   const productCount = snapshot.items.filter((item) => !isDiscount(item)).length;
   const discountCount = snapshot.items.length - productCount;
   const currency = snapshot.currency?.trim().toUpperCase() || null;
@@ -167,6 +288,12 @@ function ReviewForm({ snapshot, setSnapshot, warnings, warningsConfirmed, busy, 
   return (
     <section aria-labelledby="review-form-title">
       <h2 id="review-form-title" className="visually-hidden">{t("legacyCapture.reviewTitle")}</h2>
+      <IonList inset>
+        <IonItem button detail lines="none" onClick={onBackToLines}>
+          <ListChecks slot="start" size={20} className="pm-row-icon" aria-hidden="true" />
+          <IonLabel color="primary">{t("receiptReview.backToLines")}</IonLabel>
+        </IonItem>
+      </IonList>
       <IonList inset>
         <IonItem>
           <IonInput label={t("legacyCapture.store")} labelPlacement="fixed" value={snapshot.merchantName ?? ""} onIonInput={(event) => setSnapshot({ ...snapshot, merchantName: String(event.detail.value ?? "") || null })} />
@@ -204,13 +331,11 @@ function ReviewForm({ snapshot, setSnapshot, warnings, warningsConfirmed, busy, 
         onOpenLine={setOpenLine}
         onChange={updateItem}
         onRemove={removeItem}
-        onAdd={() => { setSnapshot({ ...snapshot, items: [...snapshot.items, emptyItem()] }); setOpenLine(snapshot.items.length); }}
+        onAdd={() => { onAddItem(); setOpenLine(snapshot.items.length); }}
         photo={photo}
       />
 
-      <PrimaryButton disabled={!canSave} loading={busy} onClick={onSave}>
-        {busy ? t("legacyCapture.saving") : warningsConfirmed ? t("legacyCapture.saveAnyway") : t("legacyCapture.savePurchase")}
-      </PrimaryButton>
+      {saveButton}
     </section>
   );
 }

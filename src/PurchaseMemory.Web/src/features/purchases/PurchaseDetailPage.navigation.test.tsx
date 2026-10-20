@@ -29,7 +29,7 @@ vi.mock("../../api/client", async (importOriginal) => {
 
 /*
  * «Назад» from a product opened off a purchase line lands on the same line:
- * the review reopens at the card that was open, the editor at the open line
+ * the review reopens at the line that was open, the editor at the open line
  * sheet. (These tests go through the fallback path, «open the origin's
  * address»: MemoryRouter has no browser history positions.)
  */
@@ -82,6 +82,7 @@ function renderAt(path: string) {
 }
 
 const backButton = () => screen.getByRole("link", { name: "Назад" });
+const shownName = () => (within(dialog()).getByLabelText(/^Название/) as HTMLInputElement).value;
 
 describe("purchase line → product → back", () => {
   beforeEach(() => {
@@ -105,54 +106,52 @@ describe("purchase line → product → back", () => {
     fireEvent.click(backButton());
     expect(await screen.findByRole("heading", { level: 1, name: "Żabka" })).toBeInTheDocument();
     expect(screen.getByTestId("where")).toHaveTextContent("/purchases/p1");
-    // Opened from the row, not from the review: no card is reopened.
-    expect(screen.queryByTestId("line-review-card")).not.toBeInTheDocument();
+    // Opened from the row, not from the review: the review is not reopened.
+    expect(screen.queryByTestId("line-carousel-card")).not.toBeInTheDocument();
   });
 
-  it("the review's «Открыть товар» opens the product; «Назад» reopens the review at the same card", async () => {
+  it("the review's «Открыть товар» opens the product; «Назад» reopens the review at the same line", async () => {
     renderAt("/purchases/p1");
 
     fireEvent.click(await screen.findByRole("button", { name: /^MLEKO 3.2.*сверить с чеком$/ }));
-    const card = screen.getByTestId("line-review-card");
-    expect(within(card).getByRole("heading", { level: 3, name: "MLEKO 3.2" })).toBeInTheDocument();
-    fireEvent.click(within(card).getByRole("button", { name: "Открыть товар «Mleko»" }));
+    expect(shownName()).toBe("MLEKO 3.2");
+    fireEvent.click(within(dialog()).getByRole("button", { name: "Открыть товар «Mleko»" }));
 
     expect(await screen.findByRole("heading", { level: 1, name: "Product screen" })).toBeInTheDocument();
     fireEvent.click(backButton());
 
     expect(await screen.findByRole("heading", { level: 1, name: "Żabka" })).toBeInTheDocument();
-    await waitFor(() => expect(within(screen.getByTestId("line-review-card")).getByRole("heading", { level: 3, name: "MLEKO 3.2" })).toBeInTheDocument());
+    await waitFor(() => expect(shownName()).toBe("MLEKO 3.2"));
   });
 
-  it("started from the header button, «Назад» still returns to the card that was showing", async () => {
+  it("started from the header button, «Назад» still returns to the line that was showing", async () => {
     renderAt("/purchases/p1");
 
     fireEvent.click(await screen.findByRole("button", { name: /^Проверить строки/ }));
-    // First card is KAWA; approve it, so the second one (MLEKO) is showing.
-    fireEvent.click(screen.getByRole("button", { name: "Строка верна" }));
-    await waitFor(() => expect(within(screen.getByTestId("line-review-card")).getByRole("heading", { level: 3, name: "MLEKO 3.2" })).toBeInTheDocument());
-    fireEvent.click(within(screen.getByTestId("line-review-card")).getByRole("button", { name: "Открыть товар «Mleko»" }));
+    // No line has a problem, so the first is KAWA; check it, so the second one (MLEKO) is showing.
+    expect(shownName()).toBe("KAWA");
+    fireEvent.click(within(dialog()).getByRole("button", { name: "Верно, дальше" }));
+    await waitFor(() => expect(shownName()).toBe("MLEKO 3.2"));
+    fireEvent.click(within(dialog()).getByRole("button", { name: "Открыть товар «Mleko»" }));
     fireEvent.click(await screen.findByRole("link", { name: "Назад" }));
 
-    await waitFor(() => expect(within(screen.getByTestId("line-review-card")).getByRole("heading", { level: 3, name: "MLEKO 3.2" })).toBeInTheDocument());
+    await waitFor(() => expect(shownName()).toBe("MLEKO 3.2"));
   });
 
-  it("the review's line sheet links to the product only while nothing is changed", async () => {
+  it("the review links to the product only while the line has no unsaved changes", async () => {
     renderAt("/purchases/p1");
 
     fireEvent.click(await screen.findByRole("button", { name: /^KAWA.*сверить с чеком$/ }));
-    fireEvent.click(screen.getByRole("button", { name: "Исправить строку" }));
-    const sheet = dialog("Строка 1");
-    expect(within(sheet).getByRole("button", { name: "Открыть товар «Kawa»" })).toBeInTheDocument();
+    expect(within(dialog()).getByRole("button", { name: "Открыть товар «Kawa»" })).toBeInTheDocument();
 
-    fireEvent.change(within(sheet).getByLabelText("Название"), { target: { value: "KAWA 2" } });
-    expect(within(sheet).queryByRole("button", { name: "Открыть товар «Kawa»" })).not.toBeInTheDocument();
-    fireEvent.change(within(sheet).getByLabelText("Название"), { target: { value: "KAWA" } });
-    fireEvent.click(within(sheet).getByRole("button", { name: "Открыть товар «Kawa»" }));
+    fireEvent.change(within(dialog()).getByLabelText("Название"), { target: { value: "KAWA 2" } });
+    expect(within(dialog()).queryByRole("button", { name: "Открыть товар «Kawa»" })).not.toBeInTheDocument();
+    fireEvent.change(within(dialog()).getByLabelText("Название"), { target: { value: "KAWA" } });
+    fireEvent.click(within(dialog()).getByRole("button", { name: "Открыть товар «Kawa»" }));
 
     expect(await screen.findByRole("heading", { level: 1, name: "Product screen" })).toBeInTheDocument();
     fireEvent.click(backButton());
-    await waitFor(() => expect(within(screen.getByTestId("line-review-card")).getByRole("heading", { level: 3, name: "KAWA" })).toBeInTheDocument());
+    await waitFor(() => expect(shownName()).toBe("KAWA"));
   });
 
   it("the editor's line sheet links to the product (when unchanged) and «Назад» reopens that sheet", async () => {
