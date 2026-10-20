@@ -260,10 +260,6 @@ ion-button.pm-tap-button { min-height: 44px; margin-top: 0; margin-bottom: 0; }
 .pm-batch-status { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 10px; margin-top: 4px; }
 .pm-batch-status small { color: var(--pm-danger-text); }
 
-/* Issue review: the fragment of the photo an issue points at. */
-.pm-issue-photo { width: 100%; padding: 8px 0; }
-.pm-issue-photo-full { display: block; width: 100%; max-height: 14rem; object-fit: contain; border-radius: 8px; background: #f2f2f7; }
-.pm-crop { position: relative; overflow: hidden; width: 100%; aspect-ratio: 4 / 1; border-radius: 8px; background: #f2f2f7; }
 .pm-crop-image { position: absolute; height: auto; max-width: none; }
 
 /* A receipt line on the photo: a window of the photo fitted to its space, zoomable (LinePhoto). */
@@ -301,71 +297,104 @@ ion-button.pm-tap-button { min-height: 44px; margin-top: 0; margin-bottom: 0; }
 /* The line's sheet in an editor: the line on the photo above its fields. */
 .pm-sheet-photo { position: relative; height: min(32vh, 260px); margin: 8px 16px 0; }
 
-/* Swipe review of a purchase's lines (LineReview). */
+/* The line review of a saved purchase: the carousel in a full-screen window. */
 @media (min-width: 768px) and (min-height: 600px) {
   .pm-review-modal { --width: 480px; --height: min(860px, 92vh); }
 }
-.pm-review {
-  box-sizing: border-box; display: flex; flex-direction: column; gap: 10px; height: 100%; overflow: hidden; outline: none;
-  padding: 8px 12px calc(10px + env(safe-area-inset-bottom));
+.pm-review-carousel { padding: 6px 0 calc(16px + env(safe-area-inset-bottom)); }
+
+/* The receipt's lines one at a time (LineCarousel). */
+.pm-carousel { display: flex; flex-direction: column; margin: 0 auto; max-width: var(--pm-content-width); }
+.pm-carousel-totals { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 10px; padding: 6px 16px 8px; font-size: 13px; line-height: 1.35; color: var(--pm-muted); }
+.pm-carousel-totals p { display: flex; align-items: flex-start; gap: 6px; margin: 0; }
+.pm-carousel-totals p svg { flex: none; margin-top: 2px; }
+.pm-carousel-totals[data-tone="success"] p { color: var(--pm-success-text); }
+.pm-carousel-totals[data-tone="warning"] p { color: var(--pm-warning-text); }
+.pm-carousel-link, .pm-footer-link {
+  display: inline-flex; align-items: center; justify-content: center; gap: 4px; min-height: 44px; margin: 0; padding: 0 4px;
+  border: 0; background: none; color: var(--ion-color-primary); font: inherit; font-size: 15px; cursor: pointer;
 }
-.pm-review-card {
-  position: relative; display: flex; flex: 1; flex-direction: column; gap: 10px; min-height: 0; padding: 8px;
-  border-radius: 16px; background: #fff; box-shadow: 0 2px 12px rgba(0, 0, 0, .12);
-  touch-action: none; user-select: none; -webkit-user-select: none; transition: transform .25s ease;
+.pm-carousel-link { min-height: 32px; font-size: 13px; }
+.pm-carousel-photo { position: relative; height: 230px; margin: 0 16px; border-radius: 14px; overflow: hidden; background: #2b2b2e; }
+.pm-carousel-photo .pm-photo-frame { border-radius: 0; background: #2b2b2e; }
+.pm-carousel-photo[data-animate="true"] .pm-photo-frame { transition: width .35s cubic-bezier(.2, .8, .2, 1), height .35s cubic-bezier(.2, .8, .2, 1); }
+/* The photo glides to the next line instead of jumping; the highlight moves with it. */
+.pm-carousel-photo[data-animate="true"] :is(.pm-crop-image, .pm-text-highlight, .pm-locator-highlight) {
+  transition: left .35s cubic-bezier(.2, .8, .2, 1), top .35s cubic-bezier(.2, .8, .2, 1), width .35s cubic-bezier(.2, .8, .2, 1), height .35s cubic-bezier(.2, .8, .2, 1);
 }
-.pm-review-card[data-dragging="true"] { transition: none; }
-.pm-review-card[data-leaving="true"] { transform: translateX(130%) rotate(14deg); opacity: 0; transition: transform .22s ease-in, opacity .22s ease-in; }
-.pm-review-photo { position: relative; flex: 1; min-height: 120px; }
-.pm-review-photo-empty { display: grid; place-items: center; padding: 12px; border-radius: 10px; color: var(--pm-muted); background: var(--pm-grouped-background); text-align: center; }
-.pm-review-photo-empty p { margin: 0; }
-.pm-review-info { display: grid; flex: none; gap: 4px; padding: 0 6px 4px; }
-.pm-review-meta { display: flex; align-items: center; justify-content: space-between; min-height: 32px; color: var(--pm-muted); font-size: 13px; }
-.pm-review-checked {
-  display: inline-flex; align-items: center; gap: 4px; min-height: 32px; padding: 4px 0 4px 8px; border: 0;
-  color: var(--pm-success-text); background: none; font: inherit; cursor: pointer;
+.pm-carousel-photo-empty { display: grid; place-items: center; height: 100%; padding: 12px; box-sizing: border-box; color: #e5e5ea; text-align: center; font-size: 15px; }
+.pm-carousel-photo-empty p { margin: 0; }
+.pm-carousel-nav { display: flex; align-items: center; justify-content: space-between; padding: 6px 16px 0; }
+.pm-carousel-chevron {
+  display: grid; flex: none; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 22px;
+  background: #fff; color: var(--ion-color-primary); cursor: pointer;
 }
-.pm-review-checked:focus-visible { outline: 2px solid var(--ion-color-primary); outline-offset: 2px; border-radius: 6px; }
-.pm-review-name {
-  display: -webkit-box; margin: 0; overflow: hidden; color: var(--ion-text-color, #000); font-size: 19px; font-weight: 600; line-height: 1.25;
-  overflow-wrap: anywhere; -webkit-box-orient: vertical; -webkit-line-clamp: 3;
+.pm-carousel-chevron:disabled { color: #c7c7cc; cursor: default; }
+.pm-carousel-position { display: flex; flex-direction: column; align-items: center; min-width: 0; }
+.pm-carousel-count { color: var(--pm-muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+.pm-carousel-dots { display: flex; flex-wrap: nowrap; justify-content: center; }
+.pm-carousel-dot { display: grid; place-items: center; width: 24px; height: 44px; margin: -10px 0 -8px; padding: 0; border: 0; background: none; cursor: pointer; }
+.pm-carousel-dot span { display: block; width: 8px; height: 8px; border-radius: 4px; background: #c7c7cc; transition: width .25s, background-color .25s; }
+.pm-carousel-dot[data-state="current"] span { width: 16px; background: var(--ion-color-primary); }
+.pm-carousel-dot[data-state="problem"] span { background: #c77a1c; }
+.pm-carousel-dot[data-state="checked"] span { background: #7fb08f; }
+.pm-carousel-chevron:focus-visible, .pm-carousel-dot:focus-visible, .pm-carousel-link:focus-visible, .pm-footer-link:focus-visible,
+.pm-carousel-approve:focus-visible, .pm-carousel-remove:focus-visible, .pm-carousel-checked:focus-visible {
+  outline: 2px solid var(--ion-color-primary); outline-offset: 2px;
 }
-.pm-review-figures { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; color: var(--pm-muted); font-size: 16px; font-variant-numeric: tabular-nums; }
-.pm-review-figures strong { flex: none; color: var(--ion-text-color, #000); font-size: 20px; }
-.pm-review-figures strong.pm-discount-amount { color: var(--pm-success-text); }
-.pm-review-discount { display: flex; justify-content: space-between; gap: 12px; color: var(--pm-muted); font-size: 14px; font-variant-numeric: tabular-nums; }
-.pm-review-open-product { justify-self: start; text-align: start; min-height: 44px; margin: 0; padding: 0 4px 0 0; border: 0; background: none; color: var(--ion-color-primary); font: inherit; font-size: 15px; cursor: pointer; }
-.pm-review-open-product:focus-visible { outline: 2px solid var(--ion-color-primary); outline-offset: 2px; border-radius: 6px; }
-.pm-review-product { display: -webkit-box; margin: 0; overflow: hidden; color: var(--pm-muted); font-size: 13px; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
-.pm-review-actions { display: flex; flex: none; align-items: center; justify-content: center; gap: 24px; }
-.pm-review-back { width: 44px; height: 44px; margin: 0; --padding-start: 0; --padding-end: 0; }
-.pm-review-action { width: 64px; height: 64px; margin: 0; --border-radius: 50%; --padding-start: 0; --padding-end: 0; --box-shadow: 0 2px 8px rgba(0, 0, 0, .18); }
-.pm-review-approve { --background: var(--ion-color-success); --background-activated: var(--ion-color-success-shade); --color: #fff; }
-.pm-review-edit { --background: var(--ion-background-color, #fff); --background-activated: var(--pm-grouped-background); --color: var(--ion-color-primary); }
-.pm-review-stamp {
-  position: absolute; top: 16px; z-index: 2; display: grid; place-items: center; width: 52px; height: 52px;
-  border-radius: 50%; color: #fff; opacity: 0; pointer-events: none;
+/* pan-y: a vertical drag still scrolls the screen; a horizontal one is the swipe. */
+.pm-carousel-card { margin: 4px 16px 0; overflow: hidden; border-radius: 14px; background: #fff; touch-action: pan-y; }
+.pm-carousel-card[data-animate="true"] { animation: pm-carousel-in .25s ease-out; }
+@keyframes pm-carousel-in { from { opacity: .4; } to { opacity: 1; } }
+.pm-carousel-problem { display: flex; align-items: flex-start; gap: 8px; margin: 0; padding: 10px 16px; color: #8a541f; background: #fdf0de; font-size: 14px; line-height: 1.35; }
+.pm-carousel-problem svg { flex: none; margin-top: 1px; }
+.pm-carousel-note { margin: 0; padding: 8px 16px 0; color: var(--pm-muted); font-size: 13px; }
+.pm-carousel-field { display: block; min-width: 0; padding: 10px 12px; cursor: text; }
+.pm-carousel-field > span { display: block; color: var(--pm-muted); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* 17px: iOS does not zoom the page into a field this size. */
+.pm-carousel-field input {
+  box-sizing: border-box; width: 100%; padding: 2px 0; border: 0; outline: none; background: transparent;
+  color: var(--ion-text-color, #1c1c1e); font: inherit; font-size: 17px; font-variant-numeric: tabular-nums;
 }
-.pm-review-stamp-ok { left: 16px; background: var(--ion-color-success); }
-.pm-review-stamp-edit { right: 16px; background: var(--ion-color-primary); }
-.pm-review-done { display: grid; flex: 1; align-content: center; justify-items: center; gap: 12px; text-align: center; }
-.pm-review-done-icon { color: var(--ion-color-success); }
-.pm-review-done-title { margin: 0; font-size: 20px; font-weight: 600; }
-.pm-review-done ion-button svg { margin-inline-end: 6px; }
+.pm-carousel-field input:focus { box-shadow: 0 2px 0 var(--ion-color-primary); }
+.pm-carousel-field input[aria-invalid="true"] { box-shadow: 0 2px 0 var(--ion-color-warning); }
+.pm-carousel-name { padding: 10px 16px 8px; border-bottom: 1px solid #e5e5ea; }
+.pm-carousel-figures { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.pm-carousel-figures-single { grid-template-columns: minmax(0, 1fr); }
+.pm-carousel-figures .pm-carousel-field + .pm-carousel-field { border-left: 1px solid #e5e5ea; }
+.pm-carousel-figures .pm-carousel-field:first-child { padding-left: 16px; }
+.pm-carousel-error { margin: 8px 16px 0; color: var(--pm-danger-text); font-size: 14px; }
+.pm-carousel-actions { display: flex; gap: 10px; padding: 10px 16px 0; }
+.pm-carousel-remove, .pm-carousel-approve, .pm-carousel-checked {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; margin: 0; border-radius: 12px; font: inherit; font-size: 16px;
+}
+.pm-carousel-remove { flex: none; padding: 0 16px; border: 0; background: #fff; color: var(--pm-danger-text); cursor: pointer; }
+.pm-carousel-approve { flex: 1; padding: 0 12px; border: 1.5px solid var(--ion-color-primary); background: #fff; color: var(--ion-color-primary); font-weight: 600; cursor: pointer; }
+.pm-carousel-checked { flex: 1; padding: 0 12px; border: 0; background: #e7efe9; color: var(--pm-success-text); }
+button.pm-carousel-checked { cursor: pointer; }
+.pm-carousel button:disabled { opacity: .55; cursor: default; }
+.pm-carousel .pm-carousel-chevron:disabled { opacity: 1; }
+.pm-carousel-extra { padding-top: 8px; }
+
+/* The recognized receipt before saving: store and date · total above the carousel. */
+.pm-capture-summary { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 8px; padding: 4px 16px 0; max-width: var(--pm-content-width); margin: 0 auto; }
+.pm-capture-store { margin: 0; font-size: 15px; font-weight: 600; }
+.pm-capture-meta { margin: 0; color: var(--pm-muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+.pm-capture-warnings { max-width: var(--pm-content-width); margin: 6px auto 0; padding: 0 16px; color: var(--pm-warning-text); font-size: 13px; line-height: 1.35; }
+.pm-capture-warnings p, .pm-capture-warnings ul { margin: 0; }
+.pm-capture-warnings ul { padding-left: 18px; }
+.pm-capture-empty { max-width: var(--pm-content-width); margin: 12px auto; padding: 0 16px; color: var(--pm-muted); font-size: 15px; }
+
+/* A screen's bottom bar (Page `footer`): its main button, always in reach. */
+.pm-page-footer ion-toolbar, .pm-page-footer { --background: var(--pm-grouped-background); background: var(--pm-grouped-background); }
+.pm-page-footer-body { display: flex; flex-direction: column; gap: 2px; max-width: var(--pm-content-width); margin: 0 auto; padding: 4px 0 calc(8px + env(safe-area-inset-bottom)); }
+.pm-page-footer-body ion-button { margin-top: 0; margin-bottom: 0; }
+
 .pm-review-progress { display: inline-flex; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; }
 .pm-section-header ion-button.pm-review-start { font-variant-numeric: tabular-nums; }
 .pm-review-start span { margin-left: 4px; }
 .pm-line-checked { display: inline-flex; margin-left: 6px; color: var(--pm-success-text); vertical-align: -2px; }
-/* A phone on its side: photo and line side by side, the buttons in a column. */
-@media (orientation: landscape) and (max-height: 500px) {
-  .pm-review { flex-direction: row; padding: 6px calc(10px + env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) calc(10px + env(safe-area-inset-left)); }
-  .pm-review-card { flex-direction: row; }
-  .pm-review-photo { min-height: 0; }
-  .pm-review-info { width: 40%; align-content: start; overflow-y: auto; }
-  .pm-review-actions { flex-direction: column; gap: 12px; }
-  .pm-review-action { width: 56px; height: 56px; }
-}
-/* A purchase line that opens the swipe review at it: the whole text block is the button. */
+/* A purchase line that opens the line review at it: the whole text block is the button. */
 .pm-line-locate {
   display: block; width: 100%; min-height: 44px; margin: 0; padding: 0; border: 0; background: none;
   color: inherit; font: inherit; text-align: left; cursor: pointer;

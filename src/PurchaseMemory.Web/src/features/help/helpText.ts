@@ -193,20 +193,26 @@ export const helpRu: HelpText = {
     },
     "review-save": {
       title: "Проверка и сохранение",
-      summary: "Перед сохранением вы проверяете черновик: магазин, дату, итог и строки. Сомнительные места приложение показывает само.",
+      summary: "Перед сохранением вы проверяете черновик: строки чека — по одной, прямо на экране «Чек распознан», магазин, дату и итог — в полном редакторе. Сомнительные места приложение показывает само.",
       steps: [
-        "Если есть неточности, открывается «Нужно уточнить»: карточка на каждую проблему с фрагментом фото чека (если место строки на фото не найдено — со всем фото). Исправьте значение или нажмите «Взять сумму строк».",
-        "Если нужно поправить что-то ещё, нажмите «Открыть полный редактор»: магазин, дата, валюта и итог — сверху, ниже — строки чека списком. Нажмите на строку, чтобы изменить название, количество, цену и сумму. «Добавить строку» добавляет новую; лишнюю проведите влево и нажмите «Удалить» (или «Удалить строку N» внутри строки).",
-        "Нажмите «Сохранить покупку». После сохранения откроется история покупок."
+        "На экране «Чек распознан» сверху — магазин, дата и итог, под ними — сходится ли сумма строк с итогом чека. Ниже фото чека, сдвинутое к текущей строке (строка выделена жёлтым), и сама строка: «Название», «Кол-во», «Цена» и «Сумма» можно исправить прямо там.",
+        "Строки листаются свайпом влево или вправо по фото или по строке, стрелками «‹» и «›» или точками под «Строка N из M». Открывается первая строка, в которой что-то не так (оранжевая точка), иначе — первая.",
+        "Строка верна — нажмите «Верно, дальше»: строка отмечается «Проверено» и открывается следующая (на последней строке кнопка называется «Верно»). Лишнюю строку — «Удалить», приложение переспросит.",
+        "Магазин, дату, валюту и итог меняют в полном редакторе: «Магазин, дата и итог» внизу экрана. Там же все строки списком и «Добавить строку»; «Проверить строки по одной» возвращает к строкам.",
+        "Нажмите «Сохранить покупку» внизу экрана. После сохранения откроется история покупок."
       ],
       see: [
-        "Скидка — отдельная строка со значком % сразу под своим товаром: цена товара до скидки зачёркнута, рядом — цена после скидки. Скидка на весь чек подписана «на весь чек».",
-        "Счётчик «Осталось N неточностей» и сообщение «Все неточности исправлены», когда можно сохранять.",
-        "В полном редакторе сверху в строке — её место на фото чека: напечатанный текст строки выделен жёлтым (или строка в рамке); фото можно увеличить двумя пальцами или двойным нажатием (подробнее — «Проверка строк по фото чека»)."
+        "Оранжевая плашка над строкой объясняет, что не так: не распознана цена или сумма, или количество × цена не равно сумме («2 × 4,49 = 8,98, а сумма 8,89»).",
+        "Точки под «Строка N из M»: тёмно-зелёная широкая — текущая строка, оранжевая — с проблемой, светло-зелёная — проверенная.",
+        "Строки не сходятся с итогом — «Строки дают … из … · не хватает …» и кнопка «Взять сумму строк», если итог чека распознан неверно. Как только всё сходится — «Сумма строк сходится с итогом чека».",
+        "Скидка — отдельная строка: её название и «Размер скидки», и к какому товару она относится. В полном редакторе скидка стоит со значком % сразу под своим товаром. Скидка на весь чек подписана «на весь чек».",
+        "Отметки «Проверено» переходят в сохранённую покупку — там эти строки уже будут с галочкой."
       ],
       trouble: [
-        "Если предупреждения остались, первое нажатие покажет их, а кнопка станет «Всё равно сохранить» — так покупку можно сохранить как есть и поправить позже.",
+        "Если неточности остались, первое нажатие «Сохранить покупку» покажет их списком, а кнопка станет «Всё равно сохранить» — так покупку можно сохранить как есть и поправить позже.",
         "Кнопка сохранения неактивна, пока у всех позиций нет названия.",
+        "Если в чеке не распознано ни одной строки, на экране это написано: добавьте строки в «Магазин, дата и итог» → «Добавить строку».",
+        "Если не распознаны магазин, дата, валюта или итог чека, это написано над строками под заголовком «Нужно проверить»; впишите их в «Магазин, дата и итог» — пункт сразу пропадёт.",
         "Не сохранили сразу — чек останется в «Чеки в работе» и в «Нужно проверить» как «Чек ждёт сохранения»."
       ]
     },
@@ -271,19 +277,19 @@ export const helpRu: HelpText = {
     },
     "receipt-lines-photo": {
       title: "Проверка строк по фото чека",
-      summary: "Строки покупки можно сверить с чеком по одной, как карточки: строка выделена на фото и всё о ней на одном экране. Свайп вправо — верно, влево — исправить.",
+      summary: "Строки чека сверяются с фото по одной: фото сдвигается к строке и выделяет её, а строку можно сразу исправить. Так проверяют и новый чек («Чек распознан»), и сохранённую покупку.",
       steps: [
-        "Откройте покупку. Нажмите на значок со списком и галочкой справа над строками (рядом с числом позиций) — проверка начнётся с первой непроверенной строки. Или нажмите на саму строку — проверка откроется прямо на ней.",
-        "Сверьте фото и данные под ним. Строка верна — проведите карточку вправо или нажмите зелёную кнопку с галочкой («Строка верна»). Откроется следующая непроверенная строка.",
-        "Что-то не так — проведите карточку влево или нажмите кнопку с карандашом («Исправить строку»), поправьте название, количество, цену или сумму и нажмите «Сохранить». Не тот товар — там же «Изменить товар». Исправленная строка тоже считается проверенной.",
-        "Мелко? Разведите два пальца на фото или нажмите на него дважды — фото увеличится, выделение останется на строке. Пока фото увеличено, карточка не листается; уменьшите его, чтобы листать дальше.",
-        "Стрелка назад внизу слева возвращает к предыдущей строке. На компьютере: → — верно, ← — исправить, Backspace — назад.",
-        "Под данными строки — «Открыть товар»: откроется карточка товара (то же — «Открыть товар» в окне «Строка N», пока вы ничего не меняли). «Назад» в карточке возвращает проверку к той же строке."
+        "Откройте покупку. Нажмите на значок со списком и галочкой справа над строками (рядом с числом позиций) — проверка начнётся с первой строки, в которой что-то не так (или с первой). Или нажмите на саму строку — проверка откроется прямо на ней.",
+        "Сверьте фото и строку под ним. Листайте свайпом влево или вправо по фото или по строке, стрелками «‹» и «›» по бокам от «Строка N из M» или точками под ним.",
+        "Строка верна — «Верно, дальше»: строка отмечается «Проверено» и открывается следующая. Что-то не так — исправьте поля «Название», «Кол-во», «Цена» или «Сумма» прямо в строке: в покупке исправление сохраняется, когда вы переходите к другой строке или нажимаете «Верно, дальше», и такая строка тоже считается проверенной.",
+        "Лишняя строка — «Удалить» и подтвердите: покупка сохранится без неё.",
+        "Мелко? Разведите два пальца на фото или нажмите на него дважды (или кнопку с лупой) — фото увеличится, выделение останется на строке. Пока фото увеличено, свайп по фото не листает строки; уменьшите его или листайте стрелками.",
+        "Под строкой — «Товар в каталоге»: с чем связана строка, «Изменить товар» и «Открыть товар» (пока в строке нет несохранённых изменений). «Назад» в карточке товара возвращает проверку к той же строке."
       ],
       see: [
         "Вверху — сколько строк проверено, например «3/12». Проверенные строки в списке покупки отмечены галочкой.",
-        "Когда всё проверено — «Все строки проверены» и кнопка «Проверить ещё раз», чтобы пройти все строки заново. Если закрыть проверку и открыть снова, покажутся только непроверенные строки.",
-        "Отметка «Проверено» на карточке: нажмите на неё, чтобы снять отметку.",
+        "Над фото — сходится ли сумма строк с итогом чека; над строкой — оранжевая плашка, если в ней что-то не так. Точки: широкая тёмно-зелёная — текущая строка, оранжевая — с проблемой, светло-зелёная — проверенная.",
+        "Отметка «Проверено» на месте кнопки «Верно, дальше»: нажмите на неё, чтобы снять отметку.",
         "Как выделена строка: обычно жёлтым закрашен сам напечатанный текст строки с тонкой коричневой обводкой, остальной чек чуть затемнён — выделение идёт вдоль строки, даже если чек снят под углом, а цена напечатана строкой ниже. Если текст строки найти не удалось, строка показана в прямоугольной рамке, как раньше.",
         "Текст строки находится автоматически через несколько секунд после распознавания чека. Если открыть чек сразу, сначала может быть рамка — откройте его ещё раз чуть позже. После правки строки выделение подбирается заново при сохранении.",
         "Отметки сразу сохраняются на телефоне и через несколько секунд уходят на сервер — их видит и второй участник. Без интернета они дождутся связи."
@@ -327,7 +333,7 @@ export const helpRu: HelpText = {
       steps: [
         "Фото товара: откройте карточку товара. В варианте A под большим фото есть «Сфотографировать» и «Из галереи», а для показанного фото — «Сделать главным» и «Удалить фото»; другое фото выбирается миниатюрой. В варианте B — «Снять» над лентой фото и «+ Добавить» в её конце (из галереи); нажмите на фото в ленте, чтобы появились «Сделать главным» и «Удалить фото». Главное фото видно в списке «Товары».",
         "Штрихкод: в карточке товара нажмите «Сканировать штрихкод» (или «Сканировать» рядом со штрихкодами) и наведите камеру. Не читается — кнопка с клавиатурой вверху, «Ввести код вручную», цифры под штрихкодом и «Добавить».",
-        "Из покупки: нажмите на строку, проведите карточку влево («Исправить строку») — внизу окна «Строка N» есть «Сфотографировать товар», «Выбрать фото из галереи» и «Сканировать штрихкод». Фото и код попадут в карточку товара, к которому привязана строка.",
+        "Из покупки: нажмите на строку — в проверке строк под строкой, в разделе «Товар», есть «Сфотографировать товар», «Выбрать фото из галереи» и «Сканировать штрихкод». Фото и код попадут в карточку товара, к которому привязана строка.",
         "В магазине: на «Главной» нажмите «Сканировать штрихкод» (или плитку «Сканировать») и наведите камеру на штрихкод.",
         "Знакомый товар: видны последняя покупка (дата, магазин, цена), где было дешевле всего, ваша оценка и отметка «Больше не покупать». Дальше — «Открыть карточку товара» или «Сканировать ещё».",
         "Новый штрихкод: найдите свой товар по названию и нажмите «Привязать». Товара ещё нет — «Новый товар»: проверьте название (если код есть в базе Open Food Facts, название и бренд уже подставлены) и нажмите «Создать товар». Товар появится в «Товарах» без покупок, штрихкод привяжется к нему, и откроется его результат скана. Или «Запомнить на потом» — ничего не создаётся, код просто запоминается.",
@@ -663,20 +669,26 @@ export const helpEn: HelpText = {
     },
     "review-save": {
       title: "Review and save",
-      summary: "Before saving you check the draft: store, date, total and lines. The app points out doubtful places itself.",
+      summary: "Before saving you check the draft: the receipt lines one by one, right on the “Receipt recognized” screen, and store, date and total in the full editor. The app points out doubtful places itself.",
       steps: [
-        "If there are problems, “Needs a closer look” opens: one card per problem with a crop of the receipt photo (or the whole photo when the line could not be located). Fix the value or press “Use the line sum”.",
-        "To change anything else, press “Open full editor”: store, date, currency and total at the top, the receipt lines as a list below. Tap a line to change its name, quantity, price and sum. “Add line” adds a new one; swipe an extra line left and press “Delete” (or “Remove line N” inside the line).",
-        "Press “Save purchase”. Purchase history opens after saving."
+        "The “Receipt recognized” screen starts with the store, date and total, and whether the lines add up to the receipt total. Below are the receipt photo, moved to the current line (highlighted in yellow), and the line itself: “Name”, “Qty”, “Price” and “Amount” can be fixed right there.",
+        "Swipe left or right on the photo or the line, use the “‹” and “›” arrows, or tap the dots under “Line N of M” to move between lines. The first line with a problem opens first (orange dot), otherwise the first line.",
+        "The line is right — press “Right, next”: the line is marked “Checked” and the next one opens (on the last line the button is “Right”). An extra line — “Delete”; the app asks first.",
+        "Store, date, currency and total are changed in the full editor: “Store, date and total” at the bottom of the screen. It also lists every line and has “Add line”; “Check lines one by one” takes you back to the lines.",
+        "Press “Save purchase” at the bottom of the screen. Purchase history opens after saving."
       ],
       see: [
-        "A discount is its own line with a % icon right under its product: the product's price before the discount is struck through, the price after it is next to it. A whole-receipt discount is labelled “on the whole receipt”.",
-        "A “N issues left” counter and “Every issue is resolved” when you can save.",
-        "In the full editor a line's sheet starts with its place on the receipt photo: the line's printed text highlighted in yellow (or the line in a frame); pinch or double-tap to zoom (see “Checking lines against the receipt”)."
+        "The orange strip above a line says what is wrong: the price or sum was not read, or quantity × price is not the sum (“2 × 4.49 = 8.98, but the sum is 8.89”).",
+        "The dots under “Line N of M”: the wide dark green one is the current line, orange has a problem, light green is checked.",
+        "When the lines don't add up — “Lines give … of … · … short” and “Use the line sum” in case the receipt total was read wrong. Once everything adds up — “The lines add up to the receipt total”.",
+        "A discount is its own line: its name and “Discount amount”, and which product it belongs to. In the full editor it sits with a % icon right under its product. A whole-receipt discount is labelled “on the whole receipt”.",
+        "The “Checked” marks carry over to the saved purchase — those lines already have a tick there."
       ],
       trouble: [
-        "If warnings remain, the first press shows them and the button becomes “Save anyway” — so you can save as is and fix it later.",
+        "If problems remain, the first press of “Save purchase” lists them and the button becomes “Save anyway” — so you can save as is and fix it later.",
         "Saving is disabled until every line has a name.",
+        "If no lines were recognized, the screen says so: add them in “Store, date and total” → “Add line”.",
+        "If the store, date, currency or receipt total was not read, it says so above the lines under “Needs attention”; fill it in under “Store, date and total” and the item goes away at once.",
         "Didn't save right away — the receipt stays in “Receipts in progress” and in “Needs attention” as “Receipt waiting to be saved”."
       ]
     },
@@ -741,19 +753,19 @@ export const helpEn: HelpText = {
     },
     "receipt-lines-photo": {
       title: "Checking lines against the receipt",
-      summary: "Check a purchase's lines one by one, like cards: the line highlighted on the receipt photo and everything about it on one screen. Swipe right — right, left — correct it.",
+      summary: "Receipt lines are compared with the photo one at a time: the photo moves to the line and highlights it, and the line can be fixed right away. This works for a new receipt (“Receipt recognized”) and for a saved purchase.",
       steps: [
-        "Open a purchase. Tap the list-with-a-tick icon at the right above the lines (next to the number of lines) to start at the first unchecked line, or tap a line to open the check right at it.",
-        "Compare the photo and the details below it. The line is right — swipe the card right or press the green tick (“Line is right”). The next unchecked line opens.",
-        "Something is wrong — swipe left or press the pencil (“Correct the line”), fix the name, quantity, price or sum and press “Save”. Wrong product — “Change product” is right there. A corrected line counts as checked too.",
-        "Too small? Pinch the photo or double-tap it — the highlight stays on the line. While the photo is zoomed the card does not swipe; zoom out to go on.",
-        "The back arrow at the bottom left returns to the previous line. On a computer: → right, ← correct, Backspace back.",
-        "Under the line's details there is “Open product”: it opens the product card (so does “Open product” in the “Line N” sheet while you have changed nothing). “Back” on the card returns the review to the same line."
+        "Open a purchase. Tap the list-with-a-tick icon at the right above the lines (next to the number of lines) to start at the first line with a problem (or the first line), or tap a line to open the check right at it.",
+        "Compare the photo and the line below it. Swipe left or right on the photo or the line, use the “‹” and “›” arrows beside “Line N of M”, or tap the dots under it.",
+        "The line is right — “Right, next”: the line is marked “Checked” and the next one opens. Something is wrong — fix “Name”, “Qty”, “Price” or “Amount” right in the line: in a purchase the fix is saved when you move to another line or press “Right, next”, and such a line counts as checked too.",
+        "An extra line — “Delete” and confirm: the purchase is saved without it.",
+        "Too small? Pinch the photo or double-tap it (or press the magnifier button) — the highlight stays on the line. While the photo is zoomed, swiping the photo does not change lines; zoom out or use the arrows.",
+        "Under the line there is “Catalog product”: what the line is linked to, “Change product” and “Open product” (while the line has no unsaved changes). “Back” on the product card returns the review to the same line."
       ],
       see: [
         "At the top: how many lines are checked, e.g. “3/12”. Checked lines have a tick in the purchase's list.",
-        "When everything is checked — “All lines checked” and “Check again” to go through every line once more. Closing and reopening the check shows only unchecked lines.",
-        "The “Checked” mark on a card: tap it to remove the mark.",
+        "Above the photo — whether the lines add up to the receipt total; above the line — an orange strip when something is wrong with it. Dots: the wide dark green one is the current line, orange has a problem, light green is checked.",
+        "The “Checked” mark in place of “Right, next”: tap it to remove the mark.",
         "How a line is highlighted: usually its printed text is filled pale yellow with a thin brown outline and the rest of the receipt slightly dimmed — the highlight follows the line even on a tilted photo or when the price is printed on the row below. When the line's text could not be found, the line is shown in a rectangular frame as before.",
         "The line's text is found automatically a few seconds after the receipt is recognised. If you open the receipt right away you may see the frame first — open it again a little later. After you edit a line, its highlight is matched again when you save.",
         "Marks are saved on the phone at once and reach the server a few seconds later — the other member sees them too. Offline, they wait for the connection."
@@ -797,7 +809,7 @@ export const helpEn: HelpText = {
       steps: [
         "Product photo: open the product card. In variant A the big photo has “Take photo” and “From library” under it, plus “Make main” and “Delete photo” for the photo shown; pick another photo by its thumbnail. In variant B there is “Shoot” above the photo strip and “+ Add” at its end (from the library); tap a photo in the strip to get “Make main” and “Delete photo”. The main photo shows in the Products list.",
         "Barcode: on the product card press “Scan barcode” (or “Scan” next to the barcodes) and point the camera. If it won't read, press the keyboard button at the top, “Type the code”, enter the digits under the barcode and press “Add”.",
-        "From a purchase: tap a line, swipe the card left (“Correct the line”) — the “Line N” sheet has “Take a product photo”, “Pick a photo from the library” and “Scan barcode” at the bottom. They go to the card of the product the line is linked to.",
+        "From a purchase: tap a line — in the line check, under the line in “Product”, there are “Take a product photo”, “Pick a photo from the library” and “Scan barcode”. They go to the card of the product the line is linked to.",
         "In the shop: on Home press “Scan barcode” (or the “Scan” tile) and point the camera at the barcode.",
         "A known product shows the last purchase (date, store, price), where it was cheapest, your rating and the “Don't buy again” mark. Then “Open product card” or “Scan another”.",
         "A new barcode: find your product by name and press “Link”. Not there yet — “New product”: check the name (if Open Food Facts knows the code, the name and brand are filled in) and press “Create product”. The product appears in “Products” with no purchases, the barcode is linked to it and its scan result opens. Or “Remember for later” — nothing is created, the code is just kept.",

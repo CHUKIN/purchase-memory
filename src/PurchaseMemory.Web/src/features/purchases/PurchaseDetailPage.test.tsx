@@ -57,7 +57,7 @@ function QueueProbe() {
 
 function renderAt(path: string, state?: unknown) {
   const [pathname, search] = path.split("?");
-  render(
+  return render(
     <AppProviders locale="ru">
       <MemoryRouter initialEntries={[{ pathname, search: search ? `?${search}` : "", state }]}>
         <Routes>
@@ -286,7 +286,7 @@ describe("PurchaseDetailPage", () => {
   });
 });
 
-describe("PurchaseDetailPage swipe review of the lines", () => {
+describe("PurchaseDetailPage line review (carousel)", () => {
   const box = { x: 0.1, y: 0.3, width: 0.8, height: 0.04 };
   const withPhoto: PurchaseDetail = {
     ...purchase,
@@ -297,7 +297,8 @@ describe("PurchaseDetailPage swipe review of the lines", () => {
     id: "r1",
     imageParts: Array.from({ length: parts }, (_, position) => ({ position, contentType: "image/jpeg", sizeBytes: 1, sourceImageUrl: `/api/receipts/r1/images/${position}` }))
   }) as unknown as ReceiptView;
-  const card = () => screen.getByTestId("line-review-card");
+  const card = () => screen.getByTestId("line-carousel-card");
+  const shownName = () => (within(dialog()).getByLabelText(/^Название/) as HTMLInputElement).value;
 
   beforeEach(() => {
     vi.mocked(getPurchase).mockReset().mockResolvedValue(withPhoto);
@@ -312,7 +313,7 @@ describe("PurchaseDetailPage swipe review of the lines", () => {
     URL.revokeObjectURL = vi.fn();
   });
 
-  it("tapping a line opens the review right at it, outlined on the photo with all its details", async () => {
+  it("tapping a line opens the review right at it, highlighted on the photo, editable in place", async () => {
     renderAt("/purchases/p1");
 
     const line = await screen.findByRole("button", { name: /^KAWA.*сверить с чеком$/ });
@@ -323,45 +324,45 @@ describe("PurchaseDetailPage swipe review of the lines", () => {
 
     const review = dialog();
     expect(within(review).getByLabelText("Проверено 0 из 2")).toBeInTheDocument();
-    expect(within(card()).getByRole("heading", { level: 3, name: "KAWA" })).toBeInTheDocument();
-    expect(within(card()).getByText("Связано с «Kawa»")).toBeInTheDocument();
-    expect(await within(card()).findByRole("img", { name: "Фото чека, выделена строка «KAWA»" })).toHaveAttribute("src", "blob:receipt-photo");
+    expect(within(review).getByText("Строка 1 из 2")).toBeInTheDocument();
+    expect(shownName()).toBe("KAWA");
+    expect(within(review).getByLabelText("Цена")).toHaveValue("15");
+    expect(within(review).getByText("Связано с «Kawa»")).toBeInTheDocument();
+    expect(await within(review).findByRole("img", { name: "Фото чека, выделена строка «KAWA»" })).toHaveAttribute("src", "blob:receipt-photo");
+    // Lines add to 18 against a total of 20.
+    expect(within(review).getByText(/^Строки дают 18,00.* из 20,00.* · не хватает 2,00/)).toBeInTheDocument();
   });
 
-  it("shows a line without a box on the whole photo, and a multi-photo receipt without an outline", async () => {
+  it("shows a line without a box on the whole photo", async () => {
     renderAt("/purchases/p1");
     await waitFor(() => expect(getReceipt).toHaveBeenCalled());
     fireEvent.click(await screen.findByRole("button", { name: /^Ser Gouda 250g.*сверить с чеком$/ }));
-    expect(await within(card()).findByRole("img", { name: "Фото чека целиком" })).toBeInTheDocument();
-    expect(within(card()).getByText(/не найдено — показан весь чек/)).toBeInTheDocument();
+    expect(await within(dialog()).findByRole("img", { name: "Фото чека целиком" })).toBeInTheDocument();
+    expect(within(dialog()).getByText(/не найдено — показан весь чек/)).toBeInTheDocument();
   });
 
-  it("does not outline lines of a multi-photo receipt", async () => {
+  it("does not highlight lines of a multi-photo receipt", async () => {
     vi.mocked(getReceipt).mockResolvedValue(receiptWith(2));
     renderAt("/purchases/p1");
     await waitFor(() => expect(getReceipt).toHaveBeenCalled());
     fireEvent.click(await screen.findByRole("button", { name: /^KAWA.*сверить с чеком$/ }));
 
-    expect(await within(card()).findByText(/нескольких фото/)).toBeInTheDocument();
-    expect(within(card()).getByRole("img", { name: "Фото чека целиком" })).toBeInTheDocument();
+    expect(await within(dialog()).findByText(/нескольких фото/)).toBeInTheDocument();
+    expect(within(dialog()).getByRole("img", { name: "Фото чека целиком" })).toBeInTheDocument();
   });
 
-  it("swipe right checks the line: ✓ in the list at once, sent to the server in a batch when the app is hidden", async () => {
+  it("«Верно, дальше» checks the line: ✓ in the list at once, sent to the server in a batch when the app is hidden", async () => {
     renderAt("/purchases/p1");
-    fireEvent.click(await screen.findByRole("button", { name: /Проверить строки: проверено 0 из 2/ }));
-    expect(within(card()).getByRole("heading", { level: 3, name: "KAWA" })).toBeInTheDocument();
+    fireEvent.click(await screen.findByRole("button", { name: /^KAWA.*сверить с чеком$/ }));
 
-    const element = card();
-    fireEvent.pointerDown(element, { pointerId: 1, clientX: 100, clientY: 300 });
-    fireEvent.pointerMove(element, { pointerId: 1, clientX: 200, clientY: 300 });
-    fireEvent.pointerMove(element, { pointerId: 1, clientX: 300, clientY: 300 });
-    fireEvent.pointerUp(element, { pointerId: 1, clientX: 300, clientY: 300 });
+    fireEvent.click(within(dialog()).getByRole("button", { name: "Верно, дальше" }));
 
-    await waitFor(() => expect(within(card()).getByRole("heading", { level: 3, name: "Ser Gouda 250g" })).toBeInTheDocument());
+    await waitFor(() => expect(shownName()).toBe("Ser Gouda 250g"));
     expect(screen.getByRole("button", { name: /^KAWA, проверено/ })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Проверить строки: проверено 1 из 2/ })).toBeInTheDocument();
-    // Not a request per swipe: nothing is sent until the batch is due.
+    // Not a request per mark: nothing is sent until the batch is due.
     expect(postLineApprovals).not.toHaveBeenCalled();
+    expect(updatePurchase).not.toHaveBeenCalled();
 
     Object.defineProperty(document, "visibilityState", { value: "hidden", configurable: true });
     document.dispatchEvent(new Event("visibilitychange"));
@@ -373,16 +374,32 @@ describe("PurchaseDetailPage swipe review of the lines", () => {
     ]);
   });
 
-  it("the header button starts at the first unchecked line; checked lines from the server show ✓", async () => {
+  it("a swipe moves between lines without checking them", async () => {
+    renderAt("/purchases/p1");
+    fireEvent.click(await screen.findByRole("button", { name: /^KAWA.*сверить с чеком$/ }));
+
+    const element = card();
+    fireEvent.pointerDown(element, { pointerId: 1, clientX: 300, clientY: 300 });
+    fireEvent.pointerMove(element, { pointerId: 1, clientX: 250, clientY: 300 });
+    fireEvent.pointerUp(element, { pointerId: 1, clientX: 200, clientY: 300 });
+
+    expect(shownName()).toBe("Ser Gouda 250g");
+    expect(screen.queryByRole("button", { name: /^KAWA, проверено/ })).not.toBeInTheDocument();
+  });
+
+  it("the header button starts at the first line with a problem; checked lines from the server show ✓", async () => {
     vi.mocked(getPurchase).mockResolvedValue({ ...withPhoto, items: [{ ...withPhoto.items[0], approved: true }, withPhoto.items[1]] });
     renderAt("/purchases/p1");
 
     expect(await screen.findByRole("button", { name: /^KAWA, проверено/ })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /Проверить строки: проверено 1 из 2/ }));
-    expect(within(card()).getByRole("heading", { level: 3, name: "Ser Gouda 250g" })).toBeInTheDocument();
+    expect(shownName()).toBe("Ser Gouda 250g");
+    // Gouda has no price: that is its problem, and the dot of the first line shows it is checked.
+    expect(within(dialog()).getByText("Цена не распознана — впишите её по фото.")).toBeInTheDocument();
+    expect(within(dialog()).getByRole("button", { name: "Строка 1, проверена" })).toBeInTheDocument();
   });
 
-  it("swipe left corrects the line: the purchase is saved with that line changed and it counts as checked", async () => {
+  it("a corrected line is saved when the person moves on, and «Верно, дальше» on it counts as checked", async () => {
     const corrected: PurchaseDetail = {
       ...withPhoto,
       updatedAt: "2026-07-02T00:00:00Z",
@@ -392,11 +409,10 @@ describe("PurchaseDetailPage swipe review of the lines", () => {
     renderAt("/purchases/p1");
     fireEvent.click(await screen.findByRole("button", { name: /^KAWA.*сверить с чеком$/ }));
 
-    fireEvent.click(within(dialog()).getByRole("button", { name: "Исправить строку" }));
-    const form = dialog("Строка 1");
-    fireEvent.change(within(form).getByLabelText("Цена"), { target: { value: "14" } });
-    fireEvent.change(within(form).getByLabelText("Сумма"), { target: { value: "14" } });
-    fireEvent.click(within(form).getByRole("button", { name: "Сохранить" }));
+    fireEvent.change(within(dialog()).getByLabelText("Цена"), { target: { value: "14" } });
+    fireEvent.change(within(dialog()).getByLabelText("Сумма"), { target: { value: "14" } });
+    expect(updatePurchase).not.toHaveBeenCalled();
+    fireEvent.click(within(dialog()).getByRole("button", { name: "Верно, дальше" }));
 
     await waitFor(() => expect(updatePurchase).toHaveBeenCalledTimes(1));
     const [id, body] = vi.mocked(updatePurchase).mock.calls[0];
@@ -406,11 +422,84 @@ describe("PurchaseDetailPage swipe review of the lines", () => {
     expect(body.items[0]).toMatchObject({ id: "line-kawa", name: "KAWA", unitPrice: 14, lineTotal: 14, productLink: "existing", productId: "coffee", boundingBox: box });
     expect(body.items[1]).toMatchObject({ id: "line-gouda", name: "Ser Gouda 250g", lineTotal: 3 });
 
-    await waitFor(() => expect(within(card()).getByRole("heading", { level: 3, name: "Ser Gouda 250g" })).toBeInTheDocument());
+    await waitFor(() => expect(shownName()).toBe("Ser Gouda 250g"));
     expect(screen.getByRole("button", { name: /^KAWA, проверено/ })).toBeInTheDocument();
   });
 
-  it("swipe left can change the line's product right in the sheet", async () => {
+  it("closing the review with Escape saves the corrected line first", async () => {
+    vi.mocked(updatePurchase).mockResolvedValue(withPhoto);
+    renderAt("/purchases/p1");
+    fireEvent.click(await screen.findByRole("button", { name: /^KAWA.*сверить с чеком$/ }));
+
+    fireEvent.change(within(dialog()).getByLabelText("Название"), { target: { value: "KAWA MIELONA" } });
+    fireEvent.keyDown(dialog(), { key: "Escape" });
+
+    await waitFor(() => expect(updatePurchase).toHaveBeenCalledTimes(1));
+    expect(vi.mocked(updatePurchase).mock.calls[0][1].items[0]).toMatchObject({ id: "line-kawa", name: "KAWA MIELONA" });
+    await waitFor(() => expect(screen.queryByTestId("line-carousel-card")).not.toBeInTheDocument());
+  });
+
+  it("a failed save keeps the review open on Escape", async () => {
+    vi.mocked(updatePurchase).mockRejectedValue(new Error("Нет связи"));
+    renderAt("/purchases/p1");
+    fireEvent.click(await screen.findByRole("button", { name: /^KAWA.*сверить с чеком$/ }));
+
+    fireEvent.change(within(dialog()).getByLabelText("Сумма"), { target: { value: "16" } });
+    fireEvent.keyDown(dialog(), { key: "Escape" });
+
+    expect(await within(dialog()).findByRole("alert")).toHaveTextContent("Нет связи");
+    expect(screen.getByTestId("line-carousel-card")).toBeInTheDocument();
+  });
+
+  it("leaving the page with the review open still sends the corrected line", async () => {
+    vi.mocked(updatePurchase).mockResolvedValue(withPhoto);
+    const { unmount } = renderAt("/purchases/p1");
+    fireEvent.click(await screen.findByRole("button", { name: /^KAWA.*сверить с чеком$/ }));
+
+    fireEvent.change(within(dialog()).getByLabelText("Цена"), { target: { value: "14" } });
+    unmount();
+
+    await waitFor(() => expect(updatePurchase).toHaveBeenCalledTimes(1));
+    expect(vi.mocked(updatePurchase).mock.calls[0][1].items[0]).toMatchObject({ id: "line-kawa", unitPrice: 14 });
+  });
+
+  it("while a corrected line is being saved its fields are read-only, so nothing typed meanwhile is lost", async () => {
+    let finish: (value: PurchaseDetail) => void = () => undefined;
+    vi.mocked(updatePurchase).mockImplementation(() => new Promise<PurchaseDetail>((resolve) => { finish = resolve; }));
+    renderAt("/purchases/p1");
+    fireEvent.click(await screen.findByRole("button", { name: /^KAWA.*сверить с чеком$/ }));
+
+    fireEvent.change(within(dialog()).getByLabelText("Название"), { target: { value: "KAWA ZIARNISTA" } });
+    fireEvent.click(within(dialog()).getByRole("button", { name: "Следующая строка" }));
+    await waitFor(() => expect(updatePurchase).toHaveBeenCalledTimes(1));
+
+    const name = within(dialog()).getByLabelText("Название");
+    expect(name).toHaveAttribute("readonly");
+    expect(within(dialog()).getByLabelText("Цена")).toHaveAttribute("readonly");
+    // A change that arrives anyway is not taken (it would vanish when the save completes).
+    fireEvent.change(name, { target: { value: "KAWA ZIARNISTA 1KG" } });
+    expect(name).toHaveValue("KAWA ZIARNISTA");
+
+    finish({ ...withPhoto, updatedAt: "2026-07-02T00:00:00Z", items: [{ ...withPhoto.items[0], name: "KAWA ZIARNISTA" }, withPhoto.items[1]] });
+    await waitFor(() => expect(within(dialog()).getByText("Строка 2 из 2")).toBeInTheDocument());
+    expect(within(dialog()).getByLabelText("Название")).not.toHaveAttribute("readonly");
+    expect(updatePurchase).toHaveBeenCalledTimes(1);
+  });
+
+  it("leaving a corrected line with the chevron saves it too", async () => {
+    vi.mocked(updatePurchase).mockResolvedValue(withPhoto);
+    renderAt("/purchases/p1");
+    fireEvent.click(await screen.findByRole("button", { name: /^KAWA.*сверить с чеком$/ }));
+
+    fireEvent.change(within(dialog()).getByLabelText("Название"), { target: { value: "KAWA ZIARNISTA" } });
+    fireEvent.click(within(dialog()).getByRole("button", { name: "Следующая строка" }));
+
+    await waitFor(() => expect(updatePurchase).toHaveBeenCalledTimes(1));
+    expect(vi.mocked(updatePurchase).mock.calls[0][1].items[0]).toMatchObject({ id: "line-kawa", name: "KAWA ZIARNISTA" });
+    await waitFor(() => expect(within(dialog()).getByText("Строка 2 из 2")).toBeInTheDocument());
+  });
+
+  it("changes the line's product right under the line, saved with it", async () => {
     vi.mocked(getProductCatalog).mockResolvedValue({
       items: [{ id: "gouda150", name: "Ser Gouda 150g", normalizedName: "ser gouda 150 g", purchaseCount: 4, linkedItemCount: 4, aliasCount: 1, createdAt: "", updatedAt: "" }],
       page: 1, pageSize: 8, totalCount: 1, hasMore: false, needsReviewCount: 1
@@ -418,37 +507,49 @@ describe("PurchaseDetailPage swipe review of the lines", () => {
     vi.mocked(updatePurchase).mockResolvedValue(withPhoto);
     renderAt("/purchases/p1");
     fireEvent.click(await screen.findByRole("button", { name: /^Ser Gouda 250g.*сверить с чеком$/ }));
-    // The card says the product is flagged.
-    expect(within(card()).getByText("Связано с «Ser Gouda 250g». Товар отмечен «проверить»: он похож на другие товары")).toBeInTheDocument();
+    expect(within(dialog()).getByText("Связано с «Ser Gouda 250g». Товар отмечен «проверить»: он похож на другие товары")).toBeInTheDocument();
 
-    fireEvent.click(within(dialog()).getByRole("button", { name: "Исправить строку" }));
-    const form = dialog("Строка 2");
-    expect(within(form).getByText("Связано с «Ser Gouda 250g». Товар отмечен «проверить»: он похож на другие товары")).toBeInTheDocument();
-    fireEvent.click(within(form).getByRole("button", { name: "Выбрать товар для строки 2" }));
+    fireEvent.click(within(dialog()).getByRole("button", { name: "Выбрать товар для строки 2" }));
     const picker = dialog("Выбрать товар для строки 2");
     fireEvent.change(within(picker).getByLabelText("Найти товар"), { target: { value: "gouda" } });
     fireEvent.click(await within(picker).findByRole("button", { name: "Выбрать «Ser Gouda 150g»" }));
 
-    expect(within(dialog("Строка 2")).getByText("Связано с «Ser Gouda 150g»")).toBeInTheDocument();
+    const review = screen.getAllByRole("dialog").find((element) => within(element).queryByTestId("line-carousel-card"))!;
+    expect(within(review).getByText("Связано с «Ser Gouda 150g»")).toBeInTheDocument();
     // Photos and barcodes wait for the save: the new product is not the line's yet.
-    expect(within(dialog("Строка 2")).getByText(/Товар строки изменится после сохранения/)).toBeInTheDocument();
-    fireEvent.click(within(dialog("Строка 2")).getByRole("button", { name: "Сохранить" }));
+    expect(within(review).getByText(/Товар строки изменится после сохранения/)).toBeInTheDocument();
+    fireEvent.change(within(review).getByLabelText("Цена"), { target: { value: "3" } });
+    fireEvent.click(within(review).getByRole("button", { name: "Верно" }));
 
     await waitFor(() => expect(updatePurchase).toHaveBeenCalledTimes(1));
     const body = vi.mocked(updatePurchase).mock.calls[0][1];
-    expect(body.items[1]).toMatchObject({ id: "line-gouda", productLink: "existing", productId: "gouda150" });
+    expect(body.items[1]).toMatchObject({ id: "line-gouda", productLink: "existing", productId: "gouda150", unitPrice: 3 });
     expect(body.items[0]).toMatchObject({ productLink: "existing", productId: "coffee" });
   });
 
-  it("explains a conflict while correcting a line from the review", async () => {
+  it("explains a conflict while saving a corrected line and stays on it", async () => {
     vi.mocked(updatePurchase).mockRejectedValue(new ApiError("changed", 409));
     renderAt("/purchases/p1");
     fireEvent.click(await screen.findByRole("button", { name: /^KAWA.*сверить с чеком$/ }));
-    fireEvent.click(within(dialog()).getByRole("button", { name: "Исправить строку" }));
-    fireEvent.click(within(dialog("Строка 1")).getByRole("button", { name: "Сохранить" }));
+    fireEvent.change(within(dialog()).getByLabelText("Сумма"), { target: { value: "16" } });
+    fireEvent.click(within(dialog()).getByRole("button", { name: "Верно, дальше" }));
 
-    expect(await within(dialog("Строка 1")).findByRole("alert")).toHaveTextContent(/только что изменили в другом окне/);
+    expect(await within(dialog()).findByRole("alert")).toHaveTextContent(/только что изменили в другом окне/);
+    expect(shownName()).toBe("KAWA");
     await waitFor(() => expect(getPurchase).toHaveBeenCalledTimes(2));
+  });
+
+  it("«Удалить» saves the purchase without the line after confirmation", async () => {
+    vi.mocked(updatePurchase).mockResolvedValue({ ...withPhoto, items: [withPhoto.items[0]] });
+    renderAt("/purchases/p1");
+    fireEvent.click(await screen.findByRole("button", { name: /^Ser Gouda 250g.*сверить с чеком$/ }));
+
+    fireEvent.click(within(dialog()).getByRole("button", { name: "Удалить" }));
+    fireEvent.click(within(dialog("Удалить строку 2?")).getByRole("button", { name: "Удалить" }));
+
+    await waitFor(() => expect(updatePurchase).toHaveBeenCalledTimes(1));
+    expect(vi.mocked(updatePurchase).mock.calls[0][1].items.map((item) => item.id)).toEqual(["line-kawa"]);
+    await waitFor(() => expect(shownName()).toBe("KAWA"));
   });
 
   it("the purchase editor sends each line's id so checked marks survive a correction", async () => {
@@ -477,16 +578,16 @@ describe("PurchaseDetailPage swipe review of the lines", () => {
     });
     renderAt("/purchases/p1");
     fireEvent.click(await screen.findByRole("button", { name: /RABAT.*сверить с чеком$/ }));
-    expect(within(card()).getByRole("heading", { level: 3, name: "RABAT" })).toBeInTheDocument();
-    expect(within(card()).getByText("Скидка")).toBeInTheDocument();
-    expect(within(card()).getByText("к «Ser Gouda 250g»")).toBeInTheDocument();
+    expect(within(dialog()).getByLabelText("Название скидки")).toHaveValue("RABAT");
+    expect(within(dialog()).getByLabelText("Размер скидки")).toHaveValue("1");
+    expect(within(dialog()).getByText("Скидка к «Ser Gouda 250g»")).toBeInTheDocument();
   });
 
   it("reviews the lines of a purchase without a photo too, without asking for a receipt", async () => {
     vi.mocked(getPurchase).mockResolvedValue(purchase);
     renderAt("/purchases/p1");
     fireEvent.click(await screen.findByRole("button", { name: /^KAWA.*сверить с чеком$/ }));
-    expect(within(card()).getByText("У этой покупки нет фото чека.")).toBeInTheDocument();
+    expect(within(dialog()).getByText("У этой покупки нет фото чека.")).toBeInTheDocument();
     expect(getReceipt).not.toHaveBeenCalled();
   });
 });

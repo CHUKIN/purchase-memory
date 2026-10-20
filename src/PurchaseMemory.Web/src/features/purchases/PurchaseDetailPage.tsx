@@ -42,7 +42,7 @@ import { HelpLink } from "../help/HelpLink";
 import { formatShortDate } from "./dates";
 import { formatMoney } from "./money";
 import { ProductLinkNote, ProductLinkRows, productStatusText } from "./ProductLinkRows";
-import { LineReview, type ReviewLinePatch, type ReviewStart } from "../line-review/LineReview";
+import { PurchaseLineReview, type ReviewLinePatch, type ReviewStart } from "../line-review/PurchaseLineReview";
 import { useApprovalSync, useLineApprovals } from "../line-review/useLineApprovals";
 import { usePurchaseReceiptPhoto } from "./usePurchaseReceiptPhoto";
 
@@ -124,13 +124,14 @@ function PurchaseSummary({ purchase, back, onEdit }: { purchase: PurchaseDetail;
   const photoUrl = receiptPhoto.url;
   const photo = receiptPhoto.viewer;
   const approvals = useLineApprovals(purchase, purchaseQueryKey(purchase.id));
-  // Tapping a line opens the swipe review at it; the header button at the
-  // first line nobody has checked.
+  // Tapping a line opens the line review at it; the header button at the
+  // first line with a problem (else the first line).
   // Coming back from a product (or a fresh reload of the same place) reopens the review at the line that was open.
   const arrival = useArrivalPlace();
   const [review, setReview] = useState<ReviewStart | null>(() => arrival?.line !== undefined ? { index: arrival.line, nonce: 1 } : null);
   const openReview = (index: number | null) => setReview((current) => ({ index, nonce: (current?.nonce ?? 0) + 1 }));
   const saveLine = useSaveLine(purchase, approvals);
+  const removeLine = useRemoveLine(purchase, approvals);
   const returnState = useReturnState();
   const openProduct = useOpenProduct();
   const total = purchase.items.length;
@@ -256,15 +257,17 @@ function PurchaseSummary({ purchase, back, onEdit }: { purchase: PurchaseDetail;
         </IonList>
       </section>
 
-      <LineReview
+      <PurchaseLineReview
         start={review}
         onClose={() => setReview(null)}
         lines={purchase.items}
         isApproved={approvals.isApproved}
         setApproved={approvals.setApproved}
         onSaveLine={saveLine}
+        onRemoveLine={removeLine}
         photo={photo}
         currency={purchase.currency}
+        receiptTotal={purchase.receiptTotal}
         onOpenProduct={openProduct}
       />
 
@@ -280,7 +283,7 @@ function PurchaseSummary({ purchase, back, onEdit }: { purchase: PurchaseDetail;
 }
 
 /**
- * A purchase line's name and status as one button that opens the swipe
+ * A purchase line's name and status as one button that opens the line
  * review at this line; the line's other controls (like «Оценить») stay
  * outside it, so no control is nested in another. A checked line shows ✓.
  */
@@ -303,7 +306,7 @@ function ReviewLineButton({ onOpen, approved, name, children }: {
   );
 }
 
-/** The small ✓ of a line someone has checked in the swipe review. */
+/** The small ✓ of a line someone has checked in the line review. */
 function ApprovedMark({ approved }: { approved: boolean }) {
   const { t } = useTranslation();
   if (!approved) return null;
@@ -316,18 +319,38 @@ function ApprovedMark({ approved }: { approved: boolean }) {
 }
 
 /**
- * The swipe review's «correct this line»: the purchase is saved with just
- * that line changed (the same full snapshot the editor sends), and the
- * corrected line counts as checked. Unsent marks go first, because a
- * correction replaces the line rows.
+ * The line review's correction: the purchase is saved with just that line
+ * changed (the same full snapshot the editor sends), and the corrected line
+ * counts as checked. Unsent marks go first, because a correction replaces
+ * the line rows.
  */
 function useSaveLine(purchase: PurchaseDetail, approvals: ReturnType<typeof useLineApprovals>) {
+  const saveItems = useSaveItems(purchase, approvals);
+  return async (index: number, patch: ReviewLinePatch) => {
+    const updated = await saveItems((items) => items.map((item, position) => position === index ? { ...item, ...patch } : item));
+    const line = updated.items[index];
+    if (line) approvals.setApproved(line.id, true);
+  };
+}
+
+/** The line review's «Удалить»: the purchase is saved without that line. */
+function useRemoveLine(purchase: PurchaseDetail, approvals: ReturnType<typeof useLineApprovals>) {
+  const { t } = useTranslation();
+  const saveItems = useSaveItems(purchase, approvals);
+  return async (index: number) => {
+    if (purchase.items.length <= 1) throw new Error(t("purchaseEdit.needLine"));
+    await saveItems((items) => items.filter((_, position) => position !== index));
+  };
+}
+
+/** Saves the purchase with its lines changed by `change`, as the editor would, and refreshes what depends on it. */
+function useSaveItems(purchase: PurchaseDetail, approvals: ReturnType<typeof useLineApprovals>) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  return async (index: number, patch: ReviewLinePatch) => {
+  return async (change: (items: EditLine[]) => EditLine[]) => {
     await approvals.flush();
     const state = toEditState(purchase);
-    state.items = state.items.map((item, position) => position === index ? { ...item, ...patch } : item);
+    state.items = change(state.items);
     let updated: PurchaseDetail;
     try {
       updated = await updatePurchase(purchase.id, toRequest(purchase, state));
@@ -339,8 +362,6 @@ function useSaveLine(purchase: PurchaseDetail, approvals: ReturnType<typeof useL
       throw error;
     }
     queryClient.setQueryData(purchaseQueryKey(purchase.id), updated);
-    const line = updated.items[index];
-    if (line) approvals.setApproved(line.id, true);
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: reviewQueueQueryKey }),
       queryClient.invalidateQueries({ queryKey: ["purchases", "feed"] }),
@@ -349,6 +370,7 @@ function useSaveLine(purchase: PurchaseDetail, approvals: ReturnType<typeof useL
       queryClient.invalidateQueries({ queryKey: impressionsQueryKey }),
       purchase.sourceReceiptId ? queryClient.invalidateQueries({ queryKey: ["receipts", purchase.sourceReceiptId] }) : Promise.resolve()
     ]);
+    return updated;
   };
 }
 

@@ -1,4 +1,4 @@
-import { IonButtons, IonContent, IonHeader, IonTitle, IonToolbar } from "@ionic/react";
+import { IonButtons, IonContent, IonFooter, IonHeader, IonTitle, IonToolbar } from "@ionic/react";
 import type { ReactNode } from "react";
 import { BackButton, type BackTarget } from "../Links/Links";
 
@@ -15,6 +15,8 @@ export interface PageProps {
   search?: ReactNode;
   /** Editors use a plain small title; browsing screens a large collapsing one. */
   largeTitle?: boolean;
+  /** Stays at the bottom of the screen under the scrolling content (e.g. the screen's main button). */
+  footer?: ReactNode;
   children: ReactNode;
 }
 
@@ -23,7 +25,7 @@ export interface PageProps {
  * large title, the title collapses into the bar as the content scrolls.
  * Every screen is its own `.ion-page`, so Ionic pairs header and content.
  */
-export function Page({ title, back = null, start, end, search, largeTitle = true, children }: PageProps) {
+export function Page({ title, back = null, start, end, search, largeTitle = true, footer, children }: PageProps) {
   const heading = <h1 className="pm-title-heading">{title}</h1>;
   return (
     <div className="ion-page">
@@ -47,6 +49,7 @@ export function Page({ title, back = null, start, end, search, largeTitle = true
         )}
         <div className="pm-page-body">{children}</div>
       </IonContent>
+      {footer && <IonFooter className="pm-page-footer"><div className="pm-page-footer-body">{footer}</div></IonFooter>}
     </div>
   );
 }
