@@ -1,10 +1,11 @@
 import { IonButton, IonButtons, IonContent, IonHeader, IonModal, IonTitle, IonToolbar } from "@ionic/react";
 import { useId, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
+import { HistoryLayerScope, useHistoryLayer } from "../../history/historyLayers";
 
 export interface SheetProps {
   isOpen: boolean;
-  /** Called however the sheet closes: «Готово», a swipe down, or the backdrop. */
+  /** Called however the sheet closes: «Готово», a swipe down, the backdrop, or «назад» (an open sheet is one history step). */
   onClose: () => void;
   title: string;
   /** Toolbar start, e.g. «Сбросить» in a filter sheet. */
@@ -31,6 +32,7 @@ export interface SheetProps {
 export function Sheet({ isOpen, onClose, title, start, end, help, variant = "sheet", initialBreakpoint = 0.75, children }: SheetProps) {
   const { t } = useTranslation();
   const titleId = useId();
+  const layer = useHistoryLayer(isOpen, onClose);
   const sheetProps = variant === "sheet" ? { initialBreakpoint, breakpoints: [0, initialBreakpoint, 1] } : {};
   return (
     <IonModal isOpen={isOpen} onDidDismiss={onClose} aria-labelledby={titleId} {...sheetProps}>
@@ -43,7 +45,7 @@ export function Sheet({ isOpen, onClose, title, start, end, help, variant = "she
       </IonHeader>
       <IonContent color="light">
         {/* Ionic renders the children only while open, like the shim in tests. */}
-        <div className="pm-page-body">{children}</div>
+        <div className="pm-page-body"><HistoryLayerScope value={layer}>{children}</HistoryLayerScope></div>
       </IonContent>
     </IonModal>
   );

@@ -8,6 +8,9 @@ afterEach(async () => {
   // Imported late, so it is the module the test loaded (with its API mocks).
   const { resetApprovalSyncs } = await import("../features/line-review/approvalSync");
   resetApprovalSyncs();
+  // Open sheets and pending history steps belong to the test that made them.
+  const { resetHistoryLayers } = await import("../design-system/history/historyLayers");
+  resetHistoryLayers();
   window.localStorage.clear();
 });
 

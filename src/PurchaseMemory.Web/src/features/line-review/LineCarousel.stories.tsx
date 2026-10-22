@@ -36,10 +36,13 @@ interface StoryArgs {
   checked: number[];
   onApprove: (index: number) => void;
   onRemove: (index: number) => void;
+  /** The receipt draft's flow: the last product leads to the summary. */
+  withSummary: boolean;
+  onFinish: () => void;
 }
 
 /** Keeps lines, position and marks in story state, like the capture screen does. */
-function Playground({ lines: initialLines, receiptTotal, photo: shownPhoto, startAt, checked: initialChecked, onApprove, onRemove }: StoryArgs) {
+function Playground({ lines: initialLines, receiptTotal, photo: shownPhoto, startAt, checked: initialChecked, onApprove, onRemove, withSummary, onFinish }: StoryArgs) {
   const [items, setItems] = useState(initialLines);
   const [index, setIndex] = useState(startAt ?? firstProblemIndex(initialLines));
   const [checked, setChecked] = useState(() => new Set(initialChecked));
@@ -53,11 +56,16 @@ function Playground({ lines: initialLines, receiptTotal, photo: shownPhoto, star
         onRemove={(position) => {
           onRemove(position);
           setItems((current) => current.filter((_, other) => other !== position));
-          setIndex((current) => Math.max(0, Math.min(current, items.length - 2)));
+          setIndex((current) => current > position ? current - 1 : Math.max(0, Math.min(current, items.length - 2)));
         }}
         isChecked={(position) => checked.has(position)}
-        onApprove={(position) => { onApprove(position); setChecked((current) => new Set(current).add(position)); }}
-        onUnapprove={(position) => setChecked((current) => { const next = new Set(current); next.delete(position); return next; })}
+        onRestore={(position, line) => {
+          setItems((current) => [...current.slice(0, position), line, ...current.slice(position)]);
+          setIndex((current) => current >= position ? current + 1 : current);
+        }}
+        onApprove={(position, related) => { onApprove(position); setChecked((current) => new Set([...current, position, ...related])); }}
+        onUnapprove={(position, related) => setChecked((current) => { const next = new Set(current); for (const other of [position, ...related]) next.delete(other); return next; })}
+        onFinish={withSummary ? onFinish : undefined}
         currency="PLN"
         receiptTotal={receiptTotal}
         photo={shownPhoto}
@@ -78,10 +86,12 @@ const meta = {
     startAt: null,
     checked: [],
     onApprove: fn(),
-    onRemove: fn()
+    onRemove: fn(),
+    withSummary: false,
+    onFinish: fn()
   },
   argTypes: {
-    startAt: { control: { type: "number", min: 0, max: lines.length - 1 }, description: "Line to show; empty = first line with a problem" }
+    startAt: { control: { type: "number", min: 0, max: lines.length - 1 }, description: "Line to show (a discount shows its product's card); empty = first line with a problem" }
   }
 } satisfies Meta<typeof Playground>;
 
@@ -91,14 +101,25 @@ type Story = StoryObj<typeof meta>;
 /** Opens at the problem line: «2 × 8,99 = 17,98, а сумма 8,89», the lines 9,09 short of the total (390 × 844). */
 export const WithProblem: Story = {};
 
-/** Every line checked and adding up: green status, «Проверено» instead of «Верно, дальше», green dots. */
+/** Every product checked and adding up: green status, «Проверено» instead of «Верно, дальше», green dots. */
 export const AllChecked: Story = { args: { lines: fixed, startAt: 0, checked: fixed.map((_, index) => index) } };
 
 /** A line recognition could not place: the whole photo, nothing highlighted, a short note. */
 export const NoBoxFallback: Story = { args: { lines: fixed, startAt: 5 } };
 
-/** A discount: its name and amount only, and the product it belongs to. */
-export const Discount: Story = { args: { lines: fixed, startAt: 3 } };
+/** A discount inside its product's card: «Скидка −2,00 · к оплате 15,98» and «Убрать»; tap the row to edit it. */
+export const Discount: Story = { args: { lines: fixed, startAt: 2 } };
+
+/** The receipt draft: the last product reads «Верно, к итогу»; once checked, «К итогу» and the small ✓. */
+export const LastProductToSummary: Story = { args: { lines: fixed, startAt: 5, withSummary: true } };
+
+/** A discount on the whole receipt keeps a card of its own. */
+export const ReceiptDiscount: Story = {
+  args: {
+    lines: [...fixed, { name: "RABAT NA PARAGON", quantity: null, unit: null, unitPrice: null, lineTotal: -3, kind: "discount", boundingBox: null }],
+    startAt: 6
+  }
+};
 
 /** Name on one row, price on the next: both rows highlighted, the window fits both. */
 export const TwoRowLine: Story = { args: { lines: fixed, startAt: 4 } };

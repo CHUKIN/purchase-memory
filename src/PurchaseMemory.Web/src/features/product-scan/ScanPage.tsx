@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { useBackTarget, useReturnState } from "../../app/backNavigation";
 import { BackButton, Sheet, useBack } from "../../design-system/components";
+import { useHistoryLayer } from "../../design-system/history/historyLayers";
 import { HelpLink } from "../help/HelpLink";
 import { BarcodeCamera } from "./BarcodeCamera";
 import { ManualBarcodeForm } from "./ManualBarcodeForm";
@@ -31,7 +32,8 @@ export function ScanPage() {
   const variant = useScanVariant();
   const navigate = useNavigate();
   const back = useBackTarget({ to: "/", labelKey: "common.home" });
-  const goBack = useBack(back);
+  // «Готово» on a full-screen result ends scanning: the screen is left, the result with it.
+  const goBack = useBack(back, { leaveLayers: true });
   const returnState = useReturnState();
   const [code, setCode] = useState<string | null>(null);
   const [manualOpen, setManualOpen] = useState(false);
@@ -85,6 +87,8 @@ export function ScanPage() {
       : <NotFoundResult code={code} locale={locale} onLinked={setLinkedProductId} onScanAgain={scanAgain} />;
 
   const full = variant === "a" && code !== null;
+  // Variant A's full-screen result is a step of its own: «назад» returns to the camera, like «Сканировать ещё».
+  useHistoryLayer(full, scanAgain);
 
   return (
     <div className="ion-page">

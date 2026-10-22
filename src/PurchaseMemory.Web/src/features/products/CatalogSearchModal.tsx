@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { getProductCatalog } from "../../api/client";
 import type { ProductSummary } from "../../api/types";
 import { Footnote } from "../../design-system/components";
+import { useHistoryLayer } from "../../design-system/history/historyLayers";
 import { useDebounced } from "../filters/useDebounced";
 import { ReviewFlagChip } from "./ReviewFlagChip";
 
@@ -48,6 +49,7 @@ export function CatalogSearchModal({
   const { t } = useTranslation();
   const titleId = useId();
   const [text, setText] = useState("");
+  useHistoryLayer(isOpen, onClose);
   const debounced = useDebounced(text.trim());
   const search = useQuery({
     queryKey: ["products", "catalog", "picker", debounced, excludeProductId ?? ""],

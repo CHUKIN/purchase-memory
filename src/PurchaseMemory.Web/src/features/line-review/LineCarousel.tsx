@@ -1,34 +1,47 @@
 import { IonAlert } from "@ionic/react";
-import { AlertTriangle, Check, ChevronLeft, ChevronRight } from "lucide-react";
-import { useId, useRef, useState, type PointerEvent, type ReactNode } from "react";
+import { AlertTriangle, Check, ChevronDown, ChevronLeft, ChevronRight, Tag } from "lucide-react";
+import { useId, useRef, useState, type FocusEvent, type PointerEvent, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { parseDecimal } from "../../design-system/components";
 import { formatMoney, formatQuantity } from "../purchases/money";
 import { LinePhoto, type LineViewerPhoto } from "../receipt-photo/LinePhoto";
 import { hasLocation } from "../receipt-photo/photoBox";
-import { discountLinks, isDiscount } from "../receipts/discountLines";
+import { isDiscount } from "../receipts/discountLines";
 import type { EditableLine } from "../receipts/LinesEditor";
+import { carouselSteps, stepIndexOf, type CarouselStep } from "./carouselSteps";
 import { lineProblem, totalsCheck, type LineProblem } from "./lineChecks";
 
 /** A horizontal drag longer than this (px) switches lines. */
 export const swipeThreshold = 50;
-/** At most this many dots (24 px each, fits a 320 px screen); with more lines they slide along with the current one. */
+/** At most this many dots (24 px each, fits a 320 px screen); with more cards they slide along with the current one. */
 const maxDots = 8;
 
 export interface LineCarouselProps<T extends EditableLine> {
   lines: T[];
-  /** The line shown (controlled, so the screen can remember it and guard leaving it). */
+  /** The line shown (controlled, so the screen can remember it and guard leaving it); a discount inside a product's card shows that card. */
   index: number;
+  /** Called with the line of the card moved to (a product, or a discount with a card of its own). */
   onIndexChange: (index: number) => void;
-  /** A field of the shown line changed. */
+  /** A field of a line on the card changed (the product or one of its discounts). */
   onChange: (index: number, patch: Partial<EditableLine>) => void;
-  /** Called after the person confirmed «Удалить». Omitted: no delete button. */
+  /** Called after the person confirmed «Удалить» (or «Убрать» on a discount). Omitted: no delete button. */
   onRemove?: (index: number) => void | Promise<void>;
+  /**
+   * Puts a discount removed with «Убрать» back where it was. Given, «Убрать»
+   * removes at once and offers «Вернуть» while the card is shown; omitted, it
+   * asks first (a saved purchase, where removing is saved at once).
+   */
+  onRestore?: (index: number, line: T) => void;
   isChecked: (index: number) => boolean;
-  /** «Верно, дальше»: marks the line; the carousel then moves on unless this rejects. */
-  onApprove: (index: number) => void | Promise<void>;
-  /** Tapping «Проверено» takes the mark back. Omitted: the mark is just shown. */
-  onUnapprove?: (index: number) => void;
+  /**
+   * «Верно, дальше»: marks the card's line and `related` (the discounts in its
+   * card); the carousel then moves on unless this rejects.
+   */
+  onApprove: (index: number, related: number[]) => void | Promise<void>;
+  /** Tapping «Проверено» takes the mark back (from `related` too). Omitted: the mark is just shown. */
+  onUnapprove?: (index: number, related: number[]) => void;
+  /** After the last card: given, its button reads «Верно, к итогу» and leads here (the receipt's summary). */
+  onFinish?: () => void;
   currency: string | null;
   /** The receipt's total, for the «do the lines add up» line. */
   receiptTotal: number | null;
@@ -45,11 +58,14 @@ export interface LineCarouselProps<T extends EditableLine> {
 }
 
 /**
- * The receipt's lines one at a time: the photo moves to the shown line and
- * highlights it, under it whether the lines add up, the line's position with
- * a dot per line, and the line itself, editable in place. «Верно, дальше»
- * marks it and moves on; a swipe (on the photo or the card), the chevrons or
- * a dot move freely. Used by the receipt draft and the saved purchase.
+ * The receipt's products one at a time: the photo moves to the shown product
+ * and highlights it, under it whether the lines add up, the product's
+ * position with a dot per card, and the product itself, editable in place,
+ * with the discounts that reduce it inside its card («Скидка −… · к оплате
+ * …»). «Верно, дальше» marks it and moves on; a swipe (on the photo or the
+ * card), the chevrons or a dot move freely. A discount on no product has a
+ * card of its own (see `carouselSteps`). Used by the receipt draft and the
+ * saved purchase.
  */
 export function LineCarousel<T extends EditableLine>({
   lines,
@@ -57,9 +73,11 @@ export function LineCarousel<T extends EditableLine>({
   onIndexChange,
   onChange,
   onRemove,
+  onRestore,
   isChecked,
   onApprove,
   onUnapprove,
+  onFinish,
   currency,
   receiptTotal,
   photo,
@@ -73,44 +91,95 @@ export function LineCarousel<T extends EditableLine>({
   const money = (value: number | null) => value === null ? "—" : formatMoney(value, currency, locale);
   const [photoRatio, setPhotoRatio] = useState<number | null>(null);
   const [zoomed, setZoomed] = useState(false);
-  const [confirmingRemove, setConfirmingRemove] = useState(false);
+  // The line «Удалить» (or, in a saved purchase, a discount's «Убрать») asks about.
+  const [confirmingRemove, setConfirmingRemove] = useState<{ position: number; discountRow: boolean } | null>(null);
+  // A discount just taken out with «Убрать», offered back while its product is shown.
+  const [removed, setRemoved] = useState<{ product: number; position: number; line: T } | null>(null);
+  // The discount whose fields are open in the card.
+  const [openDiscount, setOpenDiscount] = useState<number | null>(null);
   // Moves are animated only once the person has moved: the first layout (the photo measuring itself) is not.
   const [moved, setMoved] = useState(false);
   const regionId = useId();
 
-  const count = lines.length;
-  const current = Math.min(Math.max(index, 0), Math.max(count - 1, 0));
+  // While a field of the card is being typed in, the card keeps its grouping:
+  // a discount briefly larger than its product (a sum being retyped) would
+  // otherwise jump out of the card and take the focus with it. Moving,
+  // removing or adding a line ends it.
+  const [frozen, setFrozen] = useState<{ steps: CarouselStep[]; count: number } | null>(null);
+  const computedSteps = carouselSteps(lines);
+  const steps = frozen && frozen.count === lines.length ? frozen.steps : computedSteps;
+  const count = steps.length;
+  const current = count === 0 ? 0 : stepIndexOf(steps, index);
   const go = (next: number) => {
     if (busy || next < 0 || next >= count || next === current) return;
     setZoomed(false);
     setMoved(true);
-    onIndexChange(next);
+    setRemoved(null);
+    setOpenDiscount(null);
+    setFrozen(null);
+    onIndexChange(steps[next].position);
   };
   // A zoomed photo pans under one finger, so only the card swipes then.
   const photoSwipe = useSwipe((step) => go(current + step), zoomed);
   const cardSwipe = useSwipe((step) => go(current + step), false);
 
-  const line = lines[current];
-  if (!line) return null;
+  const step = steps[current];
+  const line = step ? lines[step.position] : undefined;
+  if (!step || !line) return null;
+  const last = current + 1 >= count;
+  const advance = () => { if (!last) go(current + 1); else onFinish?.(); };
   const approve = () => {
     if (busy) return;
-    const advance = () => { if (current + 1 < count) go(current + 1); };
-    const result = onApprove(current);
+    const result = onApprove(step.position, step.discounts);
     // A rejected approval (a correction that could not be saved) keeps the line; the screen shows why.
     if (result instanceof Promise) result.then(advance, () => undefined);
     else advance();
   };
+  const removeDiscount = (position: number) => {
+    if (busy) return;
+    if (!onRestore) { setConfirmingRemove({ position, discountRow: true }); return; }
+    setRemoved({ product: step.position, position, line: lines[position] });
+    setOpenDiscount(null);
+    void onRemove?.(position);
+  };
+  const restoreDiscount = () => {
+    if (!removed || !onRestore) return;
+    onRestore(removed.position, removed.line);
+    setRemoved(null);
+  };
 
   const problem = lineProblem(line);
-  const checked = isChecked(current);
-  const discount = isDiscount(line);
+  const checked = isChecked(step.position);
+  const discount = step.kind === "discount";
   const name = line.name.trim() || t("lines.untitled");
-  const link = discount ? discountLinks(lines)[current] : null;
-  const discountNote = !link
+  const productCount = steps.filter((other) => other.kind === "product").length;
+  const productNumber = steps.slice(0, current + 1).filter((other) => other.kind === "product").length;
+  const positionText = stepText(t, step, productNumber, productCount);
+  const discountNote = !discount ? null : step.appliesToReceipt ? t("lineReview.receiptDiscount") : t("discount.unlinked");
+  // What is left to pay for the product after its discounts (on the last discount row).
+  const payable = line.lineTotal === null || step.discounts.length === 0
     ? null
-    : link.target !== null
-      ? t("discount.forProduct", { product: lines[link.target].name.trim() || t("lines.untitled") })
-      : link.appliesToReceipt ? t("lineReview.receiptDiscount") : t("discount.unlinked");
+    : Math.round((line.lineTotal + step.discounts.reduce((sum, position) => sum + (lines[position].lineTotal ?? 0), 0)) * 100) / 100;
+  const removedHere = removed !== null && removed.product === step.position && onRestore !== undefined;
+  const removingLine = confirmingRemove === null ? null : lines[confirmingRemove.position];
+  const confirmRemove = () => {
+    if (confirmingRemove === null) return;
+    // Its undo belonged to the card as it was; after another removal it could put the discount by the wrong product.
+    setRemoved(null);
+    setFrozen(null);
+    void onRemove?.(confirmingRemove.position);
+  };
+  // Typing in the card's fields keeps its grouping (see `frozen`).
+  const cardFocus = {
+    onFocus: (event: FocusEvent<HTMLDivElement>) => {
+      if (event.target instanceof HTMLInputElement && frozen === null) setFrozen({ steps, count: lines.length });
+    },
+    onBlur: (event: FocusEvent<HTMLDivElement>) => {
+      const next = event.relatedTarget;
+      if (!(next instanceof HTMLInputElement && event.currentTarget.contains(next))) setFrozen(null);
+    }
+  };
+  const finishing = last && onFinish !== undefined;
 
   return (
     <section className="pm-carousel" aria-labelledby={regionId}>
@@ -126,15 +195,15 @@ export function LineCarousel<T extends EditableLine>({
           <ChevronLeft size={24} aria-hidden="true" />
         </button>
         <div className="pm-carousel-position">
-          <span className="pm-carousel-count">{t("lineCarousel.position", { number: current + 1, count })}</span>
-          <Dots lines={lines} current={current} isChecked={isChecked} onGo={go} />
+          <span className="pm-carousel-count">{positionText}</span>
+          <Dots lines={lines} steps={steps} current={current} isChecked={isChecked} onGo={go} />
         </div>
-        <button type="button" className="pm-carousel-chevron" onClick={() => go(current + 1)} disabled={current === count - 1 || busy} aria-label={t("lineCarousel.next")}>
+        <button type="button" className="pm-carousel-chevron" onClick={() => go(current + 1)} disabled={last || busy} aria-label={t("lineCarousel.next")}>
           <ChevronRight size={24} aria-hidden="true" />
         </button>
       </div>
 
-      <div className="pm-carousel-card" key={current} data-animate={moved} {...cardSwipe.handlers} data-testid="line-carousel-card">
+      <div className="pm-carousel-card" key={current} data-animate={moved} {...cardSwipe.handlers} {...cardFocus} data-testid="line-carousel-card">
         {problem && (
           <p className="pm-carousel-problem">
             <AlertTriangle size={16} aria-hidden="true" />
@@ -142,19 +211,13 @@ export function LineCarousel<T extends EditableLine>({
           </p>
         )}
         {discountNote && <p className="pm-carousel-note">{t("discount.label")} {discountNote}</p>}
-        <label className="pm-carousel-field pm-carousel-name">
-          <span>{discount ? t("discount.name") : t("purchaseEdit.name")}</span>
-          <input
-            type="text"
-            value={line.name}
-            placeholder={t("lines.namePlaceholder")}
-            aria-invalid={line.name.trim() ? undefined : true}
-            enterKeyHint="done"
-            // While a correction is being saved the fields wait, so nothing typed meanwhile is lost.
-            readOnly={busy}
-            onChange={(event) => onChange(current, { name: event.target.value })}
-          />
-        </label>
+        <TextField
+          className="pm-carousel-name"
+          label={discount ? t("discount.name") : t("purchaseEdit.name")}
+          value={line.name}
+          readOnly={busy}
+          onChange={(value) => onChange(step.position, { name: value })}
+        />
         {discount
           ? (
             <div className="pm-carousel-figures pm-carousel-figures-single">
@@ -163,7 +226,7 @@ export function LineCarousel<T extends EditableLine>({
                 label={t("discount.size")}
                 value={line.lineTotal === null ? null : Math.abs(line.lineTotal)}
                 invalid={line.lineTotal === null}
-                onChange={(value) => onChange(current, { lineTotal: value === null ? null : -Math.abs(value) })}
+                onChange={(value) => onChange(step.position, { lineTotal: value === null ? null : -Math.abs(value) })}
               />
             </div>
           )
@@ -173,35 +236,70 @@ export function LineCarousel<T extends EditableLine>({
                 readOnly={busy}
                 label={line.unit ? t("lineCarousel.quantityUnit", { unit: line.unit }) : t("lineCarousel.quantity")}
                 value={line.quantity}
-                onChange={(quantity) => onChange(current, { quantity })}
+                onChange={(quantity) => onChange(step.position, { quantity })}
               />
-              <NumberField readOnly={busy} label={t("legacyCapture.price")} value={line.unitPrice} invalid={line.unitPrice === null} onChange={(unitPrice) => onChange(current, { unitPrice })} />
-              <NumberField readOnly={busy} label={t("legacyCapture.amount")} value={line.lineTotal} invalid={line.lineTotal === null || problem?.kind === "arithmetic"} onChange={(lineTotal) => onChange(current, { lineTotal })} />
+              <NumberField readOnly={busy} label={t("legacyCapture.price")} value={line.unitPrice} invalid={line.unitPrice === null} onChange={(unitPrice) => onChange(step.position, { unitPrice })} />
+              <NumberField readOnly={busy} label={t("legacyCapture.amount")} value={line.lineTotal} invalid={line.lineTotal === null || problem?.kind === "arithmetic"} onChange={(lineTotal) => onChange(step.position, { lineTotal })} />
             </div>
           )}
+        {step.discounts.map((position, offset) => (
+          <DiscountRow
+            key={position}
+            line={lines[position]}
+            payable={offset === step.discounts.length - 1 ? payable : null}
+            // A discount without its amount opens by itself: that is what needs filling in.
+            open={openDiscount === position || lineProblem(lines[position]) !== null}
+            onToggle={() => setOpenDiscount((value) => value === position ? null : position)}
+            onRemove={onRemove ? () => removeDiscount(position) : undefined}
+            onChange={(patch) => onChange(position, patch)}
+            busy={busy}
+            money={money}
+          />
+        ))}
+        {removedHere && (
+          <div className="pm-carousel-discount pm-carousel-discount-removed">
+            <span className="pm-carousel-discount-text" role="status">{t("lineCarousel.discountRemoved")}</span>
+            <button type="button" className="pm-carousel-discount-action" onClick={restoreDiscount}>{t("lineCarousel.discountRestore")}</button>
+          </div>
+        )}
       </div>
 
       {error && <div className="pm-carousel-error" role="alert">{error}</div>}
 
       <div className="pm-carousel-actions">
         {onRemove && (
-          <button type="button" className="pm-carousel-remove" disabled={busy || count <= 1} onClick={() => setConfirmingRemove(true)}>
+          <button type="button" className="pm-carousel-remove" disabled={busy || lines.length <= 1} onClick={() => setConfirmingRemove({ position: step.position, discountRow: false })}>
             {t("ui.delete")}
           </button>
         )}
         {checked
-          ? onUnapprove
+          ? onFinish
             ? (
-              <button type="button" className="pm-carousel-checked" disabled={busy} onClick={() => onUnapprove(current)} aria-label={t("lineReview.unapprove")}>
-                <Check size={18} aria-hidden="true" />
-                <span aria-hidden="true">{t("lineReview.checked")}</span>
-              </button>
+              // The draft's own flow: a checked card still leads on, and its mark comes off with the small ✓.
+              <>
+                {onUnapprove && (
+                  <button type="button" className="pm-carousel-checked pm-carousel-checked-compact" disabled={busy} onClick={() => onUnapprove(step.position, step.discounts)} aria-label={t("lineReview.unapprove")} title={t("lineReview.checked")}>
+                    <Check size={18} aria-hidden="true" />
+                  </button>
+                )}
+                <button type="button" className="pm-carousel-approve" disabled={busy} onClick={advance}>
+                  {finishing ? t("lineCarousel.toSummary") : t("lineCarousel.onward")}
+                  <ChevronRight size={18} aria-hidden="true" />
+                </button>
+              </>
             )
-            : <span className="pm-carousel-checked"><Check size={18} aria-hidden="true" />{t("lineReview.checked")}</span>
+            : onUnapprove
+              ? (
+                <button type="button" className="pm-carousel-checked" disabled={busy} onClick={() => onUnapprove(step.position, step.discounts)} aria-label={t("lineReview.unapprove")}>
+                  <Check size={18} aria-hidden="true" />
+                  <span aria-hidden="true">{t("lineReview.checked")}</span>
+                </button>
+              )
+              : <span className="pm-carousel-checked"><Check size={18} aria-hidden="true" />{t("lineReview.checked")}</span>
           : (
             <button type="button" className="pm-carousel-approve" disabled={busy} onClick={approve}>
               <Check size={18} aria-hidden="true" />
-              {current + 1 < count ? t("lineCarousel.approveNext") : t("lineCarousel.approveLast")}
+              {!last ? t("lineCarousel.approveNext") : finishing ? t("lineCarousel.approveFinish") : t("lineCarousel.approveLast")}
             </button>
           )}
       </div>
@@ -209,20 +307,112 @@ export function LineCarousel<T extends EditableLine>({
       {extra}
 
       <span className="visually-hidden" role="status" aria-live="polite">
-        {t("lineReview.announcement", { number: current + 1, count, name, amount: money(line.lineTotal) })}
+        {t("lineCarousel.announcement", { position: positionText, name, amount: money(line.lineTotal) })}
       </span>
 
       <IonAlert
-        isOpen={confirmingRemove}
-        header={discount ? t("lineCarousel.removeDiscountTitle") : t("lineCarousel.removeTitle", { number: current + 1 })}
-        message={name}
+        isOpen={removingLine !== null && removingLine !== undefined}
+        header={confirmingRemove?.discountRow
+          ? t("lineCarousel.discountRemoveTitle")
+          : removingLine && isDiscount({ kind: removingLine.kind ?? "product" })
+            ? t("lineCarousel.removeDiscountTitle")
+            : t("lineCarousel.removeTitle", { number: productNumber })}
+        message={removingLine ? removingLine.name.trim() || t("lines.untitled") : ""}
         buttons={[
           { text: t("ui.cancel"), role: "cancel" },
-          { text: t("ui.delete"), role: "destructive", handler: () => { void onRemove?.(current); } }
+          { text: confirmingRemove?.discountRow ? t("lineCarousel.discountRemove") : t("ui.delete"), role: "destructive", handler: confirmRemove }
         ]}
-        onDidDismiss={() => setConfirmingRemove(false)}
+        onDidDismiss={() => setConfirmingRemove(null)}
       />
     </section>
+  );
+}
+
+/** «Товар 2 из 5», or what kind of discount a discount's own card is. */
+function stepText(t: ReturnType<typeof useTranslation>["t"], step: CarouselStep, number: number, count: number): string {
+  if (step.kind === "product") return t("lineCarousel.position", { number, count });
+  return step.appliesToReceipt ? t("lineCarousel.receiptDiscountPosition") : t("lineCarousel.discountPosition");
+}
+
+/**
+ * A discount inside its product's card: «Скидка −7,86 · к оплате 36,70» and
+ * «Убрать». Tapping the text opens its name and size for editing.
+ */
+function DiscountRow({ line, payable, open, onToggle, onRemove, onChange, busy, money }: {
+  line: EditableLine;
+  payable: number | null;
+  open: boolean;
+  onToggle: () => void;
+  onRemove?: () => void;
+  onChange: (patch: Partial<EditableLine>) => void;
+  busy: boolean;
+  money: (value: number | null) => string;
+}) {
+  const { t } = useTranslation();
+  const fieldsId = useId();
+  const amount = line.lineTotal === null ? null : Math.abs(line.lineTotal);
+  const amountText = amount === null ? t("lineCarousel.discountUnknown") : t("lineCarousel.discountAmount", { amount: money(amount) });
+  return (
+    <div className="pm-carousel-discount-block" data-problem={amount === null || undefined}>
+      <div className="pm-carousel-discount">
+        <Tag size={18} aria-hidden="true" className="pm-carousel-discount-icon" />
+        <button type="button" className="pm-carousel-discount-text" aria-expanded={open} aria-controls={open ? fieldsId : undefined} onClick={onToggle}>
+          <span>
+            {amountText}
+            {payable !== null && <>{" · "}{t("lineCarousel.payable")} <b>{money(payable)}</b></>}
+          </span>
+          <ChevronDown size={16} aria-hidden="true" className="pm-carousel-discount-chevron" />
+        </button>
+        {onRemove && (
+          <button
+            type="button"
+            className="pm-carousel-discount-action"
+            disabled={busy}
+            aria-label={t("lineCarousel.discountRemoveLabel", { name: line.name.trim() || t("lines.untitled") })}
+            onClick={onRemove}
+          >
+            {t("lineCarousel.discountRemove")}
+          </button>
+        )}
+      </div>
+      {open && (
+        <div id={fieldsId} className="pm-carousel-figures pm-carousel-figures-two">
+          <TextField label={t("discount.name")} value={line.name} readOnly={busy} onChange={(name) => onChange({ name })} />
+          <NumberField
+            readOnly={busy}
+            label={t("discount.size")}
+            value={amount}
+            invalid={amount === null}
+            onChange={(value) => onChange({ lineTotal: value === null ? null : -Math.abs(value) })}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function TextField({ label, value, onChange, readOnly, className = "" }: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  readOnly: boolean;
+  className?: string;
+}) {
+  const { t } = useTranslation();
+  return (
+    <label className={["pm-carousel-field", className].filter(Boolean).join(" ")}>
+      <span>{label}</span>
+      <input
+        type="text"
+        value={value}
+        placeholder={t("lines.namePlaceholder")}
+        aria-invalid={value.trim() ? undefined : true}
+        enterKeyHint="done"
+        // While a correction is being saved the fields wait, so nothing typed meanwhile is lost.
+        readOnly={readOnly}
+        onChange={(event) => onChange(event.target.value)}
+      />
+    </label>
   );
 }
 
@@ -278,32 +468,37 @@ function TotalsLine({ lines, receiptTotal, money, action }: {
   );
 }
 
-function Dots({ lines, current, isChecked, onGo }: {
+function Dots({ lines, steps, current, isChecked, onGo }: {
   lines: EditableLine[];
+  steps: CarouselStep[];
   current: number;
   isChecked: (index: number) => boolean;
   onGo: (index: number) => void;
 }) {
   const { t } = useTranslation();
-  const first = Math.max(0, Math.min(current - Math.floor(maxDots / 2), lines.length - maxDots));
-  const shown = lines.slice(first, first + maxDots);
+  const first = Math.max(0, Math.min(current - Math.floor(maxDots / 2), steps.length - maxDots));
+  const shown = steps.slice(first, first + maxDots);
   return (
     <div className="pm-carousel-dots">
-      {shown.map((line, offset) => {
+      {shown.map((step, offset) => {
         const position = first + offset;
-        const problem = lineProblem(line) !== null;
-        const checked = isChecked(position);
+        const problem = [step.position, ...step.discounts].some((line) => lineProblem(lines[line]) !== null);
+        const checked = isChecked(step.position);
         // A line the person confirmed counts as checked even if its figures still look odd.
         const state = position === current ? "current" : checked ? "checked" : problem ? "problem" : "plain";
-        const suffix = checked ? t("lineCarousel.dotChecked") : problem ? t("lineCarousel.dotProblem") : "";
+        const suffix = checked
+          ? step.kind === "product" ? t("lineCarousel.dotChecked") : t("lineCarousel.dotCheckedDiscount")
+          : problem ? t("lineCarousel.dotProblem") : "";
+        const number = steps.slice(0, position + 1).filter((other) => other.kind === "product").length;
+        const label = step.kind === "product" ? t("lineCarousel.productDot", { number }) : t("lineCarousel.discountPosition");
         return (
           <button
-            key={position}
+            key={step.position}
             type="button"
             className="pm-carousel-dot"
             data-state={state}
             aria-current={position === current ? "true" : undefined}
-            aria-label={`${t("lineReview.lineNumber", { number: position + 1 })}${suffix}`}
+            aria-label={`${label}${suffix}`}
             onClick={() => onGo(position)}
           >
             <span aria-hidden="true" />

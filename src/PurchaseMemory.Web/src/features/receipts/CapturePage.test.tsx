@@ -49,6 +49,8 @@ describe("receipt background flow", () => {
     vi.clearAllMocks();
     Object.defineProperty(URL, "createObjectURL", { configurable: true, value: vi.fn(() => "blob:receipt") });
     Object.defineProperty(URL, "revokeObjectURL", { configurable: true, value: vi.fn() });
+    // Marks made on the draft look the saved purchase up; unless a test says otherwise it is not found.
+    vi.mocked(api.getPurchase).mockRejectedValue(new Error("not found"));
   });
 
   it("shows an exact duplicate outcome and opens the existing stable URL without queueing a new job", async () => {
@@ -78,7 +80,12 @@ describe("receipt background flow", () => {
     vi.mocked(api.reviewReceipt).mockResolvedValue(ready);
     vi.mocked(api.saveReceipt).mockResolvedValue({ id: "purchase-1", merchantName: "Lidl", purchasedAt: ready.snapshot.purchasedAt, currency: "PLN", receiptTotal: 5, createdAt: ready.uploadedAt, updatedAt: ready.updatedAt, items: ready.snapshot.items, issues: [] });
     render(<AppProviders><MemoryRouter initialEntries={[`/receipts/${ready.id}`]}><Routes><Route path="/receipts/:receiptId" element={<ReceiptDetailPage />} /><Route path="/purchases" element={<h1>Purchase history</h1>} /></Routes></MemoryRouter></AppProviders>);
-    fireEvent.click(await screen.findByRole("button", { name: "Сохранить покупку" }));
+    // While checking products there is no save button: the last product leads to the summary, which has it.
+    expect(await screen.findByRole("button", { name: "Сохранить сейчас" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Сохранить покупку" })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Верно, к итогу" }));
+    expect(screen.getByRole("heading", { name: "Всё проверено" })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Сохранить покупку" }));
     expect(await screen.findByRole("heading", { name: "Purchase history" })).toBeInTheDocument();
     expect(api.reviewReceipt).toHaveBeenCalledTimes(1);
     expect(api.saveReceipt).toHaveBeenCalledTimes(1);
@@ -94,7 +101,8 @@ describe("receipt background flow", () => {
       return <h1>Queue {location.search}</h1>;
     }
     render(<AppProviders><MemoryRouter initialEntries={[{ pathname: `/receipts/${ready.id}`, state: { returnTo: "/needs-attention?category=milk&tag=kid" } }]}><Routes><Route path="/receipts/:receiptId" element={<ReceiptDetailPage />} /><Route path="/needs-attention" element={<QueueProbe />} /><Route path="/purchases" element={<h1>Purchase history</h1>} /></Routes></MemoryRouter></AppProviders>);
-    fireEvent.click(await screen.findByRole("button", { name: "Сохранить покупку" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Сохранить сейчас" }));
+    fireEvent.click(screen.getByRole("button", { name: "Сохранить покупку" }));
     expect(await screen.findByRole("heading", { name: "Queue ?category=milk&tag=kid" })).toBeInTheDocument();
   });
 
@@ -104,7 +112,8 @@ describe("receipt background flow", () => {
     vi.mocked(api.reviewReceipt).mockResolvedValue(ready);
     vi.mocked(api.saveReceipt).mockResolvedValue({ id: "purchase-1", merchantName: "Lidl", purchasedAt: ready.snapshot.purchasedAt, currency: "PLN", receiptTotal: 5, createdAt: ready.uploadedAt, updatedAt: ready.updatedAt, items: ready.snapshot.items, issues: [] });
     render(<AppProviders><MemoryRouter initialEntries={[{ pathname: `/receipts/${ready.id}`, state: { returnTo: "https://example.com/needs-attention" } }]}><Routes><Route path="/receipts/:receiptId" element={<ReceiptDetailPage />} /><Route path="/purchases" element={<h1>Purchase history</h1>} /></Routes></MemoryRouter></AppProviders>);
-    const saveButton = await screen.findByRole("button", { name: "Сохранить покупку" });
+    fireEvent.click(await screen.findByRole("button", { name: "Сохранить сейчас" }));
+    const saveButton = screen.getByRole("button", { name: "Сохранить покупку" });
     await waitFor(() => expect(saveButton).toBeEnabled());
     fireEvent.click(saveButton);
     await waitFor(() => expect(api.saveReceipt).toHaveBeenCalledTimes(1));
@@ -112,7 +121,7 @@ describe("receipt background flow", () => {
     expect(api.reviewReceipt).toHaveBeenCalledTimes(1);
   });
 
-  it("shows a discount as its own line in the carousel and in the full editor, and sends it back on save", async () => {
+  it("shows a discount inside its product's card and in the full editor, and sends it back on save", async () => {
     const ready: ReceiptView = { ...fixture("ready"), snapshot: { merchantName: "Lidl", purchasedAt: "2026-08-03T12:00:00Z", currency: "PLN", receiptTotal: 69.99, items: [
       { name: "Odkurzacz", quantity: 1, unit: null, unitPrice: 99.99, lineTotal: 99.99, kind: "product", discountedItemPosition: null },
       { name: "OPUST", quantity: null, unit: null, unitPrice: null, lineTotal: -30, kind: "discount", discountedItemPosition: 0 }
@@ -122,9 +131,10 @@ describe("receipt background flow", () => {
     vi.mocked(api.saveReceipt).mockResolvedValue({ id: "purchase-2", merchantName: "Lidl", purchasedAt: null, currency: "PLN", receiptTotal: 69.99, createdAt: ready.uploadedAt, updatedAt: ready.updatedAt, items: ready.snapshot!.items, issues: [] });
     render(<AppProviders><MemoryRouter initialEntries={[`/receipts/${ready.id}`]}><Routes><Route path="/receipts/:receiptId" element={<ReceiptDetailPage />} /><Route path="/purchases" element={<h1>Purchase history</h1>} /></Routes></MemoryRouter></AppProviders>);
 
-    fireEvent.click(await screen.findByRole("button", { name: "Следующая строка" }));
-    expect(screen.getByText("Скидка к «Odkurzacz»")).toBeInTheDocument();
+    expect(await screen.findByText("Товар 1 из 1")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /^Скидка −30,00.* · к оплате 69,99/ }));
     fireEvent.change(screen.getByLabelText("Размер скидки"), { target: { value: "25" } });
+    expect(screen.getByRole("button", { name: /^Скидка −25,00.* · к оплате 74,99/ })).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: /^Магазин, дата и итог/ }));
     expect(screen.getByRole("article", { name: /Скидка OPUST −25,00.*к товару Odkurzacz/ })).toBeInTheDocument();
@@ -141,10 +151,10 @@ describe("receipt background flow", () => {
     render(<AppProviders><MemoryRouter initialEntries={[`/receipts/${withIssues().id}`]}><Routes><Route path="/receipts/:receiptId" element={<ReceiptDetailPage />} /></Routes></MemoryRouter></AppProviders>);
 
     expect(await screen.findByLabelText("Название")).toHaveValue("Mleko");
-    expect(screen.getByText("Строка 1 из 1")).toBeInTheDocument();
+    expect(screen.getByText("Товар 1 из 1")).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 2, name: "Lidl" })).toBeInTheDocument();
     expect(screen.getByText(/^Строки дают 4,00.* из 10,00.* · не хватает 6,00/)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Сохранить покупку" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "Верно, к итогу" })).toBeEnabled();
     // The full editor's own fields are not on screen until it is opened.
     expect(screen.queryByLabelText("Магазин")).not.toBeInTheDocument();
   });
@@ -162,7 +172,11 @@ describe("receipt background flow", () => {
     expect(screen.queryByText("Итог чека не распознан")).not.toBeInTheDocument();
     // The server's recognition-time text is not shown on this screen: it would go stale.
     expect(screen.queryByText("Валюта чека не распознана (сервер).")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Сохранить сейчас" }));
     expect(screen.getByRole("button", { name: "Сохранить покупку" })).toBeDisabled();
+    // The summary still says what is missing.
+    expect(screen.getByText("Дата не распознана")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Вернуться к товарам" }));
 
     fireEvent.click(screen.getByRole("button", { name: /^Магазин, дата и итог/ }));
     fireEvent.change(screen.getByLabelText("Валюта"), { target: { value: "PLN" } });
@@ -214,12 +228,73 @@ describe("receipt background flow", () => {
     vi.mocked(api.saveReceipt).mockResolvedValue({ id: "purchase-1", merchantName: "Lidl", purchasedAt: null, currency: "PLN", receiptTotal: 10, createdAt: "", updatedAt: "", items: [], issues: [] });
     render(<AppProviders><MemoryRouter initialEntries={[`/receipts/${withIssues().id}`]}><Routes><Route path="/receipts/:receiptId" element={<ReceiptDetailPage />} /><Route path="/purchases" element={<h1>Purchase history</h1>} /></Routes></MemoryRouter></AppProviders>);
 
-    fireEvent.click(await screen.findByRole("button", { name: "Сохранить покупку" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Сохранить сейчас" }));
+    fireEvent.click(screen.getByRole("button", { name: "Сохранить покупку" }));
     expect(await screen.findByText("Сумма строк не сходится с итогом чека")).toBeInTheDocument();
     expect(api.saveReceipt).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole("button", { name: "Всё равно сохранить" }));
     expect(await screen.findByRole("heading", { name: "Purchase history" })).toBeInTheDocument();
     expect(api.reviewReceipt).toHaveBeenCalledTimes(1);
+  });
+
+  it("after the last product the summary adds the lines up, warns when the receipt total differs and saves the same way", async () => {
+    const ready: ReceiptView = { ...fixture("ready"), snapshot: { merchantName: "Produkty Mrożone", purchasedAt: "2026-10-16T13:48:00Z", currency: "PLN", receiptTotal: 88.83, items: [
+      { name: "PIEROGI", quantity: 1.165, unit: "kg", unitPrice: 38.25, lineTotal: 44.56, kind: "product" },
+      { name: "Opis: Rabat", quantity: null, unit: null, unitPrice: null, lineTotal: -7.86, kind: "discount" },
+      { name: "PIELMIENI", quantity: 1.085, unit: "kg", unitPrice: 40.8, lineTotal: 44.27, kind: "product" },
+      { name: "Opis: Rabat", quantity: null, unit: null, unitPrice: null, lineTotal: -7.81, kind: "discount" }
+    ] } };
+    vi.mocked(api.getReceipt).mockResolvedValue(ready);
+    vi.mocked(api.reviewReceipt).mockResolvedValue(ready);
+    vi.mocked(api.saveReceipt).mockResolvedValue({ id: "purchase-3", merchantName: "Produkty Mrożone", purchasedAt: null, currency: "PLN", receiptTotal: 88.83, createdAt: "", updatedAt: "", items: [], issues: [] });
+    render(<AppProviders><MemoryRouter initialEntries={[`/receipts/${ready.id}`]}><Routes><Route path="/receipts/:receiptId" element={<ReceiptDetailPage />} /><Route path="/purchases" element={<h1>Purchase history</h1>} /></Routes></MemoryRouter></AppProviders>);
+
+    expect(await screen.findByText("Товар 1 из 2")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Верно, дальше" }));
+    expect(screen.getByText("Товар 2 из 2")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Верно, к итогу" }));
+
+    expect(screen.getByRole("heading", { name: "Всё проверено" })).toBeInTheDocument();
+    const rows = screen.getAllByRole("definition")[0].closest("dl") as HTMLElement;
+    expect(within(rows).getByText("Товаров").nextSibling).toHaveTextContent("2");
+    expect(within(rows).getByText("Скидки").nextSibling).toHaveTextContent(/^−15,67.*PLN$/);
+    expect(within(rows).getByText("По строкам").nextSibling).toHaveTextContent(/^73,16.*PLN$/);
+    expect(screen.getByText(/^Итог на чеке 88,83.*PLN$/)).toBeInTheDocument();
+    expect(screen.getByText(/на некоторых чеках цена уже со скидкой/)).toBeInTheDocument();
+
+    // «Вернуться к товарам» shows the last product again.
+    fireEvent.click(screen.getByRole("button", { name: "Вернуться к товарам" }));
+    expect(screen.getByText("Товар 2 из 2")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "К итогу" }));
+
+    fireEvent.click(screen.getByRole("button", { name: "Сохранить покупку" }));
+    expect(await screen.findByRole("heading", { name: "Purchase history" })).toBeInTheDocument();
+    expect(api.reviewReceipt).toHaveBeenCalledTimes(1);
+    expect(api.saveReceipt).toHaveBeenCalledTimes(1);
+  });
+
+  it("«Убрать» takes the discount out of the draft that is saved, and «Вернуть» puts it back", async () => {
+    const ready: ReceiptView = { ...fixture("ready"), snapshot: { merchantName: "Lidl", purchasedAt: "2026-08-03T12:00:00Z", currency: "PLN", receiptTotal: 99.99, items: [
+      { name: "Odkurzacz", quantity: 1, unit: null, unitPrice: 99.99, lineTotal: 99.99, kind: "product" },
+      { name: "OPUST", quantity: null, unit: null, unitPrice: null, lineTotal: -30, kind: "discount" }
+    ] } };
+    vi.mocked(api.getReceipt).mockResolvedValue(ready);
+    vi.mocked(api.reviewReceipt).mockImplementation(async (_id, snapshot) => ({ ...ready, snapshot }));
+    vi.mocked(api.saveReceipt).mockResolvedValue({ id: "purchase-4", merchantName: "Lidl", purchasedAt: null, currency: "PLN", receiptTotal: 99.99, createdAt: "", updatedAt: "", items: [], issues: [] });
+    render(<AppProviders><MemoryRouter initialEntries={[`/receipts/${ready.id}`]}><Routes><Route path="/receipts/:receiptId" element={<ReceiptDetailPage />} /><Route path="/purchases" element={<h1>Purchase history</h1>} /></Routes></MemoryRouter></AppProviders>);
+
+    fireEvent.click(await screen.findByRole("button", { name: "Убрать скидку OPUST" }));
+    expect(screen.getByText("Скидка убрана")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Вернуть" }));
+    expect(screen.getByRole("button", { name: /^Скидка −30,00/ })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Убрать скидку OPUST" }));
+
+    fireEvent.click(screen.getByRole("button", { name: "Верно, к итогу" }));
+    expect(screen.getByText("Сходится с итогом на чеке")).toBeInTheDocument();
+    expect(screen.queryByText("Скидки")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Сохранить покупку" }));
+    await waitFor(() => expect(api.reviewReceipt).toHaveBeenCalledTimes(1));
+    expect(vi.mocked(api.reviewReceipt).mock.calls[0][1].items.map((item) => item.name)).toEqual(["Odkurzacz"]);
   });
 
   it("opens the full editor from «Магазин, дата и итог» and goes back to the lines", async () => {
@@ -230,7 +305,7 @@ describe("receipt background flow", () => {
 
     expect(screen.getByLabelText("Магазин")).toHaveValue("Lidl");
     expect(screen.getByRole("button", { name: "Добавить строку" })).toBeInTheDocument();
-    expect(screen.queryByText(/^Строка \d+ из \d+$/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^Товар \d+ из \d+$/)).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Проверить строки по одной" }));
     expect(screen.getByLabelText("Название")).toHaveValue("Mleko");
   });
@@ -249,6 +324,9 @@ describe("receipt background flow", () => {
 
     fireEvent.click(await screen.findByRole("button", { name: "Верно, дальше" }));
     expect(screen.getByLabelText("Название")).toHaveValue("Chleb");
+    fireEvent.click(screen.getByRole("button", { name: "Сохранить сейчас" }));
+    expect(screen.getByRole("heading", { name: "Итог покупки" })).toBeInTheDocument();
+    expect(screen.getByText("Проверено товаров: 1 из 2")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Сохранить покупку" }));
     expect(await screen.findByRole("heading", { name: "Purchase history" })).toBeInTheDocument();
 
@@ -269,7 +347,7 @@ describe("receipt background flow", () => {
     const sync = approvalSyncFor("local");
     render(<AppProviders><MemoryRouter initialEntries={[`/receipts/${ready.id}`]}><Routes><Route path="/receipts/:receiptId" element={<ReceiptDetailPage />} /><Route path="/purchases" element={<h1>Purchase history</h1>} /></Routes></MemoryRouter></AppProviders>);
 
-    fireEvent.click(await screen.findByRole("button", { name: "Верно" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Верно, к итогу" }));
     fireEvent.click(screen.getByRole("button", { name: "Сохранить покупку" }));
     expect(await screen.findByRole("heading", { name: "Purchase history" })).toBeInTheDocument();
     await waitFor(() => expect(api.getPurchase).toHaveBeenCalledWith("purchase-8"));

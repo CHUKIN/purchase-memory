@@ -17,6 +17,7 @@ import { useToast } from "../../app/toasts";
 import {
   ActionButton,
   type BackTarget,
+  browserHistoryIndex,
   ButtonLink,
   DateField,
   DecimalInput,
@@ -33,7 +34,7 @@ import { LinesEditor, type LineFocus } from "../receipts/LinesEditor";
 import { ReceiptDiscountLine } from "../receipts/ReceiptDiscountLine";
 import { reviewQueueQueryKey } from "../review-queue/reviewQueueQueries";
 import { reviewQueueReturnPath } from "../review-queue/returnToQueue";
-import { useBackTarget, useReturnState } from "../../app/backNavigation";
+import { readReturnState, useBackTarget, useReturnState } from "../../app/backNavigation";
 import { useOpenProduct } from "../../app/openProduct";
 import { useArrivalPlace, withoutPlace } from "../../app/place";
 import { PurchaseLineImpressions, usePurchaseImpressions } from "../impressions/ImpressionSections";
@@ -42,9 +43,15 @@ import { HelpLink } from "../help/HelpLink";
 import { formatShortDate } from "./dates";
 import { formatMoney } from "./money";
 import { ProductLinkNote, ProductLinkRows, productStatusText } from "./ProductLinkRows";
-import { PurchaseLineReview, type ReviewLinePatch, type ReviewStart } from "../line-review/PurchaseLineReview";
+import { PurchaseLineReview, type LineChange, type ReviewStart } from "../line-review/PurchaseLineReview";
 import { useApprovalSync, useLineApprovals } from "../line-review/useLineApprovals";
 import { usePurchaseReceiptPhoto } from "./usePurchaseReceiptPhoto";
+
+const editFromViewKey = "editFromView";
+
+function stateRecord(state: unknown): Record<string, unknown> {
+  return typeof state === "object" && state !== null ? state as Record<string, unknown> : {};
+}
 
 export const purchaseQueryKey = (purchaseId: string) => ["purchases", "detail", purchaseId] as const;
 
@@ -80,12 +87,23 @@ export function PurchaseDetailPage() {
   const navigate = useNavigate();
   const queueReturnPath = reviewQueueReturnPath(location.state);
   // The remembered place belongs to the arrival only; switching view ↔ edit must not replay it.
-  const keepState = { state: withoutPlace(location.state) };
-  const startEditing = () => setSearchParameters({ edit: "1" }, keepState);
+  const keepState = withoutPlace(location.state);
+  // «Исправить» is one step on from the purchase (marked in router state), so
+  // leaving the editor steps back to it: «назад» afterwards never reopens the
+  // editor. Opened straight into the editor (a review-queue link), it is replaced instead.
+  const startEditing = () => setSearchParameters({ edit: "1" }, { state: { ...stateRecord(keepState), [editFromViewKey]: true } });
   const stopEditing = (saved: boolean) => {
     if (saved) showToast({ id: `purchase-saved-${Date.now()}`, message: t("purchaseEdit.saved"), tone: "success" });
-    if (saved && queueReturnPath) { navigate(queueReturnPath); return; }
-    setSearchParameters({}, keepState);
+    if (saved && queueReturnPath) {
+      // Back through history to the queue entry when it is there (its filters and scroll kept), so no dead step is left.
+      const queueIndex = readReturnState(location.state)?.returnIndex;
+      const current = browserHistoryIndex();
+      if (queueIndex !== undefined && current !== null && current > queueIndex) navigate(queueIndex - current);
+      else navigate(queueReturnPath, { replace: true });
+      return;
+    }
+    if (stateRecord(location.state)[editFromViewKey] === true) navigate(-1);
+    else setSearchParameters({}, { state: keepState, replace: true });
   };
   const back = useBackTarget({ to: "/purchases", labelKey: "common.purchases" });
 
@@ -130,7 +148,7 @@ function PurchaseSummary({ purchase, back, onEdit }: { purchase: PurchaseDetail;
   const arrival = useArrivalPlace();
   const [review, setReview] = useState<ReviewStart | null>(() => arrival?.line !== undefined ? { index: arrival.line, nonce: 1 } : null);
   const openReview = (index: number | null) => setReview((current) => ({ index, nonce: (current?.nonce ?? 0) + 1 }));
-  const saveLine = useSaveLine(purchase, approvals);
+  const saveLines = useSaveLines(purchase, approvals);
   const removeLine = useRemoveLine(purchase, approvals);
   const returnState = useReturnState();
   const openProduct = useOpenProduct();
@@ -263,7 +281,7 @@ function PurchaseSummary({ purchase, back, onEdit }: { purchase: PurchaseDetail;
         lines={purchase.items}
         isApproved={approvals.isApproved}
         setApproved={approvals.setApproved}
-        onSaveLine={saveLine}
+        onSaveLines={saveLines}
         onRemoveLine={removeLine}
         photo={photo}
         currency={purchase.currency}
@@ -319,17 +337,23 @@ function ApprovedMark({ approved }: { approved: boolean }) {
 }
 
 /**
- * The line review's correction: the purchase is saved with just that line
- * changed (the same full snapshot the editor sends), and the corrected line
- * counts as checked. Unsent marks go first, because a correction replaces
+ * The line review's correction: the purchase is saved with just those lines
+ * changed (the same full snapshot the editor sends), and the corrected lines
+ * count as checked. Unsent marks go first, because a correction replaces
  * the line rows.
  */
-function useSaveLine(purchase: PurchaseDetail, approvals: ReturnType<typeof useLineApprovals>) {
+function useSaveLines(purchase: PurchaseDetail, approvals: ReturnType<typeof useLineApprovals>) {
   const saveItems = useSaveItems(purchase, approvals);
-  return async (index: number, patch: ReviewLinePatch) => {
-    const updated = await saveItems((items) => items.map((item, position) => position === index ? { ...item, ...patch } : item));
-    const line = updated.items[index];
-    if (line) approvals.setApproved(line.id, true);
+  return async (changes: LineChange[], alsoApprove: number[] = []) => {
+    const patches = new Map(changes.map((change) => [change.index, change.patch]));
+    const updated = await saveItems((items) => items.map((item, position) => {
+      const patch = patches.get(position);
+      return patch ? { ...item, ...patch } : item;
+    }));
+    for (const index of new Set([...patches.keys(), ...alsoApprove])) {
+      const line = updated.items[index];
+      if (line) approvals.setApproved(line.id, true);
+    }
   };
 }
 

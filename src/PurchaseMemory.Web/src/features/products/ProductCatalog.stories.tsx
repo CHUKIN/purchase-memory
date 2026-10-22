@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { MemoryRouter } from "react-router";
 import { fn } from "storybook/test";
-import type { ProductSummary } from "../../api/types";
+import type { ProductCategory, ProductSummary } from "../../api/types";
 import { sampleCategories } from "../categories/categoryFixtures";
 import { ProductCatalog, type ProductCatalogProps } from "./ProductCatalog";
 
@@ -144,7 +144,7 @@ function FilterableProductCatalog(args: ProductCatalogProps) {
   );
 }
 
-/** Chips in every state (confirmed, suggested, none, long name) and the category/brand filters. */
+/** Every category state (confirmed, suggested ✦, none, a long household name) and the category/brand filters. */
 export const WithCategoriesMobileRu: Story = {
   globals: phone,
   args: { products: classified, categories: sampleCategories },
@@ -155,3 +155,43 @@ export const WithCategoriesDesktopEn: Story = {
   args: { products: classified, categories: sampleCategories },
   render: FilterableProductCatalog
 };
+
+/* Story data only: every seeded group (fixed seed ids) with one subcategory, as in ProductCategorySeed.cs. */
+const seedId = (number: number) => `00000000-0000-4000-8000-${String(number).padStart(12, "0")}`;
+const groups: [number, string, string, number, string, string][] = [
+  [1, "dairy", "Молочное и яйца", 4, "yogurt", "Йогурты и кефир"],
+  [8, "meat_fish", "Мясо и рыба", 11, "sausages", "Колбасы и сосиски"],
+  [13, "produce", "Овощи и фрукты", 15, "fruits", "Фрукты"],
+  [17, "bakery", "Хлеб и выпечка", 18, "bread", "Хлеб"],
+  [20, "grocery", "Бакалея", 21, "pasta", "Макароны"],
+  [28, "sweets_snacks", "Сладости и снеки", 29, "chocolate", "Шоколад и конфеты"],
+  [33, "drinks", "Напитки", 34, "coffee", "Кофе"],
+  [40, "frozen", "Замороженное", 41, "frozen_meals", "Полуфабрикаты"],
+  [44, "household_chemicals", "Бытовая химия", 46, "dishwashing", "Для посуды"],
+  [48, "hygiene", "Гигиена", 50, "oral_care", "Уход за зубами"],
+  [52, "home", "Для дома", 53, "kitchen", "Кухня"],
+  [55, "other", "Прочее", 58, "bags", "Пакеты"]
+];
+const seededTree: ProductCategory[] = groups.flatMap(([groupNumber, groupKey, groupName, childNumber, childKey, childName], position) => [
+  { id: seedId(groupNumber), parentId: null, name: groupName, systemKey: groupKey, position, productCount: 0 },
+  { id: seedId(childNumber), parentId: seedId(groupNumber), name: childName, systemKey: childKey, position: 0, productCount: 1 }
+]);
+const groupProducts: ProductSummary[] = [
+  { ...product("g-chalwa", "A_CHALWA WEDEL 250G", 1, 1), categoryId: seedId(29), categorySource: "suggested", brand: "Wedel" },
+  { ...product("g-chalwa50", "A_CHALWA WEDEL 50G", 1, 1), categoryId: null, needsReview: true },
+  { ...product("g-talerz", "A_CO TALERZ DESEROW", 1, 1), categoryId: seedId(53), categorySource: "suggested" },
+  { ...product("g-kefir", "ACTIV KEFI BOR 280", 2, 1), categoryId: seedId(4), categorySource: "suggested" },
+  ...groups.filter(([, key]) => !["sweets_snacks", "home", "dairy"].includes(key)).map(([, key, , childNumber, , childName], index) => ({
+    ...product(`g-${key}`, `${childName.toUpperCase()} ${index + 1}`, index + 1, 1),
+    categoryId: seedId(childNumber),
+    categorySource: "confirmed" as const
+  })),
+  { ...product("g-mleko", "MLEKO 3,2% 1L", 5, 2), categoryId: seedId(4), categorySource: "confirmed", brand: "Łaciate" }
+];
+
+/** The approved mock: a tile per group, the leaf category, ✦ for a suggestion, «Проверить» and «без категории». */
+export const CategoryTilesMobileRu: Story = {
+  globals: phone,
+  args: { products: groupProducts, totalCount: groupProducts.length, categories: seededTree, needsReviewCount: 1, onReviewFilterChange: fn() }
+};
+export const CategoryTilesMobileEn: Story = { ...CategoryTilesMobileRu, globals: { ...phone, locale: "en" } };

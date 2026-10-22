@@ -324,7 +324,7 @@ describe("PurchaseDetailPage line review (carousel)", () => {
 
     const review = dialog();
     expect(within(review).getByLabelText("Проверено 0 из 2")).toBeInTheDocument();
-    expect(within(review).getByText("Строка 1 из 2")).toBeInTheDocument();
+    expect(within(review).getByText("Товар 1 из 2")).toBeInTheDocument();
     expect(shownName()).toBe("KAWA");
     expect(within(review).getByLabelText("Цена")).toHaveValue("15");
     expect(within(review).getByText("Связано с «Kawa»")).toBeInTheDocument();
@@ -396,7 +396,7 @@ describe("PurchaseDetailPage line review (carousel)", () => {
     expect(shownName()).toBe("Ser Gouda 250g");
     // Gouda has no price: that is its problem, and the dot of the first line shows it is checked.
     expect(within(dialog()).getByText("Цена не распознана — впишите её по фото.")).toBeInTheDocument();
-    expect(within(dialog()).getByRole("button", { name: "Строка 1, проверена" })).toBeInTheDocument();
+    expect(within(dialog()).getByRole("button", { name: "Товар 1, проверен" })).toBeInTheDocument();
   });
 
   it("a corrected line is saved when the person moves on, and «Верно, дальше» on it counts as checked", async () => {
@@ -424,6 +424,34 @@ describe("PurchaseDetailPage line review (carousel)", () => {
 
     await waitFor(() => expect(shownName()).toBe("Ser Gouda 250g"));
     expect(screen.getByRole("button", { name: /^KAWA, проверено/ })).toBeInTheDocument();
+  });
+
+  it("correcting only a product's discount and pressing «Верно» checks the product and its discount", async () => {
+    const withDiscount: PurchaseDetail = {
+      ...withPhoto,
+      items: [...withPhoto.items, {
+        ...purchase.items[0], id: "line-rabat", position: 2, name: "RABAT", quantity: null, unit: null, unitPrice: null,
+        lineTotal: -1, kind: "discount", productId: null, productName: null, boundingBox: null
+      }]
+    };
+    vi.mocked(getPurchase).mockResolvedValue(withDiscount);
+    // The saved lines come back with new ids, as after a real save.
+    vi.mocked(updatePurchase).mockResolvedValue({
+      ...withDiscount,
+      updatedAt: "2026-07-02T00:00:00Z",
+      items: withDiscount.items.map((item) => ({ ...item, id: `${item.id}-2`, lineTotal: item.kind === "discount" ? -0.5 : item.lineTotal }))
+    });
+    renderAt("/purchases/p1");
+    fireEvent.click(await screen.findByRole("button", { name: /^Ser Gouda.*сверить с чеком$/ }));
+
+    fireEvent.click(within(dialog()).getByRole("button", { name: /^Скидка −1,00/ }));
+    fireEvent.change(within(dialog()).getByLabelText("Размер скидки"), { target: { value: "0,5" } });
+    fireEvent.click(within(dialog()).getByRole("button", { name: "Верно" }));
+
+    await waitFor(() => expect(updatePurchase).toHaveBeenCalledTimes(1));
+    expect(vi.mocked(updatePurchase).mock.calls[0][1].items[2]).toMatchObject({ id: "line-rabat", lineTotal: -0.5 });
+    expect(await within(dialog()).findByLabelText("Проверено 2 из 3")).toBeInTheDocument();
+    expect(within(dialog()).getByRole("button", { name: "Товар 2, проверен" })).toBeInTheDocument();
   });
 
   it("closing the review with Escape saves the corrected line first", async () => {
@@ -481,7 +509,7 @@ describe("PurchaseDetailPage line review (carousel)", () => {
     expect(name).toHaveValue("KAWA ZIARNISTA");
 
     finish({ ...withPhoto, updatedAt: "2026-07-02T00:00:00Z", items: [{ ...withPhoto.items[0], name: "KAWA ZIARNISTA" }, withPhoto.items[1]] });
-    await waitFor(() => expect(within(dialog()).getByText("Строка 2 из 2")).toBeInTheDocument());
+    await waitFor(() => expect(within(dialog()).getByText("Товар 2 из 2")).toBeInTheDocument());
     expect(within(dialog()).getByLabelText("Название")).not.toHaveAttribute("readonly");
     expect(updatePurchase).toHaveBeenCalledTimes(1);
   });
@@ -496,7 +524,7 @@ describe("PurchaseDetailPage line review (carousel)", () => {
 
     await waitFor(() => expect(updatePurchase).toHaveBeenCalledTimes(1));
     expect(vi.mocked(updatePurchase).mock.calls[0][1].items[0]).toMatchObject({ id: "line-kawa", name: "KAWA ZIARNISTA" });
-    await waitFor(() => expect(within(dialog()).getByText("Строка 2 из 2")).toBeInTheDocument());
+    await waitFor(() => expect(within(dialog()).getByText("Товар 2 из 2")).toBeInTheDocument());
   });
 
   it("changes the line's product right under the line, saved with it", async () => {
@@ -576,11 +604,21 @@ describe("PurchaseDetailPage line review (carousel)", () => {
         lineTotal: -1, kind: "discount", productId: null, productName: null, boundingBox: null
       }]
     });
+    vi.mocked(updatePurchase).mockResolvedValue({ ...withPhoto, updatedAt: "2026-07-02T00:00:00Z", issues: [] });
     renderAt("/purchases/p1");
     fireEvent.click(await screen.findByRole("button", { name: /RABAT.*сверить с чеком$/ }));
+    // The discount is inside its product's card, which counts products only.
+    expect(within(dialog()).getByText("Товар 2 из 2")).toBeInTheDocument();
+    expect(within(dialog()).getByLabelText("Название")).toHaveValue("Ser Gouda 250g");
+    fireEvent.click(within(dialog()).getByRole("button", { name: /^Скидка −1,00.* · к оплате 2,00/ }));
     expect(within(dialog()).getByLabelText("Название скидки")).toHaveValue("RABAT");
     expect(within(dialog()).getByLabelText("Размер скидки")).toHaveValue("1");
-    expect(within(dialog()).getByText("Скидка к «Ser Gouda 250g»")).toBeInTheDocument();
+
+    // «Убрать» asks first: the purchase is saved without the discount at once.
+    fireEvent.click(within(dialog()).getByRole("button", { name: "Убрать скидку RABAT" }));
+    fireEvent.click(within(dialog("Убрать скидку?")).getByRole("button", { name: "Убрать" }));
+    await waitFor(() => expect(updatePurchase).toHaveBeenCalledTimes(1));
+    expect(vi.mocked(updatePurchase).mock.calls[0][1].items.map((item) => item.name)).toEqual(["KAWA", "Ser Gouda 250g"]);
   });
 
   it("reviews the lines of a purchase without a photo too, without asking for a receipt", async () => {

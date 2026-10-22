@@ -1,6 +1,7 @@
 import { IonButton, IonButtons, IonDatetime, IonItem, IonLabel, IonModal, IonNote, IonTitle, IonToolbar } from "@ionic/react";
 import { useId, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useHistoryLayer } from "../../history/historyLayers";
 
 export interface DateFieldProps {
   label: string;
@@ -33,6 +34,7 @@ export interface DateFieldProps {
 export function DateField({ label, value, onChange, withTime = false, emptyText, clearable = true, min, max, disabled = false, id, formValue = false }: DateFieldProps) {
   const { t, i18n } = useTranslation();
   const [open, setOpen] = useState(false);
+  useHistoryLayer(open, () => setOpen(false));
   const titleId = useId();
   const locale = i18n.resolvedLanguage === "en" ? "en-GB" : "ru-RU";
   const text = value ? formatValue(value, withTime, locale) : (emptyText ?? t("common.dateEmpty"));

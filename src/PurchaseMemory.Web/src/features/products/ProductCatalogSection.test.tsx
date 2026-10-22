@@ -144,8 +144,8 @@ describe("ProductCatalogSection", () => {
     renderSection();
 
     const flagged = await screen.findByRole("link", { name: /ACTIV KEFI NAT 280/ });
-    expect(within(flagged).getByText("проверить")).toBeInTheDocument();
-    expect(within(screen.getByRole("link", { name: /Mleko/ })).queryByText("проверить")).not.toBeInTheDocument();
+    expect(within(flagged).getByText("Проверить")).toBeInTheDocument();
+    expect(within(screen.getByRole("link", { name: /Mleko/ })).queryByText("Проверить")).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "4 товара нужно проверить" }));
 

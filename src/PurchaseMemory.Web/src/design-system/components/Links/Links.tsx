@@ -2,6 +2,7 @@ import { IonButton, IonItem } from "@ionic/react";
 import { ChevronLeft } from "lucide-react";
 import type { ComponentProps, MouseEvent } from "react";
 import { useHref, useLinkClickHandler, useLocation, useNavigate, type To } from "react-router";
+import { afterLayerSteps, backFromLayer, leaveScreenWithLayers, shownLayerSteps } from "../../history/historyLayers";
 
 /*
  * Ionic's router integration (@ionic/react-router) supports React Router 6
@@ -73,18 +74,30 @@ export function browserHistoryIndex(): number | null {
 }
 
 /**
- * Goes back as the back chevron does: a history step to the named screen when
- * there is one (keeping its scroll), otherwise opens its address.
+ * Goes back as the back chevron does: one step. An open sheet or inner screen
+ * (see historyLayers.ts) is that step and closes; otherwise a history step to
+ * the named screen when there is one (keeping its scroll), else its address.
  */
-export function useBack(target: BackTarget): () => void {
+export function useBack(target: BackTarget, { leaveLayers = false }: {
+  /** Leave the screen itself, its open layers with it (a «Готово» that ends the screen). */
+  leaveLayers?: boolean;
+} = {}): () => void {
   const navigate = useNavigate();
   const location = useLocation();
   const canGoBack = target.preferHistory === true && location.key !== "default";
   return () => {
-    const current = browserHistoryIndex();
-    if (target.historyIndex !== undefined && current !== null && current > target.historyIndex) navigate(target.historyIndex - current);
-    else if (canGoBack) navigate(-1);
-    else navigate(target.to, { state: target.state });
+    // Runs once pending layer steps are done, so the history index is current.
+    const leaveScreen = () => {
+      const current = browserHistoryIndex();
+      const historyStep = target.historyIndex !== undefined && current !== null && current > target.historyIndex;
+      // Layers left together with the screen are not asked to close (they would react on the way out).
+      if (leaveLayers && (historyStep || canGoBack)) leaveScreenWithLayers();
+      if (historyStep) navigate(target.historyIndex! - current!);
+      else if (canGoBack) navigate(-1 - shownLayerSteps());
+      else navigate(target.to, { state: target.state });
+    };
+    if (leaveLayers) afterLayerSteps(leaveScreen);
+    else backFromLayer(leaveScreen);
   };
 }
 
