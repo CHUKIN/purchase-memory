@@ -2,6 +2,7 @@ import { IonButton, IonButtons, IonContent, IonHeader, IonModal, IonTitle, IonTo
 import { Camera, Keyboard } from "lucide-react";
 import { useId, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useHistoryLayer } from "../../design-system/history/historyLayers";
 import { HelpLink } from "../help/HelpLink";
 import { BarcodeCamera } from "./BarcodeCamera";
 import { ManualBarcodeForm } from "./ManualBarcodeForm";
@@ -21,6 +22,7 @@ export function BarcodeScanModal({ isOpen, onClose, onCode }: {
   const { t } = useTranslation();
   const titleId = useId();
   const [manual, setManual] = useState(false);
+  useHistoryLayer(isOpen, onClose);
 
   const finish = (code: string, source: BarcodeSource) => {
     onCode(code, source);

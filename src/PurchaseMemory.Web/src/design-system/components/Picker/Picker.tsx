@@ -2,6 +2,7 @@ import { IonButton, IonButtons, IonContent, IonHeader, IonItem, IonLabel, IonLis
 import { Check } from "lucide-react";
 import { Fragment, useId, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useHistoryLayer } from "../../history/historyLayers";
 import { SectionHeader } from "../Blocks/Blocks";
 
 export interface PickerOption {
@@ -47,6 +48,8 @@ export function PickerModal({ isOpen, onClose, title, groups, value, onChoose, s
   const { t } = useTranslation();
   const titleId = useId();
   const [query, setQuery] = useState("");
+  // «Назад» closes the list without choosing, like «Отмена».
+  useHistoryLayer(isOpen, onClose);
   const needle = normalize(query.trim());
   const visible = useMemo(() => needle === ""
     ? groups

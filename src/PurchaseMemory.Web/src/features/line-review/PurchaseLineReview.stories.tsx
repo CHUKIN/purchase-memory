@@ -32,7 +32,7 @@ function Playground({ checked, startAt, withPhoto }: StoryArgs) {
           if (value) next.add(id); else next.delete(id);
           return next;
         })}
-        onSaveLine={fn(async () => undefined)}
+        onSaveLines={fn(async () => undefined)}
         onRemoveLine={fn(async () => undefined)}
         photo={withPhoto ? { photo: { url: tiltedReceiptUrl, croppable: true }, failed: false } : null}
         currency="PLN"

@@ -16,11 +16,13 @@ import {
   Page,
   PrimaryButton
 } from "../../design-system/components";
+import { HistoryLayerScope, onLayerEntry, useHistoryLayer } from "../../design-system/history/historyLayers";
 import { HelpLink } from "../help/HelpLink";
 import { reviewQueueQueryKey } from "../review-queue/reviewQueueQueries";
 import { reviewQueueReturnPath } from "../review-queue/returnToQueue";
 import { useBackTarget, useReturnState } from "../../app/backNavigation";
 import type { LineApprovalSync } from "../line-review/approvalSync";
+import { stepLinePosition } from "../line-review/carouselSteps";
 import { firstProblemIndex } from "../line-review/lineChecks";
 import { useApprovalSync } from "../line-review/useLineApprovals";
 import type { LineViewerPhoto } from "../receipt-photo/LinePhoto";
@@ -50,6 +52,8 @@ export function ReceiptDetailPage() {
   // The line carousel is the entry point; the full editor (store, date,
   // total and the lines as a list) is opened explicitly and can be left again.
   const [fullEditorOpen, setFullEditorOpen] = useState(false);
+  // After the last product (or «Сохранить сейчас»): the summary with «Сохранить покупку».
+  const [summaryOpen, setSummaryOpen] = useState(false);
   const initializedEditorReceiptId = useRef<string | null>(null);
   const receiptQuery = useQuery({
     queryKey: ["receipts", receiptId],
@@ -65,7 +69,8 @@ export function ReceiptDetailPage() {
     if (receiptQuery.data?.snapshot && initializedEditorReceiptId.current !== receiptQuery.data.id) {
       setSnapshot(receiptQuery.data.snapshot);
       setChecked(receiptQuery.data.snapshot.items.map(() => false));
-      setLineIndex(firstProblemIndex(receiptQuery.data.snapshot.items));
+      // A discount with a problem is shown in its product's card.
+      setLineIndex(stepLinePosition(receiptQuery.data.snapshot.items, firstProblemIndex(receiptQuery.data.snapshot.items)));
       initializedEditorReceiptId.current = receiptQuery.data.id;
     }
   }, [receiptQuery.data]);
@@ -112,11 +117,20 @@ export function ReceiptDetailPage() {
       void queryClient.invalidateQueries({ queryKey: ["receipts", "recent"] });
       if (saved) {
         void queryClient.invalidateQueries({ queryKey: reviewQueueQueryKey });
-        navigate(afterSavePath);
+        // Saved from the full editor: its history step is replaced, so «назад» from the list cannot reopen it.
+        navigate(afterSavePath, { replace: onLayerEntry() });
       }
     }
   });
   const receipt = receiptQuery.data;
+  // The full editor is one «назад» step (header chevron, browser, iPhone swipe) back to the carousel.
+  const editorShown = fullEditorOpen && receipt?.status === "ready" && snapshot !== null;
+  const editorLayer = useHistoryLayer(editorShown, () => setFullEditorOpen(false));
+  // So is the summary: «назад» returns to the product it was opened from (the last one after «Верно, к итогу»).
+  const summaryShown = summaryOpen && !fullEditorOpen && receipt?.status === "ready" && snapshot !== null;
+  const summaryLayer = useHistoryLayer(summaryShown, () => setSummaryOpen(false));
+  // In the full editor and the summary the chevron returns to the products on this screen, so it is named «Назад», not the previous screen.
+  const layerBack = { to: `/receipts/${receiptId}`, label: t("ui.back") };
   const photoSource = useAuthorizedImageUrl(receipt?.sourceImageUrl);
   const canSave = useMemo(() => snapshot !== null && snapshot.items.length > 0 && snapshot.items.every((item) => item.name.trim()), [snapshot]);
   const updateSnapshot = (next: ReceiptSnapshot) => { setSnapshot(next); setWarningsConfirmed(false); };
@@ -129,6 +143,13 @@ export function ReceiptDetailPage() {
     updateSnapshot({ ...snapshot, items: snapshot.items.filter((_, position) => position !== index) });
     setChecked((current) => current.filter((_, position) => position !== index));
     setLineIndex((current) => Math.max(0, Math.min(current > index ? current - 1 : current, snapshot.items.length - 2)));
+  };
+  const restoreItem = (index: number, item: ReceiptItemSnapshot) => {
+    if (!snapshot) return;
+    const position = Math.min(Math.max(index, 0), snapshot.items.length);
+    updateSnapshot({ ...snapshot, items: [...snapshot.items.slice(0, position), item, ...snapshot.items.slice(position)] });
+    setChecked((current) => [...current.slice(0, position), false, ...current.slice(position)]);
+    setLineIndex((current) => current >= position ? current + 1 : current);
   };
   const addItem = () => {
     if (!snapshot) return;
@@ -166,19 +187,23 @@ export function ReceiptDetailPage() {
   return (
     <Page
       title={title}
-      back={back}
+      back={editorShown || summaryShown ? layerBack : back}
       // The carousel needs the height: a compact title, like the approved mock.
       largeTitle={!carousel}
       end={receipt.status === "ready" ? <HelpLink topic="review-save" /> : <HelpLink topic="recognition" />}
-      footer={carousel && (
-        <>
-          <button type="button" className="pm-footer-link" onClick={() => setFullEditorOpen(true)}>
-            {t("receiptReview.storeDateTotal")}
-            <ChevronRight size={16} aria-hidden="true" />
-          </button>
-          {saveButton}
-        </>
-      )}
+      footer={carousel && (summaryOpen
+        ? saveButton
+        : (
+          <div className="pm-footer-links">
+            <button type="button" className="pm-footer-link" onClick={() => setFullEditorOpen(true)}>
+              {t("receiptReview.storeDateTotal")}
+            </button>
+            <button type="button" className="pm-footer-link" onClick={() => setSummaryOpen(true)}>
+              {t("receiptReview.saveNow")}
+              <ChevronRight size={16} aria-hidden="true" />
+            </button>
+          </div>
+        ))}
     >
       {/* A recognized draft shows its photo in the carousel; the thumbnails stay only for a receipt in several photos. */}
       {(!reviewing || receipt.imageParts.length > 1) && (
@@ -194,31 +219,39 @@ export function ReceiptDetailPage() {
       {reviewing && (
         carousel
           ? (
-            <CaptureLineReview
-              snapshot={snapshot}
-              index={lineIndex}
-              onIndexChange={setLineIndex}
-              onChangeItem={updateItem}
-              onRemoveItem={removeItem}
-              checked={checked}
-              onCheckedChange={(index, value) => setChecked((current) => current.map((mark, position) => position === index ? value : mark))}
-              onUseLinesTotal={(receiptTotal) => updateSnapshot({ ...snapshot, receiptTotal })}
-              remainingIssues={warningsConfirmed ? receipt.issues : null}
-              photo={photo}
-              receiptId={receipt.id}
-            />
+            <HistoryLayerScope value={summaryLayer}>
+              <CaptureLineReview
+                snapshot={snapshot}
+                index={lineIndex}
+                onIndexChange={setLineIndex}
+                onChangeItem={updateItem}
+                onRemoveItem={removeItem}
+                onRestoreItem={restoreItem}
+                checked={checked}
+                onCheckedChange={(indexes, value) => setChecked((current) => current.map((mark, position) => indexes.includes(position) ? value : mark))}
+                onUseLinesTotal={(receiptTotal) => updateSnapshot({ ...snapshot, receiptTotal })}
+                remainingIssues={warningsConfirmed ? receipt.issues : null}
+                photo={photo}
+                receiptId={receipt.id}
+                summary={summaryOpen}
+                onShowSummary={() => setSummaryOpen(true)}
+                onBackToProducts={() => setSummaryOpen(false)}
+              />
+            </HistoryLayerScope>
           )
           : (
-            <ReviewForm
-              snapshot={snapshot}
-              setSnapshot={updateSnapshot}
-              onRemoveItem={removeItem}
-              onAddItem={addItem}
-              warnings={receipt.warnings}
-              saveButton={saveButton}
-              onBackToLines={() => setFullEditorOpen(false)}
-              photo={photo}
-            />
+            <HistoryLayerScope value={editorLayer}>
+              <ReviewForm
+                snapshot={snapshot}
+                setSnapshot={updateSnapshot}
+                onRemoveItem={removeItem}
+                onAddItem={addItem}
+                warnings={receipt.warnings}
+                saveButton={saveButton}
+                onBackToLines={() => setFullEditorOpen(false)}
+                photo={photo}
+              />
+            </HistoryLayerScope>
           )
       )}
       {save.isError && <Notice tone="danger" role="alert"><p>{messageOf(t, save.error, t("legacyCapture.unknownError"))}</p></Notice>}

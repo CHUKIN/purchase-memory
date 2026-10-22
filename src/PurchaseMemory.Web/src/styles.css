@@ -221,6 +221,38 @@ ion-segment-button ion-label { font-size: 13px; white-space: normal; }
 .pm-chip-row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin: 4px 0; }
 .pm-chip-row .pm-chips { margin: 0 !important; }
 .pm-chip-marker { flex: none; font-weight: 400; white-space: nowrap; }
+
+/*
+ * A product row's category tile (CategoryTile): the group's stroke icon on a
+ * light tint. Every icon colour keeps ≥ 5:1 on its tint (≥ 4.3:1 for the grey
+ * «без категории»), above the 3:1 an icon needs. The app is light only (see
+ * app/ionic.ts), so there is no dark variant.
+ */
+.pm-category-tile {
+  --pm-tile-bg: #ececf0; --pm-tile-fg: #6d6d72;
+  display: grid; flex: 0 0 auto; place-items: center; width: 40px; height: 40px; margin-right: 12px;
+  border-radius: 10px; background: var(--pm-tile-bg); color: var(--pm-tile-fg);
+}
+.pm-category-tile[data-group="dairy"] { --pm-tile-bg: #e4f1f5; --pm-tile-fg: #24637d; }
+.pm-category-tile[data-group="meat_fish"] { --pm-tile-bg: #fbe9e6; --pm-tile-fg: #a23b2a; }
+.pm-category-tile[data-group="produce"] { --pm-tile-bg: #e6f3e7; --pm-tile-fg: #2e6b36; }
+.pm-category-tile[data-group="bakery"] { --pm-tile-bg: #f8ecdc; --pm-tile-fg: #8a5418; }
+.pm-category-tile[data-group="grocery"] { --pm-tile-bg: #f4efd9; --pm-tile-fg: #6b5712; }
+.pm-category-tile[data-group="sweets_snacks"] { --pm-tile-bg: #fbe7ef; --pm-tile-fg: #a3315f; }
+.pm-category-tile[data-group="drinks"] { --pm-tile-bg: #ebe8f8; --pm-tile-fg: #4c3fa3; }
+.pm-category-tile[data-group="frozen"] { --pm-tile-bg: #e2f3f5; --pm-tile-fg: #1b666e; }
+.pm-category-tile[data-group="household_chemicals"] { --pm-tile-bg: #eceffa; --pm-tile-fg: #3a4f99; }
+.pm-category-tile[data-group="hygiene"] { --pm-tile-bg: #f3e9f7; --pm-tile-fg: #7a3f96; }
+.pm-category-tile[data-group="home"] { --pm-tile-bg: #e6edf8; --pm-tile-fg: #2f5a9a; }
+.pm-category-tile[data-group="other"] { --pm-tile-bg: #efece6; --pm-tile-fg: #5f5546; }
+.pm-category-tile[data-group="custom"] { --pm-tile-bg: #ececf0; --pm-tile-fg: #4f4f55; }
+/* «Шоколад и конфеты ✦ · Wedel · 1 покупка» under the product name. */
+/* A photo in the catalog takes the tile's place and size, so names line up. */
+.pm-catalog-list .pm-media-thumb { width: 40px; height: 40px; }
+.pm-product-meta { white-space: normal; }
+.pm-product-meta .pm-nowrap { white-space: nowrap; }
+.pm-product-meta-suggested { display: inline-flex; color: var(--pm-warning-text); vertical-align: -2px; }
+.pm-product-meta-review { color: var(--pm-warning-text); font-weight: 600; }
 /* A small button with a full 44 px tap height. */
 ion-button.pm-tap-button { min-height: 44px; margin-top: 0; margin-bottom: 0; }
 .pm-tag { background: #eef0f4; color: #3a3a44; }
@@ -369,12 +401,58 @@ ion-button.pm-tap-button { min-height: 44px; margin-top: 0; margin-bottom: 0; }
   display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; margin: 0; border-radius: 12px; font: inherit; font-size: 16px;
 }
 .pm-carousel-remove { flex: none; padding: 0 16px; border: 0; background: #fff; color: var(--pm-danger-text); cursor: pointer; }
-.pm-carousel-approve { flex: 1; padding: 0 12px; border: 1.5px solid var(--ion-color-primary); background: #fff; color: var(--ion-color-primary); font-weight: 600; cursor: pointer; }
+.pm-carousel-approve { flex: 1; padding: 0 12px; border: 0; background: var(--ion-color-primary); color: var(--ion-color-primary-contrast); font-weight: 600; cursor: pointer; }
 .pm-carousel-checked { flex: 1; padding: 0 12px; border: 0; background: #e7efe9; color: var(--pm-success-text); }
 button.pm-carousel-checked { cursor: pointer; }
 .pm-carousel button:disabled { opacity: .55; cursor: default; }
 .pm-carousel .pm-carousel-chevron:disabled { opacity: 1; }
 .pm-carousel-extra { padding-top: 8px; }
+/* In the draft a checked card keeps «Дальше»; its mark is the small ✓ beside it. */
+.pm-carousel-checked-compact { flex: none; width: 44px; padding: 0; }
+.pm-carousel-remove, .pm-carousel-approve, .pm-carousel-checked { min-height: 50px; }
+/* A discount inside its product's card (light green: it lowers the price). */
+.pm-carousel-discount-block { border-top: 1px solid #e5e5ea; background: #f3f8f5; }
+.pm-carousel-discount-block[data-problem="true"] { background: #fdf0de; }
+.pm-carousel-discount { display: flex; align-items: center; gap: 8px; padding: 0 8px 0 16px; }
+.pm-carousel-discount-icon { flex: none; color: var(--pm-success-text); }
+.pm-carousel-discount-text {
+  display: block; flex: 1; min-width: 0; min-height: 44px; margin: 0; padding: 11px 0; box-sizing: border-box;
+  border: 0; background: none; color: var(--pm-success-text); font: inherit; font-size: 15px; line-height: 1.35; text-align: left; cursor: pointer;
+}
+.pm-carousel-discount-block[data-problem="true"] :is(.pm-carousel-discount-text, .pm-carousel-discount-icon) { color: #8a541f; }
+.pm-carousel-discount-chevron { margin-left: 4px; vertical-align: -3px; transition: transform .2s; }
+.pm-carousel-discount-text[aria-expanded="true"] .pm-carousel-discount-chevron { transform: rotate(180deg); }
+.pm-carousel-discount-action {
+  flex: none; min-height: 44px; margin: 0; padding: 0 8px; border: 0; background: none;
+  color: var(--ion-color-primary); font: inherit; font-size: 15px; cursor: pointer;
+}
+.pm-carousel-discount-removed { border-top: 1px solid #e5e5ea; }
+span.pm-carousel-discount-text { color: var(--pm-muted); cursor: default; }
+.pm-carousel-discount-text:focus-visible, .pm-carousel-discount-action:focus-visible { outline: 2px solid var(--ion-color-primary); outline-offset: 2px; border-radius: 6px; }
+.pm-carousel-figures-two { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); border-top: 1px solid #e5e5ea; background: #fff; }
+
+/* The draft's bottom bar while checking products: two quiet links. */
+.pm-footer-links { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 12px; padding: 0 12px; }
+
+/* The draft's summary after the last product («Всё проверено»). */
+.pm-summary { display: flex; flex-direction: column; gap: 14px; max-width: var(--pm-content-width); margin: 0 auto; padding: 16px 16px 0; }
+.pm-summary-head { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 0 0; text-align: center; }
+.pm-summary-badge { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 28px; background: #e3efe8; color: var(--pm-success-text); }
+.pm-summary-badge[data-done="false"] { background: #ececf0; color: var(--pm-muted); }
+.pm-summary-title { margin: 0; font-size: 22px; font-weight: 700; }
+.pm-summary-meta { margin: 0; color: var(--pm-muted); font-size: 15px; font-variant-numeric: tabular-nums; }
+.pm-summary-rows { margin: 0; border-radius: 14px; background: #fff; }
+.pm-summary-rows > div { display: flex; justify-content: space-between; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #e5e5ea; font-size: 17px; }
+.pm-summary-rows > div:last-child { border-bottom: 0; font-weight: 600; }
+.pm-summary-rows dt, .pm-summary-rows dd { margin: 0; }
+.pm-summary-rows dd { font-variant-numeric: tabular-nums; text-align: right; }
+.pm-summary-rows dd[data-tone="success"] { color: var(--pm-success-text); }
+.pm-summary-mismatch { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 12px 16px; border-radius: 14px; background: #fdf1dc; color: #7a4510; font-size: 15px; line-height: 1.35; }
+.pm-summary-mismatch p { margin: 0; }
+.pm-summary-mismatch .pm-carousel-link { color: #7a4510; text-decoration: underline; padding: 0; }
+.pm-summary-match { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 0; color: var(--pm-success-text); font-size: 15px; }
+.pm-summary-back { align-self: center; }
+.pm-summary .pm-capture-warnings, .pm-summary .pm-capture-empty { margin: 0; padding: 0; }
 
 /* The recognized receipt before saving: store and date · total above the carousel. */
 .pm-capture-summary { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 8px; padding: 4px 16px 0; max-width: var(--pm-content-width); margin: 0 auto; }

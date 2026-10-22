@@ -6,6 +6,7 @@ import { LineCarousel } from "../line-review/LineCarousel";
 import { formatShortDate } from "../purchases/dates";
 import { formatMoney } from "../purchases/money";
 import type { LineViewerPhoto } from "../receipt-photo/LinePhoto";
+import { CaptureSummary } from "./CaptureSummary";
 import { ReviewHistory } from "./ReviewHistory";
 
 export interface CaptureLineReviewProps {
@@ -15,22 +16,32 @@ export interface CaptureLineReviewProps {
   onIndexChange: (index: number) => void;
   onChangeItem: (index: number, patch: Partial<ReceiptItemSnapshot>) => void;
   onRemoveItem: (index: number) => void;
+  /** Puts a discount taken out with «Убрать» back at its place. */
+  onRestoreItem: (index: number, item: ReceiptItemSnapshot) => void;
   /** «Верно, дальше» marks, aligned with `snapshot.items`; kept on this screen until the purchase is saved. */
   checked: boolean[];
-  onCheckedChange: (index: number, checked: boolean) => void;
+  /** Marks (or unmarks) a product together with the discounts in its card. */
+  onCheckedChange: (indexes: number[], checked: boolean) => void;
   onUseLinesTotal: (total: number) => void;
   /** The issues the server still reports after the last «Сохранить покупку» (shown before «Всё равно сохранить»). */
   remainingIssues: PurchaseDraftIssue[] | null;
   photo: LineViewerPhoto | null;
   receiptId: string;
+  /** The summary step («Всё проверено») instead of the products. */
+  summary: boolean;
+  /** «Верно, к итогу» on the last product. */
+  onShowSummary: () => void;
+  /** «Вернуться к товарам» in the summary. */
+  onBackToProducts: () => void;
 }
 
 /**
  * A recognized receipt before it is saved: the store, date and total in one
- * line, then the receipt's lines in the carousel, checked and corrected in
- * place. Store, date and total themselves are edited in the full editor
- * («Магазин, дата и итог», at the bottom of the screen with «Сохранить
- * покупку»).
+ * line, then the receipt's products in the carousel, checked and corrected in
+ * place (a product's discounts inside its card), and after the last one the
+ * summary with «Сохранить покупку». Store, date and total themselves are
+ * edited in the full editor («Магазин, дата и итог», at the bottom of the
+ * screen with «Сохранить сейчас»).
  */
 export function CaptureLineReview({
   snapshot,
@@ -38,12 +49,16 @@ export function CaptureLineReview({
   onIndexChange,
   onChangeItem,
   onRemoveItem,
+  onRestoreItem,
   checked,
   onCheckedChange,
   onUseLinesTotal,
   remainingIssues,
   photo,
-  receiptId
+  receiptId,
+  summary,
+  onShowSummary,
+  onBackToProducts
 }: CaptureLineReviewProps) {
   const { t, i18n } = useTranslation();
   const locale = i18n.resolvedLanguage === "en" ? "en-GB" : "ru-RU";
@@ -53,18 +68,13 @@ export function CaptureLineReview({
   // The lines' sums are covered by the totals line and the per-line banners.
   const warnings = draftWarnings(snapshot).map((key) => t(key));
   const linesTotal = Math.round(snapshot.items.reduce((sum, item) => sum + (item.lineTotal ?? 0), 0) * 100) / 100;
-
-  return (
+  const linesTotalAction = complete && snapshot.receiptTotal !== null && (
+    <button type="button" className="pm-carousel-link" onClick={() => onUseLinesTotal(linesTotal)}>
+      {t("issues.useLinesTotal", { value: formatMoney(linesTotal, currency, locale) })}
+    </button>
+  );
+  const notices = (
     <>
-      <div className="pm-capture-summary">
-        <h2 className="pm-capture-store">{snapshot.merchantName?.trim() || t("purchaseEdit.unknownStore")}</h2>
-        <p className="pm-capture-meta">
-          {snapshot.purchasedAt ? formatShortDate(snapshot.purchasedAt, locale, { time: true }) : t("purchaseEdit.unknownDate")}
-          {" · "}
-          {snapshot.receiptTotal === null ? "—" : formatMoney(snapshot.receiptTotal, currency, locale)}
-        </p>
-      </div>
-
       {warnings.length > 0 && (
         <div className="pm-capture-warnings" role="status">
           <p><strong>{t("legacyCapture.needsReview")}</strong></p>
@@ -80,6 +90,32 @@ export function CaptureLineReview({
       )}
 
       {snapshot.items.length === 0 && <p className="pm-capture-empty">{t("receiptReview.noLines")}</p>}
+    </>
+  );
+
+  if (summary) {
+    return (
+      <>
+        <CaptureSummary snapshot={snapshot} checked={checked} onBackToProducts={onBackToProducts} totalsAction={linesTotalAction}>
+          {notices}
+        </CaptureSummary>
+        <ReviewHistory receiptId={receiptId} />
+      </>
+    );
+  }
+
+  return (
+    <>
+      <div className="pm-capture-summary">
+        <h2 className="pm-capture-store">{snapshot.merchantName?.trim() || t("purchaseEdit.unknownStore")}</h2>
+        <p className="pm-capture-meta">
+          {snapshot.purchasedAt ? formatShortDate(snapshot.purchasedAt, locale, { time: true }) : t("purchaseEdit.unknownDate")}
+          {" · "}
+          {snapshot.receiptTotal === null ? "—" : formatMoney(snapshot.receiptTotal, currency, locale)}
+        </p>
+      </div>
+
+      {notices}
 
       <LineCarousel
         lines={snapshot.items}
@@ -87,17 +123,15 @@ export function CaptureLineReview({
         onIndexChange={onIndexChange}
         onChange={(position, patch) => onChangeItem(position, patch)}
         onRemove={onRemoveItem}
+        onRestore={onRestoreItem}
         isChecked={(position) => checked[position] === true}
-        onApprove={(position) => onCheckedChange(position, true)}
-        onUnapprove={(position) => onCheckedChange(position, false)}
+        onApprove={(position, related) => onCheckedChange([position, ...related], true)}
+        onUnapprove={(position, related) => onCheckedChange([position, ...related], false)}
+        onFinish={onShowSummary}
         currency={currency}
         receiptTotal={snapshot.receiptTotal}
         photo={photo}
-        totalsAction={complete && snapshot.receiptTotal !== null && (
-          <button type="button" className="pm-carousel-link" onClick={() => onUseLinesTotal(linesTotal)}>
-            {t("issues.useLinesTotal", { value: formatMoney(linesTotal, currency, locale) })}
-          </button>
-        )}
+        totalsAction={linesTotalAction}
       />
 
       <ReviewHistory receiptId={receiptId} />

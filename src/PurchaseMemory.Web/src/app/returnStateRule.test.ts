@@ -26,6 +26,7 @@ const allowed: Record<string, string> = {
   "app/AppShell/AppShell.tsx :: item.to": "the tab bar opens tab roots, which have no back button",
   "design-system/components/Links/Links.tsx :: target.historyIndex": "this is the back button itself",
   "features/purchases/PurchaseDetailPage.tsx :: queueReturnPath": "after saving, back to the queue address the purchase was opened from",
+  "features/purchases/PurchaseDetailPage.tsx :: queueIndex": "after saving, a history step back to the queue entry the purchase was opened from",
   "features/receipts/ReceiptDetailPage.tsx :: afterSavePath": "after saving, on to the screen that is next, not a detail screen",
 };
 
