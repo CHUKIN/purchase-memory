@@ -2,11 +2,12 @@ import { IonItem, IonLabel, IonList, IonSkeletonText } from "@ionic/react";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
-/** Small grey caps above an inset list, as in iOS Settings. Optional action on the right. */
-export function SectionHeader({ children, action, id, level = 2 }: { children: ReactNode; action?: ReactNode; id?: string; level?: 2 | 3 }) {
+/** Small grey caps above an inset list, as in iOS Settings. Optional action on the right.
+ * `variant="title"`: a larger title-case heading above cards instead of a list. */
+export function SectionHeader({ children, action, id, level = 2, variant = "caps" }: { children: ReactNode; action?: ReactNode; id?: string; level?: 2 | 3; variant?: "caps" | "title" }) {
   const Heading = level === 2 ? "h2" : "h3";
   return (
-    <div className="pm-section-header">
+    <div className={variant === "title" ? "pm-section-header pm-section-header-title" : "pm-section-header"}>
       <Heading id={id}>{children}</Heading>
       {action}
     </div>

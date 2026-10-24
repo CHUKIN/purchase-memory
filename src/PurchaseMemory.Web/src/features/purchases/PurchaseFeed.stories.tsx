@@ -145,3 +145,14 @@ export const ByCategoryEmptyDesktopRu: Story = {
     filters: { ...emptyPurchaseFeedFilters, category: "none" }
   }
 };
+
+const edgePurchases: PurchaseView[] = [
+  purchase("6d0b2b2e-8b1e-4b1e-9c2b-000000000011", "Hipermarket Spożywczy Centrum Handlowe Jana Pawła II Oddział Północny", "2026-08-24T17:12:00Z", 1284.99, 24),
+  { ...purchase("6d0b2b2e-8b1e-4b1e-9c2b-000000000012", "", "2026-08-23T12:00:00Z", 15.5, 2), merchantName: null },
+  purchase("6d0b2b2e-8b1e-4b1e-9c2b-000000000013", "Żabka", "2026-08-22T08:05:00Z", 14.98, 2, [
+    { type: "receiptTotalMismatch", itemPosition: null, itemName: null, recognizedValue: "14.98 PLN", suggestedFix: "Correct the totals." }
+  ])
+];
+
+/** Card edge cases: a very long store name, an unknown store (receipt icon) and a purchase with an issue. */
+export const CardEdgeCasesMobileRu: Story = { globals: phone, args: { purchases: edgePurchases, totalCount: 3 } };

@@ -17,7 +17,7 @@ import {
 } from "../../design-system/components";
 import { BrandFilterRow, CategoryFilterRow, TagFilterRow } from "../filters/FilterRows";
 import { HelpLink } from "../help/HelpLink";
-import { PurchaseRow } from "./PurchaseRow";
+import { PurchaseCards, PurchaseRow } from "./PurchaseRow";
 import { useOriginBack, useReturnState } from "../../app/backNavigation";
 
 export interface PurchaseFeedFilters {
@@ -80,7 +80,7 @@ export interface PurchaseFeedProps {
 /**
  * «Покупки»: a search under the large title, every other filter in a bottom
  * sheet behind the toolbar button (its badge counts what is set), and the
- * purchases as one grouped list.
+ * purchases as separate cards.
  */
 export function PurchaseFeed({
   filters,
@@ -148,9 +148,9 @@ export function PurchaseFeed({
 
       {!loading && !error && purchases.length > 0 && (
         <>
-          <IonList inset className="pm-after-header">
+          <PurchaseCards>
             {purchases.map((purchase) => <PurchaseRow key={purchase.id} purchase={purchase} />)}
-          </IonList>
+          </PurchaseCards>
           {truncated && <Footnote>{t("feed.truncated")}</Footnote>}
           {hasMore && onLoadMore && (
             <div className="ion-padding-horizontal">

@@ -10,7 +10,7 @@ import { SettingsSheet } from "../../app/SettingsSheet";
 import { HelpWelcomeCard } from "../help/HelpWelcomeCard";
 import { HomeCaptureActions } from "../product-scan/HomeCaptureActions";
 import { UnratedPurchasesBlock } from "../impressions/ImpressionSections";
-import { PurchaseRow } from "../purchases/PurchaseRow";
+import { PurchaseCards, PurchaseRow } from "../purchases/PurchaseRow";
 import { useReturnState } from "../../app/backNavigation";
 
 // uploaded -> queued -> processing -> ready/failed, used to drive the
@@ -97,15 +97,15 @@ export function HomePage({ recognition, recognitionFailed = false, receipts, rec
 
       <UnratedPurchasesBlock locale={locale} />
 
-      <SectionHeader action={<ButtonLink to="/purchases" fill="clear" size="small">{t("common.viewAll")}</ButtonLink>}>
+      <SectionHeader variant="title" action={<ButtonLink to="/purchases" fill="clear" size="small">{t("common.viewAll")}</ButtonLink>}>
         {t("common.recentPurchases")}
       </SectionHeader>
       {recent.isError && <Notice tone="danger" role="alert"><p>{t("feed.loadError")}</p></Notice>}
       {recent.data && recent.data.items.length === 0 && <Footnote>{t("feed.emptyTitle")}</Footnote>}
       {recent.data && recent.data.items.length > 0 && (
-        <IonList inset className="pm-after-header">
+        <PurchaseCards>
           {recent.data.items.map((purchase) => <PurchaseRow key={purchase.id} purchase={purchase} />)}
-        </IonList>
+        </PurchaseCards>
       )}
 
       <SettingsSheet isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} recognition={recognition} recognitionFailed={recognitionFailed} />

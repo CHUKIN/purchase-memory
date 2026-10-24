@@ -91,6 +91,30 @@ ion-item ion-button.pm-icon-button { width: 44px; height: 44px; margin: 0; --pad
 .pm-section-header .pm-status, .pm-section-header .pm-help-link { text-transform: none; letter-spacing: 0; }
 .pm-section-header ion-button { margin: -8px -10px -8px 0; text-transform: none; letter-spacing: 0; font-size: 15px; }
 ion-list.pm-after-header { margin-top: 0; }
+.pm-section-header.pm-section-header-title {
+  align-items: baseline; margin: 20px 20px 8px; color: var(--ion-text-color, #1c1c1e);
+  font-size: 20px; font-weight: 700; text-transform: none; letter-spacing: 0;
+}
+
+/* One purchase as its own card (PurchaseRow), with a store avatar at the start. */
+.pm-purchase-cards { display: flex; flex-direction: column; gap: 8px; margin: 0 16px; }
+ion-item.pm-purchase-card {
+  --background: #fff; --background-activated: #f2f2f7; --background-hover: #f7f7fa; --border-radius: 16px; --min-height: 72px;
+  --padding-start: 12px; --padding-end: 12px; --inner-padding-end: 0; --inner-padding-start: 0; --inner-border-width: 0;
+  margin: 0; border: 1px solid #e1e1e6; border-radius: 16px; overflow: hidden;
+}
+ion-item.pm-purchase-card ion-label { margin: 12px 0; min-width: 0; overflow-wrap: anywhere; }
+ion-item.pm-purchase-card ion-label h2 { font-size: 17px; font-weight: 600; }
+ion-item.pm-purchase-card ion-label p { font-size: 14px; }
+ion-item.pm-purchase-card .pm-purchase-card-avatar { display: flex; margin: 0 10px 0 0; }
+ion-item.pm-purchase-card .pm-purchase-card-amount { margin: 0 0 0 8px; font-size: 17px; font-weight: 600; color: var(--ion-text-color, #1c1c1e); flex: none; }
+ion-item.pm-purchase-card:focus-visible, ion-item.pm-purchase-card.ion-focused { outline: 2px solid var(--ion-color-primary); outline-offset: -2px; }
+ion-item.pm-purchase-card.ion-focused::part(native)::after { background: transparent; }
+.pm-store-avatar {
+  display: inline-flex; align-items: center; justify-content: center; flex: none; width: 42px; height: 42px; border-radius: 50%;
+  font-size: 18px; font-weight: 600; line-height: 1;
+}
+.pm-store-avatar-unknown { background: #ececf0; color: var(--pm-muted); }
 
 /* Grey explanation under or between inset lists. */
 .pm-footnote { margin: 6px 36px 18px; color: var(--pm-muted); font-size: 13px; line-height: 1.4; }

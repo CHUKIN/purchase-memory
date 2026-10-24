@@ -51,6 +51,7 @@ function ScreenDemo() {
       search={<IonSearchbar value={query} placeholder="Магазин или название позиции" onIonInput={(event) => setQuery(event.detail.value ?? "")} />}
     >
       <PrimaryButton>Сфотографировать чек</PrimaryButton>
+      <SectionHeader variant="title" action={<a href="#all">Смотреть все</a>}>Последние покупки</SectionHeader>
       <SectionHeader>Лента покупок · 2 покупки</SectionHeader>
       <IonList inset className="pm-after-header">
         <ItemLink to="/purchases/a">

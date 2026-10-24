@@ -45,6 +45,26 @@ function renderFeed(
 const purchaseLink = () => screen.getByRole("link", { name: /^Biedronka/ });
 
 describe("PurchaseFeed", () => {
+  it("shows a store avatar: the first letter, or an icon for an unknown store", () => {
+    const { container } = render(
+      <AppProviders locale="ru">
+        <MemoryRouter>
+          <PurchaseFeed
+            filters={emptyPurchaseFeedFilters}
+            onFiltersChange={vi.fn()}
+            purchases={[purchase(), purchase({ id: "6d0b2b2e-8b1e-4b1e-9c2b-000000000002", merchantName: null })]}
+            totalCount={2}
+          />
+        </MemoryRouter>
+      </AppProviders>
+    );
+    const avatars = container.querySelectorAll(".pm-store-avatar");
+    expect(avatars).toHaveLength(2);
+    expect(avatars[0].textContent).toBe("B");
+    expect(avatars[1].querySelector("svg")).not.toBeNull();
+    expect(avatars[1].textContent).toBe("");
+  });
+
   it("shows merchant, item count and the reviewed status for a clean purchase", () => {
     renderFeed();
 
