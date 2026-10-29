@@ -4,17 +4,18 @@ import type { ReviewQueueKind, ReviewQueueSection, ReviewQueueSummary } from "..
  * The «Ревью» hub's sections, most important first. The server counts every
  * kind it knows in exactly one of its sections (`ReviewQueueSummary`); the
  * remembered barcodes live on this device only, so the app counts them itself.
- * Names «предложено» (stage 1.4) get a section of their own between products
- * and categories once the server reports them.
+ * AI-suggested human names (stage 1.4) have a section of their own between
+ * products and categories.
  */
 export type ReviewSectionId = ReviewQueueSection | "barcodes";
 
-export const reviewSectionOrder: readonly ReviewSectionId[] = ["receipts", "purchases", "products", "categories", "barcodes", "ratings"];
+export const reviewSectionOrder: readonly ReviewSectionId[] = ["receipts", "purchases", "products", "names", "categories", "barcodes", "ratings"];
 
 export const sectionKinds: Record<ReviewQueueSection, readonly ReviewQueueKind[]> = {
   receipts: ["failedReceipt", "unsavedReceipt", "totalMismatch", "missingPrice"],
   purchases: ["unapprovedLines"],
   products: ["productNeedsReview"],
+  names: ["suggestedNames"],
   categories: ["suggestedCategory", "missingCategory"],
   ratings: ["unratedPurchase"]
 };
@@ -24,7 +25,7 @@ export const sectionKinds: Record<ReviewQueueSection, readonly ReviewQueueKind[]
  * Receipts need their full editor and a purchase's lines already are cards
  * (its line review); a barcode needs a product search, so those stay lists.
  */
-export const cardSections = ["products", "categories", "ratings"] as const;
+export const cardSections = ["products", "names", "categories", "ratings"] as const;
 export type CardSectionId = (typeof cardSections)[number];
 
 export function isCardSection(value: string | null): value is CardSectionId {

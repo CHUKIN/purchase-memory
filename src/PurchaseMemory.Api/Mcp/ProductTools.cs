@@ -82,7 +82,9 @@ public sealed class ProductTools
                     item.Brand,
                     (item.Tags ?? []).Select(tag => tag.Name).ToList(),
                     item.PurchaseCount,
-                    item.NeedsReview))
+                    item.NeedsReview,
+                    item.Names?.NamePl,
+                    item.Names?.NameRu))
                 .ToList();
         }
         catch (ArgumentException exception)
@@ -140,4 +142,7 @@ public sealed record McpProductResult(
     string? Brand,
     IReadOnlyList<string> Tags,
     int PurchaseCount,
-    bool NeedsReview);
+    bool NeedsReview,
+    // Human names (Polish shelf name, Russian translation); Name is the receipt text.
+    string? NamePl = null,
+    string? NameRu = null);

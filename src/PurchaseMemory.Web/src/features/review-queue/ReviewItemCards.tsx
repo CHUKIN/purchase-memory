@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
-import { classifyProduct, createImpression } from "../../api/client";
+import { classifyProduct, confirmProductNames, createImpression } from "../../api/client";
 import type { ImpressionRating, ProductCategory, ReviewQueueItem, ReviewQueueKind } from "../../api/types";
 import { ActionButton, ItemLink } from "../../design-system/components";
 import { useReturnState, type ReturnState } from "../../app/backNavigation";
@@ -52,8 +52,9 @@ export function ItemCard({ item, categories, showKind = false }: { item: ReviewQ
   );
 }
 
+/** The product's Polish name when it has one, else the receipt text (or merchant). */
 export function itemTitle(t: Translate, item: ReviewQueueItem): string {
-  return item.title || t(`reviewQueue.untitled.${untitledKey(item.kind)}`);
+  return item.namePl?.trim() || item.title || t(`reviewQueue.untitled.${untitledKey(item.kind)}`);
 }
 
 /** Router state for opening a purchase straight into its line review, coming back to `returnState`. */
@@ -71,6 +72,27 @@ export function useConfirmCategory() {
       queryClient.invalidateQueries({ queryKey: ["products"] })
     ])
   });
+}
+
+/**
+ * «Верно» for a product's suggested names: they become the person's, but only
+ * if they are still the ones on the item (else 409 and the hub refreshes).
+ */
+export function useConfirmNames() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (item: ReviewQueueItem) => confirmProductNames(item.productId!, shownNames(item)),
+    onSettled: () => Promise.all([
+      queryClient.invalidateQueries({ queryKey: reviewQueueQueryKey }),
+      queryClient.invalidateQueries({ queryKey: ["products"] }),
+      queryClient.invalidateQueries({ queryKey: ["purchases"] })
+    ])
+  });
+}
+
+/** The names a hub item shows, sent with «Верно». */
+export function shownNames(item: ReviewQueueItem) {
+  return { namePl: item.namePl ?? null, nameRu: item.nameRu ?? null };
 }
 
 /** One tap rating of a line («Оценить»); the hub and every impression list refresh. */
@@ -101,6 +123,24 @@ function SuggestedCategoryActions({ item, title }: { item: ReviewQueueItem; titl
       </IonItem>
       {item.productId && <ActionRow to={`/products/${item.productId}`} state={returnState} label={changeLabel} ariaLabel={`${changeLabel}: ${title}`} />}
       {confirm.isError && <IonItem lines="none"><IonLabel className="pm-wrap pm-danger-text" role="alert">{t("reviewQueue.confirmError")}</IonLabel></IonItem>}
+    </>
+  );
+}
+
+/** «Верно» confirms the suggested names; «Изменить» opens the product, where both can be edited. */
+function SuggestedNamesActions({ item, title }: { item: ReviewQueueItem; title: string }) {
+  const { t } = useTranslation();
+  const returnState = useReturnState();
+  const confirm = useConfirmNames();
+  const changeLabel = t("reviewQueue.changeNames");
+  if (!item.productId) return null;
+  return (
+    <>
+      <IonItem button detail={false} disabled={confirm.isPending} onClick={() => confirm.mutate(item)} aria-label={t("reviewQueue.confirmNamesFor", { name: title })}>
+        <IonLabel color="primary">{t("reviewQueue.confirmNames")}</IonLabel>
+      </IonItem>
+      <ActionRow to={`/products/${item.productId}`} state={returnState} label={changeLabel} ariaLabel={`${changeLabel}: ${title}`} />
+      {confirm.isError && <IonItem lines="none"><IonLabel className="pm-wrap pm-danger-text" role="alert">{t("reviewQueue.confirmNamesError")}</IonLabel></IonItem>}
     </>
   );
 }
@@ -144,6 +184,8 @@ function ItemActions({ item, title }: { item: ReviewQueueItem; title: string }) 
         : null;
     case "unratedPurchase":
       return <RateActions item={item} title={title} />;
+    case "suggestedNames":
+      return <SuggestedNamesActions item={item} title={title} />;
   }
 }
 
@@ -276,7 +318,9 @@ export function FlaggedProductSuggestions({ item, title, categories, onResolved,
 }
 
 function untitledKey(kind: ReviewQueueKind) {
-  return kind === "suggestedCategory" || kind === "missingCategory" || kind === "productNeedsReview" || kind === "unratedPurchase" ? "product" : "receipt";
+  return kind === "suggestedCategory" || kind === "missingCategory" || kind === "productNeedsReview" || kind === "unratedPurchase" || kind === "suggestedNames"
+    ? "product"
+    : "receipt";
 }
 
 /** Why the item is here, in a few words; null where the action below already says it. */
@@ -303,6 +347,9 @@ export function reason(item: ReviewQueueItem, t: Translate, locale: string): str
       ].filter(Boolean).join(" ");
     case "missingCategory":
       return null;
+    case "suggestedNames":
+      // The Russian name under the Polish title, then what the receipt says.
+      return [item.nameRu?.trim() || null, item.title ? t("products.names.inReceiptText", { text: item.title }) : null].filter(Boolean).join(" · ") || null;
     case "unapprovedLines": {
       const total = item.lineCount ?? 0;
       return t("reviewQueue.kinds.unapprovedLines.reason", { approved: Math.max(0, total - (item.affectedLineCount ?? 0)), total });

@@ -125,6 +125,12 @@ public sealed class PurchaseMemoryDbContext(DbContextOptions<PurchaseMemoryDbCon
         product.Property(entity => entity.BrandSource).HasConversion<string>().HasMaxLength(20);
         product.HasIndex(entity => entity.CategoryId);
         product.HasIndex(entity => entity.NormalizedBrand);
+        product.Property(entity => entity.NamePl).HasMaxLength(Product.MaximumDisplayNameLength);
+        product.Property(entity => entity.NormalizedNamePl).HasMaxLength(Product.MaximumDisplayNameLength);
+        product.Property(entity => entity.NamePlSource).HasConversion<string>().HasMaxLength(20);
+        product.Property(entity => entity.NameRu).HasMaxLength(Product.MaximumDisplayNameLength);
+        product.Property(entity => entity.NormalizedNameRu).HasMaxLength(Product.MaximumDisplayNameLength);
+        product.Property(entity => entity.NameRuSource).HasConversion<string>().HasMaxLength(20);
         // Rows that existed before the column came from receipts and were never flagged.
         product.Property(entity => entity.Origin)
             .HasConversion<string>()

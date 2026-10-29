@@ -179,6 +179,95 @@ public sealed class ProductCategoryService : IProductCategoryService
         return ToClassification(product);
     }
 
+    public async Task<ProductNamesView> SetProductNameAsync(
+        Guid productId,
+        ProductNameLanguage language,
+        string? name,
+        ReceiptActor actor,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(actor);
+        if (!Enum.IsDefined(language))
+        {
+            throw new ArgumentException("Unknown name language.", nameof(language));
+        }
+
+        // A person's text is refused when too long rather than silently cut.
+        var collapsed = name is null ? string.Empty : string.Join(' ', name.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
+        if (collapsed.Length > Product.MaximumDisplayNameLength)
+        {
+            throw new ArgumentException($"Name cannot exceed {Product.MaximumDisplayNameLength} characters.", nameof(name));
+        }
+
+        var clean = Product.CleanDisplayName(collapsed);
+        var product = await _repository.FindProductForUpdateAsync(productId, cancellationToken)
+            ?? throw new ProductNotFoundException(productId);
+        var now = _timeProvider.GetUtcNow();
+        var (oldName, oldSource) = product.NameIn(language);
+        var oldValue = DescribeName(oldName, oldSource);
+        product.ConfirmName(language, clean, ProductNameNormalizer.Normalize(clean), now);
+        var (newName, newSource) = product.NameIn(language);
+        var newValue = DescribeName(newName, newSource);
+        if (oldValue != newValue)
+        {
+            _repository.AddAuditEntry(ProductAuditEntry.Create(
+                product.Id, actor.UserId, actor.Email, NameField(language),
+                ProductAuditChangeSource.Human, oldValue, newValue, now));
+        }
+
+        await SaveProductAsync(productId, cancellationToken);
+        return ProductNamesView.From(product);
+    }
+
+    public async Task<ProductNamesView> ConfirmSuggestedNamesAsync(
+        Guid productId,
+        ShownProductNames? shown,
+        ReceiptActor actor,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(actor);
+        var product = await _repository.FindProductForUpdateAsync(productId, cancellationToken)
+            ?? throw new ProductNotFoundException(productId);
+        if (shown is not null
+            && (Product.CleanDisplayName(shown.NamePl) != product.NamePl || Product.CleanDisplayName(shown.NameRu) != product.NameRu))
+        {
+            throw new ProductCategoryConflictException("The names changed since they were shown. Reload and check them again.");
+        }
+
+        var now = _timeProvider.GetUtcNow();
+        foreach (var language in product.ConfirmSuggestedNames(now))
+        {
+            var (name, _) = product.NameIn(language);
+            _repository.AddAuditEntry(ProductAuditEntry.Create(
+                product.Id, actor.UserId, actor.Email, NameField(language),
+                ProductAuditChangeSource.Human, DescribeName(name, ProductAttributeSource.Suggested), DescribeName(name, ProductAttributeSource.Confirmed), now));
+        }
+
+        await SaveProductAsync(productId, cancellationToken);
+        return ProductNamesView.From(product);
+    }
+
+    private static string NameField(ProductNameLanguage language) =>
+        language == ProductNameLanguage.Polish ? ProductAuditEntry.NamePlField : ProductAuditEntry.NameRuField;
+
+    private async Task SaveProductAsync(Guid productId, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _repository.SaveChangesAsync(cancellationToken);
+        }
+        catch (ProductCategoryConflictException)
+        {
+            // Merged away meanwhile: then it is simply gone (404), not a conflict.
+            if (await _repository.FindProductSnapshotAsync(productId, cancellationToken) is null)
+            {
+                throw new ProductNotFoundException(productId);
+            }
+
+            throw;
+        }
+    }
+
     public async Task<IReadOnlyList<ProductAuditEntryView>> GetAuditTrailAsync(
         Guid productId,
         CancellationToken cancellationToken)
@@ -212,6 +301,9 @@ public sealed class ProductCategoryService : IProductCategoryService
         var name = brand ?? NoCategoryValue;
         return source == ProductAttributeSource.Suggested ? $"{name} (suggested)" : name;
     }
+
+    /// <summary>Audit text for a human name; same shape as a brand.</summary>
+    internal static string DescribeName(string? name, ProductAttributeSource? source) => DescribeBrand(name, source);
 
 
     private static string NormalizeName(string name)

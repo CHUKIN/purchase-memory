@@ -199,6 +199,7 @@ export const resources = {
           receipts: { title: "Чеки" },
           purchases: { title: "Покупки" },
           products: { title: "Товары" },
+          names: { title: "Названия предложено" },
           categories: { title: "Категории" },
           barcodes: { title: "Штрихкоды" },
           ratings: { title: "Оценить покупки" }
@@ -210,6 +211,10 @@ export const resources = {
         alreadyAccepted: "Категории уже приняты. Изменить категорию можно в карточке товара.",
         acceptedSuggested: "Принято категорий: {{count}}",
         acceptAllFailed: "Не удалось принять категорий: {{count}}. Попробуйте ещё раз.",
+        acceptedNames: "Принято названий: {{count}}",
+        acceptNamesFailed: "Не удалось принять названий: {{count}}. Возможно, их изменили — проверьте ещё раз.",
+        namesAlreadyAccepted: "Названия уже приняты. Изменить название можно в карточке товара.",
+        confirmNamesError: "Не удалось подтвердить названия. Возможно, их изменили — проверьте ещё раз.",
         undo: "Вернуть",
         checkLines: "Проверить строки",
         checkLinesFor: "Проверить строки покупки «{{name}}»",
@@ -280,6 +285,9 @@ export const resources = {
         confirmCategory: "Подтвердить",
         confirmCategoryFor: "Подтвердить категорию «{{category}}» для «{{name}}»",
         changeCategory: "Изменить",
+        confirmNames: "Верно",
+        confirmNamesFor: "Названия «{{name}}» верны",
+        changeNames: "Изменить",
         chooseCategory: "Выбрать категорию",
         confirmError: "Не удалось подтвердить категорию. Попробуйте ещё раз.",
         untitled: {
@@ -326,6 +334,9 @@ export const resources = {
           },
           unratedPurchase: {
             title: "Оценить"
+          },
+          suggestedNames: {
+            title: "Названия предложено"
           }
         }
       },
@@ -567,10 +578,32 @@ export const resources = {
       },
       products: {
         eyebrow: "Каталог",
+        names: {
+          title: "Названия",
+          polish: "По-польски",
+          russian: "По-русски",
+          suggested: "предложено",
+          suggestedHint: "Название предложил ИИ; проверьте его в карточке товара",
+          none: "Нет — показываем текст из чека",
+          editPolish: "Изменить польское название",
+          editRussian: "Изменить русское название",
+          editHint: "Пустое поле — показывать текст из чека.",
+          placeholderPl: "Kefir naturalny Activia 280 g",
+          placeholderRu: "Кефир натуральный Activia, 280 г",
+          save: "Сохранить",
+          cancel: "Отмена",
+          confirm: "Верно",
+          suggestAgain: "Предложить заново",
+          saveError: "Не удалось сохранить название. Попробуйте ещё раз.",
+          suggestError: "Сейчас не получилось предложить названия. Их можно ввести вручную.",
+          changedError: "Названия изменились, пока экран был открыт. Проверьте новые и нажмите «Верно» ещё раз.",
+          inReceipt: "В чеке:",
+          inReceiptText: "в чеке: {{text}}"
+        },
         pageTitle: "Товары",
         referenceTitle: "Справочники",
         searchLabel: "Поиск товара",
-        searchPlaceholder: "Так, как написано на чеке",
+        searchPlaceholder: "Название или текст из чека",
         count_one: "{{count}} товар",
         count_few: "{{count}} товара",
         count_many: "{{count}} товаров",
@@ -1511,6 +1544,7 @@ export const resources = {
           receipts: { title: "Receipts" },
           purchases: { title: "Purchases" },
           products: { title: "Products" },
+          names: { title: "Suggested names" },
           categories: { title: "Categories" },
           barcodes: { title: "Barcodes" },
           ratings: { title: "Rate purchases" }
@@ -1522,6 +1556,10 @@ export const resources = {
         alreadyAccepted: "The categories are already accepted. You can change a category on the product's card.",
         acceptedSuggested: "Categories accepted: {{count}}",
         acceptAllFailed: "Could not accept {{count}} categories. Please try again.",
+        acceptedNames: "Names accepted: {{count}}",
+        acceptNamesFailed: "Could not accept the names of {{count}} products. They may have changed — please check again.",
+        namesAlreadyAccepted: "The names are already accepted. You can change a name on the product's card.",
+        confirmNamesError: "Could not confirm the names. They may have changed — please check again.",
         undo: "Undo",
         checkLines: "Check lines",
         checkLinesFor: "Check the lines of “{{name}}”",
@@ -1582,6 +1620,9 @@ export const resources = {
         confirmCategory: "Confirm",
         confirmCategoryFor: "Confirm category “{{category}}” for “{{name}}”",
         changeCategory: "Change",
+        confirmNames: "Correct",
+        confirmNamesFor: "The names of «{{name}}» are correct",
+        changeNames: "Change",
         chooseCategory: "Choose category",
         confirmError: "Could not confirm the category. Please try again.",
         untitled: {
@@ -1626,6 +1667,9 @@ export const resources = {
           },
           unratedPurchase: {
             title: "Rate"
+          },
+          suggestedNames: {
+            title: "Suggested names"
           }
         }
       },
@@ -1837,10 +1881,32 @@ export const resources = {
       },
       products: {
         eyebrow: "Catalog",
+        names: {
+          title: "Names",
+          polish: "In Polish",
+          russian: "In Russian",
+          suggested: "suggested",
+          suggestedHint: "The AI suggested this name; check it on the product page",
+          none: "None — the receipt text is shown",
+          editPolish: "Edit the Polish name",
+          editRussian: "Edit the Russian name",
+          editHint: "Leave it empty to show the receipt text.",
+          placeholderPl: "Kefir naturalny Activia 280 g",
+          placeholderRu: "Кефир натуральный Activia, 280 г",
+          save: "Save",
+          cancel: "Cancel",
+          confirm: "Correct",
+          suggestAgain: "Suggest again",
+          saveError: "Could not save the name. Please try again.",
+          suggestError: "Could not suggest names right now. You can type them yourself.",
+          changedError: "The names changed while the screen was open. Check the new ones and press “Correct” again.",
+          inReceipt: "On the receipt:",
+          inReceiptText: "on the receipt: {{text}}"
+        },
         pageTitle: "Products",
         referenceTitle: "Lists",
         searchLabel: "Search products",
-        searchPlaceholder: "The way the receipt spells it",
+        searchPlaceholder: "Name or receipt text",
         count_one: "{{count}} product",
         count_other: "{{count}} products",
         purchaseCount_one: "{{count}} purchase",

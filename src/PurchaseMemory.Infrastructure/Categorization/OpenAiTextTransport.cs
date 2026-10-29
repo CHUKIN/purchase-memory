@@ -28,8 +28,8 @@ internal interface IOpenAiTextTransport
 /// </summary>
 internal sealed class OpenAiTextTransport : IOpenAiTextTransport, IDisposable
 {
-    public const string CategorizationSchemaName = "purchase_memory_product_categories_v1";
-    public const string CategorizationSchemaDescription = "Category and brand suggestions for household catalog products.";
+    public const string CategorizationSchemaName = "purchase_memory_product_categories_v2";
+    public const string CategorizationSchemaDescription = "Category, brand and Polish/Russian name suggestions for household catalog products.";
     private readonly ResponsesClient _client;
     private readonly HttpClient _httpClient;
 

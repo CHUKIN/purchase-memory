@@ -1,4 +1,6 @@
 import type {
+  ProductNameLanguage,
+  ProductNames,
   BrandSummary,
   AnalyticsAnswer,
   AnalyticsAskResponse,
@@ -293,6 +295,26 @@ export const createProduct = (body: CreateProductRequest) =>
 
 export const renameProduct = (productId: string, name: string) =>
   request<ProductChangeResult>(`/api/products/${encodeURIComponent(productId)}/name`, jsonBody("PUT", { name }));
+
+/** Sets one human name (confirmed); an empty name clears it (the receipt text shows). */
+export const setProductName = (productId: string, language: ProductNameLanguage, name: string) =>
+  request<ProductNames>(`/api/products/${encodeURIComponent(productId)}/name`, jsonBody("PUT", { name, language }));
+
+/**
+ * «Верно» for the names: every suggested name becomes confirmed as it is. The
+ * names on screen go along; if the product's names changed meanwhile (a new
+ * suggestion), the server confirms nothing and answers 409.
+ */
+export const confirmProductNames = (productId: string, shown: { namePl: string | null; nameRu: string | null }) =>
+  request<ProductNames>(`/api/products/${encodeURIComponent(productId)}/names/confirm`, jsonBody("POST", shown));
+
+/**
+ * «Предложить заново»: asks the model again (paid, per-user limit). Confirmed
+ * names never change. 503 (`nameSuggestionsUnavailable`) and 429 are expected
+ * answers, not crashes.
+ */
+export const suggestProductNames = (productId: string) =>
+  request<ProductNames>(`/api/products/${encodeURIComponent(productId)}/name-suggestions`, { method: "POST" });
 
 /** Moves everything of `productId` into `targetProductId` and deletes it. No undo. */
 export const mergeProduct = (productId: string, targetProductId: string) =>

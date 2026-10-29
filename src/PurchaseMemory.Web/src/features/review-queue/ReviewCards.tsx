@@ -14,7 +14,7 @@ import { categoriesQueryKey } from "../categories/categoryQueries";
 import { CategoryPicker } from "../categories/CategoryPicker";
 import { RatingControl } from "../impressions/RatingControl";
 import { useSwipe } from "../line-review/useSwipe";
-import { FlaggedProductSuggestions, itemTitle, reason, useConfirmCategory, useRateLine } from "./ReviewItemCards";
+import { FlaggedProductSuggestions, itemTitle, reason, useConfirmCategory, useConfirmNames, useRateLine } from "./ReviewItemCards";
 import { reviewQueueQueryKey } from "./reviewQueueQueries";
 import { sectionKinds, type CardSectionId } from "./reviewSections";
 
@@ -42,7 +42,7 @@ export function ReviewCards({ section, category, tag }: ReviewCardsProps) {
     queryKey: [...reviewQueueQueryKey, "list", cardModeLimitPerKind, category, tag],
     queryFn: () => getReviewQueue(cardModeLimitPerKind, { category: category || undefined, tag: tag || undefined })
   });
-  const categoriesQuery = useQuery({ queryKey: categoriesQueryKey, queryFn: listCategories, enabled: section !== "ratings" });
+  const categoriesQuery = useQuery({ queryKey: categoriesQueryKey, queryFn: listCategories, enabled: section !== "ratings" && section !== "names" });
   return (
     <ReviewCardsView
       section={section}
@@ -168,6 +168,7 @@ function CardBody({ item, section, categories, onResolved, placeOnReturn }: {
       {section === "products" && item.productId && (
         <FlaggedProductSuggestions item={item} title={title} categories={categories} onResolved={onResolved} showCategoryStep={false} />
       )}
+      {section === "names" && <NamesCard item={item} title={title} onResolved={onResolved} />}
       {section === "categories" && <CategoryCard item={item} title={title} categories={categories} onResolved={onResolved} />}
       {section === "ratings" && <RatingCard item={item} title={title} onResolved={onResolved} />}
       <OpenProductRow item={item} title={title} placeOnReturn={placeOnReturn} />
@@ -210,6 +211,29 @@ function CategoryCard({ item, title, categories, onResolved }: { item: ReviewQue
         />
       )}
       {confirm.isError && <IonItem lines="none"><IonLabel className="pm-wrap pm-danger-text" role="alert">{t("reviewQueue.confirmError")}</IonLabel></IonItem>}
+    </>
+  );
+}
+
+/** Suggested names: «Верно, дальше» confirms them; editing happens on the product («Открыть товар»). */
+function NamesCard({ item, title, onResolved }: { item: ReviewQueueItem; title: string; onResolved: () => void }) {
+  const { t } = useTranslation();
+  const confirm = useConfirmNames();
+  if (!item.productId) return null;
+  return (
+    <>
+      <div className="pm-review-cards-primary-row">
+        <ActionButton
+          expand="block"
+          className="pm-review-cards-primary"
+          loading={confirm.isPending}
+          onClick={() => confirm.mutate(item, { onSuccess: onResolved })}
+          aria-label={t("reviewQueue.confirmNamesFor", { name: title })}
+        >
+          {t("reviewQueue.cards.correct")}
+        </ActionButton>
+      </div>
+      {confirm.isError && <IonItem lines="none"><IonLabel className="pm-wrap pm-danger-text" role="alert">{t("reviewQueue.confirmNamesError")}</IonLabel></IonItem>}
     </>
   );
 }

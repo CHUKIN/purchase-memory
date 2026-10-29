@@ -114,6 +114,7 @@ public sealed class ProductCatalogService : IProductCatalogService
             product.Origin,
             product.NeedsReview,
             product.ReviewReason,
-            candidates is not null && candidates.TryGetValue(product.Id, out var reviewCandidates) ? reviewCandidates : []);
+            candidates is not null && candidates.TryGetValue(product.Id, out var reviewCandidates) ? reviewCandidates : [],
+            ProductDisplayNames.Of(product));
     }
 }

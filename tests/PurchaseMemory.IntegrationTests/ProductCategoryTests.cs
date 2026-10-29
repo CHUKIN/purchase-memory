@@ -220,11 +220,12 @@ public sealed class ProductCategoryTests
         // The model answered for «Chleb» (with an invented id), so it is not sent again by default.
         var failing = new FakeCategorizer((_, _) => throw new ProductCategorizationException("model down"));
         Assert.Equal(0, (await RunBackfillAsync(application, failing)).Considered);
+        // A retry also asks again for names the model left empty, so «Woda» (classified, unnamed) comes too.
         var failed = await RunBackfillAsync(application, failing, retryAttempted: true);
-        Assert.Equal((1, 0, 1), (failed.Considered, failed.Suggested, failed.FailedBatches));
+        Assert.Equal((2, 0, 1), (failed.Considered, failed.Suggested, failed.FailedBatches));
         // A failed batch is not an answer: the product stays eligible.
         Assert.Null((await ReadProductAsync(application, first)).CategorySource);
-        Assert.Equal(1, (await RunBackfillAsync(application, failing, retryAttempted: true)).Considered);
+        Assert.Equal(2, (await RunBackfillAsync(application, failing, retryAttempted: true)).Considered);
 
         var unconfigured = new FakeCategorizer((_, _) => throw new InvalidOperationException("must not be called"))
         {

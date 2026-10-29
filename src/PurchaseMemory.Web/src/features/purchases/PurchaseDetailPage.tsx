@@ -253,10 +253,11 @@ function PurchaseSummary({ purchase, back, onEdit }: { purchase: PurchaseDetail;
                   <ReviewLineButton onOpen={() => openReview(index)} approved={approvals.isApproved(item)} name={item.name}>
                     <ProductLinkNote
                       text={item.productName
-                        ? productStatusText(t, { ...item, productLink: "existing" })
+                        ? productStatusText(t, { ...item, productName: item.productNamePl || item.productName, productLink: "existing" })
                         : t("purchaseEdit.productUnlinked")}
                       lineName={item.name}
                       productName={item.productName}
+                      humanName={item.productNamePl}
                       flagged={Boolean(item.productName && item.productNeedsReview)}
                       unlinked={!item.productName}
                     />
@@ -272,7 +273,7 @@ function PurchaseSummary({ purchase, back, onEdit }: { purchase: PurchaseDetail;
                     state={returnState}
                     fill="clear"
                     className="pm-icon-button pm-line-product-link"
-                    aria-label={t("purchaseEdit.openProduct", { name: item.productName ?? item.name })}
+                    aria-label={t("purchaseEdit.openProduct", { name: item.productNamePl || item.productName || item.name })}
                   >
                     <Package size={20} aria-hidden="true" />
                   </ButtonLink>

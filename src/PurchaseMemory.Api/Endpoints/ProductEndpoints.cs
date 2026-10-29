@@ -10,10 +10,11 @@ namespace PurchaseMemory.Api.Endpoints;
 /// <summary>
 /// The catalog list and product page, plus the changes a person makes to the
 /// catalog itself: create by hand or from a barcode, rename, merge two
-/// products, settle a «проверить» flag. Data is shared by every approved user
-/// in this version (no households), so the approved-user fallback policy is
-/// the whole access rule, as for every other data endpoint. None of these
-/// calls a paid model, so none is rate limited.
+/// products, settle a «проверить» flag, edit the human names. Data is shared
+/// by every approved user in this version (no households), so the
+/// approved-user fallback policy is the whole access rule, as for every other
+/// data endpoint. Only «name-suggestions» calls a paid model, so only it is
+/// rate limited.
 /// </summary>
 public static class ProductEndpoints
 {
@@ -28,8 +29,20 @@ public static class ProductEndpoints
         endpoints.MapGet("/api/products/{productId:guid}", GetProductAsync)
             .WithName("GetProduct");
 
+        // Without «language» it renames the receipt-text name (CanonicalName);
+        // with «pl» / «ru» it sets that human name, confirmed.
         endpoints.MapPut("/api/products/{productId:guid}/name", RenameAsync)
             .WithName("RenameProduct");
+
+        // «Верно» for the names: every suggested name is confirmed as it is.
+        endpoints.MapPost("/api/products/{productId:guid}/names/confirm", ConfirmNamesAsync)
+            .WithName("ConfirmProductNames");
+
+        // «Предложить заново»: calls the paid model for this one product, so it
+        // has a per-user bucket of its own. Confirmed names are never replaced.
+        endpoints.MapPost("/api/products/{productId:guid}/name-suggestions", SuggestNamesAsync)
+            .WithName("SuggestProductNames")
+            .RequireRateLimiting(ReceiptUploadRateLimiting.NameSuggestionsPolicyName);
 
         endpoints.MapPost("/api/products/{productId:guid}/merge-into/{targetProductId:guid}", MergeAsync)
             .WithName("MergeProduct");
@@ -135,9 +148,64 @@ public static class ProductEndpoints
         RenameProductRequest request,
         ClaimsPrincipal user,
         IProductManagementService service,
+        IProductCategoryService names,
         CancellationToken cancellationToken) =>
-        HandleAsync(async () => Results.Ok(ProductSummaryResponse.From(
-            await service.RenameAsync(productId, request.Name ?? string.Empty, AppUser.Actor(user), cancellationToken))));
+        HandleAsync(async () =>
+        {
+            if (string.IsNullOrWhiteSpace(request.Language))
+            {
+                return Results.Ok(ProductSummaryResponse.From(
+                    await service.RenameAsync(productId, request.Name ?? string.Empty, AppUser.Actor(user), cancellationToken)));
+            }
+
+            var language = request.Language.Trim().ToLowerInvariant() switch
+            {
+                "pl" => ProductNameLanguage.Polish,
+                "ru" => ProductNameLanguage.Russian,
+                _ => throw new ArgumentException("language must be 'pl' or 'ru'.")
+            };
+            return Results.Ok(ProductNamesResponse.From(
+                await names.SetProductNameAsync(productId, language, request.Name, AppUser.Actor(user), cancellationToken)));
+        });
+
+    /// <summary>
+    /// Optional body <c>{ namePl, nameRu }</c>: the names on the person's screen.
+    /// When given and the product's names differ by now (a new suggestion came
+    /// in), nothing is confirmed and the answer is 409.
+    /// </summary>
+    private static Task<IResult> ConfirmNamesAsync(
+        Guid productId,
+        ConfirmProductNamesRequest? request,
+        ClaimsPrincipal user,
+        IProductCategoryService names,
+        CancellationToken cancellationToken) =>
+        HandleAsync(async () => Results.Ok(ProductNamesResponse.From(
+            await names.ConfirmSuggestedNamesAsync(
+                productId,
+                request is null ? null : new ShownProductNames(request.NamePl, request.NameRu),
+                AppUser.Actor(user),
+                cancellationToken))));
+
+    private static Task<IResult> SuggestNamesAsync(
+        Guid productId,
+        IProductCategorizationService categorization,
+        CancellationToken cancellationToken) =>
+        HandleAsync(async () =>
+        {
+            try
+            {
+                return Results.Ok(ProductNamesResponse.From(
+                    await categorization.SuggestNamesAsync(productId, cancellationToken)));
+            }
+            catch (ProductNamingUnavailableException)
+            {
+                // The cause (no key, timeout, provider error) is in the log; the person only needs to know it failed.
+                return Results.Problem(
+                    detail: "Name suggestions are unavailable right now. Names can still be typed by hand.",
+                    statusCode: StatusCodes.Status503ServiceUnavailable,
+                    extensions: new Dictionary<string, object?> { ["code"] = "nameSuggestionsUnavailable" });
+            }
+        });
 
     private static Task<IResult> MergeAsync(
         Guid productId,
@@ -188,6 +256,10 @@ public static class ProductEndpoints
         {
             return Results.Problem(detail: exception.Message, statusCode: StatusCodes.Status400BadRequest);
         }
+        catch (ProductCategoryConflictException exception)
+        {
+            return Results.Problem(detail: exception.Message, statusCode: StatusCodes.Status409Conflict);
+        }
         catch (ArgumentException exception)
         {
             return Results.Problem(detail: exception.Message, statusCode: StatusCodes.Status400BadRequest);
@@ -217,7 +289,31 @@ public sealed record BrandResponse(string Brand, int ProductCount);
 
 public sealed record CreateProductRequest(string? Name, string? Brand, Guid? CategoryId, string? Origin);
 
-public sealed record RenameProductRequest(string? Name);
+/// <param name="Language"><c>null</c>: the receipt-text name; «pl» / «ru»: that human name (empty clears it).</param>
+public sealed record RenameProductRequest(string? Name, string? Language = null);
+
+/// <summary>The names shown when «Верно» was pressed; <c>null</c> for a name that was not there.</summary>
+public sealed record ConfirmProductNamesRequest(string? NamePl, string? NameRu);
+
+/// <summary>A product's human names after an edit, confirmation or new suggestion.</summary>
+public sealed record ProductNamesResponse(
+    Guid ProductId,
+    string? NamePl,
+    string? NamePlSource,
+    string? NameRu,
+    string? NameRuSource)
+{
+    public static ProductNamesResponse From(ProductNamesView view)
+    {
+        ArgumentNullException.ThrowIfNull(view);
+        return new ProductNamesResponse(
+            view.ProductId,
+            view.NamePl,
+            CategoryEndpoints.SourceToWire(view.NamePlSource),
+            view.NameRu,
+            CategoryEndpoints.SourceToWire(view.NameRuSource));
+    }
+}
 
 /// <summary>A product right after a change; the page reloads the full detail itself.</summary>
 public sealed record ProductSummaryResponse(
@@ -231,7 +327,11 @@ public sealed record ProductSummaryResponse(
     string? Brand,
     string? BrandSource,
     DateTimeOffset CreatedAt,
-    DateTimeOffset UpdatedAt)
+    DateTimeOffset UpdatedAt,
+    string? NamePl = null,
+    string? NamePlSource = null,
+    string? NameRu = null,
+    string? NameRuSource = null)
 {
     public static ProductSummaryResponse From(Product product)
     {
@@ -247,7 +347,11 @@ public sealed record ProductSummaryResponse(
             product.Brand,
             CategoryEndpoints.SourceToWire(product.BrandSource),
             product.CreatedAt,
-            product.UpdatedAt);
+            product.UpdatedAt,
+            product.NamePl,
+            CategoryEndpoints.SourceToWire(product.NamePlSource),
+            product.NameRu,
+            CategoryEndpoints.SourceToWire(product.NameRuSource));
     }
 }
 
@@ -281,7 +385,12 @@ public sealed record ProductResponse(
     string? Brand,
     IReadOnlyList<TagResponse> Tags,
     bool NeedsReview,
-    string Origin);
+    string Origin,
+    // Human names; null falls back to Name (the receipt text).
+    string? NamePl = null,
+    string? NamePlSource = null,
+    string? NameRu = null,
+    string? NameRuSource = null);
 
 public sealed record ProductCatalogResponse(
     IReadOnlyList<ProductResponse> Items,
@@ -312,7 +421,11 @@ public sealed record ProductCatalogResponse(
                     entry.Brand,
                     (entry.Tags ?? []).Select(TagEndpoints.ToResponse).ToList(),
                     entry.NeedsReview,
-                    ProductEndpoints.OriginToWire(entry.Origin)))
+                    ProductEndpoints.OriginToWire(entry.Origin),
+                    entry.Names?.NamePl,
+                    CategoryEndpoints.SourceToWire(entry.Names?.NamePlSource),
+                    entry.Names?.NameRu,
+                    CategoryEndpoints.SourceToWire(entry.Names?.NameRuSource)))
                 .ToList(),
             page.Page,
             page.PageSize,
@@ -366,7 +479,12 @@ public sealed record ProductDetailResponse(
     bool NeedsReview,
     string? ReviewReason,
     // Flagged products only (empty otherwise): what it might really be, best first.
-    IReadOnlyList<ProductReviewCandidateResponse> ReviewCandidates)
+    IReadOnlyList<ProductReviewCandidateResponse> ReviewCandidates,
+    // Human names; null falls back to Name (the receipt text).
+    string? NamePl = null,
+    string? NamePlSource = null,
+    string? NameRu = null,
+    string? NameRuSource = null)
 {
     public static ProductDetailResponse FromDetail(ProductDetail detail)
     {
@@ -410,7 +528,11 @@ public sealed record ProductDetailResponse(
                     candidate.CategoryId,
                     candidate.PurchaseCount,
                     candidate.Score))
-                .ToList());
+                .ToList(),
+            detail.Names?.NamePl,
+            CategoryEndpoints.SourceToWire(detail.Names?.NamePlSource),
+            detail.Names?.NameRu,
+            CategoryEndpoints.SourceToWire(detail.Names?.NameRuSource));
     }
 
     private static ProductPriceSeriesResponse ToResponse(ProductPriceSeries series)

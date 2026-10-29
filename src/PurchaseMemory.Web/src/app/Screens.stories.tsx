@@ -57,7 +57,12 @@ const purchaseDetail: PurchaseDetail = {
       discountedItemPosition: null, productId: "water-pack", productName: "Woda mineralna niegazowana Żywiec Zdrój 6×1,5L zgrzewka", productNeedsReview: true, boundingBox: null
     },
     {
-      id: "line-4", position: 3, name: "BULKA KAJZERKA", quantity: 4, unit: "szt", unitPrice: 0.59, lineTotal: 2.36, kind: "product",
+      id: "line-5", position: 3, name: "ACTIV KEFI NAT 280", quantity: 1, unit: "szt", unitPrice: 3.49, lineTotal: 3.49, kind: "product",
+      discountedItemPosition: null, productId: "kefir", productName: "ACTIV KEFI NAT 280", productNamePl: "Kefir naturalny Activia 280 g",
+      productNeedsReview: false, boundingBox: null
+    },
+    {
+      id: "line-4", position: 4, name: "BULKA KAJZERKA", quantity: 4, unit: "szt", unitPrice: 0.59, lineTotal: 2.36, kind: "product",
       discountedItemPosition: null, productId: null, productName: null, productNeedsReview: false, boundingBox: null
     }
   ],
@@ -215,7 +220,7 @@ const queueItem = (overrides: Partial<ReviewQueueItem> & Pick<ReviewQueueItem, "
 });
 
 const reviewQueue: ReviewQueue = {
-  totalCount: 7,
+  totalCount: 9,
   groups: [
     { kind: "totalMismatch", totalCount: 1, items: [queueItem({ kind: "totalMismatch", id: "totalMismatch:p1", title: longMerchant, receiptId: "receipt-1", purchaseId: "purchase-long", currency: "PLN", receiptTotal: 1284.32, linesTotal: 1214.37 })] },
     { kind: "missingPrice", totalCount: 1, items: [queueItem({ kind: "missingPrice", id: "missingPrice:p1", title: longMerchant, purchaseId: "purchase-long", affectedLineCount: 1, itemPosition: 2 })] },
@@ -230,6 +235,15 @@ const reviewQueue: ReviewQueue = {
     },
     { kind: "suggestedCategory", totalCount: 1, items: [queueItem({ kind: "suggestedCategory", id: "suggestedCategory:x", title: longProduct, productId: "product-long", categoryId: "cheese", categoryName: "Сыры и молочные продукты для завтрака" })] },
     { kind: "missingCategory", totalCount: 1, items: [queueItem({ kind: "missingCategory", id: "missingCategory:y", title: "Jogurt Danio waniliowy z kawałkami owoców 4×140g", productId: "y1" })] },
+    {
+      kind: "suggestedNames", totalCount: 2, items: [queueItem({
+        kind: "suggestedNames", id: "suggestedNames:kefir", title: "ACTIV KEFI NAT 280", productId: "kefir",
+        namePl: "Kefir naturalny Activia 280 g", nameRu: "Кефир натуральный Activia, 280 г", namePlSuggested: true, nameRuSuggested: true
+      }), queueItem({
+        kind: "suggestedNames", id: "suggestedNames:banany", title: "BANANY", productId: "banany",
+        namePl: "Banany", nameRu: "Бананы", namePlSuggested: true, nameRuSuggested: true
+      })]
+    },
     { kind: "unapprovedLines", totalCount: 1, items: [queueItem({ kind: "unapprovedLines", id: "unapprovedLines:p1", title: longMerchant, purchaseId: "purchase-long", affectedLineCount: 5, lineCount: 6, itemPosition: 1 })] },
     {
       kind: "unratedPurchase", totalCount: 1, items: [queueItem({
@@ -238,11 +252,12 @@ const reviewQueue: ReviewQueue = {
     }
   ],
   summary: {
-    totalCount: 7,
+    totalCount: 9,
     sections: [
       { section: "receipts", count: 2 },
       { section: "purchases", count: 1 },
       { section: "products", count: 1 },
+      { section: "names", count: 2 },
       { section: "categories", count: 2 },
       { section: "ratings", count: 1 }
     ]
@@ -328,5 +343,6 @@ export const ReviewQueueMobile: Story = { args: { path: "/needs-attention" } };
 export const ReviewQueueMobileEn: Story = { args: { path: "/needs-attention" }, globals: { ...phone, locale: "en" } };
 export const ReviewQueueDesktop: Story = { args: { path: "/needs-attention" }, globals: desktop };
 export const ReviewCardsMobile: Story = { args: { path: "/needs-attention?cards=categories" } };
+export const ReviewNamesCardsMobile: Story = { args: { path: "/needs-attention?cards=names" } };
 export const AnalyticsMobile: Story = { args: { path: "/analytics" } };
 export const AnalyticsDesktop: Story = { args: { path: "/analytics" }, globals: desktop };

@@ -12,6 +12,7 @@ import { categoryLabel } from "../categories/categoryText";
 import { BrandFilterRow, CategoryFilterRow, TagFilterRow } from "../filters/FilterRows";
 import { TagChips } from "../tags/TagChips";
 import { useOriginBack, useReturnState } from "../../app/backNavigation";
+import { displayName, isNameSuggested, russianName } from "./productNameText";
 
 export interface ProductCatalogProps {
   query: string;
@@ -145,7 +146,7 @@ export function ProductCatalog({
               <ItemLink key={product.id} to={`/products/${product.id}`} state={returnState}>
                 <ProductLeading productId={product.id} group={categories.length > 0 ? categoryGroupKey(categories, product.categoryId) : null} />
                 <IonLabel className="pm-wrap">
-                  <h2>{product.name}</h2>
+                  <h2><ProductTitle product={product} /></h2>
                   <p className="pm-product-meta"><ProductMeta product={product} categories={categories} /></p>
                   {(product.tags ?? []).length > 0 && <div className="pm-chip-row"><TagChips tags={product.tags ?? []} /></div>}
                 </IonLabel>
@@ -198,7 +199,32 @@ function ProductLeading({ productId, group }: { productId: string; group: string
 }
 
 /**
- * «Проверить · Шоколад и конфеты ✦ · Wedel · 1 покупка»: only the category's
+ * The row's name; with an AI-suggested name (Polish or Russian) a ✦ follows,
+ * named for a screen reader like a suggested category. The ✦ is glued to the
+ * last word so a narrow screen never wraps it onto a line of its own.
+ */
+function ProductTitle({ product }: { product: ProductSummary }) {
+  const { t } = useTranslation();
+  const name = displayName(product);
+  if (!isNameSuggested(product)) return <>{name}</>;
+  const split = name.lastIndexOf(" ");
+  return (
+    <>
+      {split > 0 && `${name.slice(0, split)} `}
+      <span className="pm-nowrap">
+        {name.slice(split + 1)}
+        {"\u00a0"}
+        <span className="pm-product-meta-suggested" title={t("products.names.suggestedHint")}>
+          <Sparkles size={14} role="img" aria-label={t("products.names.suggested")} aria-hidden={false} />
+        </span>
+      </span>
+    </>
+  );
+}
+
+/**
+ * «Кефир натуральный · Проверить · Шоколад и конфеты ✦ · Wedel · 1 покупка»:
+ * the Russian name first (under the Polish one), then only the category's
  * own (leaf) name, since the tile shows its group; a sparkle marks an AI
  * suggestion, named for a screen reader.
  */
@@ -206,6 +232,8 @@ function ProductMeta({ product, categories }: { product: ProductSummary; categor
   const { t } = useTranslation();
   const category = product.categoryId ? categories.find((entry) => entry.id === product.categoryId) : undefined;
   const parts: ReactNode[] = [];
+  const russian = russianName(product);
+  if (russian) parts.push(<span key="ru" lang="ru">{russian}</span>);
   if (product.needsReview) parts.push(<span key="review" className="pm-product-meta-review" title={t("products.needsReviewHint")}>{t("products.needsReviewLabel")}</span>);
   if (categories.length > 0) {
     if (category) {

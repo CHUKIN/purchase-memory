@@ -195,3 +195,28 @@ export const CategoryTilesMobileRu: Story = {
   args: { products: groupProducts, totalCount: groupProducts.length, categories: seededTree, needsReviewCount: 1, onReviewFilterChange: fn() }
 };
 export const CategoryTilesMobileEn: Story = { ...CategoryTilesMobileRu, globals: { ...phone, locale: "en" } };
+
+/** Variant 1 rows: Polish name large (✦ while suggested), Russian under it before the category; no name — the receipt text. */
+export const WithHumanNamesMobileRu: Story = {
+  globals: phone,
+  args: {
+    query: "кефир",
+    products: [
+      {
+        id: "kefir", name: "ACTIV KEFI NAT 280", normalizedName: "activ kefi nat 280", purchaseCount: 6, linkedItemCount: 6, aliasCount: 1,
+        createdAt: "2026-10-01T10:00:00Z", updatedAt: "2026-10-22T10:00:00Z", brand: "Activia",
+        namePl: "Kefir naturalny Activia 280 g", namePlSource: "confirmed", nameRu: "Кефир натуральный Activia, 280 г", nameRuSource: "confirmed"
+      },
+      {
+        id: "mleko", name: "MLEKO LACIATE 3,2 1L", normalizedName: "mleko laciate 3 2 1 l", purchaseCount: 12, linkedItemCount: 12, aliasCount: 2,
+        createdAt: "2026-10-01T10:00:00Z", updatedAt: "2026-10-22T10:00:00Z", brand: "Łaciate",
+        namePl: "Mleko 3,2% Łaciate 1 l", namePlSource: "suggested", nameRu: "Молоко 3,2% Łaciate, 1 л", nameRuSource: "suggested"
+      },
+      {
+        id: "gouda", name: "SER GOUDA PLAST 150", normalizedName: "ser gouda plast 150", purchaseCount: 2, linkedItemCount: 2, aliasCount: 1,
+        createdAt: "2026-10-01T10:00:00Z", updatedAt: "2026-10-22T10:00:00Z"
+      }
+    ],
+    totalCount: 3
+  }
+};

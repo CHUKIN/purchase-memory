@@ -105,10 +105,26 @@ public sealed class ReviewQueueRepository(PurchaseMemoryDbContext dbContext) : I
                     product.CategoryId,
                     category == null ? null : category.Name,
                     product.CategorySource,
-                    product.UpdatedAt))
+                    product.UpdatedAt,
+                    product.NamePl,
+                    product.NameRu))
             .ToListAsync(cancellationToken);
 
-        return new ReviewQueueFacts(receipts, purchases, flaggedFacts, products);
+        var suggestedNames = await dbContext.Products
+            .AsNoTracking()
+            .Where(product => product.NamePlSource == ProductAttributeSource.Suggested
+                || product.NameRuSource == ProductAttributeSource.Suggested)
+            .Select(product => new ReviewNamedProductFact(
+                product.Id,
+                product.CanonicalName,
+                product.NamePl,
+                product.NamePlSource,
+                product.NameRu,
+                product.NameRuSource,
+                product.UpdatedAt))
+            .ToListAsync(cancellationToken);
+
+        return new ReviewQueueFacts(receipts, purchases, flaggedFacts, products, suggestedNames);
     }
 
     /// <summary>

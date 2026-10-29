@@ -78,6 +78,11 @@ public interface IProductCatalogRepository
         string normalizedText,
         CancellationToken cancellationToken);
 
+    /// <summary>Human names of the given products (only those that exist).</summary>
+    Task<IReadOnlyDictionary<Guid, ProductDisplayNames>> GetProductDisplayNamesAsync(
+        IReadOnlyCollection<Guid> productIds,
+        CancellationToken cancellationToken);
+
     /// <summary>Canonical names of the given products; unknown identifiers are simply absent.</summary>
     Task<IReadOnlyDictionary<Guid, string>> GetProductNamesAsync(
         IReadOnlyCollection<Guid> productIds,
@@ -121,7 +126,27 @@ public sealed record ProductCatalogEntry(
     // Filled by the catalog service from the tag links; the repository leaves it empty.
     IReadOnlyList<ProductTagSummary>? Tags = null,
     bool NeedsReview = false,
-    ProductOrigin Origin = ProductOrigin.Receipt);
+    ProductOrigin Origin = ProductOrigin.Receipt,
+    ProductDisplayNames? Names = null);
+
+/// <summary>
+/// A product's human names (Polish on the shelf, Russian at home) and who
+/// decided each. A missing name falls back to the receipt text in the UI.
+/// </summary>
+public sealed record ProductDisplayNames(
+    string? NamePl,
+    ProductAttributeSource? NamePlSource,
+    string? NameRu,
+    ProductAttributeSource? NameRuSource)
+{
+    public static ProductDisplayNames None { get; } = new(null, null, null, null);
+
+    public static ProductDisplayNames Of(Product product)
+    {
+        ArgumentNullException.ThrowIfNull(product);
+        return new ProductDisplayNames(product.NamePl, product.NamePlSource, product.NameRu, product.NameRuSource);
+    }
+}
 
 /// <summary>
 /// Already validated catalog filters. <see cref="CategoryIds"/> is the chosen

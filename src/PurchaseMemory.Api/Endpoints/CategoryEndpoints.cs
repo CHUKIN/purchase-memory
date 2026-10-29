@@ -105,8 +105,8 @@ public static class CategoryEndpoints
     }
 
     /// <summary>
-    /// Suggests categories for up to <paramref name="limit"/> products nobody has
-    /// classified. This is the one endpoint that spends money on the model, so
+    /// Suggests categories (and human names) for up to <paramref name="limit"/>
+    /// products nobody has classified or named. This is the one endpoint that spends money on the model, so
     /// its limit is small by default and every call is logged with token usage.
     /// </summary>
     private static Task<IResult> BackfillAsync(
@@ -136,7 +136,8 @@ public static class CategoryEndpoints
                 summary.Suggested,
                 summary.FailedBatches,
                 summary.InputTokens,
-                summary.OutputTokens));
+                summary.OutputTokens,
+                summary.NamesSuggested));
         });
 
     private static async Task<IResult> HandleAsync(Func<Task<IResult>> operation)
@@ -212,7 +213,9 @@ public sealed record CategorizationRunResponse(
     int Suggested,
     int FailedBatches,
     int InputTokens,
-    int OutputTokens);
+    int OutputTokens,
+    // Products that got a new suggested human name (also counted in Suggested).
+    int NamesSuggested = 0);
 
 /// <summary>Process-wide single-flight guard for the paid backfill.</summary>
 public sealed class CategorizationBackfillGate

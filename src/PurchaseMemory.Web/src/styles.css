@@ -277,6 +277,22 @@ ion-segment-button ion-label { font-size: 13px; white-space: normal; }
 .pm-product-meta .pm-nowrap { white-space: nowrap; }
 .pm-product-meta-suggested { display: inline-flex; color: var(--pm-warning-text); vertical-align: -2px; }
 .pm-product-meta-review { color: var(--pm-warning-text); font-weight: 600; }
+
+/* Human product names (stage 1.4): Polish large (the title), Russian under it, the receipt text last. */
+.pm-product-names-head { margin: -4px 20px 14px; }
+.pm-product-name-ru { margin: 0; color: #3a3a3c; font-size: 17px; line-height: 1.35; }
+.pm-product-name-raw { margin: 6px 0 0; color: var(--pm-muted); font-size: 15px; line-height: 1.35; }
+.pm-receipt-text { font-family: ui-monospace, Menlo, monospace; overflow-wrap: anywhere; }
+.pm-name-label { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+ion-label p.pm-name-label { color: var(--pm-muted); font-size: 13px; }
+.pm-suggested-chip {
+  font-size: 13px; color: var(--pm-warning-text); background: #fdf3e6; border: 1px solid #f1d9b8;
+  border-radius: 8px; padding: 0 6px; font-weight: 500; line-height: 1.4;
+}
+ion-label h3.pm-name-empty { color: var(--pm-muted); }
+.pm-names-actions { display: flex; gap: 10px; padding: 10px 14px 12px; flex-wrap: wrap; }
+.pm-names-action { flex: 1 1 130px; min-height: 44px; margin: 0; }
+.pm-line-human-name { color: var(--ion-color-primary); }
 /* A small button with a full 44 px tap height. */
 ion-button.pm-tap-button { min-height: 44px; margin-top: 0; margin-bottom: 0; }
 .pm-tag { background: #eef0f4; color: #3a3a44; }

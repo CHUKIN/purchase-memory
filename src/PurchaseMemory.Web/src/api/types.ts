@@ -168,6 +168,8 @@ export interface PurchaseDetailItem {
   /** Every product line has one; only discount lines (and very old data) are null. */
   productId: string | null;
   productName: string | null;
+  /** The linked product's human Polish name, shown under the receipt text as «→ …». */
+  productNamePl?: string | null;
   /** The linked product carries the «проверить» flag. Optional only so older fixtures stay valid. */
   productNeedsReview?: boolean;
   boundingBox: BoundingBox | null;
@@ -296,6 +298,8 @@ export interface CategorizationRunSummary {
   failedBatches: number;
   inputTokens: number;
   outputTokens: number;
+  /** Products that got a new suggested human name (also counted in `suggested`). */
+  namesSuggested?: number;
 }
 
 /** A household tag as it appears on a product. */
@@ -338,6 +342,12 @@ export interface ProductSummary {
   categoryId?: string | null;
   categorySource?: AttributeSource | null;
   brand?: string | null;
+  /** Human Polish name (stage 1.4); `null`/absent falls back to `name`, the receipt text. */
+  namePl?: string | null;
+  namePlSource?: AttributeSource | null;
+  /** Russian translation of the Polish name. */
+  nameRu?: string | null;
+  nameRuSource?: AttributeSource | null;
   /** Alphabetical. Optional only so older fixtures stay valid. */
   tags?: ProductTag[];
   /** Distinct shopping trips, the same definition the product page counts by. */
@@ -387,9 +397,26 @@ export interface ProductChangeResult {
   categorySource: AttributeSource | null;
   brand: string | null;
   brandSource: AttributeSource | null;
+  /** Human Polish name (stage 1.4); `null`/absent falls back to `name`, the receipt text. */
+  namePl?: string | null;
+  namePlSource?: AttributeSource | null;
+  /** Russian translation of the Polish name. */
+  nameRu?: string | null;
+  nameRuSource?: AttributeSource | null;
   createdAt: string;
   updatedAt: string;
 }
+
+/** A product's human names after an edit, «Верно» or «Предложить заново». */
+export interface ProductNames {
+  productId: string;
+  namePl: string | null;
+  namePlSource: AttributeSource | null;
+  nameRu: string | null;
+  nameRuSource: AttributeSource | null;
+}
+
+export type ProductNameLanguage = "pl" | "ru";
 
 export interface ProductMergeResult {
   sourceProductId: string;
@@ -445,6 +472,12 @@ export interface ProductDetail {
   categorySource?: AttributeSource | null;
   brand?: string | null;
   brandSource?: AttributeSource | null;
+  /** Human Polish name (stage 1.4); `null`/absent falls back to `name`, the receipt text. */
+  namePl?: string | null;
+  namePlSource?: AttributeSource | null;
+  /** Russian translation of the Polish name. */
+  nameRu?: string | null;
+  nameRuSource?: AttributeSource | null;
   /** Alphabetical. Optional only so older fixtures stay valid. */
   tags?: ProductTag[];
   createdAt: string;
@@ -632,10 +665,12 @@ export type ReviewQueueKind =
   /** A saved purchase with lines nobody has marked «Верно» yet (hub only). */
   | "unapprovedLines"
   /** A recent line the signed-in person has not rated yet (hub only, personal). */
-  | "unratedPurchase";
+  | "unratedPurchase"
+  /** AI-suggested human names nobody has confirmed yet (hub only). */
+  | "suggestedNames";
 
 /** The «Ревью» hub's sections from the server, most important first. */
-export type ReviewQueueSection = "receipts" | "purchases" | "products" | "categories" | "ratings";
+export type ReviewQueueSection = "receipts" | "purchases" | "products" | "names" | "categories" | "ratings";
 
 export interface ReviewQueueSectionCount {
   section: ReviewQueueSection;
@@ -682,6 +717,12 @@ export interface ReviewQueueItem {
   purchaseItemId?: string | null;
   merchantName?: string | null;
   price?: number | null;
+  /** Product kinds: the human names (`null`: show `title`, the receipt text). */
+  namePl?: string | null;
+  nameRu?: string | null;
+  /** Suggested names only: which of the two still wait for «Верно». */
+  namePlSuggested?: boolean;
+  nameRuSuggested?: boolean;
   /*
    * `categoryId`/`categoryName` on a flagged product: its category is only
    * AI-suggested; the same card asks to confirm it (no «Категория не

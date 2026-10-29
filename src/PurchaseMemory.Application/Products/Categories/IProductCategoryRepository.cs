@@ -20,19 +20,25 @@ public interface IProductCategoryRepository
 
     Task<Product?> FindProductForUpdateAsync(Guid productId, CancellationToken cancellationToken);
 
+    /// <summary>An untracked, freshly read product.</summary>
+    Task<Product?> FindProductSnapshotAsync(Guid productId, CancellationToken cancellationToken);
+
     /// <summary>
-    /// Untracked snapshots of products among <paramref name="productIds"/> nobody
-    /// has classified yet and the categorizer has not answered for.
+    /// Untracked snapshots of products among <paramref name="productIds"/> the
+    /// model has something to do for: nobody classified them and the
+    /// categorizer has not answered for them, or a human name is missing and
+    /// the model has not been asked for names yet.
     /// </summary>
-    Task<IReadOnlyList<Product>> ListUnclassifiedProductsAsync(
+    Task<IReadOnlyList<Product>> ListProductsToSuggestAsync(
         IReadOnlyCollection<Guid> productIds,
         CancellationToken cancellationToken);
 
     /// <summary>
-    /// Untracked snapshots of unclassified products, oldest first. Products the
-    /// categorizer already answered for are skipped unless <paramref name="includeAttempted"/>.
+    /// Untracked snapshots of products that are unclassified or miss a human
+    /// name, oldest first. Products the model already answered for (on that
+    /// part) are skipped unless <paramref name="includeAttempted"/>.
     /// </summary>
-    Task<IReadOnlyList<Product>> ListUnclassifiedProductsAsync(
+    Task<IReadOnlyList<Product>> ListProductsToSuggestAsync(
         int maximumProducts,
         bool includeAttempted,
         CancellationToken cancellationToken);
@@ -51,6 +57,20 @@ public interface IProductCategoryRepository
         DateTimeOffset now,
         CancellationToken cancellationToken);
 
+    /// <summary>
+    /// Writes suggested human names in single conditional statements, so a
+    /// person's name typed meanwhile always wins: a name is written only where
+    /// nobody decided yet, or, with <paramref name="replaceSuggested"/>, where
+    /// it is not confirmed. A <c>null</c> name leaves that language as it is.
+    /// Also stamps the naming attempt.
+    /// </summary>
+    Task<NameSuggestionWrite> ApplyNameSuggestionAsync(
+        Guid productId,
+        ProductNameSuggestion names,
+        bool replaceSuggested,
+        DateTimeOffset now,
+        CancellationToken cancellationToken);
+
     void AddAuditEntry(ProductAuditEntry entry);
 
     Task<IReadOnlyList<ProductAuditEntry>> ListAuditEntriesAsync(Guid productId, CancellationToken cancellationToken);
@@ -63,3 +83,24 @@ public interface IProductCategoryRepository
 }
 
 public sealed record SuggestionWrite(bool CategoryWritten, bool BrandWritten);
+
+/// <summary>Cleaned suggested names with their search keys; <c>null</c> means «no suggestion».</summary>
+public sealed record ProductNameSuggestion(
+    string? NamePl,
+    string? NormalizedNamePl,
+    string? NameRu,
+    string? NormalizedNameRu)
+{
+    public static ProductNameSuggestion From(string? namePl, string? nameRu)
+    {
+        var polish = Product.CleanDisplayName(namePl);
+        var russian = Product.CleanDisplayName(nameRu);
+        return new ProductNameSuggestion(
+            polish,
+            polish is null ? null : Product.LimitDisplayName(ProductNameNormalizer.Normalize(polish)),
+            russian,
+            russian is null ? null : Product.LimitDisplayName(ProductNameNormalizer.Normalize(russian)));
+    }
+}
+
+public sealed record NameSuggestionWrite(bool PolishWritten, bool RussianWritten);

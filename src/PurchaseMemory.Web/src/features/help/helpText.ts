@@ -311,8 +311,8 @@ export const helpRu: HelpText = {
       title: "Товары",
       summary: "Один товар — одна карточка, даже если магазины печатают его название по-разному. Товары появляются сами, когда вы сохраняете чеки: у каждой строки чека всегда есть товар. Товар можно создать и сканером штрихкода.",
       steps: [
-        "Откройте «Товары» и найдите товар по части названия так, как оно напечатано на чеке.",
-        "В списке слева у товара — его фото или значок группы категорий (молочное, мясо и рыба, напитки…), под названием — подкатегория, бренд и сколько раз покупали: «Шоколад и конфеты · Wedel · 1 покупка». Звёздочка после категории значит, что её предложил AI и она ещё не подтверждена; «Проверить» оранжевым — товар нужно проверить; серый значок и «без категории» — категории ещё нет.",
+        "Откройте «Товары» и найдите товар по части названия: польского, русского или так, как оно напечатано на чеке — «kefir», «кефир» и «KEFI» найдут один и тот же кефир.",
+        "В списке слева у товара — его фото или значок группы категорий (молочное, мясо и рыба, напитки…). Крупно — польское название, как на полке; под ним — русское название, подкатегория, бренд и сколько раз покупали: «Кефир натуральный Activia, 280 г · Кефир · Activia · 1 покупка». Если названия ещё нет, показан текст из чека. Звёздочка после названия или категории значит, что их предложил AI и они ещё не подтверждены; «Проверить» оранжевым — товар нужно проверить; серый значок и «без категории» — категории ещё нет.",
         "Откройте карточку товара, чтобы увидеть цены и историю покупок.",
         "Если приложение не уверено, что строка чека — уже знакомый товар, оно создаёт отдельный товар с отметкой «проверить». В «Товарах» нажмите «N товаров нужно проверить» (или включите «Нужно проверить» в окне фильтров) — останутся только такие товары.",
         "В карточке такого товара в блоке «Нужно проверить» показаны похожие товары. Это один из них — «Да, это он»: после подтверждения товары объединятся. Это правда другой товар — «Это другой товар»: отметка исчезнет, товар останется как есть.",
@@ -323,13 +323,37 @@ export const helpRu: HelpText = {
         "График «Как менялась цена» и та же таблица числами. Цены за разные единицы (штука, килограмм) считаются отдельно.",
         "«Названия на чеках» — все варианты написания товара по магазинам.",
         "«Последние покупки» — покупки этого товара, новые сверху (только те, где цена прочитана): нажмите на строку, чтобы открыть покупку. «Назад» возвращает туда, откуда вы пришли, и по возможности на то же место на экране; в очень длинных списках место может сдвинуться. Из результата сканера «Назад» приводит к камере, а не к результату.",
-        "При объединении к оставшемуся товару переходят все покупки, названия из чеков, теги, впечатления и история изменений; фото, штрихкоды и «Больше не покупать» с этого телефона тоже переходят. Подтверждённые человеком категория и бренд оставшегося товара сохраняются, иначе берутся подтверждённые у второго. Итоги в «Аналитике» не меняются.",
+        "При объединении к оставшемуся товару переходят все покупки, названия из чеков, теги, впечатления и история изменений; фото, штрихкоды и «Больше не покупать» с этого телефона тоже переходят. Подтверждённые человеком категория, бренд и названия оставшегося товара сохраняются, иначе берутся подтверждённые у второго. Итоги в «Аналитике» не меняются.",
         "После «Да, это он» или «Объединить» следующие чеки с тем же названием сразу попадут в оставшийся товар."
       ],
       trouble: [
         "Если цену строки прочитать не удалось, она не входит в расчёты — об этом есть заметка.",
         "Объединение нельзя отменить. Если объединили не то — создайте товар заново и в покупках через «Изменить товар» перепривяжите нужные строки.",
         "У нового товара с отметкой «проверить» категории ещё нет или она только предложена AI. В «Ревью» это всё равно один пункт «Тот же товар или новый?»: с кнопкой «Выбрать категорию» или с «Подтвердить» и «Изменить» для предложенной категории. Решите про товар («Да, это он» или «Это другой товар») и про категорию; если решить только про товар, категория останется отдельным пунктом."
+      ]
+    },
+    "product-names": {
+      title: "Названия товаров",
+      summary: "У товара два понятных названия: польское — как на полке и упаковке, и русское — его перевод. Их предлагает AI, когда вы сохраняете чек. Текст из чека («ACTIV KEFI NAT 280») не пропадает: он виден в карточке товара и в покупке.",
+      steps: [
+        "В «Товарах», в поиске и в результате сканера крупно — польское название («Kefir naturalny Activia 280 g»), под ним — русское («Кефир натуральный Activia, 280 г»). Если AI не уверен, названия нет и показан текст из чека.",
+        "В карточке товара под названием — русское название и «В чеке: …». В блоке «Названия» — оба названия; «предложено» значит, что название дал AI и его ещё никто не проверил.",
+        "Названия верные — нажмите «Верно»: все предложенные названия станут подтверждёнными.",
+        "Чтобы исправить, нажмите карандаш рядом с названием, впишите своё и нажмите «Сохранить». Пустое поле — показывать текст из чека.",
+        "«Предложить заново» просит AI ещё раз. Кнопки нет, когда оба названия уже подтверждены.",
+        "В покупке строка называется так, как в чеке, а под ней — польское название товара: «→ Kefir naturalny Activia 280 g».",
+        "Непроверенные названия собраны в «Ревью», в разделе «Названия предложено»: «Верно» — подтвердить, «Изменить» — открыть товар, «Принять все предложенные» — подтвердить все сразу. «Проверять по одной» показывает их по одному с кнопкой «Верно, дальше»."
+      ],
+      see: [
+        "Поиск находит товар и по польскому, и по русскому названию, и по тексту из чека; регистр и польские буквы не важны.",
+        "AI никогда не меняет название, которое вы подтвердили или вписали сами, даже после «Предложить заново».",
+        "Новые товары получают названия сами через несколько секунд после сохранения чека — вместе с категорией."
+      ],
+      trouble: [
+        "«Сейчас не получилось предложить названия» — AI недоступен или запросов было слишком много. Впишите название вручную или попробуйте позже.",
+        "Названия нет — AI не узнал товар по сокращению из чека и не стал угадывать. Впишите название сами.",
+        "Название подтверждено, но неверное — нажмите карандаш и исправьте его.",
+        "«Названия изменились, пока экран был открыт» — AI успел предложить новые. «Верно» подтверждает только то, что вы видели: проверьте новые названия и нажмите ещё раз."
       ]
     },
     "product-scan": {
@@ -426,16 +450,17 @@ export const helpRu: HelpText = {
     },
     "review-queue": {
       title: "Ревью",
-      summary: "Всё, что стоит проверить или сделать, в одном месте: чеки, покупки, товары, категории, штрихкоды и оценки. Так история и аналитика остаются точными.",
+      summary: "Всё, что стоит проверить или сделать, в одном месте: чеки, покупки, товары, названия, категории, штрихкоды и оценки. Так история и аналитика остаются точными.",
       steps: [
         "На «Главной» под кнопками «Чек» и «Сканировать» — карточка «Ревью». Пока что-то ждёт, она с ⚠ и числом; то же число стоит на вкладке «Главная». Когда ждать нечего — «Всё проверено».",
-        "В «Ревью» разделы идут от важного к простому, и видны только те, где что-то есть: «Чеки» (не распознан, ждёт сохранения, сумма не сходится, нет цены), «Покупки» (строки ещё не проверены), «Товары» (тот же товар или новый), «Категории» (предложено AI или без категории), «Штрихкоды» (запомненные на потом) и «Оценить покупки». У каждого раздела — число; в разделе сначала три пункта, остальные — «Показать все».",
+        "В «Ревью» разделы идут от важного к простому, и видны только те, где что-то есть: «Чеки» (не распознан, ждёт сохранения, сумма не сходится, нет цены), «Покупки» (строки ещё не проверены), «Товары» (тот же товар или новый), «Названия предложено» (названия от AI ещё не проверены), «Категории» (предложено AI или без категории), «Штрихкоды» (запомненные на потом) и «Оценить покупки». У каждого раздела — число; в разделе сначала три пункта, остальные — «Показать все».",
         "«Покупки»: «Проверить строки» открывает покупку сразу на первой непроверенной строке — сверьте её с чеком и нажмите «Верно, дальше».",
         "«Товары», «Тот же товар или новый?»: приложение не было уверено, что строка чека — уже знакомый товар, и сделало отдельный товар. Под ним — до трёх похожих. Если это один из них — «Да, это он» и подтвердите «Объединить»: покупки, названия из чеков и теги перейдут в выбранный товар. Если правда другой — «Это другой товар». Если у нового товара нет категории или она только предложена, в том же пункте есть «Выбрать категорию» или «Подтвердить» и «Изменить».",
         "«Категории»: предложенную категорию подтвердите кнопкой «Подтвердить» или нажмите «Изменить». «Принять все предложенные» подтверждает все предложенные категории сразу; несколько секунд можно нажать «Вернуть» во всплывающем сообщении — тогда ничего не изменится. Если за это время свернуть или закрыть приложение, категории примутся сразу.",
+        "«Названия предложено»: польское и русское название, которые предложил AI, и текст из чека. «Верно» — подтвердить оба, «Изменить» — открыть товар и исправить название. «Принять все предложенные» подтверждает названия всех товаров раздела сразу (не больше 100 за раз); как и для категорий, несколько секунд можно нажать «Вернуть».",
         "«Штрихкоды»: коды, которые вы в магазине отложили кнопкой «Запомнить на потом». «Привязать к товару» — найдите товар по названию и выберите его; «Забыть» — убрать код.",
         "«Оценить покупки»: недавние товары, которые вы ещё не оценили, — нажмите 👎, 😐 или 👍.",
-        "«Проверять по одной» в разделах «Товары», «Категории» и «Оценить покупки» показывает пункты по одному, вверху — «12 из 75». Ответьте кнопкой («Верно, дальше» для предложенной категории, «Да, это он», оценка) или нажмите «Пропустить». Смахните влево — следующая карточка, вправо — предыдущая. После последней карточки вы вернётесь в «Ревью».",
+        "«Проверять по одной» в разделах «Товары», «Названия предложено», «Категории» и «Оценить покупки» показывает пункты по одному, вверху — «12 из 75». Ответьте кнопкой («Верно, дальше» для предложенных названий или категории, «Да, это он», оценка) или нажмите «Пропустить». Смахните влево — следующая карточка, вправо — предыдущая. После последней карточки вы вернётесь в «Ревью».",
         "Остальное открывается по кнопке — «Открыть чек», «Исправить», «Выбрать категорию», «Открыть товар» — сразу на нужном месте. «Назад» возвращает на то же место в «Ревью»; если сохранить чек или покупку, открытые отсюда, вы тоже вернётесь сюда с теми же фильтрами.",
         "Чтобы разобрать только часть, нажмите кнопку фильтров вверху справа и выберите «Категория» (например, «Молоко» или «Без категории») и/или «Тег» (например, «Для ребёнка»). «Все категории», «Все теги», «Сбросить» в окне фильтров или «Сбросить фильтр» на экране возвращают всё. Строка «Тег» есть, когда у вас есть хотя бы один тег."
       ],
@@ -798,8 +823,8 @@ export const helpEn: HelpText = {
       title: "Products",
       summary: "One product — one card, even if stores print its name differently. Products appear on their own as you save receipts: every receipt line always gets a product. A product can also be created from the barcode scanner.",
       steps: [
-        "Open “Products” and search by part of the name as printed on the receipt.",
-        "In the list, each product starts with its photo or its category group's icon (dairy, meat and fish, drinks…); under the name are the subcategory, the brand and how often it was bought: “Chocolate & sweets · Wedel · 1 purchase”. A sparkle after the category means AI suggested it and it is not confirmed yet; an orange “Check” — the product needs checking; a grey icon and “no category” — it has no category yet.",
+        "Open “Products” and search by part of the name: Polish, Russian or as printed on the receipt — “kefir”, “кефир” and “KEFI” all find the same kefir.",
+        "In the list, each product starts with its photo or its category group's icon (dairy, meat and fish, drinks…). The large line is the Polish name, as on the shelf; under it are the Russian name, the subcategory, the brand and how often it was bought: “Кефир натуральный Activia, 280 г · Kefir · Activia · 1 purchase”. With no name yet, the receipt text is shown. A sparkle after the name or the category means AI suggested it and it is not confirmed yet; an orange “Check” — the product needs checking; a grey icon and “no category” — it has no category yet.",
         "Open a product card to see prices and purchase history.",
         "When the app is not sure a receipt line is a product you already have, it creates a separate product marked “check”. In “Products” tap “N products to check” (or turn on “Needs checking” in the filter sheet) to see only those.",
         "On such a product's card the “Needs checking” block lists similar products. If it is one of them — “Yes, this one”: after you confirm, the products merge. If it really is different — “It's a different product”: the mark goes away and the product stays as it is.",
@@ -810,13 +835,37 @@ export const helpEn: HelpText = {
         "A “How the price moved” chart and the same table in numbers. Prices per different units (piece, kilogram) are counted separately.",
         "“Receipt spellings” — every spelling of the product by store.",
         "“Latest purchases” — this product's purchases, newest first (only those where the price was read): tap a row to open the purchase. “Back” returns to where you came from, and where possible to the same place on the screen; in very long lists the place may shift. From a scan result, “Back” leads to the camera, not to the result.",
-        "A merge moves every purchase, receipt spelling, tag, impression and the change history to the remaining product; photos, barcodes and “Don't buy again” on this phone move too. The remaining product keeps its person-confirmed category and brand, otherwise the other product's confirmed ones are taken. Totals in “Insights” do not change.",
+        "A merge moves every purchase, receipt spelling, tag, impression and the change history to the remaining product; photos, barcodes and “Don't buy again” on this phone move too. The remaining product keeps its person-confirmed category, brand and names, otherwise the other product's confirmed ones are taken. Totals in “Insights” do not change.",
         "After “Yes, this one” or “Merge”, later receipts with the same spelling go straight to the remaining product."
       ],
       trouble: [
         "If a line price couldn't be read, it is left out of the numbers — a note says so.",
         "A merge cannot be undone. If you merged the wrong ones, create the product again and relink the lines in the purchases with “Change product”.",
         "A new product marked “check” has no category yet, or only one suggested by AI. In “Review” it is still one item, “Same product or a new one?”: with a “Choose category” button, or with “Confirm” and “Change” for the suggested category. Decide about the product (“Yes, this one” or “It's a different product”) and about the category; if you only decide about the product, the category stays as an item of its own."
+      ]
+    },
+    "product-names": {
+      title: "Product names",
+      summary: "A product has two readable names: Polish — as on the shelf and the package — and Russian, its translation. AI suggests them when you save a receipt. The receipt text (“ACTIV KEFI NAT 280”) is kept: you see it on the product card and in the purchase.",
+      steps: [
+        "In “Products”, in search and in the scan result the large line is the Polish name (“Kefir naturalny Activia 280 g”), the Russian one is under it (“Кефир натуральный Activia, 280 г”). When AI is not sure there is no name and the receipt text is shown.",
+        "On the product card, under the name are the Russian name and “On the receipt: …”. The “Names” block shows both names; “suggested” means AI gave the name and nobody has checked it yet.",
+        "The names are right — press “Correct”: every suggested name becomes confirmed.",
+        "To fix one, press the pencil next to it, type your own and press “Save”. Leave it empty to show the receipt text.",
+        "“Suggest again” asks AI once more. The button is gone when both names are confirmed.",
+        "In a purchase the line keeps the receipt's wording, with the product's Polish name under it: “→ Kefir naturalny Activia 280 g”.",
+        "Unchecked names are collected in “Review”, section “Suggested names”: “Correct” confirms them, “Change” opens the product, “Accept all suggested” confirms them all at once. “Check one by one” shows them one at a time with “Right, next”."
+      ],
+      see: [
+        "Search finds a product by its Polish name, its Russian name and the receipt text; case and Polish letters do not matter.",
+        "AI never changes a name you confirmed or typed yourself, not even after “Suggest again”.",
+        "New products get their names on their own a few seconds after the receipt is saved — together with the category."
+      ],
+      trouble: [
+        "“Could not suggest names right now” — AI is unavailable or there were too many requests. Type the name yourself or try later.",
+        "No name — AI did not recognise the product from the receipt abbreviation and did not guess. Type the name yourself.",
+        "A confirmed name is wrong — press the pencil and correct it.",
+        "“The names changed while the screen was open” — AI suggested new ones meanwhile. “Correct” only confirms what you saw: check the new names and press it again."
       ]
     },
     "product-scan": {
@@ -913,16 +962,17 @@ export const helpEn: HelpText = {
     },
     "review-queue": {
       title: "Review",
-      summary: "Everything worth checking or doing in one place: receipts, purchases, products, categories, barcodes and ratings. It keeps history and analytics accurate.",
+      summary: "Everything worth checking or doing in one place: receipts, purchases, products, names, categories, barcodes and ratings. It keeps history and analytics accurate.",
       steps: [
         "On Home, under the “Receipt” and “Scan” buttons, there is the “Review” card. While something is waiting it shows ⚠ and a number; the same number is on the “Home” tab. With nothing waiting it says “All checked”.",
-        "In “Review” the sections go from most to least important, and only those with something in them are shown: “Receipts” (not recognized, waiting to be saved, total does not match, missing price), “Purchases” (lines not checked yet), “Products” (same product or a new one), “Categories” (suggested by AI or none), “Barcodes” (remembered for later) and “Rate purchases”. Each section shows its number; it starts with three items, the rest are under “Show all”.",
+        "In “Review” the sections go from most to least important, and only those with something in them are shown: “Receipts” (not recognized, waiting to be saved, total does not match, missing price), “Purchases” (lines not checked yet), “Products” (same product or a new one), “Suggested names” (AI names nobody checked yet), “Categories” (suggested by AI or none), “Barcodes” (remembered for later) and “Rate purchases”. Each section shows its number; it starts with three items, the rest are under “Show all”.",
         "“Purchases”: “Check lines” opens the purchase right at the first unchecked line — compare it with the receipt and press “Right, next”.",
         "“Products”, “Same product or a new one?”: the app was not sure a receipt line is a product you already have, so it made a separate product. Up to three similar products are shown under it. If it is one of them — “Yes, this one”, then confirm “Merge”: the purchases, receipt spellings and tags move to the chosen product. If it really is different — “It's a different product”. If the new product has no category or only a suggested one, the same item has “Choose category”, or “Confirm” and “Change”.",
         "“Categories”: confirm a suggested category with “Confirm” or press “Change”. “Accept all suggested” confirms every suggested category at once; for a few seconds you can press “Undo” in the message that pops up, and nothing changes. If you switch away from or close the app meanwhile, the categories are accepted right away.",
+        "“Suggested names”: the Polish and Russian names AI suggested, with the receipt text. “Correct” confirms both, “Change” opens the product to fix a name. “Accept all suggested” confirms the names of every product in the section at once (at most 100 at a time); as with categories, for a few seconds you can press “Undo”.",
         "“Barcodes”: codes you put aside in the shop with “Remember for later”. “Link to a product” — find the product by name and pick it; “Forget” removes the code.",
         "“Rate purchases”: recent products you have not rated yet — press 👎, 😐 or 👍.",
-        "“Check one by one” in “Products”, “Categories” and “Rate purchases” shows the items one at a time, with “12 of 75” on top. Answer with a button (“Right, next” for a suggested category, “Yes, this one”, a rating) or press “Skip”. Swipe left for the next card, right for the previous one. After the last card you are back in “Review”.",
+        "“Check one by one” in “Products”, “Suggested names”, “Categories” and “Rate purchases” shows the items one at a time, with “12 of 75” on top. Answer with a button (“Right, next” for suggested names or a suggested category, “Yes, this one”, a rating) or press “Skip”. Swipe left for the next card, right for the previous one. After the last card you are back in “Review”.",
         "Everything else opens with a button — “Open receipt”, “Correct”, “Choose category”, “Open product” — right at the spot. “Back” returns to the same place in “Review”; when you save a receipt or purchase opened from here, you also come back here with the same filters.",
         "To work through just part of it, press the filter button at the top right and pick a “Category” (for example, “Milk” or “No category”) and/or a “Tag” (for example, “For the kids”). “All categories”, “All tags”, “Reset” in the filter sheet or “Reset filter” on the screen bring everything back. The “Tag” row appears once you have at least one tag."
       ],

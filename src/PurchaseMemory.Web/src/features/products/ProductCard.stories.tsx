@@ -201,3 +201,37 @@ export const ReadOnlyTagsDesktopEn: Story = {
   globals: { ...desktop, locale: "en" },
   args: { product: { ...milk, tags: [tags[0]] }, locale: "en-GB" }
 };
+
+/* ---------- human names (stage 1.4, variant 1: Polish on top, Russian under it) ---------- */
+
+const kefir = {
+  ...milk,
+  id: "kefir",
+  name: "ACTIV KEFI NAT 280",
+  normalizedName: "activ kefi nat 280",
+  namePl: "Kefir naturalny Activia 280 g",
+  namePlSource: "confirmed" as const,
+  nameRu: "Кефир натуральный Activia, 280 г",
+  nameRuSource: "suggested" as const,
+  aliases: [{ merchantKey: "biedronka", rawText: "ACTIV KEFI NAT 280" }]
+};
+
+const nameCallbacks = {
+  onSetName: fn(async () => undefined),
+  onConfirmNames: fn(async () => undefined),
+  onSuggestNames: fn(async () => undefined)
+};
+
+/** «Названия»: Polish confirmed, Russian still «предложено»; «Верно» and «Предложить заново». */
+export const WithNamesMobileRu: Story = { globals: phone, args: { product: kefir, ...nameCallbacks } };
+export const WithNamesMobileEn: Story = { globals: { ...phone, locale: "en" }, args: { product: kefir, locale: "en-GB", ...nameCallbacks } };
+/** Both names the person's: no «Верно», no «Предложить заново». */
+export const NamesConfirmedMobileRu: Story = {
+  globals: phone,
+  args: { product: { ...kefir, nameRuSource: "confirmed" as const }, ...nameCallbacks }
+};
+/** The AI was not sure: the title is the receipt text, unmarked. */
+export const NamesMissingMobileRu: Story = {
+  globals: phone,
+  args: { product: { ...kefir, namePl: null, namePlSource: null, nameRu: null, nameRuSource: null }, ...nameCallbacks }
+};
