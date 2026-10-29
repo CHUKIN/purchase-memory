@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { classifyProduct, confirmDistinctProduct, createImpression, getReviewQueue, listCategories, listTags } from "../../api/client";
+import { classifyProduct, confirmDistinctProduct, confirmProductNames, createImpression, getReviewQueue, listCategories, listTags } from "../../api/client";
 import type { ReviewQueue, ReviewQueueItem } from "../../api/types";
 import { AppProviders } from "../../app/AppProviders";
 import { useBackTarget } from "../../app/backNavigation";
@@ -18,7 +18,8 @@ vi.mock("../../api/client", async (importOriginal) => ({
   listTags: vi.fn(),
   listCategories: vi.fn(),
   mergeProduct: vi.fn(),
-  confirmDistinctProduct: vi.fn()
+  confirmDistinctProduct: vi.fn(),
+  confirmProductNames: vi.fn()
 }));
 
 vi.mock("../product-scan/useProductMedia", async (importOriginal) => ({
@@ -130,6 +131,7 @@ describe("«Ревью» hub", () => {
     vi.mocked(classifyProduct).mockReset().mockResolvedValue({} as never);
     vi.mocked(createImpression).mockReset().mockResolvedValue({} as never);
     vi.mocked(confirmDistinctProduct).mockReset().mockResolvedValue({} as never);
+    vi.mocked(confirmProductNames).mockReset().mockResolvedValue({} as never);
     vi.mocked(listTags).mockReset().mockResolvedValue([]);
     vi.mocked(listCategories).mockReset().mockResolvedValue([]);
     vi.mocked(useRememberedBarcodes).mockReset().mockReturnValue({ data: [] } as never);
@@ -328,6 +330,76 @@ describe("«Ревью» hub", () => {
       expect(screen.getByTestId("search")).toHaveTextContent("?cards=ratings");
       await waitFor(() => expect(progress()).toBe("2 из 2"));
       expect(screen.getByRole("heading", { level: 2, name: "SER" })).toBeInTheDocument();
+    });
+  });
+
+  describe("«Названия предложено» (stage 1.4)", () => {
+    const named = (id: string, title: string, namePl: string | null, nameRu: string | null) =>
+      item({ kind: "suggestedNames", id: `suggestedNames:${id}`, title, productId: id, namePl, nameRu, namePlSuggested: namePl !== null, nameRuSuggested: nameRu !== null });
+    const withNames: ReviewQueue = {
+      totalCount: hub.totalCount + 2,
+      groups: [
+        ...hub.groups,
+        {
+          kind: "suggestedNames",
+          totalCount: 2,
+          items: [
+            named("k1", "ACTIV KEFI NAT 280", "Kefir naturalny Activia 280 g", "Кефир натуральный Activia, 280 г"),
+            named("b1", "BANANY", "Banany", null)
+          ]
+        }
+      ],
+      summary: {
+        totalCount: hub.summary!.totalCount + 2,
+        sections: [...hub.summary!.sections, { section: "names", count: 2 }]
+      }
+    };
+
+    it("sits between products and categories and confirms in place or opens the product to change", async () => {
+      vi.mocked(getReviewQueue).mockResolvedValue(withNames);
+      renderHub();
+
+      const names = await screen.findByRole("region", { name: "Названия предложено" });
+      expect(sectionNames()).toEqual(["Чеки", "Покупки", "Товары", "Названия предложено", "Категории", "Оценить покупки"]);
+      const kefir = within(names).getByRole("article", { name: "Kefir naturalny Activia 280 g" });
+      expect(kefir).toHaveTextContent("Кефир натуральный Activia, 280 г · в чеке: ACTIV KEFI NAT 280");
+      expect(within(kefir).getByRole("link", { name: "Изменить: Kefir naturalny Activia 280 g" })).toHaveAttribute("href", "/products/k1");
+
+      fireEvent.click(within(kefir).getByRole("button", { name: "Названия «Kefir naturalny Activia 280 g» верны" }));
+      await waitFor(() => expect(confirmProductNames).toHaveBeenCalledWith("k1", { namePl: "Kefir naturalny Activia 280 g", nameRu: "Кефир натуральный Activia, 280 г" }));
+    });
+
+    it("accepts every suggested name after the toast, sending the names that were shown, and «Вернуть» undoes it", async () => {
+      vi.mocked(getReviewQueue).mockResolvedValue(withNames);
+      renderHub();
+
+      let names = await screen.findByRole("region", { name: "Названия предложено" });
+      fireEvent.click(within(names).getByRole("button", { name: "Принять все предложенные (2)" }));
+      let toast = (await screen.findByText("Принято названий: 2")).closest("[role=status]") as HTMLElement;
+      expect(screen.queryByRole("region", { name: "Названия предложено" })).not.toBeInTheDocument();
+      expect(getReviewQueue).toHaveBeenLastCalledWith(100, { category: undefined, tag: undefined });
+      fireEvent.click(within(toast).getByRole("button", { name: "Вернуть" }));
+      names = await screen.findByRole("region", { name: "Названия предложено" });
+      expect(confirmProductNames).not.toHaveBeenCalled();
+
+      fireEvent.click(within(names).getByRole("button", { name: "Принять все предложенные (2)" }));
+      toast = (await screen.findByText("Принято названий: 2")).closest("[role=status]") as HTMLElement;
+      fireEvent.click(within(toast).getByRole("button", { name: "Закрыть" }));
+      await waitFor(() => expect(confirmProductNames).toHaveBeenCalledTimes(2));
+      expect(confirmProductNames).toHaveBeenCalledWith("k1", { namePl: "Kefir naturalny Activia 280 g", nameRu: "Кефир натуральный Activia, 280 г" });
+      expect(confirmProductNames).toHaveBeenCalledWith("b1", { namePl: "Banany", nameRu: null });
+    });
+
+    it("goes name by name with «Верно, дальше»", async () => {
+      vi.mocked(getReviewQueue).mockResolvedValue(withNames);
+      renderHub("/needs-attention?cards=names");
+
+      await waitFor(() => expect(progress()).toBe("1 из 2"));
+      expect(screen.getByRole("heading", { level: 2, name: "Kefir naturalny Activia 280 g" })).toBeInTheDocument();
+      fireEvent.click(screen.getByRole("button", { name: "Названия «Kefir naturalny Activia 280 g» верны" }));
+      await waitFor(() => expect(progress()).toBe("2 из 2"));
+      expect(confirmProductNames).toHaveBeenCalledWith("k1", { namePl: "Kefir naturalny Activia 280 g", nameRu: "Кефир натуральный Activia, 280 г" });
+      expect(screen.getByRole("heading", { level: 2, name: "Banany" })).toBeInTheDocument();
     });
   });
 });

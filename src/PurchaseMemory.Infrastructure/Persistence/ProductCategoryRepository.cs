@@ -55,7 +55,12 @@ public sealed class ProductCategoryRepository : IProductCategoryRepository
         return _dbContext.Products.FirstOrDefaultAsync(product => product.Id == productId, cancellationToken);
     }
 
-    public async Task<IReadOnlyList<Product>> ListUnclassifiedProductsAsync(
+    public Task<Product?> FindProductSnapshotAsync(Guid productId, CancellationToken cancellationToken)
+    {
+        return _dbContext.Products.AsNoTracking().FirstOrDefaultAsync(product => product.Id == productId, cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<Product>> ListProductsToSuggestAsync(
         IReadOnlyCollection<Guid> productIds,
         CancellationToken cancellationToken)
     {
@@ -64,14 +69,15 @@ public sealed class ProductCategoryRepository : IProductCategoryRepository
         return await _dbContext.Products
             .AsNoTracking()
             .Where(product => identifiers.Contains(product.Id)
-                && product.CategorySource == null
-                && product.CategorizationAttemptedAt == null)
+                && ((product.CategorySource == null && product.CategorizationAttemptedAt == null)
+                    || ((product.NamePlSource == null || product.NameRuSource == null)
+                        && product.NamingAttemptedAt == null)))
             .OrderBy(product => product.CreatedAt)
             .ThenBy(product => product.Id)
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<IReadOnlyList<Product>> ListUnclassifiedProductsAsync(
+    public async Task<IReadOnlyList<Product>> ListProductsToSuggestAsync(
         int maximumProducts,
         bool includeAttempted,
         CancellationToken cancellationToken)
@@ -79,8 +85,10 @@ public sealed class ProductCategoryRepository : IProductCategoryRepository
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(maximumProducts);
         return await _dbContext.Products
             .AsNoTracking()
-            .Where(product => product.CategorySource == null
-                && (includeAttempted || product.CategorizationAttemptedAt == null))
+            .Where(product => (product.CategorySource == null
+                    && (includeAttempted || product.CategorizationAttemptedAt == null))
+                || ((product.NamePlSource == null || product.NameRuSource == null)
+                    && (includeAttempted || product.NamingAttemptedAt == null)))
             .OrderBy(product => product.CreatedAt)
             .ThenBy(product => product.Id)
             .Take(maximumProducts)
@@ -137,6 +145,58 @@ public sealed class ProductCategoryRepository : IProductCategoryRepository
             cancellationToken);
 
         return new SuggestionWrite(categoryWritten, brandWritten);
+    }
+
+    public async Task<NameSuggestionWrite> ApplyNameSuggestionAsync(
+        Guid productId,
+        ProductNameSuggestion names,
+        bool replaceSuggested,
+        DateTimeOffset now,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(names);
+        var products = _dbContext.Products.Where(product => product.Id == productId);
+        var polishWritten = false;
+        var russianWritten = false;
+
+        // Null-safe comparisons are spelled out: «Source != Confirmed» alone is
+        // not true for a NULL source in SQL.
+        if (names.NamePl is { } polish)
+        {
+            polishWritten = await products
+                .Where(product => (product.NamePlSource == null
+                        || (replaceSuggested && product.NamePlSource != ProductAttributeSource.Confirmed))
+                    && (product.NamePl == null || product.NamePl != polish))
+                .ExecuteUpdateAsync(
+                    setters => setters
+                        .SetProperty(product => product.NamePl, polish)
+                        .SetProperty(product => product.NormalizedNamePl, names.NormalizedNamePl)
+                        .SetProperty(product => product.NamePlSource, ProductAttributeSource.Suggested)
+                        .SetProperty(product => product.UpdatedAt, now),
+                    cancellationToken) > 0;
+        }
+
+        if (names.NameRu is { } russian)
+        {
+            russianWritten = await products
+                .Where(product => (product.NameRuSource == null
+                        || (replaceSuggested && product.NameRuSource != ProductAttributeSource.Confirmed))
+                    && (product.NameRu == null || product.NameRu != russian))
+                .ExecuteUpdateAsync(
+                    setters => setters
+                        .SetProperty(product => product.NameRu, russian)
+                        .SetProperty(product => product.NormalizedNameRu, names.NormalizedNameRu)
+                        .SetProperty(product => product.NameRuSource, ProductAttributeSource.Suggested)
+                        .SetProperty(product => product.UpdatedAt, now),
+                    cancellationToken) > 0;
+        }
+
+        // Stamped whatever the model said, like the categorization attempt.
+        await products.ExecuteUpdateAsync(
+            setters => setters.SetProperty(product => product.NamingAttemptedAt, now),
+            cancellationToken);
+
+        return new NameSuggestionWrite(polishWritten, russianWritten);
     }
 
     public void AddAuditEntry(ProductAuditEntry entry)

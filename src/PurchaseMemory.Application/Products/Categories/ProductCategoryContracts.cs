@@ -25,6 +25,34 @@ public interface IProductCategoryService
         ReceiptActor actor,
         CancellationToken cancellationToken);
 
+    /// <summary>
+    /// A person typed (or cleared) the product's human name in one language;
+    /// it becomes confirmed, so the AI never replaces it. An empty name means
+    /// «show the receipt text».
+    /// </summary>
+    /// <exception cref="ProductNotFoundException">No such product.</exception>
+    /// <exception cref="ArgumentException">The name is too long.</exception>
+    Task<ProductNamesView> SetProductNameAsync(
+        Guid productId,
+        ProductNameLanguage language,
+        string? name,
+        ReceiptActor actor,
+        CancellationToken cancellationToken);
+
+    /// <summary>
+    /// «Верно»: confirms every suggested name as it is. Nothing suggested —
+    /// nothing changes. With <paramref name="shown"/> (the names the person
+    /// looked at) it confirms only if the product still has exactly those, so
+    /// a name re-suggested meanwhile is never confirmed unseen.
+    /// </summary>
+    /// <exception cref="ProductNotFoundException">No such product.</exception>
+    /// <exception cref="ProductCategoryConflictException">The names changed since they were shown.</exception>
+    Task<ProductNamesView> ConfirmSuggestedNamesAsync(
+        Guid productId,
+        ShownProductNames? shown,
+        ReceiptActor actor,
+        CancellationToken cancellationToken);
+
     Task<IReadOnlyList<ProductAuditEntryView>> GetAuditTrailAsync(Guid productId, CancellationToken cancellationToken);
 }
 
@@ -38,6 +66,9 @@ public sealed record ClassifyProductCommand(
     Guid? CategoryId,
     bool SetBrand,
     string? Brand);
+
+/// <summary>The names a person saw when pressing «Верно»; <c>null</c> is «no name shown».</summary>
+public sealed record ShownProductNames(string? NamePl, string? NameRu);
 
 public sealed record ProductCategoryView(
     Guid Id,

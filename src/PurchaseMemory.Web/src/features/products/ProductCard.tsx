@@ -2,7 +2,7 @@ import { IonItem, IonLabel, IonList, IonNote } from "@ionic/react";
 import { Receipt } from "lucide-react";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import type { ProductCategory, ProductDetail, ProductPricePoint, ProductPriceSeries, ProductTag, TagSuggestionsResponse, TagSummary } from "../../api/types";
+import type { ProductCategory, ProductDetail, ProductNameLanguage, ProductPricePoint, ProductPriceSeries, ProductTag, TagSuggestionsResponse, TagSummary } from "../../api/types";
 import { EmptyState, Footnote, ItemLink, Notice, Page, SectionHeader, type BackTarget } from "../../design-system/components";
 import { CategoryChip } from "../categories/CategoryChip";
 import { categoryPath } from "../categories/categoryText";
@@ -14,6 +14,8 @@ import { TagChips } from "../tags/TagChips";
 import { PriceHistoryChart } from "./PriceHistoryChart";
 import { formatDate, formatMoney, unitName, unitShortName } from "./productText";
 import { MergeWithSection, ProductReviewBanner, type ProductReviewActions } from "./ProductReviewSection";
+import { displayName, russianName } from "./productNameText";
+import { ProductNames } from "./ProductNames";
 import { ReviewFlagChip } from "./ReviewFlagChip";
 
 export interface ProductCardProps {
@@ -47,6 +49,12 @@ export interface ProductCardProps {
    * and «Объединить с…». Without it a flagged product only shows its mark.
    */
   reviewActions?: ProductReviewActions;
+  /** Saves one human name (Polish or Russian) as the person's; with `onConfirmNames` it enables «Названия». */
+  onSetName?: (language: ProductNameLanguage, name: string) => Promise<unknown>;
+  /** «Верно» for the suggested names. */
+  onConfirmNames?: () => Promise<unknown>;
+  /** «Предложить заново» (a paid AI call); hidden without it. */
+  onSuggestNames?: () => Promise<unknown>;
   /** More sections at the end, e.g. impressions. */
   children?: ReactNode;
 }
@@ -54,7 +62,9 @@ export interface ProductCardProps {
 /**
  * The page the whole product was built for: what this thing cost last time, and
  * how that price has moved. Then its category, brand and tags, and the lists
- * they lead to.
+ * they lead to. On top, its Polish name large, the Russian one under it and
+ * the receipt text («В чеке: …»); the names themselves can be edited in
+ * «Названия».
  *
  * The leading series is the unit the product is most often bought in. Any other
  * unit is shown below it, never folded into the same average — see
@@ -74,6 +84,9 @@ export function ProductCard({
   tagsFailed = false,
   media,
   reviewActions,
+  onSetName,
+  onConfirmNames,
+  onSuggestNames,
   children
 }: ProductCardProps) {
   const { t } = useTranslation();
@@ -96,9 +109,22 @@ export function ProductCard({
   ];
 
   return (
-    <Page title={product.name} back={back} end={<HelpLink topic="products" />}>
+    <Page title={displayName(product)} back={back} end={<HelpLink topic="products" />}>
+      <ProductNamesHead product={product} />
       {/* First on the screen: the open question comes before photos and barcodes. */}
       {reviewActions && <ProductReviewBanner product={product} categories={categories} actions={reviewActions} />}
+      {onSetName && onConfirmNames && (
+        <ProductNames
+          namePl={product.namePl ?? null}
+          namePlSource={product.namePlSource ?? null}
+          nameRu={product.nameRu ?? null}
+          nameRuSource={product.nameRuSource ?? null}
+          onSave={onSetName}
+          onConfirm={onConfirmNames}
+          onSuggest={onSuggestNames}
+          help={<HelpLink topic="product-names" />}
+        />
+      )}
       {/* Shopping trips, not receipt lines — the same number the frequency block counts by. */}
       {media
         ? media(t("products.purchaseCount", { count: product.purchaseCount }))
@@ -219,6 +245,27 @@ export function ProductCard({
 
       {children}
     </Page>
+  );
+}
+
+/**
+ * Under the large Polish name: the Russian one, then the receipt text. With no
+ * Polish name the title already is the receipt text, so it is not repeated.
+ */
+function ProductNamesHead({ product }: { product: ProductDetail }) {
+  const { t } = useTranslation();
+  const russian = russianName(product);
+  const hasHumanName = displayName(product) !== product.name;
+  if (!russian && !hasHumanName) return null;
+  return (
+    <div className="pm-product-names-head">
+      {russian && <p className="pm-product-name-ru" lang="ru">{russian}</p>}
+      {hasHumanName && (
+        <p className="pm-product-name-raw">
+          {t("products.names.inReceipt")} <span className="pm-receipt-text">{product.name}</span>
+        </p>
+      )}
+    </div>
   );
 }
 

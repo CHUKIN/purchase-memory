@@ -122,7 +122,7 @@ public sealed class ReviewHubTests
 
         var summary = queue.GetProperty("summary");
         var sections = summary.GetProperty("sections").EnumerateArray().ToList();
-        Assert.Equal(["receipts", "purchases", "products", "categories", "ratings"], sections.Select(section => section.GetProperty("section").GetString()));
+        Assert.Equal(["receipts", "purchases", "products", "names", "categories", "ratings"], sections.Select(section => section.GetProperty("section").GetString()));
         Assert.Equal(sections.Sum(section => section.GetProperty("count").GetInt32()), summary.GetProperty("totalCount").GetInt32());
         Assert.Equal(1, Section(queue, "receipts"));
         Assert.Equal(2, Section(queue, "purchases"));

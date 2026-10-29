@@ -77,7 +77,9 @@ public sealed record PurchaseDetailItemView(
     DateTimeOffset? ApprovedAt = null,
     string? ApprovedByEmail = null,
     IReadOnlyList<TextPolygon>? TextPolygons = null,
-    ReceiptBoxSource BoxSource = ReceiptBoxSource.Recognition);
+    ReceiptBoxSource BoxSource = ReceiptBoxSource.Recognition,
+    // The linked product's human Polish name, shown under the receipt text as «→ …».
+    string? ProductNamePl = null);
 
 public sealed record PurchaseDetailView(
     Guid PurchaseId,
@@ -411,6 +413,7 @@ public sealed class PurchaseEditService(
         var items = draft.Items.OrderBy(item => item.Position).ToList();
         var linkedIds = items.Where(item => item.ProductId is not null).Select(item => item.ProductId!.Value).ToHashSet();
         var names = await catalog.GetProductNamesAsync(linkedIds, cancellationToken);
+        var displayNames = await catalog.GetProductDisplayNamesAsync(linkedIds, cancellationToken);
         var flagged = await catalog.ListProductsNeedingReviewAsync(linkedIds, cancellationToken);
 
         // Photo regions live on the receipt snapshot; positions line up because
@@ -440,7 +443,8 @@ public sealed class PurchaseEditService(
                 item.ApprovedAt,
                 item.ApprovedByEmail,
                 regions.GetValueOrDefault(item.Position) is { TextPolygons.Count: > 0 } region ? region.TextPolygons : null,
-                regions.GetValueOrDefault(item.Position)?.BoxSource ?? ReceiptBoxSource.Recognition))
+                regions.GetValueOrDefault(item.Position)?.BoxSource ?? ReceiptBoxSource.Recognition,
+                item.ProductId is { } namedId && displayNames.TryGetValue(namedId, out var displayName) ? displayName.NamePl : null))
             .ToList();
 
         return new PurchaseDetailView(

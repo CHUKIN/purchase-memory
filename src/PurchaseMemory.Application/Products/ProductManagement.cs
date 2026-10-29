@@ -174,9 +174,9 @@ public sealed partial class ProductManagementService(
         await repository.SaveChangesAsync(cancellationToken);
         ProductCreated(product.Id, command.Origin);
 
-        // Like a product born from a receipt, it gets a suggested category in
-        // the background unless the person already chose one.
-        if (product.CategorySource is null || product.BrandSource is null)
+        // Like a product born from a receipt, it gets a suggested category and
+        // human names in the background (the person never typed those here).
+        if (product.CategorySource is null || product.NamePlSource is null || product.NameRuSource is null)
         {
             categorization.Enqueue([product.Id]);
         }
@@ -269,6 +269,21 @@ public sealed partial class ProductManagementService(
             {
                 Audit(target.Id, actor, ProductAuditEntry.BrandField, oldBrand,
                     ProductCategoryService.DescribeBrand(target.Brand, target.BrandSource), now);
+            }
+
+            var oldPolish = ProductCategoryService.DescribeName(target.NamePl, target.NamePlSource);
+            var oldRussian = ProductCategoryService.DescribeName(target.NameRu, target.NameRuSource);
+            var (polishChanged, russianChanged) = target.AbsorbNamesFrom(source, now);
+            if (polishChanged)
+            {
+                Audit(target.Id, actor, ProductAuditEntry.NamePlField, oldPolish,
+                    ProductCategoryService.DescribeName(target.NamePl, target.NamePlSource), now);
+            }
+
+            if (russianChanged)
+            {
+                Audit(target.Id, actor, ProductAuditEntry.NameRuField, oldRussian,
+                    ProductCategoryService.DescribeName(target.NameRu, target.NameRuSource), now);
             }
 
             Audit(target.Id, actor, ProductAuditEntry.MergeField, Describe(source), Describe(target), now);

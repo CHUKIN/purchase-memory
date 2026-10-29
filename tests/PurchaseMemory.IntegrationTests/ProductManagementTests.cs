@@ -290,10 +290,14 @@ public sealed class ProductManagementTests
         // The worker may still hold the merged-away id from the save that queued it.
         await using var scope = services.CreateAsyncScope();
         var repository = scope.ServiceProvider.GetRequiredService<IProductCategoryRepository>();
-        Assert.Empty(await repository.ListUnclassifiedProductsAsync([source.Id], Cancel));
+        Assert.Empty(await repository.ListProductsToSuggestAsync([source.Id], Cancel));
         var written = await repository.ApplySuggestionAsync(source.Id, Milk, "Brand", "brand", July1, Cancel);
         Assert.False(written.CategoryWritten);
         Assert.False(written.BrandWritten);
+        var named = await repository.ApplyNameSuggestionAsync(
+            source.Id, ProductNameSuggestion.From("Kakao", "Какао"), replaceSuggested: true, July1, Cancel);
+        Assert.False(named.PolishWritten);
+        Assert.False(named.RussianWritten);
         await repository.SaveChangesAsync(Cancel);
     }
 
@@ -558,11 +562,17 @@ public sealed class ProductManagementTests
         public Task<Product?> FindProductForUpdateAsync(Guid productId, CancellationToken cancellationToken) =>
             inner.FindProductForUpdateAsync(productId, cancellationToken);
 
-        public Task<IReadOnlyList<Product>> ListUnclassifiedProductsAsync(IReadOnlyCollection<Guid> productIds, CancellationToken cancellationToken) =>
-            inner.ListUnclassifiedProductsAsync(productIds, cancellationToken);
+        public Task<Product?> FindProductSnapshotAsync(Guid productId, CancellationToken cancellationToken) =>
+            inner.FindProductSnapshotAsync(productId, cancellationToken);
 
-        public Task<IReadOnlyList<Product>> ListUnclassifiedProductsAsync(int maximumProducts, bool includeAttempted, CancellationToken cancellationToken) =>
-            inner.ListUnclassifiedProductsAsync(maximumProducts, includeAttempted, cancellationToken);
+        public Task<IReadOnlyList<Product>> ListProductsToSuggestAsync(IReadOnlyCollection<Guid> productIds, CancellationToken cancellationToken) =>
+            inner.ListProductsToSuggestAsync(productIds, cancellationToken);
+
+        public Task<IReadOnlyList<Product>> ListProductsToSuggestAsync(int maximumProducts, bool includeAttempted, CancellationToken cancellationToken) =>
+            inner.ListProductsToSuggestAsync(maximumProducts, includeAttempted, cancellationToken);
+
+        public Task<NameSuggestionWrite> ApplyNameSuggestionAsync(Guid productId, ProductNameSuggestion names, bool replaceSuggested, DateTimeOffset now, CancellationToken cancellationToken) =>
+            inner.ApplyNameSuggestionAsync(productId, names, replaceSuggested, now, cancellationToken);
 
         public Task<SuggestionWrite> ApplySuggestionAsync(Guid productId, Guid? categoryId, string? brand, string? normalizedBrand, DateTimeOffset now, CancellationToken cancellationToken) =>
             inner.ApplySuggestionAsync(productId, categoryId, brand, normalizedBrand, now, cancellationToken);

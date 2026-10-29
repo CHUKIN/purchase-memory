@@ -13,6 +13,9 @@ public sealed class Product
     public const int MaximumNameLength = 500;
     public const int MaximumBrandLength = 100;
 
+    /// <summary>Longest human name (Polish or Russian); longer suggestions are cut.</summary>
+    public const int MaximumDisplayNameLength = 200;
+
     private Product()
     {
         // Required by Entity Framework Core.
@@ -58,6 +61,37 @@ public sealed class Product
     public string? NormalizedBrand { get; private set; }
 
     public ProductAttributeSource? BrandSource { get; private set; }
+
+    /// <summary>
+    /// Human Polish name («Kefir naturalny Activia 280 g»), as on the shelf.
+    /// <c>null</c> when nobody has given one; the UI then shows
+    /// <see cref="CanonicalName"/>, the receipt text, which stays unchanged.
+    /// </summary>
+    public string? NamePl { get; private set; }
+
+    /// <summary><c>ProductNameNormalizer</c> key of <see cref="NamePl"/> for search.</summary>
+    public string? NormalizedNamePl { get; private set; }
+
+    /// <summary>
+    /// <c>null</c> while nobody decided; a confirmed <c>null</c> name is a
+    /// deliberate «just show the receipt text» that the AI leaves alone.
+    /// </summary>
+    public ProductAttributeSource? NamePlSource { get; private set; }
+
+    /// <summary>Russian translation of the Polish name («Кефир натуральный Activia, 280 г»).</summary>
+    public string? NameRu { get; private set; }
+
+    /// <summary><c>ProductNameNormalizer</c> key of <see cref="NameRu"/> for search.</summary>
+    public string? NormalizedNameRu { get; private set; }
+
+    public ProductAttributeSource? NameRuSource { get; private set; }
+
+    /// <summary>
+    /// When the model last answered about this product's names, whatever it
+    /// said. Like <see cref="CategorizationAttemptedAt"/>, it keeps a product
+    /// the model could not name from being paid for again on every backfill.
+    /// </summary>
+    public DateTimeOffset? NamingAttemptedAt { get; private set; }
 
     /// <summary>
     /// When the categorizer last answered for this product, whatever it said.
@@ -170,6 +204,45 @@ public sealed class Product
         return (categoryChanged, brandChanged);
     }
 
+    /// <summary>
+    /// Takes over the merged-away product's confirmed human names, each
+    /// language on its own, unless this product's name is confirmed already.
+    /// Returns which names changed.
+    /// </summary>
+    public (bool PolishChanged, bool RussianChanged) AbsorbNamesFrom(Product source, DateTimeOffset updatedAt)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        if (source.Id == Id)
+        {
+            throw new ArgumentException("A product cannot absorb itself.", nameof(source));
+        }
+
+        var polish = false;
+        if (NamePlSource != ProductAttributeSource.Confirmed && source.NamePlSource == ProductAttributeSource.Confirmed)
+        {
+            polish = NamePl != source.NamePl || NamePlSource != source.NamePlSource;
+            NamePl = source.NamePl;
+            NormalizedNamePl = source.NormalizedNamePl;
+            NamePlSource = ProductAttributeSource.Confirmed;
+        }
+
+        var russian = false;
+        if (NameRuSource != ProductAttributeSource.Confirmed && source.NameRuSource == ProductAttributeSource.Confirmed)
+        {
+            russian = NameRu != source.NameRu || NameRuSource != source.NameRuSource;
+            NameRu = source.NameRu;
+            NormalizedNameRu = source.NormalizedNameRu;
+            NameRuSource = ProductAttributeSource.Confirmed;
+        }
+
+        if (polish || russian)
+        {
+            UpdatedAt = updatedAt;
+        }
+
+        return (polish, russian);
+    }
+
     public void Rename(string canonicalName, string normalizedName, DateTimeOffset updatedAt)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(canonicalName);
@@ -235,6 +308,68 @@ public sealed class Product
     }
 
     /// <summary>
+    /// A person set, corrected or cleared one human name. An empty name is a
+    /// confirmed «no name»: the receipt text is shown and the AI stays away.
+    /// </summary>
+    public void ConfirmName(ProductNameLanguage language, string? name, string? normalizedName, DateTimeOffset updatedAt)
+    {
+        var clean = CleanDisplayName(name);
+        var normalized = clean is null ? null : LimitDisplayName(normalizedName);
+        switch (language)
+        {
+            case ProductNameLanguage.Polish:
+                NamePl = clean;
+                NormalizedNamePl = normalized;
+                NamePlSource = ProductAttributeSource.Confirmed;
+                break;
+            case ProductNameLanguage.Russian:
+                NameRu = clean;
+                NormalizedNameRu = normalized;
+                NameRuSource = ProductAttributeSource.Confirmed;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(language), language, "Unknown name language.");
+        }
+
+        UpdatedAt = updatedAt;
+    }
+
+    /// <summary>
+    /// «Верно»: every suggested name that has a value becomes confirmed as is.
+    /// Returns the languages that changed.
+    /// </summary>
+    public IReadOnlyList<ProductNameLanguage> ConfirmSuggestedNames(DateTimeOffset updatedAt)
+    {
+        var confirmed = new List<ProductNameLanguage>(2);
+        if (NamePlSource == ProductAttributeSource.Suggested && NamePl is not null)
+        {
+            NamePlSource = ProductAttributeSource.Confirmed;
+            confirmed.Add(ProductNameLanguage.Polish);
+        }
+
+        if (NameRuSource == ProductAttributeSource.Suggested && NameRu is not null)
+        {
+            NameRuSource = ProductAttributeSource.Confirmed;
+            confirmed.Add(ProductNameLanguage.Russian);
+        }
+
+        if (confirmed.Count > 0)
+        {
+            UpdatedAt = updatedAt;
+        }
+
+        return confirmed;
+    }
+
+    /// <summary>The name in <paramref name="language"/> and who decided it.</summary>
+    public (string? Name, ProductAttributeSource? Source) NameIn(ProductNameLanguage language) => language switch
+    {
+        ProductNameLanguage.Polish => (NamePl, NamePlSource),
+        ProductNameLanguage.Russian => (NameRu, NameRuSource),
+        _ => throw new ArgumentOutOfRangeException(nameof(language), language, "Unknown name language.")
+    };
+
+    /// <summary>
     /// The product's category was deleted. It moves to the parent category and
     /// keeps its source, because «this is dairy» is still what the person meant.
     /// With no parent it becomes uncategorized and eligible for a new
@@ -261,6 +396,28 @@ public sealed class Product
 
         var trimmed = string.Join(' ', brand.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
         return trimmed.Length <= MaximumBrandLength ? trimmed : trimmed[..MaximumBrandLength];
+    }
+
+    /// <summary>Trimmed, whitespace-collapsed and length-limited human name, or <c>null</c>.</summary>
+    public static string? CleanDisplayName(string? name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return null;
+        }
+
+        var trimmed = string.Join(' ', name.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
+        return trimmed.Length <= MaximumDisplayNameLength ? trimmed : trimmed[..MaximumDisplayNameLength].TrimEnd();
+    }
+
+    public static string? LimitDisplayName(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return null;
+        }
+
+        return value.Length <= MaximumDisplayNameLength ? value : value[..MaximumDisplayNameLength];
     }
 
     public static string? LimitBrand(string? value)

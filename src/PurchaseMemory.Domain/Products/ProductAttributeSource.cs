@@ -1,7 +1,7 @@
 namespace PurchaseMemory.Domain.Products;
 
 /// <summary>
-/// Who decided a product's category or brand. A human decision is
+/// Who decided a product's category, brand or human name (Polish / Russian). A human decision is
 /// authoritative: automatic suggestions never replace a confirmed value.
 /// </summary>
 public enum ProductAttributeSource

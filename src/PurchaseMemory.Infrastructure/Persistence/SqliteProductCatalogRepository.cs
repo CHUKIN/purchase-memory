@@ -99,9 +99,12 @@ public sealed class SqliteProductCatalogRepository : IProductCatalogRepository
             // Matching the stored normalized form keeps search independent of the
             // SQLite collation, exactly like the purchase feed does. Aliases are
             // searched too: the owner remembers «SER GOUDA PLAST.» from the till,
-            // not the canonical name the catalog happened to settle on.
+            // not the canonical name the catalog happened to settle on. So are
+            // the human names, so «kefir» and «кефир» find «ACTIV KEFI NAT 280».
             products = products.Where(product =>
                 product.NormalizedName.Contains(normalizedQuery)
+                || (product.NormalizedNamePl != null && product.NormalizedNamePl.Contains(normalizedQuery))
+                || (product.NormalizedNameRu != null && product.NormalizedNameRu.Contains(normalizedQuery))
                 || _dbContext.ProductAliases.Any(alias =>
                     alias.ProductId == product.Id
                     && alias.NormalizedText.Contains(normalizedQuery)));
@@ -110,7 +113,8 @@ public sealed class SqliteProductCatalogRepository : IProductCatalogRepository
         var totalCount = await products.CountAsync(cancellationToken);
 
         var pageItems = await products
-            .OrderBy(product => product.NormalizedName)
+            // Sorted by what the list shows: the Polish name, else the receipt text.
+            .OrderBy(product => product.NormalizedNamePl ?? product.NormalizedName)
             .ThenBy(product => product.Id)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
@@ -126,6 +130,10 @@ public sealed class SqliteProductCatalogRepository : IProductCatalogRepository
                 product.Brand,
                 product.NeedsReview,
                 product.Origin,
+                product.NamePl,
+                product.NamePlSource,
+                product.NameRu,
+                product.NameRuSource,
                 PurchaseCount = _dbContext.PurchaseDrafts
                     .Count(draft => draft.Items.Any(item => item.ProductId == product.Id)),
                 LinkedItemCount = _dbContext.Set<PurchaseItem>().Count(item => item.ProductId == product.Id),
@@ -148,7 +156,8 @@ public sealed class SqliteProductCatalogRepository : IProductCatalogRepository
                     row.CategorySource,
                     row.Brand,
                     NeedsReview: row.NeedsReview,
-                    Origin: row.Origin))
+                    Origin: row.Origin,
+                    Names: new ProductDisplayNames(row.NamePl, row.NamePlSource, row.NameRu, row.NameRuSource)))
                 .ToList(),
             page,
             pageSize,
@@ -233,6 +242,27 @@ public sealed class SqliteProductCatalogRepository : IProductCatalogRepository
         return _dbContext.ProductAliases.FirstOrDefaultAsync(
             alias => alias.MerchantKey == merchantKey && alias.NormalizedText == normalizedText,
             cancellationToken);
+    }
+
+    public async Task<IReadOnlyDictionary<Guid, ProductDisplayNames>> GetProductDisplayNamesAsync(
+        IReadOnlyCollection<Guid> productIds,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(productIds);
+        if (productIds.Count == 0)
+        {
+            return new Dictionary<Guid, ProductDisplayNames>();
+        }
+
+        var identifiers = productIds.Distinct().ToList();
+        var rows = await _dbContext.Products
+            .AsNoTracking()
+            .Where(product => identifiers.Contains(product.Id))
+            .Select(product => new { product.Id, product.NamePl, product.NamePlSource, product.NameRu, product.NameRuSource })
+            .ToListAsync(cancellationToken);
+        return rows.ToDictionary(
+            row => row.Id,
+            row => new ProductDisplayNames(row.NamePl, row.NamePlSource, row.NameRu, row.NameRuSource));
     }
 
     public async Task<IReadOnlyDictionary<Guid, string>> GetProductNamesAsync(

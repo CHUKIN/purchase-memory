@@ -13,6 +13,12 @@ public sealed class ProductAuditEntry
     public const string TagsField = "tags";
     public const string NameField = "name";
 
+    /// <summary>The human Polish name (<see cref="Product.NamePl"/>), not the receipt text.</summary>
+    public const string NamePlField = "namePl";
+
+    /// <summary>The human Russian name (<see cref="Product.NameRu"/>).</summary>
+    public const string NameRuField = "nameRu";
+
     /// <summary>The «проверить» flag was raised or cleared.</summary>
     public const string ReviewField = "review";
 

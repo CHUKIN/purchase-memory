@@ -16,6 +16,7 @@ import { AvoidBanner } from "./ProductMediaSection";
 import { ProductThumb } from "./ProductPhoto";
 import { useLinkBarcode, useProductMedia, useRememberBarcode, useRememberedBarcode } from "./useProductMedia";
 import "./productScan.css";
+import { displayName, russianName } from "../products/productNameText";
 
 /* ---------- a known barcode ---------- */
 
@@ -55,7 +56,8 @@ export function FoundResult({ productId, code, locale, onOpenProduct, onScanAgai
       <div className="pm-scan-found-head">
         <ProductThumb productId={productId} slot="" />
         <div>
-          <h3>{detail.name}</h3>
+          <h3>{displayName(detail)}</h3>
+          {russianName(detail) && <p className="pm-product-name-ru" lang="ru">{russianName(detail)}</p>}
           <p>{[detail.brand, formatBarcode(code)].filter(Boolean).join(" · ")}</p>
         </div>
       </div>
@@ -251,11 +253,11 @@ export function NotFoundResult({ code, locale, onLinked, onScanAgain }: {
             >
               <ProductThumbOrIcon productId={product.id} />
               <IonLabel className="pm-wrap">
-                <h3>{product.name}</h3>
-                <p>{[product.brand, t("products.purchaseCount", { count: product.purchaseCount })].filter(Boolean).join(" · ")}</p>
+                <h3>{displayName(product)}</h3>
+                <p>{[russianName(product), product.brand, t("products.purchaseCount", { count: product.purchaseCount })].filter(Boolean).join(" · ")}</p>
               </IonLabel>
               <span slot="end" className="pm-primary-text" aria-hidden="true">{t("productScan.link")}</span>
-              <span className="visually-hidden">{t("productScan.linkTo", { name: product.name })}</span>
+              <span className="visually-hidden">{t("productScan.linkTo", { name: displayName(product) })}</span>
             </IonItem>
           ))}
         </IonList>

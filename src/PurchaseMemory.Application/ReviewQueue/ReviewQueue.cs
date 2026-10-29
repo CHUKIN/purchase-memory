@@ -59,7 +59,14 @@ public enum ReviewQueueItemKind
     /// A recent line the viewer has not rated yet (the same list as «Оценить
     /// недавнее»). Personal: every person sees their own. Only in the hub.
     /// </summary>
-    UnratedPurchase
+    UnratedPurchase,
+
+    /// <summary>
+    /// The AI suggested a human name (Polish and/or Russian) and nobody has
+    /// confirmed it yet. Never for a flagged product: settling the flag comes
+    /// first. Only in the hub.
+    /// </summary>
+    SuggestedNames
 }
 
 /// <summary>
@@ -71,6 +78,7 @@ public enum ReviewQueueSection
     Receipts,
     Purchases,
     Products,
+    Names,
     Categories,
     Ratings
 }
@@ -91,6 +99,7 @@ public sealed record ReviewQueueSummary(int TotalCount, IReadOnlyList<ReviewQueu
             or ReviewQueueItemKind.TotalMismatch or ReviewQueueItemKind.MissingPrice => ReviewQueueSection.Receipts,
         ReviewQueueItemKind.UnapprovedLines => ReviewQueueSection.Purchases,
         ReviewQueueItemKind.ProductNeedsReview => ReviewQueueSection.Products,
+        ReviewQueueItemKind.SuggestedNames => ReviewQueueSection.Names,
         ReviewQueueItemKind.SuggestedCategory or ReviewQueueItemKind.MissingCategory => ReviewQueueSection.Categories,
         ReviewQueueItemKind.UnratedPurchase => ReviewQueueSection.Ratings,
         _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
@@ -139,7 +148,13 @@ public sealed record ReviewQueueItem(
     // Unrated line only: the line to rate, where and for how much it was bought.
     Guid? PurchaseItemId = null,
     string? MerchantName = null,
-    decimal? Price = null);
+    decimal? Price = null,
+    // Product kinds: the product's human names (null: show Title, the receipt text).
+    string? NamePl = null,
+    string? NameRu = null,
+    // Suggested names only: which of the two are still suggestions.
+    bool NamePlSuggested = false,
+    bool NameRuSuggested = false);
 
 /// <summary>An existing product a flagged product might really be.</summary>
 public sealed record ReviewQueueCandidate(
@@ -208,13 +223,26 @@ public sealed record ReviewProductFact(
     Guid? CategoryId,
     string? CategoryName,
     Domain.Products.ProductAttributeSource? CategorySource,
+    DateTimeOffset UpdatedAt,
+    string? NamePl = null,
+    string? NameRu = null);
+
+/// <summary>A product with at least one AI-suggested human name nobody has confirmed.</summary>
+public sealed record ReviewNamedProductFact(
+    Guid Id,
+    string Name,
+    string? NamePl,
+    Domain.Products.ProductAttributeSource? NamePlSource,
+    string? NameRu,
+    Domain.Products.ProductAttributeSource? NameRuSource,
     DateTimeOffset UpdatedAt);
 
 public sealed record ReviewQueueFacts(
     IReadOnlyList<ReviewReceiptFact> Receipts,
     IReadOnlyList<ReviewPurchaseFact> Purchases,
     IReadOnlyList<ReviewFlaggedProductFact> FlaggedProducts,
-    IReadOnlyList<ReviewProductFact> Products);
+    IReadOnlyList<ReviewProductFact> Products,
+    IReadOnlyList<ReviewNamedProductFact>? SuggestedNames = null);
 
 public interface IReviewQueueRepository
 {
@@ -398,7 +426,8 @@ public sealed class ReviewQueueService(
         item.Kind switch
         {
             ReviewQueueItemKind.SuggestedCategory or ReviewQueueItemKind.MissingCategory
-                or ReviewQueueItemKind.ProductNeedsReview or ReviewQueueItemKind.UnratedPurchase =>
+                or ReviewQueueItemKind.ProductNeedsReview or ReviewQueueItemKind.UnratedPurchase
+                or ReviewQueueItemKind.SuggestedNames =>
                 item.ProductId is { } productId && matchingProducts.Contains(productId),
             ReviewQueueItemKind.TotalMismatch or ReviewQueueItemKind.MissingPrice or ReviewQueueItemKind.UnapprovedLines =>
                 item.PurchaseId is { } purchaseId && matchingPurchases.Contains(purchaseId),
@@ -498,7 +527,9 @@ public sealed class ReviewQueueService(
                     product.UpdatedAt,
                     ProductId: product.Id,
                     CategoryId: product.CategoryId,
-                    CategoryName: product.CategoryName));
+                    CategoryName: product.CategoryName,
+                    NamePl: product.NamePl,
+                    NameRu: product.NameRu));
             }
             else if (IsMissingCategory(product))
             {
@@ -507,7 +538,9 @@ public sealed class ReviewQueueService(
                     Key(ReviewQueueItemKind.MissingCategory, product.Id),
                     product.Name,
                     product.UpdatedAt,
-                    ProductId: product.Id));
+                    ProductId: product.Id,
+                    NamePl: product.NamePl,
+                    NameRu: product.NameRu));
             }
         }
 
@@ -542,6 +575,29 @@ public sealed class ReviewQueueService(
                 AffectedLineCount: unapproved.Count,
                 ItemPosition: unapproved[0],
                 LineCount: purchase.Items.Count);
+        }
+
+        // A flagged product may still be merged away; its names wait until then.
+        var flaggedIds = facts.FlaggedProducts.Select(product => product.Id).ToHashSet();
+        foreach (var product in facts.SuggestedNames ?? [])
+        {
+            var polish = product.NamePlSource == Domain.Products.ProductAttributeSource.Suggested && product.NamePl is not null;
+            var russian = product.NameRuSource == Domain.Products.ProductAttributeSource.Suggested && product.NameRu is not null;
+            if (flaggedIds.Contains(product.Id) || !(polish || russian))
+            {
+                continue;
+            }
+
+            yield return new ReviewQueueItem(
+                ReviewQueueItemKind.SuggestedNames,
+                Key(ReviewQueueItemKind.SuggestedNames, product.Id),
+                product.Name,
+                product.UpdatedAt,
+                ProductId: product.Id,
+                NamePl: product.NamePl,
+                NameRu: product.NameRu,
+                NamePlSuggested: polish,
+                NameRuSuggested: russian);
         }
 
         foreach (var line in unrated)

@@ -5,24 +5,29 @@ import { useLocation, useNavigate, useParams } from "react-router";
 import {
   ApiError,
   classifyProduct,
+  confirmProductNames,
   createTag,
   getProduct,
   listCategories,
   listTags,
+  setProductName,
   setProductTags,
+  suggestProductNames,
   suggestProductTags,
   type ClassifyProductRequest
 } from "../../api/client";
-import type { ProductDetail } from "../../api/types";
+import type { ProductDetail, ProductNameLanguage } from "../../api/types";
 import { ButtonLink, EmptyState, LoadingList, Notice, Page } from "../../design-system/components";
 import { brandsQueryKey, categoriesQueryKey } from "../categories/categoryQueries";
 import { ProductImpressionsSection } from "../impressions/ImpressionSections";
 import { tagsQueryKey } from "../tags/tagQueries";
 import { ProductCard } from "./ProductCard";
+import { displayName } from "./productNameText";
 import { ProductMediaSection } from "../product-scan/ProductMediaSection";
 import { useBackTarget } from "../../app/backNavigation";
 import { useToast } from "../../app/toasts";
 import { useConfirmDistinct, useMergeProduct, type MergeSide } from "./productMerge";
+import { reviewQueueQueryKey } from "../review-queue/reviewQueueQueries";
 
 export function ProductDetailPage() {
   const { t, i18n } = useTranslation();
@@ -50,6 +55,25 @@ export function ProductDetailPage() {
       queryClient.invalidateQueries({ queryKey: ["purchases", "feed"] })
     ])
   });
+  // Names show in lists, the purchase lines and the «Ревью» hub too.
+  const refreshNames = () => Promise.all([
+    queryClient.invalidateQueries({ queryKey: ["products"] }),
+    queryClient.invalidateQueries({ queryKey: ["purchases"] }),
+    queryClient.invalidateQueries({ queryKey: reviewQueueQueryKey })
+  ]);
+  const setName = useMutation({
+    mutationFn: ({ language, name }: { language: ProductNameLanguage; name: string }) => setProductName(productId, language, name),
+    onSuccess: refreshNames
+  });
+  // A 409 (names changed since shown) also refreshes, so the person sees the new ones.
+  const confirmNames = useMutation({
+    mutationFn: () => {
+      const shown = productQuery.data;
+      return confirmProductNames(productId, { namePl: shown?.namePl ?? null, nameRu: shown?.nameRu ?? null });
+    },
+    onSettled: refreshNames
+  });
+  const suggestNames = useMutation({ mutationFn: () => suggestProductNames(productId), onSuccess: refreshNames });
   const tagsQuery = useQuery({ queryKey: tagsQueryKey, queryFn: listTags });
   const saveTags = useMutation({
     mutationFn: (tagIds: string[]) => setProductTags(productId, tagIds),
@@ -100,8 +124,11 @@ export function ProductDetailPage() {
           .getQueryData<ProductDetail>(["products", "detail", productId])?.tags?.map((tag) => tag.id)}
         tagsFailed={tagsQuery.isError}
         reviewActions={reviewActions}
+        onSetName={(language, name) => setName.mutateAsync({ language, name })}
+        onConfirmNames={confirmNames.mutateAsync}
+        onSuggestNames={suggestNames.mutateAsync}
         media={(intro) => (
-          <ProductMediaSection productId={product.id} productName={product.name} intro={intro} locale={locale} />
+          <ProductMediaSection productId={product.id} productName={displayName(product)} intro={intro} locale={locale} />
         )}
       >
         <ProductImpressionsSection productId={productQuery.data.id} locale={locale} />

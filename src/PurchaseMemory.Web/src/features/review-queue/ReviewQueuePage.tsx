@@ -4,8 +4,8 @@ import { CheckCircle2, Layers, SearchX } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router";
-import { classifyProduct, getReviewQueue, listCategories, listTags } from "../../api/client";
-import type { ProductCategory, ProductSummary, ReviewQueue, ReviewQueueItem, TagSummary } from "../../api/types";
+import { classifyProduct, confirmProductNames, getReviewQueue, listCategories, listTags } from "../../api/client";
+import type { ProductCategory, ProductSummary, ReviewQueue, ReviewQueueItem, ReviewQueueKind, TagSummary } from "../../api/types";
 import {
   ActionButton,
   ButtonLink,
@@ -30,7 +30,7 @@ import { useBackTarget, useReturnState } from "../../app/backNavigation";
 import { useToast } from "../../app/toasts";
 import { HelpLink } from "../help/HelpLink";
 import { BarcodeItems } from "./BarcodeSection";
-import { ItemCard } from "./ReviewItemCards";
+import { ItemCard, shownNames } from "./ReviewItemCards";
 import { ReviewCards } from "./ReviewCards";
 import { cardSections, isCardSection, reviewSectionOrder, sectionKinds, type ReviewSectionId } from "./reviewSections";
 
@@ -93,7 +93,7 @@ export function ReviewQueuePage() {
       onOpenSection={(section) => setFilters({ open: [...open.filter((entry) => entry !== section), section].join(",") })}
       barcodes={remembered.data ?? []}
       onLinkBarcode={async (code, product) => (await linkBarcode(product.id, code, "scan")).ok}
-      loadSuggested={async () => suggestedOf(await getReviewQueue(bulkLimitPerKind, { category: category || undefined, tag: tag || undefined }))}
+      loadSuggested={async (bulk) => suggestedOf(await getReviewQueue(bulkLimitPerKind, { category: category || undefined, tag: tag || undefined }), bulk)}
       onForgetBarcode={forgetBarcode}
     />
   );
@@ -123,10 +123,10 @@ export interface ReviewQueueViewProps {
   onLinkBarcode?: (code: string, product: ProductSummary) => Promise<boolean>;
   onForgetBarcode?: (code: string) => Promise<void>;
   /**
-   * Every suggested category «Принять все предложенные» confirms (up to
-   * `bulkLimitPerKind`), with the screen's filters; by default the loaded ones.
+   * Every suggestion of the kind «Принять все предложенные» confirms (up to
+   * `bulkLimitPerKind`), read fresh with the screen's filters; by default the loaded ones.
    */
-  loadSuggested?: () => Promise<ReviewQueueItem[]>;
+  loadSuggested?: (bulk: BulkAccept) => Promise<ReviewQueueItem[]>;
   /** Opens with the filter sheet up; for stories. */
   initialFiltersOpen?: boolean;
 }
@@ -225,7 +225,8 @@ export function ReviewQueueView({
             const isOpen = openSections.includes(section);
             const shown = isOpen ? items : items.slice(0, collapsedItemCount);
             const notLoaded = groups.reduce((sum, group) => sum + group.totalCount - group.items.length, 0);
-            const suggestedGroup = section === "categories" ? groups.find((group) => group.kind === "suggestedCategory") : undefined;
+            const bulk = section === "categories" || section === "names" ? bulkAccepts[section] : undefined;
+            const suggestedGroup = bulk ? groups.find((group) => group.kind === bulk.kind) : undefined;
             // What the bulk accepts: every suggested category, up to the server's maximum per request.
             const suggestedCount = Math.min((suggestedGroup?.totalCount ?? 0) - countHidden(section, accept.hidden), bulkLimitPerKind);
             return (
@@ -237,7 +238,7 @@ export function ReviewQueueView({
                       fill="outline"
                       size="small"
                       loading={accept.loading}
-                      onClick={() => accept.run(loadSuggested ?? (async () => suggestedOf(queue)))}
+                      onClick={() => accept.run(bulk!, loadSuggested ? () => loadSuggested(bulk!) : async () => suggestedOf(queue, bulk!))}
                     >
                       {suggestedGroup!.totalCount > bulkLimitPerKind
                         ? t("reviewQueue.acceptFirstSuggested", { count: suggestedCount })
@@ -286,9 +287,41 @@ function countHidden(section: ReviewSectionId, hidden: Set<string>) {
 /** «Принять все предложенные» reads this many per kind: the server's maximum. */
 export const bulkLimitPerKind = 100;
 
-function suggestedOf(queue: ReviewQueue | undefined): ReviewQueueItem[] {
-  return queue?.groups.find((group) => group.kind === "suggestedCategory")?.items
-    .filter((item) => item.productId && item.categoryId) ?? [];
+/**
+ * What «Принять все предложенные» does in a section: which kind it accepts,
+ * how one item is confirmed and how the toast speaks of it.
+ */
+export interface BulkAccept {
+  kind: ReviewQueueKind;
+  ready: (item: ReviewQueueItem) => boolean;
+  commit: (item: ReviewQueueItem) => Promise<unknown>;
+  acceptedKey: string;
+  failedKey: string;
+  lateKey: string;
+}
+
+const bulkAccepts: Record<"categories" | "names", BulkAccept> = {
+  categories: {
+    kind: "suggestedCategory",
+    ready: (item) => Boolean(item.productId && item.categoryId),
+    commit: (item) => classifyProduct(item.productId!, { categoryId: item.categoryId }),
+    acceptedKey: "reviewQueue.acceptedSuggested",
+    failedKey: "reviewQueue.acceptAllFailed",
+    lateKey: "reviewQueue.alreadyAccepted"
+  },
+  names: {
+    kind: "suggestedNames",
+    ready: (item) => Boolean(item.productId),
+    // The names on the item go along: a name re-suggested meanwhile is not confirmed unseen (409).
+    commit: (item) => confirmProductNames(item.productId!, shownNames(item)),
+    acceptedKey: "reviewQueue.acceptedNames",
+    failedKey: "reviewQueue.acceptNamesFailed",
+    lateKey: "reviewQueue.namesAlreadyAccepted"
+  }
+};
+
+function suggestedOf(queue: ReviewQueue | undefined, bulk: BulkAccept): ReviewQueueItem[] {
+  return queue?.groups.find((group) => group.kind === bulk.kind)?.items.filter(bulk.ready) ?? [];
 }
 
 /** A section of the hub: its title and count, then its items. */
@@ -327,13 +360,13 @@ function CardsButton({ section }: { section: ReviewSectionId }) {
 }
 
 /**
- * «Принять все предложенные»: the suggested categories (all of them, read
- * fresh with the screen's filters) leave the hub at once and a toast offers
- * «Вернуть». Nothing is sent while «Вернуть» can still be pressed (the
- * server has no way to make a confirmed category «suggested» again): each
- * product's category is confirmed once the toast is gone, or as soon as the
- * page is hidden or closed, whichever comes first. «Вернуть» after that only
- * says the categories are already accepted.
+ * «Принять все предложенные» (categories or names): the suggestions (all of
+ * them, read fresh with the screen's filters) leave the hub at once and a
+ * toast offers «Вернуть». Nothing is sent while «Вернуть» can still be
+ * pressed (the server has no way to make a confirmed value «suggested»
+ * again): each product's suggestion is confirmed once the toast is gone, or
+ * as soon as the page is hidden or closed, whichever comes first. «Вернуть»
+ * after that only says they are already accepted.
  */
 function useAcceptSuggested() {
   const { t } = useTranslation();
@@ -342,7 +375,7 @@ function useAcceptSuggested() {
   const [hidden, setHidden] = useState<Set<string>>(() => new Set());
   const [loading, setLoading] = useState(false);
 
-  const accept = (items: ReviewQueueItem[]) => {
+  const accept = (bulk: BulkAccept, items: ReviewQueueItem[]) => {
     const ids = items.map((item) => item.id);
     const unhide = () => setHidden((current) => new Set([...current].filter((id) => !ids.includes(id))));
     setHidden((current) => new Set([...current, ...ids]));
@@ -358,26 +391,27 @@ function useAcceptSuggested() {
       if (undone || committed) return;
       committed = true;
       stopListening();
-      const results = await Promise.allSettled(items.map((item) => classifyProduct(item.productId!, { categoryId: item.categoryId })));
+      const results = await Promise.allSettled(items.map((item) => bulk.commit(item)));
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: reviewQueueQueryKey }),
-        queryClient.invalidateQueries({ queryKey: ["products"] })
+        queryClient.invalidateQueries({ queryKey: ["products"] }),
+        queryClient.invalidateQueries({ queryKey: ["purchases"] })
       ]);
       unhide();
       const failed = results.filter((result) => result.status === "rejected").length;
-      if (failed > 0) showToast({ id: `accept-failed-${Date.now()}`, message: t("reviewQueue.acceptAllFailed", { count: failed }), tone: "danger" });
+      if (failed > 0) showToast({ id: `accept-failed-${Date.now()}`, message: t(bulk.failedKey, { count: failed }), tone: "danger" });
     };
     window.addEventListener("pagehide", onPageHide);
     document.addEventListener("visibilitychange", onVisibility);
     showToast({
       id: `accept-${Date.now()}`,
-      message: t("reviewQueue.acceptedSuggested", { count: items.length }),
+      message: t(bulk.acceptedKey, { count: items.length }),
       tone: "success",
       action: {
         label: t("reviewQueue.undo"),
         run: () => {
           if (committed) {
-            showToast({ id: `accept-late-${Date.now()}`, message: t("reviewQueue.alreadyAccepted"), tone: "neutral" });
+            showToast({ id: `accept-late-${Date.now()}`, message: t(bulk.lateKey), tone: "neutral" });
             return;
           }
           undone = true;
@@ -389,11 +423,11 @@ function useAcceptSuggested() {
     });
   };
 
-  const run = async (load: () => Promise<ReviewQueueItem[]>) => {
+  const run = async (bulk: BulkAccept, load: () => Promise<ReviewQueueItem[]>) => {
     setLoading(true);
     try {
       const items = await load();
-      if (items.length > 0) accept(items);
+      if (items.length > 0) accept(bulk, items);
     } catch {
       showToast({ id: `accept-load-failed-${Date.now()}`, message: t("reviewQueue.loadError"), tone: "danger" });
     } finally {

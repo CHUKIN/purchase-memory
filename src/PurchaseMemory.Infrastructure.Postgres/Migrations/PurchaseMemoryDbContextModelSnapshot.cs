@@ -176,6 +176,25 @@ namespace PurchaseMemory.Infrastructure.Postgres.Migrations
                     b.Property<long>("CreatedAt")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("NamePl")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("NamePlSource")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("NameRu")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("NameRuSource")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTimeOffset?>("NamingAttemptedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<bool>("NeedsReview")
                         .HasColumnType("boolean");
 
@@ -187,6 +206,14 @@ namespace PurchaseMemory.Infrastructure.Postgres.Migrations
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
+
+                    b.Property<string>("NormalizedNamePl")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("NormalizedNameRu")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("Origin")
                         .IsRequired()

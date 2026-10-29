@@ -170,6 +170,25 @@ namespace PurchaseMemory.Infrastructure.Persistence.Migrations
                     b.Property<long>("CreatedAt")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("NamePl")
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NamePlSource")
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NameRu")
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NameRuSource")
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset?>("NamingAttemptedAt")
+                        .HasColumnType("TEXT");
+
                     b.Property<bool>("NeedsReview")
                         .HasColumnType("INTEGER");
 
@@ -180,6 +199,14 @@ namespace PurchaseMemory.Infrastructure.Persistence.Migrations
                     b.Property<string>("NormalizedName")
                         .IsRequired()
                         .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NormalizedNamePl")
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NormalizedNameRu")
+                        .HasMaxLength(200)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Origin")

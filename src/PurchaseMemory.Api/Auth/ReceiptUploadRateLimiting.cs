@@ -70,6 +70,12 @@ public static class ReceiptUploadRateLimiting
 
     public const string TagSuggestionsPolicyName = "tag-suggestions";
 
+    /// <summary>
+    /// «Предложить заново» for one product's names: one small model call, so the
+    /// same per-user bucket shape as tag suggestions.
+    /// </summary>
+    public const string NameSuggestionsPolicyName = "name-suggestions";
+
     public static IServiceCollection AddReceiptUploadRateLimiting(
         this IServiceCollection services,
         IConfiguration configuration)
@@ -150,6 +156,18 @@ public static class ReceiptUploadRateLimiting
                         AutoReplenishment = true
                     }));
 
+            options.AddPolicy(NameSuggestionsPolicyName, context =>
+                RateLimitPartition.GetTokenBucketLimiter(
+                    AppUser.UserId(context.User) ?? "anonymous",
+                    _ => new TokenBucketRateLimiterOptions
+                    {
+                        TokenLimit = tagSuggestions.TokenLimit,
+                        TokensPerPeriod = tagSuggestions.TokensPerPeriod,
+                        ReplenishmentPeriod = TimeSpan.FromSeconds(tagSuggestions.ReplenishmentPeriodSeconds),
+                        QueueLimit = 0,
+                        AutoReplenishment = true
+                    }));
+
             options.OnRejected = async (rejected, cancellationToken) =>
             {
                 var context = rejected.HttpContext;
@@ -168,8 +186,10 @@ public static class ReceiptUploadRateLimiting
                     || (context.Request.Path.StartsWithSegments("/api/analytics/history", StringComparison.Ordinal)
                         && context.Request.Path.Value?.EndsWith("/refresh", StringComparison.Ordinal) == true);
                 var tagSuggestion = context.Request.Path.Value?.EndsWith("/tag-suggestions", StringComparison.Ordinal) == true;
+                var nameSuggestion = context.Request.Path.Value?.EndsWith("/name-suggestions", StringComparison.Ordinal) == true;
                 var (title, detail) = (backfill, analytics) switch
                 {
+                    _ when nameSuggestion => ("Too many name suggestions", "Too many name suggestions in a short time. Names can still be typed by hand."),
                     _ when tagSuggestion => ("Too many tag suggestions", "Too many tag suggestions in a short time. Tags can still be chosen by hand."),
                     _ when rerun => ("Too many recalculations", "Too many recalculations in a short time. Try again in a minute."),
                     (true, _) => ("Too many categorization runs", "Too many categorization runs in a short time. Try again later."),

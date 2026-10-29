@@ -86,7 +86,8 @@ public sealed record ProductDetail(
     bool NeedsReview = false,
     PurchaseMemory.Domain.Products.ProductReviewReason? ReviewReason = null,
     // Flagged products only: what the product might really be, best first.
-    IReadOnlyList<ProductReviewCandidateView>? ReviewCandidates = null);
+    IReadOnlyList<ProductReviewCandidateView>? ReviewCandidates = null,
+    ProductDisplayNames? Names = null);
 
 /// <summary>
 /// An existing product a flagged product might really be, with what a person

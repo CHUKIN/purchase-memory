@@ -47,6 +47,50 @@ public sealed class OpenAiProductCategorizerTests
     }
 
     [Fact]
+    public async Task AsksForPolishAndRussianNamesInTheSameRequestAndPassesKnownBrands()
+    {
+        var transport = new FakeTransport(_ => Completed(
+            """{"items":[{"index":0,"category":"c1","brand":"Activia","namePl":"Kefir naturalny Activia 280 g","nameRu":"Кефир натуральный Activia, 280 г"},{"index":1,"category":null,"brand":null,"namePl":null,"nameRu":null}]}"""));
+        var products = new[]
+        {
+            new ProductToCategorize(Guid.NewGuid(), "ACTIV KEFI NAT 280"),
+            new ProductToCategorize(Guid.NewGuid(), "LUBE MAKA UNIW 1", " Lubella\n ")
+        };
+
+        var result = await Create(transport).SuggestAsync(products, Categories, Cancel);
+
+        var request = Assert.Single(transport.Requests);
+        Assert.Contains("1: LUBE MAKA UNIW 1 [brand: Lubella]", request.Prompt, StringComparison.Ordinal);
+        Assert.Contains("0: ACTIV KEFI NAT 280\n", request.Prompt.ReplaceLineEndings("\n"), StringComparison.Ordinal);
+        Assert.Contains("namePl", request.Prompt, StringComparison.Ordinal);
+        Assert.Contains("nameRu", request.Prompt, StringComparison.Ordinal);
+        using var schema = JsonDocument.Parse(request.JsonSchema);
+        var item = schema.RootElement.GetProperty("properties").GetProperty("items").GetProperty("items");
+        Assert.Equal(["index", "category", "brand", "namePl", "nameRu"], item.GetProperty("required").EnumerateArray().Select(entry => entry.GetString()));
+        Assert.Equal(JsonValueKind.Array, item.GetProperty("properties").GetProperty("nameRu").GetProperty("type").ValueKind);
+
+        Assert.Equal(("Kefir naturalny Activia 280 g", "Кефир натуральный Activia, 280 г"), (result.Suggestions[0].NamePl, result.Suggestions[0].NameRu));
+        Assert.Equal((null, null), (result.Suggestions[1].NamePl, result.Suggestions[1].NameRu));
+    }
+
+    [Fact]
+    public void AConfirmedNameIsAHintForTheOtherLanguage()
+    {
+        var prompt = OpenAiProductCategorizer.BuildPrompt(
+            [
+                new ProductToCategorize(Guid.NewGuid(), "ACTIV KEFI NAT 280", null, "Kefir naturalny Activia 280 g"),
+                new ProductToCategorize(Guid.NewGuid(), "BANANY", null, null, " Бананы\n"),
+                new ProductToCategorize(Guid.NewGuid(), "CHLEB")
+            ],
+            Categories);
+
+        Assert.Contains("0: ACTIV KEFI NAT 280 [namePl: Kefir naturalny Activia 280 g]", prompt, StringComparison.Ordinal);
+        Assert.Contains("1: BANANY [nameRu: Бананы]", prompt, StringComparison.Ordinal);
+        Assert.Contains("2: CHLEB\n", prompt.ReplaceLineEndings("\n"), StringComparison.Ordinal);
+        Assert.Contains("was set by a person", prompt, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void NamesCannotBreakOutOfTheirPromptLine()
     {
         var prompt = OpenAiProductCategorizer.BuildPrompt(

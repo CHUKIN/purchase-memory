@@ -127,7 +127,13 @@ public sealed record ReviewQueueItemResponse(
     // Unrated line only: the line to rate, its store and price.
     Guid? PurchaseItemId,
     string? MerchantName,
-    decimal? Price);
+    decimal? Price,
+    // Product kinds: the human names (null: show title, the receipt text).
+    string? NamePl = null,
+    string? NameRu = null,
+    // Suggested names only: which of the two still wait for «Верно».
+    bool NamePlSuggested = false,
+    bool NameRuSuggested = false);
 
 public sealed record ReviewQueueCandidateResponse(
     Guid ProductId,
@@ -181,7 +187,11 @@ public sealed record ReviewQueueResponse(
                         item.LineCount,
                         item.PurchaseItemId,
                         item.MerchantName,
-                        item.Price))
+                        item.Price,
+                        item.NamePl,
+                        item.NameRu,
+                        item.NamePlSuggested,
+                        item.NameRuSuggested))
                     .ToList()))
             .ToList(),
         ReviewQueueSummaryResponse.From(result.Summary));

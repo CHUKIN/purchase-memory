@@ -26,13 +26,17 @@ const sameName = (a: string, b: string) => a.trim().toLocaleLowerCase() === b.tr
  * A line's catalog product in a list row, icon first: the product's name when
  * it differs from the line's, «проверить» when the product carries that
  * flag, «Новый товар» for a new one, «Без товара» for a line left unlinked
- * (only very old data), and nothing more when it is obvious. The full
- * sentence (`text`, e.g. «Связано с «…»») is always there for screen readers.
+ * (only very old data), and nothing more when it is obvious. A product with
+ * a human Polish name shows it as «→ Kefir naturalny Activia 280 g» under
+ * the receipt text instead. The full sentence (`text`, e.g. «Связано с
+ * «…»») is always there for screen readers.
  */
-export function ProductLinkNote({ text, lineName, productName, flagged = false, isNew = false, unlinked = false }: {
+export function ProductLinkNote({ text, lineName, productName, humanName = null, flagged = false, isNew = false, unlinked = false }: {
   text: string;
   lineName: string;
   productName: string | null;
+  /** The product's human Polish name (stage 1.4), shown as «→ …». */
+  humanName?: string | null;
   /** The linked product carries the «проверить» flag. */
   flagged?: boolean;
   isNew?: boolean;
@@ -42,6 +46,7 @@ export function ProductLinkNote({ text, lineName, productName, flagged = false, 
   let visible: ReactNode = null;
   if (isNew) visible = <><PackagePlus size={13} className="pm-inline-icon" />{t("purchaseEdit.productNewShort")}</>;
   else if (unlinked) visible = <><PackageX size={13} className="pm-inline-icon" />{t("purchaseEdit.productUnlinkedShort")}</>;
+  else if (humanName?.trim()) visible = <span className="pm-line-human-name">→ {humanName.trim()}</span>;
   else if (productName && !sameName(productName, lineName)) visible = <><Package size={13} className="pm-inline-icon" />{productName}</>;
   return (
     <span className="pm-line-detail pm-link-note" data-warn={flagged}>

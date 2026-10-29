@@ -8,6 +8,7 @@ import type { ProductSummary } from "../../api/types";
 import { Footnote } from "../../design-system/components";
 import { useHistoryLayer } from "../../design-system/history/historyLayers";
 import { useDebounced } from "../filters/useDebounced";
+import { displayName, russianName } from "./productNameText";
 import { ReviewFlagChip } from "./ReviewFlagChip";
 
 export interface CatalogSearchModalProps {
@@ -83,10 +84,10 @@ export function CatalogSearchModal({
               {results.map((product) => {
                 const selected = product.id === selectedProductId;
                 return (
-                  <IonItem key={product.id} button detail={false} onClick={() => onChoose(product)} aria-label={chooseLabel(product.name)} aria-current={selected || undefined}>
+                  <IonItem key={product.id} button detail={false} onClick={() => onChoose(product)} aria-label={chooseLabel(displayName(product))} aria-current={selected || undefined}>
                     <IonLabel className="pm-wrap">
-                      <h3>{product.name}</h3>
-                      <p>{[product.brand, t("products.purchaseCount", { count: product.purchaseCount })].filter(Boolean).join(" · ")}</p>
+                      <h3>{displayName(product)}</h3>
+                      <p>{[russianName(product), product.brand, t("products.purchaseCount", { count: product.purchaseCount })].filter(Boolean).join(" · ")}</p>
                       {product.needsReview && <div className="pm-chip-row"><ReviewFlagChip /></div>}
                     </IonLabel>
                     {selected && <Check slot="end" size={20} className="pm-check" aria-hidden="true" />}

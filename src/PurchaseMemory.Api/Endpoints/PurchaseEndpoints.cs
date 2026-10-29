@@ -337,7 +337,9 @@ public sealed record PurchaseDetailItemResponse(
     DateTimeOffset? ApprovedAt,
     string? ApprovedByEmail,
     IReadOnlyList<IReadOnlyList<double>>? TextPolygons = null,
-    string BoxSource = TextHighlightWire.Recognition);
+    string BoxSource = TextHighlightWire.Recognition,
+    // The linked product's human Polish name, or null (then only the receipt text is shown).
+    string? ProductNamePl = null);
 
 public sealed record PurchaseDetailResponse(
     Guid Id,
@@ -382,7 +384,8 @@ public sealed record PurchaseDetailResponse(
                 item.ApprovedAt,
                 item.ApprovedByEmail,
                 TextHighlightWire.ToWire(item.TextPolygons),
-                TextHighlightWire.ToWire(item.BoxSource))).ToList(),
+                TextHighlightWire.ToWire(item.BoxSource),
+                item.ProductNamePl)).ToList(),
             view.Issues.Select(PurchaseDraftIssueResponse.FromIssue).ToList());
     }
 }
