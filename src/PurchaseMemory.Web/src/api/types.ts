@@ -628,7 +628,25 @@ export type ReviewQueueKind =
   | "missingPrice"
   | "productNeedsReview"
   | "suggestedCategory"
-  | "missingCategory";
+  | "missingCategory"
+  /** A saved purchase with lines nobody has marked «Верно» yet (hub only). */
+  | "unapprovedLines"
+  /** A recent line the signed-in person has not rated yet (hub only, personal). */
+  | "unratedPurchase";
+
+/** The «Ревью» hub's sections from the server, most important first. */
+export type ReviewQueueSection = "receipts" | "purchases" | "products" | "categories" | "ratings";
+
+export interface ReviewQueueSectionCount {
+  section: ReviewQueueSection;
+  count: number;
+}
+
+/** The whole hub, never filtered: `totalCount` is the sum of `sections`. */
+export interface ReviewQueueSummary {
+  totalCount: number;
+  sections: ReviewQueueSectionCount[];
+}
 
 /** One thing the stored data still needs a person for; only the fields of its kind are set. */
 export interface ReviewQueueItem {
@@ -658,6 +676,12 @@ export interface ReviewQueueItem {
    * for one, and the product is not listed again under «Без категории».
    */
   needsCategory?: boolean;
+  /** Unchecked purchase only: all its lines (`affectedLineCount` is the unchecked ones). */
+  lineCount?: number | null;
+  /** Unrated line only: the line to rate, its store and price. */
+  purchaseItemId?: string | null;
+  merchantName?: string | null;
+  price?: number | null;
   /*
    * `categoryId`/`categoryName` on a flagged product: its category is only
    * AI-suggested; the same card asks to confirm it (no «Категория не
@@ -683,13 +707,17 @@ export interface ReviewQueueGroup {
 }
 
 export interface ReviewQueue {
+  /** Follows the filter, like `groups`. */
   totalCount: number;
   groups: ReviewQueueGroup[];
+  /** The whole hub whatever the filter. Optional only so older fixtures stay valid. */
+  summary?: ReviewQueueSummary | null;
 }
 
 export interface ReviewQueueCount {
   totalCount: number;
   byKind: Partial<Record<ReviewQueueKind, number>>;
+  summary?: ReviewQueueSummary | null;
 }
 
 /** The confirmed three-level scale: не нравится / средне / нравится. */

@@ -1,6 +1,6 @@
 import { IonAlert } from "@ionic/react";
 import { AlertTriangle, Check, ChevronDown, ChevronLeft, ChevronRight, Tag } from "lucide-react";
-import { useId, useRef, useState, type FocusEvent, type PointerEvent, type ReactNode } from "react";
+import { useId, useState, type FocusEvent, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { parseDecimal } from "../../design-system/components";
 import { formatMoney, formatQuantity } from "../purchases/money";
@@ -10,9 +10,8 @@ import { isDiscount } from "../receipts/discountLines";
 import type { EditableLine } from "../receipts/LinesEditor";
 import { carouselSteps, stepIndexOf, type CarouselStep } from "./carouselSteps";
 import { lineProblem, totalsCheck, type LineProblem } from "./lineChecks";
+import { useSwipe } from "./useSwipe";
 
-/** A horizontal drag longer than this (px) switches lines. */
-export const swipeThreshold = 50;
 /** At most this many dots (24 px each, fits a 320 px screen); with more cards they slide along with the current one. */
 const maxDots = 8;
 
@@ -589,53 +588,4 @@ function NumberField({ label, value, onChange, invalid = false, readOnly = false
       />
     </label>
   );
-}
-
-/**
- * A mostly horizontal drag of at least `swipeThreshold` px, reported as the
- * step to take: to the left is the next line (+1), to the right the previous
- * one (−1), like turning pages. It ignores drags that start on a field or a
- * button (text selection and taps stay theirs), stops at a second finger (a
- * pinch) and is off while `disabled`. Vertical drags are left to scrolling.
- */
-function useSwipe(onStep: (step: 1 | -1) => void, disabled: boolean) {
-  const start = useRef<{ id: number; x: number; y: number } | null>(null);
-  const pointers = useRef(new Set<number>());
-
-  const onPointerDown = (event: PointerEvent<HTMLElement>) => {
-    pointers.current.add(event.pointerId);
-    if (pointers.current.size > 1 || disabled || (event.target as HTMLElement).closest("input, textarea, select, button, a")) {
-      start.current = null;
-      return;
-    }
-    start.current = { id: event.pointerId, x: event.clientX, y: event.clientY };
-  };
-  const onPointerMove = (event: PointerEvent<HTMLElement>) => {
-    const state = start.current;
-    if (!state || state.id !== event.pointerId) return;
-    const dx = event.clientX - state.x;
-    const dy = event.clientY - state.y;
-    // Clearly vertical: a scroll, not a swipe.
-    if (Math.abs(dy) > 12 && Math.abs(dy) > Math.abs(dx)) start.current = null;
-  };
-  const onPointerEnd = (event: PointerEvent<HTMLElement>) => {
-    pointers.current.delete(event.pointerId);
-    const state = start.current;
-    if (!state || state.id !== event.pointerId) return;
-    start.current = null;
-    if (event.type === "pointercancel") return;
-    const dx = event.clientX - state.x;
-    const dy = event.clientY - state.y;
-    if (Math.abs(dx) < swipeThreshold || Math.abs(dx) <= Math.abs(dy)) return;
-    onStep(dx < 0 ? 1 : -1);
-  };
-
-  return {
-    handlers: {
-      onPointerDown,
-      onPointerMove,
-      onPointerUp: onPointerEnd,
-      onPointerCancel: onPointerEnd
-    }
-  };
 }

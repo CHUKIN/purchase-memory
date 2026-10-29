@@ -215,7 +215,7 @@ const queueItem = (overrides: Partial<ReviewQueueItem> & Pick<ReviewQueueItem, "
 });
 
 const reviewQueue: ReviewQueue = {
-  totalCount: 5,
+  totalCount: 7,
   groups: [
     { kind: "totalMismatch", totalCount: 1, items: [queueItem({ kind: "totalMismatch", id: "totalMismatch:p1", title: longMerchant, receiptId: "receipt-1", purchaseId: "purchase-long", currency: "PLN", receiptTotal: 1284.32, linesTotal: 1214.37 })] },
     { kind: "missingPrice", totalCount: 1, items: [queueItem({ kind: "missingPrice", id: "missingPrice:p1", title: longMerchant, purchaseId: "purchase-long", affectedLineCount: 1, itemPosition: 2 })] },
@@ -229,8 +229,24 @@ const reviewQueue: ReviewQueue = {
       })]
     },
     { kind: "suggestedCategory", totalCount: 1, items: [queueItem({ kind: "suggestedCategory", id: "suggestedCategory:x", title: longProduct, productId: "product-long", categoryId: "cheese", categoryName: "Сыры и молочные продукты для завтрака" })] },
-    { kind: "missingCategory", totalCount: 1, items: [queueItem({ kind: "missingCategory", id: "missingCategory:y", title: "Jogurt Danio waniliowy z kawałkami owoców 4×140g", productId: "y1" })] }
-  ]
+    { kind: "missingCategory", totalCount: 1, items: [queueItem({ kind: "missingCategory", id: "missingCategory:y", title: "Jogurt Danio waniliowy z kawałkami owoców 4×140g", productId: "y1" })] },
+    { kind: "unapprovedLines", totalCount: 1, items: [queueItem({ kind: "unapprovedLines", id: "unapprovedLines:p1", title: longMerchant, purchaseId: "purchase-long", affectedLineCount: 5, lineCount: 6, itemPosition: 1 })] },
+    {
+      kind: "unratedPurchase", totalCount: 1, items: [queueItem({
+        kind: "unratedPurchase", id: "unratedPurchase:l1", title: longProduct, purchaseId: "purchase-long", productId: "product-long", purchaseItemId: "l1", merchantName: longMerchant, currency: "PLN", price: 12.49
+      })]
+    }
+  ],
+  summary: {
+    totalCount: 7,
+    sections: [
+      { section: "receipts", count: 2 },
+      { section: "purchases", count: 1 },
+      { section: "products", count: 1 },
+      { section: "categories", count: 2 },
+      { section: "ratings", count: 1 }
+    ]
+  }
 };
 
 function route(path: string): unknown {
@@ -239,7 +255,7 @@ function route(path: string): unknown {
   if (path === "/api/analytics/context") return { enabled: true, today: "2026-09-27", merchants: ["Biedronka", "Lidl"], brands: [longBrand] };
   if (path.startsWith("/api/analytics/history?")) return { items: sampleAnalyticsHistory, hasMore: true };
   if (path === "/api/recognition/status") return { available: true, mode: "Hybrid", models: ["glm-ocr", "qwen3.5:4b"], message: null };
-  if (path === "/api/review-queue/count") return { totalCount: 7, byKind: {} };
+  if (path === "/api/review-queue/count") return { totalCount: reviewQueue.totalCount, byKind: {}, summary: reviewQueue.summary };
   if (path.startsWith("/api/receipts?")) return [recentReceipt];
   if (path.startsWith("/api/purchases/") && path.endsWith("/impressions")) return [impression];
   if (path.startsWith("/api/purchases/")) return purchaseDetail;
@@ -311,5 +327,6 @@ export const ReceiptReviewMobileEn: Story = { args: { path: "/receipts/receipt-r
 export const ReviewQueueMobile: Story = { args: { path: "/needs-attention" } };
 export const ReviewQueueMobileEn: Story = { args: { path: "/needs-attention" }, globals: { ...phone, locale: "en" } };
 export const ReviewQueueDesktop: Story = { args: { path: "/needs-attention" }, globals: desktop };
+export const ReviewCardsMobile: Story = { args: { path: "/needs-attention?cards=categories" } };
 export const AnalyticsMobile: Story = { args: { path: "/analytics" } };
 export const AnalyticsDesktop: Story = { args: { path: "/analytics" }, globals: desktop };

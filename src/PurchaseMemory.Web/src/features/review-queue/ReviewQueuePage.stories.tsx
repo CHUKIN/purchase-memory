@@ -4,6 +4,7 @@ import { MemoryRouter } from "react-router";
 import { fn } from "storybook/test";
 import type { ReviewQueue, ReviewQueueItem, TagSummary } from "../../api/types";
 import { sampleCategories } from "../categories/categoryFixtures";
+import { ReviewCardsView } from "./ReviewCards";
 import { ReviewQueueView, type ReviewQueueViewProps } from "./ReviewQueuePage";
 
 const householdTags: TagSummary[] = [
@@ -82,6 +83,61 @@ const uncategorizedQueue: ReviewQueue = {
 };
 
 const emptyQueue: ReviewQueue = { totalCount: 0, groups: [] };
+
+const suggestedCategory = (id: string, title: string, categoryName: string) =>
+  item({ kind: "suggestedCategory", id: `suggestedCategory:${id}`, title, productId: id, categoryId: "juice", categoryName });
+
+/** The whole hub: every section, most important first, with the server's summary. */
+const hubQueue: ReviewQueue = {
+  totalCount: 13,
+  groups: [
+    wholeQueue.groups[0],
+    wholeQueue.groups[1],
+    { kind: "productNeedsReview", totalCount: 1, items: [pendingGouda] },
+    {
+      kind: "suggestedCategory",
+      totalCount: 4,
+      items: [
+        wholeQueue.groups[3].items[0],
+        suggestedCategory("j2", "Sok pomarańczowy Tymbark 1 l", "Соки"),
+        suggestedCategory("j3", "Nektar wieloowocowy Hortex 1 l", "Соки"),
+        suggestedCategory("j4", "Woda kokosowa 330 ml", "Соки")
+      ]
+    },
+    wholeQueue.groups[4],
+    {
+      kind: "unapprovedLines",
+      totalCount: 2,
+      items: [
+        item({ kind: "unapprovedLines", id: "unapprovedLines:p1", title: "Lidl", purchaseId: "p1", currency: "PLN", affectedLineCount: 12, lineCount: 14, itemPosition: 2 }),
+        item({ kind: "unapprovedLines", id: "unapprovedLines:p3", title: "Biedronka", purchaseId: "p3", currency: "PLN", affectedLineCount: 3, lineCount: 3, itemPosition: 0 })
+      ]
+    },
+    {
+      kind: "unratedPurchase",
+      totalCount: 2,
+      items: [
+        item({ kind: "unratedPurchase", id: "unratedPurchase:l1", title: "Jogurt Danio waniliowy", purchaseId: "p1", productId: "y1", purchaseItemId: "l1", merchantName: "Lidl", currency: "PLN", price: 2.79 }),
+        item({ kind: "unratedPurchase", id: "unratedPurchase:l2", title: "Sok jabłkowy Kubuś 0,3 l", purchaseId: "p1", productId: "j1", purchaseItemId: "l2", merchantName: "Lidl", currency: "PLN", price: 3.49 })
+      ]
+    }
+  ],
+  summary: {
+    totalCount: 13,
+    sections: [
+      { section: "receipts", count: 3 },
+      { section: "purchases", count: 2 },
+      { section: "products", count: 1 },
+      { section: "categories", count: 5 },
+      { section: "ratings", count: 2 }
+    ]
+  }
+};
+
+const rememberedCodes = [
+  { code: "5900334012345", rememberedAt: Date.UTC(2026, 9, 27, 15, 20), off: { name: "Kefir naturalny", brand: "Piątnica", quantity: "400 g", imageUrl: null } },
+  { code: "4006040123456", rememberedAt: Date.UTC(2026, 9, 26, 9, 5), off: null }
+];
 
 /** Stories keep the selects working, as on the real page, so Controls only set the starting filters. */
 function Interactive(props: ReviewQueueViewProps) {
@@ -181,4 +237,42 @@ export const CategoryAndTagEmptyMobile: Story = {
 export const NoTagsMobile: Story = {
   args: { tags: [] },
   globals: { viewport: { value: "phone", isRotated: false } }
+};
+
+/** The «Ревью» hub with every section, the device's remembered barcodes and «Принять все предложенные». */
+export const HubAllSectionsMobile: Story = {
+  args: { queue: hubQueue, barcodes: rememberedCodes },
+  globals: { viewport: { value: "phone", isRotated: false } }
+};
+
+export const HubAllSectionsMobileEn: Story = {
+  args: { queue: hubQueue, barcodes: rememberedCodes },
+  globals: { viewport: { value: "phone", isRotated: false }, locale: "en" }
+};
+
+/** «Категории» opened with «Показать все». */
+export const HubCategoriesOpenMobile: Story = {
+  args: { queue: hubQueue, openSections: ["categories"] },
+  globals: { viewport: { value: "phone", isRotated: false } }
+};
+
+export const HubAllCheckedMobile: Story = {
+  args: { queue: { totalCount: 0, groups: [], summary: { totalCount: 0, sections: [] } } },
+  globals: { viewport: { value: "phone", isRotated: false } }
+};
+
+/** «Проверять по одной»: «Категории» card by card. */
+export const CardsCategoriesMobile: Story = {
+  render: () => <ReviewCardsView section="categories" queue={hubQueue} loading={false} error={false} onRetry={fn()} categories={sampleCategories} />,
+  globals: { viewport: { value: "phone", isRotated: false } }
+};
+
+export const CardsProductsMobile: Story = {
+  render: () => <ReviewCardsView section="products" queue={hubQueue} loading={false} error={false} onRetry={fn()} categories={sampleCategories} />,
+  globals: { viewport: { value: "phone", isRotated: false } }
+};
+
+export const CardsRatingsMobileEn: Story = {
+  render: () => <ReviewCardsView section="ratings" queue={hubQueue} loading={false} error={false} onRetry={fn()} categories={sampleCategories} />,
+  globals: { viewport: { value: "phone", isRotated: false }, locale: "en" }
 };

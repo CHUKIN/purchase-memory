@@ -10,8 +10,10 @@ export interface ToastMessage {
   message: string;
   header?: string;
   tone?: "success" | "danger" | "neutral";
-  /** A button that opens a screen, e.g. «Открыть чек». */
-  action?: { label: string; to: string };
+  /** A button that opens a screen («Открыть чек») or runs something («Вернуть»). */
+  action?: { label: string; to: string } | { label: string; run: () => void };
+  /** Once the toast is gone, however it went (timed out, closed, its button). */
+  onDismiss?: () => void;
 }
 
 interface ToastContextValue {
@@ -43,7 +45,10 @@ export function ToastProvider({ children }: PropsWithChildren) {
   const setNavigator = useCallback((navigate: ((to: string) => void) | null) => { navigator.current = navigate; }, []);
   const value = useMemo(() => ({ show, setNavigator }), [show, setNavigator]);
   const current = queue[0] ?? null;
-  const next = () => setQueue((items) => items.slice(1));
+  const next = () => {
+    current?.onDismiss?.();
+    setQueue((items) => items.slice(1));
+  };
 
   return (
     <ToastContext.Provider value={value}>
@@ -64,9 +69,13 @@ export function ToastProvider({ children }: PropsWithChildren) {
               ? [{
                 text: current.action.label,
                 handler: () => {
-                  const to = current.action!.to;
-                  if (navigator.current) navigator.current(to);
-                  else window.location.assign(to);
+                  const action = current.action!;
+                  if ("run" in action) {
+                    action.run();
+                    return;
+                  }
+                  if (navigator.current) navigator.current(action.to);
+                  else window.location.assign(action.to);
                 }
               }]
               : []),

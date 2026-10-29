@@ -43,7 +43,7 @@ public sealed class ReviewQueueRepository(PurchaseMemoryDbContext dbContext) : I
                     draft.Currency,
                     draft.ReceiptTotal,
                     Items = draft.Items
-                        .Select(item => new { item.Position, item.Name, item.UnitPrice, item.LineTotal, item.Kind, item.ProductId })
+                        .Select(item => new { item.Position, item.Name, item.UnitPrice, item.LineTotal, item.Kind, item.ProductId, Approved = item.ApprovedAt != null })
                         .ToList()
                 })
                 .ToListAsync(cancellationToken))
@@ -63,7 +63,12 @@ public sealed class ReviewQueueRepository(PurchaseMemoryDbContext dbContext) : I
                 draft.Items
                     .Where(item => item.ProductId != null)
                     .Select(item => item.ProductId!.Value)
-                    .ToHashSet()))
+                    .ToHashSet(),
+                draft.Items
+                    .Where(item => !item.Approved)
+                    .OrderBy(item => item.Position)
+                    .Select(item => item.Position)
+                    .ToList()))
             .ToList();
 
         var flaggedProducts = await dbContext.Products

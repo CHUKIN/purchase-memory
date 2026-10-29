@@ -114,16 +114,18 @@ describe("ReviewQueuePage", () => {
     renderPage();
 
     expect(screen.getByRole("status", { name: "Загружаем очередь проверки" })).toBeInTheDocument();
-    const mismatch = await screen.findByRole("region", { name: "Сумма не сходится" });
-    expect(screen.getByRole("heading", { level: 1, name: "Нужно проверить" })).toBeInTheDocument();
+    const mismatch = await screen.findByRole("region", { name: "Чеки" });
+    expect(screen.getByRole("heading", { level: 1, name: "Ревью" })).toBeInTheDocument();
     expect(screen.getByText("4 пункта требуют внимания.")).toBeInTheDocument();
     expect(within(mismatch).getByLabelText("2 пункта")).toBeInTheDocument();
     const card = within(mismatch).getByRole("article", { name: "Żabka" });
+    expect(card).toHaveTextContent("Сумма не сходится");
     expect(card).toHaveTextContent(/Строки дают 15,00\s?(zł|PLN), а итог чека — 20,00\s?(zł|PLN)\./);
     expect(within(card).getByRole("link", { name: "Открыть чек" })).toHaveAttribute("href", "/receipts/r1");
     expect(within(mismatch).getByText(/И ещё 1/)).toBeInTheDocument();
 
-    const missing = screen.getByRole("region", { name: "Без категории" });
+    const missing = screen.getByRole("region", { name: "Категории" });
+    expect(within(missing).getByLabelText("2 пункта")).toBeInTheDocument();
     expect(within(missing).getByRole("link", { name: "Выбрать категорию: CHLEB" })).toHaveAttribute("href", "/products/b1");
   });
 
@@ -190,7 +192,7 @@ describe("ReviewQueuePage", () => {
     expect(flagged).toHaveTextContent("Похожих товаров больше нет. Нажмите «Это другой товар» или объедините его на странице товара. 1 покупка");
     expect(within(flagged).getByRole("link", { name: "Открыть товар: Ser Gouda 250g" })).toHaveAttribute("href", "/products/f9");
     expect(within(flagged).getByRole("button", { name: "«Ser Gouda 250g» — это другой товар" })).toHaveTextContent("Это другой товар");
-    expect(screen.getByRole("region", { name: "Тот же товар или новый?" })).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "Товары" })).toBeInTheDocument();
   });
 
   it("falls back to number and code when the currency code is not one Intl accepts", async () => {
@@ -416,7 +418,7 @@ describe("ReviewQueuePage", () => {
     it("is hidden while the household has no tags and the whole queue is requested", async () => {
       vi.mocked(getReviewQueue).mockResolvedValue(queue);
       renderPage();
-      await screen.findByRole("region", { name: "Сумма не сходится" });
+      await screen.findByRole("region", { name: "Чеки" });
       expect(getReviewQueue).toHaveBeenCalledWith(20, { category: undefined, tag: undefined });
       expect(screen.queryByLabelText("Тег")).not.toBeInTheDocument();
     });

@@ -56,3 +56,43 @@ describe("HomePage recent receipts", () => {
     expect(screen.getByText("2 parts")).toBeInTheDocument();
   });
 });
+
+describe("HomePage «Ревью» card", () => {
+  const renderWithCount = (reviewCount: number | null) => render(
+    <AppProviders locale="ru">
+      <MemoryRouter>
+        <HomePage recognition={null} receipts={[]} reviewCount={reviewCount} />
+      </MemoryRouter>
+    </AppProviders>
+  );
+
+  it("is warm with the count while something waits", () => {
+    renderWithCount(12);
+    const card = screen.getByRole("link", { name: /^Ревью/ });
+    expect(card).toHaveAttribute("href", "/needs-attention");
+    expect(card).toHaveAttribute("data-tone", "warning");
+    expect(card).toHaveTextContent("12");
+    expect(card).toHaveAccessibleName("Ревью, 12 пунктов требуют внимания.");
+    expect(screen.queryByText("Всё проверено")).not.toBeInTheDocument();
+  });
+
+  it("shows 99+ for a long list, like the tab badge", () => {
+    renderWithCount(140);
+    expect(screen.getByRole("link", { name: /^Ревью/ })).toHaveTextContent("99+");
+  });
+
+  it("says «Всё проверено» without a count when nothing waits", () => {
+    renderWithCount(0);
+    const card = screen.getByRole("link", { name: /^Ревью/ });
+    expect(card).not.toHaveAttribute("data-tone");
+    expect(card).toHaveTextContent("Всё проверено");
+    expect(card).not.toHaveTextContent(/\d/);
+  });
+
+  it("is a plain card while the count is unknown", () => {
+    renderWithCount(null);
+    const card = screen.getByRole("link", { name: "Ревью" });
+    expect(card).not.toHaveAttribute("data-tone");
+    expect(card).not.toHaveTextContent("Всё проверено");
+  });
+});

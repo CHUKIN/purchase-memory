@@ -74,7 +74,7 @@ export const helpRu: HelpText = {
     scan: "Сканировать штрихкод",
     uncategorizedProducts: "Товары без категории",
     needsReviewProducts: "Товары, которые нужно проверить",
-    reviewQueue: "Нужно проверить",
+    reviewQueue: "Ревью",
     analytics: "Аналитика"
   },
   topics: {
@@ -188,7 +188,7 @@ export const helpRu: HelpText = {
       trouble: [
         "Статус «Нужна повторная попытка» — фото сохранены. Нажмите «Повторить с сохранёнными фото», когда сервис снова доступен.",
         "Частые неточности: сумма строк не сходится с итогом, не прочитана цена строки, не распознаны магазин или дата. Всё это исправляется перед сохранением.",
-        "Нераспознанный чек также появится в разделе «Нужно проверить»."
+        "Нераспознанный чек также появится в «Ревью»."
       ]
     },
     "review-save": {
@@ -217,7 +217,7 @@ export const helpRu: HelpText = {
         "Кнопка сохранения неактивна, пока у всех позиций нет названия.",
         "Если в чеке не распознано ни одной строки, на экране это написано: добавьте строки в «Магазин, дата и итог» → «Добавить строку».",
         "Если не распознаны магазин, дата, валюта или итог чека, это написано над товарами и в итоге под заголовком «Нужно проверить»; впишите их в «Магазин, дата и итог» — пункт сразу пропадёт.",
-        "Не сохранили сразу — чек останется в «Чеки в работе» и в «Нужно проверить» как «Чек ждёт сохранения»."
+        "Не сохранили сразу — чек останется в «Чеки в работе» и в «Ревью» как «Чек ждёт сохранения»."
       ]
     },
     feed: {
@@ -262,13 +262,13 @@ export const helpRu: HelpText = {
       title: "Исправление сохранённой покупки",
       summary: "Сохранённую покупку можно поправить в любой момент — ошибки в истории не навсегда.",
       steps: [
-        "Откройте покупку: нажмите на магазин в ленте, «Открыть и исправить покупку» на странице чека или пункт в «Нужно проверить».",
+        "Откройте покупку: нажмите на магазин в ленте, «Открыть и исправить покупку» на странице чека или пункт в «Ревью».",
         "Нажмите карандаш («Исправить») вверху справа. Сверху меняйте магазин, дату, валюту и итог. Нажмите на строку, чтобы изменить название, количество, цену и сумму; «Добавить строку» и «Добавить скидку» добавляют новые. Лишнюю строку проведите влево и нажмите «Удалить» (или «Удалить строку N» внутри строки).",
         "Товар строки выбирается внутри строки: «Изменить товар» — через поиск, «Создать новый товар» (обычный товар с названием строки) или «Подобрать автоматически».",
         "Нажмите «Сохранить» вверху справа. «Отмена» закрывает правку без изменений."
       ],
       see: [
-        "На странице покупки сверху — дата и итог, ниже со значком ⚠ — что стоит проверить. У каждой строки товара есть товар из каталога; его название видно, только если оно отличается от строки. Отметка «проверить» — товар похож на другие товары, разберите его в «Нужно проверить» или в карточке товара.",
+        "На странице покупки сверху — дата и итог, ниже со значком ⚠ — что стоит проверить. У каждой строки товара есть товар из каталога; его название видно, только если оно отличается от строки. Отметка «проверить» — товар похож на другие товары, разберите его в «Ревью» или в карточке товара.",
         "В правке сверху видно, сходятся ли строки с итогом чека и какая разница. Строки без цены подсвечены.",
         "Выбор товара запоминается для этого магазина: в следующий раз такая строка свяжется сама.",
         "Рядом с суммой каждой строки — значок коробки («Открыть товар «…»»): он открывает карточку товара, а «Назад» в карточке возвращает на эту покупку, к той же строке. В правке то же делает «Открыть товар» в окне строки, пока вы ничего не изменили (правка не должна потеряться: сначала «Сохранить»).",
@@ -276,7 +276,7 @@ export const helpRu: HelpText = {
       ],
       trouble: [
         "Если покупку уже поменяли в другом окне или на другом устройстве, ваша правка не затрёт чужую: приложение предложит загрузить свежую версию.",
-        "Пункты «Сумма не сходится» и «Нет цены» из «Нужно проверить» открывают правку сразу на нужном месте (итог или цену строки) и пропадают после сохранения. После «Сохранить» вы вернётесь в «Нужно проверить» с теми же фильтрами."
+        "Пункты «Сумма не сходится» и «Нет цены» из «Ревью» открывают правку сразу на нужном месте (итог или цену строки) и пропадают после сохранения. После «Сохранить» вы вернётесь в «Ревью» с теми же фильтрами."
       ]
     },
     "receipt-lines-photo": {
@@ -329,7 +329,7 @@ export const helpRu: HelpText = {
       trouble: [
         "Если цену строки прочитать не удалось, она не входит в расчёты — об этом есть заметка.",
         "Объединение нельзя отменить. Если объединили не то — создайте товар заново и в покупках через «Изменить товар» перепривяжите нужные строки.",
-        "У нового товара с отметкой «проверить» категории ещё нет или она только предложена AI. В «Нужно проверить» это всё равно один пункт «Тот же товар или новый?»: с кнопкой «Выбрать категорию» или с «Подтвердить» и «Изменить» для предложенной категории. Решите про товар («Да, это он» или «Это другой товар») и про категорию; если решить только про товар, категория останется отдельным пунктом."
+        "У нового товара с отметкой «проверить» категории ещё нет или она только предложена AI. В «Ревью» это всё равно один пункт «Тот же товар или новый?»: с кнопкой «Выбрать категорию» или с «Подтвердить» и «Изменить» для предложенной категории. Решите про товар («Да, это он» или «Это другой товар») и про категорию; если решить только про товар, категория останется отдельным пунктом."
       ]
     },
     "product-scan": {
@@ -372,7 +372,7 @@ export const helpRu: HelpText = {
       see: [
         "Исправление применяется ко всем покупкам этого товара — прошлым и будущим.",
         "AI никогда не перезаписывает то, что подтвердил человек.",
-        "Фильтр «Категория» есть и в «Нужно проверить»: так можно разобрать, например, только «Молоко» или только товары «Без категории»."
+        "Фильтр «Категория» есть и в «Ревью»: так можно разобрать, например, только «Молоко» или только товары «Без категории»."
       ],
       trouble: [
         "При удалении подкатегории её товары переходят в группу; при удалении группы — в «Без категории».",
@@ -392,7 +392,7 @@ export const helpRu: HelpText = {
       ],
       see: [
         "Теги видны в списке «Товары» и на карточке товара.",
-        "Фильтр «Тег» есть в окне фильтров «Покупок», «Товаров» и «Нужно проверить»; на карточке товара — ссылка «Покупки с тегом «…»».",
+        "Фильтр «Тег» есть в окне фильтров «Покупок», «Товаров» и «Ревью»; на карточке товара — ссылка «Покупки с тегом «…»».",
         "В «Аналитике» можно спросить про тег («Сколько потратили на детское?») или выбрать поле «Тег» и разбивку «По тегам».",
         "Теги придумывает только человек: приложение само теги не создаёт и не расставляет.",
         "«Предложить теги» только подсказывает: ИИ выбирает лишь из уже созданных вами тегов и ничего не добавляет сам — тег появится у товара, только когда вы нажмёте «Добавить» или «Добавить все». Кнопка видна, когда у вас есть теги, которых у товара ещё нет."
@@ -425,31 +425,37 @@ export const helpRu: HelpText = {
       ]
     },
     "review-queue": {
-      title: "Нужно проверить",
-      summary: "Очередь того, что стоит поправить или подтвердить, чтобы история и аналитика оставались точными.",
+      title: "Ревью",
+      summary: "Всё, что стоит проверить или сделать, в одном месте: чеки, покупки, товары, категории, штрихкоды и оценки. Так история и аналитика остаются точными.",
       steps: [
-        "Откройте «Нужно проверить» на «Главной»: строка с числом пунктов. То же число стоит на вкладке «Главная».",
-        "Предложенную категорию подтвердите одной кнопкой «Подтвердить» или выберите другую.",
-        "«Тот же товар или новый?»: приложение не было уверено, что строка чека — уже знакомый товар, поэтому сделало из неё отдельный товар. Под ним — до трёх похожих товаров (название, бренд, категория, сколько покупок). Сравните: если это один из них — «Да, это он» и подтвердите «Объединить»: покупки, названия из чеков и теги перейдут в выбранный товар. Если это правда другой товар — «Это другой товар». «Открыть товар» — карточка товара.",
-        "Если у такого товара ещё нет категории, это всё равно один пункт: «Новый товар: проверьте и выберите категорию». Решите, тот ли это товар, а кнопка «Выбрать категорию» откроет карточку товара, где категорию можно выбрать.",
-        "Если категорию уже предложил AI, пункт тоже один: «Новый товар: проверьте его и подтвердите категорию «…»». Решите, тот ли это товар, и нажмите «Подтвердить» или «Изменить», чтобы выбрать другую.",
-        "Остальное открывается по кнопке — «Открыть чек», «Исправить», «Выбрать категорию» — сразу на нужном месте. Если сохранить чек или покупку, открытые отсюда, вы вернётесь в «Нужно проверить» с теми же фильтрами.",
-        "Чтобы разобрать только часть, нажмите кнопку фильтров вверху справа и выберите «Категория» (например, «Молоко» или «Без категории») и/или «Тег» (например, «Для ребёнка»). «Все категории», «Все теги», «Сбросить» в окне фильтров или «Сбросить фильтр» на экране возвращают всю очередь. Строка «Тег» есть, когда у вас есть хотя бы один тег."
+        "На «Главной» под кнопками «Чек» и «Сканировать» — карточка «Ревью». Пока что-то ждёт, она с ⚠ и числом; то же число стоит на вкладке «Главная». Когда ждать нечего — «Всё проверено».",
+        "В «Ревью» разделы идут от важного к простому, и видны только те, где что-то есть: «Чеки» (не распознан, ждёт сохранения, сумма не сходится, нет цены), «Покупки» (строки ещё не проверены), «Товары» (тот же товар или новый), «Категории» (предложено AI или без категории), «Штрихкоды» (запомненные на потом) и «Оценить покупки». У каждого раздела — число; в разделе сначала три пункта, остальные — «Показать все».",
+        "«Покупки»: «Проверить строки» открывает покупку сразу на первой непроверенной строке — сверьте её с чеком и нажмите «Верно, дальше».",
+        "«Товары», «Тот же товар или новый?»: приложение не было уверено, что строка чека — уже знакомый товар, и сделало отдельный товар. Под ним — до трёх похожих. Если это один из них — «Да, это он» и подтвердите «Объединить»: покупки, названия из чеков и теги перейдут в выбранный товар. Если правда другой — «Это другой товар». Если у нового товара нет категории или она только предложена, в том же пункте есть «Выбрать категорию» или «Подтвердить» и «Изменить».",
+        "«Категории»: предложенную категорию подтвердите кнопкой «Подтвердить» или нажмите «Изменить». «Принять все предложенные» подтверждает все предложенные категории сразу; несколько секунд можно нажать «Вернуть» во всплывающем сообщении — тогда ничего не изменится. Если за это время свернуть или закрыть приложение, категории примутся сразу.",
+        "«Штрихкоды»: коды, которые вы в магазине отложили кнопкой «Запомнить на потом». «Привязать к товару» — найдите товар по названию и выберите его; «Забыть» — убрать код.",
+        "«Оценить покупки»: недавние товары, которые вы ещё не оценили, — нажмите 👎, 😐 или 👍.",
+        "«Проверять по одной» в разделах «Товары», «Категории» и «Оценить покупки» показывает пункты по одному, вверху — «12 из 75». Ответьте кнопкой («Верно, дальше» для предложенной категории, «Да, это он», оценка) или нажмите «Пропустить». Смахните влево — следующая карточка, вправо — предыдущая. После последней карточки вы вернётесь в «Ревью».",
+        "Остальное открывается по кнопке — «Открыть чек», «Исправить», «Выбрать категорию», «Открыть товар» — сразу на нужном месте. «Назад» возвращает на то же место в «Ревью»; если сохранить чек или покупку, открытые отсюда, вы тоже вернётесь сюда с теми же фильтрами.",
+        "Чтобы разобрать только часть, нажмите кнопку фильтров вверху справа и выберите «Категория» (например, «Молоко» или «Без категории») и/или «Тег» (например, «Для ребёнка»). «Все категории», «Все теги», «Сбросить» в окне фильтров или «Сбросить фильтр» на экране возвращают всё. Строка «Тег» есть, когда у вас есть хотя бы один тег."
       ],
       see: [
-        "Группы: чек не распознан, чек ждёт сохранения, сумма не сходится, нет цены, тот же товар или новый, категория не подтверждена, без категории.",
-        "Каждый товар считается один раз: новый товар без категории или с неподтверждённой категорией есть только в «Тот же товар или новый?», а не ещё и в «Без категории» или «Категория не подтверждена».",
-        "После «Да, это он» следующие чеки с этим названием сразу попадут в выбранный товар. Объединение нельзя отменить. После «Это другой товар» название из чека остаётся за этим товаром. Пункт исчезает из очереди, число на вкладке «Главная» уменьшается.",
-        "Число на вкладке «Главная» и в строке «Нужно проверить» показывает, сколько пунктов осталось во всей очереди — даже когда на экране выбраны категория или тег.",
-        "Категория и тег берутся у товара. С фильтром остаются товары, которые под него подходят (тот же товар или новый, категория не подтверждена, без категории), и покупки, где хотя бы одна строка — такой товар (сумма не сходится, нет цены). Категория-группа включает свои подкатегории; предложенная AI категория тоже считается.",
+        "Каждый товар считается один раз: новый товар без категории или с неподтверждённой категорией есть только в «Товарах», а не ещё и в «Категориях».",
+        "После «Да, это он» следующие чеки с этим названием сразу попадут в выбранный товар. Объединение нельзя отменить, поэтому его нет в «Принять все предложенные». Пункт исчезает, число на карточке «Ревью» и на вкладке «Главная» уменьшается.",
+        "Число на карточке «Ревью» и на вкладке «Главная» — всё, что ждёт, даже когда на экране выбраны категория или тег. Оценки у каждого свои: ваши оценки не убирают пункты у другого члена семьи. Проверенные строки, товары и категории общие для всей семьи.",
+        "Категория и тег берутся у товара. С фильтром остаются товары, которые под него подходят, и покупки, где хотя бы одна строка — такой товар. Категория-группа включает свои подкатегории; предложенная AI категория тоже считается.",
         "Когда всё разобрано — «Всё проверено»."
       ],
       trouble: [
-        "Показаны только первые пункты каждой группы; остальные появятся, когда вы разберёте эти.",
-        "Очередь считается по сохранённым данным: пункт исчезает сам, как только причина исправлена.",
+        "В разделе сначала видно до 20 пунктов каждого вида; остальные появятся, когда вы разберёте эти.",
+        "«Ревью» считается по сохранённым данным: пункт исчезает сам, как только причина исправлена.",
+        "Запомненные штрихкоды хранятся только на этом телефоне: на другом телефоне их нет, а при выходе из приложения они стираются. С выбранной категорией или тегом их не видно.",
+        "«Оценить покупки» — товары за последние 30 дней, не больше 50.",
+        "«Принять все предложенные» принимает не больше 100 категорий за раз; если их больше, кнопка называется «Принять первые предложенные».",
+        "«Покупки» — тоже только сохранённые за последние 30 дней: более старые покупки сюда не попадают, их строки можно проверить в самой покупке.",
         "С выбранной категорией или тегом не видно нераспознанных и несохранённых чеков: у них ещё нет товаров, а значит и категории с тегом. Сбросьте фильтр, чтобы увидеть их.",
-        "«По этому фильтру всё проверено» значит, что по подходящим товарам вопросов нет; остальная очередь может быть не пустой.",
-        "«Не удалось сохранить решение» — проверьте интернет и нажмите ещё раз. Если товар уже объединили в другом месте, пункт исчезнет после обновления очереди.",
+        "«По этому фильтру всё проверено» значит, что по подходящим товарам вопросов нет; остальное может быть не пустым.",
+        "«Не удалось сохранить решение» — проверьте интернет и нажмите ещё раз. Если товар уже объединили в другом месте, пункт исчезнет после обновления.",
         "Похожие товары с тех пор удалили или объединили — тогда остаются «Это другой товар» и «Открыть товар», а в карточке товара — «Объединить с…»."
       ]
     },
@@ -474,7 +480,7 @@ export const helpRu: HelpText = {
         "«Похоже, это вопрос не о покупках» — переформулируйте про траты, товары, магазины или цены.",
         "Подряд можно задать до 20 новых вопросов, дальше — один раз в 3 минуты. Вопрос, который уже задавали, берётся из истории и в лимит не входит; «Спросить заново» запрашивает модель и в лимит входит. Фильтры готового ответа можно менять и после лимита.",
         "Если вопросы выключены на сервере, готовый ответ всё равно можно менять фильтрами.",
-        "Ответ неточный — проверьте, не остались ли строки без цены или товары без категории в «Нужно проверить».",
+        "Ответ неточный — проверьте, не остались ли строки без цены или товары без категории в «Ревью».",
         "«Один из тегов не найден — этот фильтр убран»: тег удалили или такого тега нет, ответ посчитан без него. Если выбрано несколько тегов (через вопрос или MCP), учитываются только товары со всеми ними сразу."
       ]
     },
@@ -506,7 +512,7 @@ export const helpRu: HelpText = {
       summary: "Сервер открывает MCP — способ для AI-ассистента читать историю покупок и задавать вопросы аналитике. Это дополнительный вход; основной — само приложение.",
       steps: [
         "Адрес — /mcp на том же сервере. Доступ есть только у подтверждённых участников, как и у приложения.",
-        "Инструменты: поиск покупок и товаров (в том числе по тегу), категории, бренды, теги, очередь «Нужно проверить», впечатления, расчёт аналитики по плану, черновики покупок."
+        "Инструменты: поиск покупок и товаров (в том числе по тегу), категории, бренды, теги, очередь «Ревью», впечатления, расчёт аналитики по плану, черновики покупок."
       ],
       see: [
         "Числа в аналитике через MCP считаются так же, как в приложении: сервер проверяет план и сам считает."
@@ -555,7 +561,7 @@ export const helpEn: HelpText = {
     scan: "Scan barcode",
     uncategorizedProducts: "Products without a category",
     needsReviewProducts: "Products to check",
-    reviewQueue: "Needs attention",
+    reviewQueue: "Review",
     analytics: "Insights"
   },
   topics: {
@@ -669,7 +675,7 @@ export const helpEn: HelpText = {
       trouble: [
         "“Retry needed” — the photos are kept. Press “Retry with saved photos” when the service is available again.",
         "Common problems: line totals don't match the receipt total, a line price wasn't read, store or date wasn't recognized. All of these are fixed before saving.",
-        "A failed receipt also shows up in “Needs attention”."
+        "A failed receipt also shows up in “Review”."
       ]
     },
     "review-save": {
@@ -698,7 +704,7 @@ export const helpEn: HelpText = {
         "Saving is disabled until every line has a name.",
         "If no lines were recognized, the screen says so: add them in “Store, date and total” → “Add line”.",
         "If the store, date, currency or receipt total was not read, it says so above the products and in the summary under “Needs attention”; fill it in under “Store, date and total” and the item goes away at once.",
-        "Didn't save right away — the receipt stays in “Receipts in progress” and in “Needs attention” as “Receipt waiting to be saved”."
+        "Didn't save right away — the receipt stays in “Receipts in progress” and in “Review” as “Receipt waiting to be saved”."
       ]
     },
     feed: {
@@ -743,13 +749,13 @@ export const helpEn: HelpText = {
       title: "Fixing a saved purchase",
       summary: "A saved purchase can be fixed at any time — mistakes in history are not permanent.",
       steps: [
-        "Open the purchase: press the store in the feed, “Open and correct the purchase” on the receipt page, or an item in “Needs attention”.",
+        "Open the purchase: press the store in the feed, “Open and correct the purchase” on the receipt page, or an item in “Review”.",
         "Press the pencil (“Correct”) at the top right. Change store, date, currency and total at the top. Tap a line to change its name, quantity, price and sum; “Add line” and “Add discount” add new ones. Swipe an extra line left and press “Delete” (or “Remove line N” inside the line).",
         "A line's product is chosen inside the line: “Change product” — by search, “Create a new product” (an ordinary product named after the line) or “Match automatically”.",
         "Press “Save” at the top right. “Cancel” leaves without changes."
       ],
       see: [
-        "The purchase page starts with the date and total, then what is worth checking, marked ⚠. Every product line has a catalog product; its name shows only when it differs from the line. The “check” mark means the product looks like other products — sort it out in “Needs attention” or on the product card.",
+        "The purchase page starts with the date and total, then what is worth checking, marked ⚠. Every product line has a catalog product; its name shows only when it differs from the line. The “check” mark means the product looks like other products — sort it out in “Review” or on the product card.",
         "While correcting, the top shows whether the lines add up to the receipt total and by how much they differ. Lines without a price are highlighted.",
         "Your product choice is remembered for that store: next time such a line links by itself.",
         "Next to every line's amount there is a box icon (“Open product “…””) that opens the product card, and “Back” on the card returns to this purchase at the same line. While correcting, “Open product” in the line's sheet does the same as long as you have changed nothing (so no edit is lost: press “Save” first).",
@@ -757,7 +763,7 @@ export const helpEn: HelpText = {
       ],
       trouble: [
         "If the purchase was already changed in another window or device, your edit won't overwrite it: the app offers to load the fresh version.",
-        "“Total does not match” and “Missing price” items in “Needs attention” open the editor right at the spot (the total or the line price) and disappear after saving. After “Save” you come back to “Needs attention” with the same filters."
+        "“Total does not match” and “Missing price” items in “Review” open the editor right at the spot (the total or the line price) and disappear after saving. After “Save” you come back to “Review” with the same filters."
       ]
     },
     "receipt-lines-photo": {
@@ -810,7 +816,7 @@ export const helpEn: HelpText = {
       trouble: [
         "If a line price couldn't be read, it is left out of the numbers — a note says so.",
         "A merge cannot be undone. If you merged the wrong ones, create the product again and relink the lines in the purchases with “Change product”.",
-        "A new product marked “check” has no category yet, or only one suggested by AI. In “Needs attention” it is still one item, “Same product or a new one?”: with a “Choose category” button, or with “Confirm” and “Change” for the suggested category. Decide about the product (“Yes, this one” or “It's a different product”) and about the category; if you only decide about the product, the category stays as an item of its own."
+        "A new product marked “check” has no category yet, or only one suggested by AI. In “Review” it is still one item, “Same product or a new one?”: with a “Choose category” button, or with “Confirm” and “Change” for the suggested category. Decide about the product (“Yes, this one” or “It's a different product”) and about the category; if you only decide about the product, the category stays as an item of its own."
       ]
     },
     "product-scan": {
@@ -853,7 +859,7 @@ export const helpEn: HelpText = {
       see: [
         "A fix applies to every purchase of that product, past and future.",
         "AI never overwrites what a person confirmed.",
-        "The “Category” filter is in “Needs attention” too: work through, say, only “Milk” or only “No category” products."
+        "The “Category” filter is in “Review” too: work through, say, only “Milk” or only “No category” products."
       ],
       trouble: [
         "Deleting a subcategory moves its products to the group; deleting a group moves them to “No category”.",
@@ -873,7 +879,7 @@ export const helpEn: HelpText = {
       ],
       see: [
         "Tags are shown in the “Products” list and on the product page.",
-        "The “Tag” filter is in the filter sheet of “Purchases”, “Products” and “Needs attention”; the product page has a “Purchases tagged “…”” link.",
+        "The “Tag” filter is in the filter sheet of “Purchases”, “Products” and “Review”; the product page has a “Purchases tagged “…”” link.",
         "In “Insights” you can ask about a tag (“How much did we spend on kids' stuff?”) or pick the “Tag” field and the “By tag” breakdown.",
         "Only people create tags: the app never makes up or assigns tags by itself.",
         "“Suggest tags” only suggests: the AI picks only from tags you already created and adds nothing by itself — a tag lands on the product only when you press “Add” or “Add all”. The button is shown when you have tags the product doesn't have yet."
@@ -906,31 +912,37 @@ export const helpEn: HelpText = {
       ]
     },
     "review-queue": {
-      title: "Needs attention",
-      summary: "A queue of what's worth fixing or confirming so history and analytics stay accurate.",
+      title: "Review",
+      summary: "Everything worth checking or doing in one place: receipts, purchases, products, categories, barcodes and ratings. It keeps history and analytics accurate.",
       steps: [
-        "Open “Needs attention” on Home: the row with the number of items. The same number is on the “Home” tab.",
-        "Confirm a suggested category with one “Confirm” press, or choose another one.",
-        "“Same product or a new one?”: the app was not sure a receipt line is a product you already have, so it made a separate product of it. Up to three similar products are shown under it (name, brand, category, number of purchases). Compare: if it is one of them — “Yes, this one”, then confirm “Merge”: the purchases, receipt spellings and tags move to the chosen product. If it really is different — “It's a different product”. “Open product” opens its card.",
-        "If such a product has no category yet, it is still one item: “New product: check it and choose a category.” Decide whether it is the same product; “Choose category” opens the product card, where you pick the category.",
-        "If AI has already suggested a category, it is one item too: “New product: check it and confirm the category “…”.” Decide whether it is the same product and press “Confirm”, or “Change” to pick another one.",
-        "Everything else opens with a button — “Open receipt”, “Correct”, “Choose category” — right at the spot. When you save a receipt or purchase opened from here, you come back to “Needs attention” with the same filters.",
-        "To work through just part of it, press the filter button at the top right and pick a “Category” (for example, “Milk” or “No category”) and/or a “Tag” (for example, “For the kids”). “All categories”, “All tags”, “Reset” in the filter sheet or “Reset filter” on the screen bring back the whole queue. The “Tag” row appears once you have at least one tag."
+        "On Home, under the “Receipt” and “Scan” buttons, there is the “Review” card. While something is waiting it shows ⚠ and a number; the same number is on the “Home” tab. With nothing waiting it says “All checked”.",
+        "In “Review” the sections go from most to least important, and only those with something in them are shown: “Receipts” (not recognized, waiting to be saved, total does not match, missing price), “Purchases” (lines not checked yet), “Products” (same product or a new one), “Categories” (suggested by AI or none), “Barcodes” (remembered for later) and “Rate purchases”. Each section shows its number; it starts with three items, the rest are under “Show all”.",
+        "“Purchases”: “Check lines” opens the purchase right at the first unchecked line — compare it with the receipt and press “Right, next”.",
+        "“Products”, “Same product or a new one?”: the app was not sure a receipt line is a product you already have, so it made a separate product. Up to three similar products are shown under it. If it is one of them — “Yes, this one”, then confirm “Merge”: the purchases, receipt spellings and tags move to the chosen product. If it really is different — “It's a different product”. If the new product has no category or only a suggested one, the same item has “Choose category”, or “Confirm” and “Change”.",
+        "“Categories”: confirm a suggested category with “Confirm” or press “Change”. “Accept all suggested” confirms every suggested category at once; for a few seconds you can press “Undo” in the message that pops up, and nothing changes. If you switch away from or close the app meanwhile, the categories are accepted right away.",
+        "“Barcodes”: codes you put aside in the shop with “Remember for later”. “Link to a product” — find the product by name and pick it; “Forget” removes the code.",
+        "“Rate purchases”: recent products you have not rated yet — press 👎, 😐 or 👍.",
+        "“Check one by one” in “Products”, “Categories” and “Rate purchases” shows the items one at a time, with “12 of 75” on top. Answer with a button (“Right, next” for a suggested category, “Yes, this one”, a rating) or press “Skip”. Swipe left for the next card, right for the previous one. After the last card you are back in “Review”.",
+        "Everything else opens with a button — “Open receipt”, “Correct”, “Choose category”, “Open product” — right at the spot. “Back” returns to the same place in “Review”; when you save a receipt or purchase opened from here, you also come back here with the same filters.",
+        "To work through just part of it, press the filter button at the top right and pick a “Category” (for example, “Milk” or “No category”) and/or a “Tag” (for example, “For the kids”). “All categories”, “All tags”, “Reset” in the filter sheet or “Reset filter” on the screen bring everything back. The “Tag” row appears once you have at least one tag."
       ],
       see: [
-        "Groups: receipt not recognized, receipt waiting to be saved, total does not match, missing price, same product or a new one, category not confirmed, no category.",
-        "Each product counts once: a new product without a category or with an unconfirmed one is only under “Same product or a new one?”, not under “No category” or “Category not confirmed” as well.",
-        "After “Yes, this one”, later receipts with that spelling go straight to the chosen product. A merge cannot be undone. After “It's a different product” the receipt spelling stays with this product. The item leaves the queue and the number on the “Home” tab goes down.",
-        "The number on the “Home” tab and in the “Needs attention” row shows how many items are left in the whole queue — even while a category or tag is picked on the screen.",
-        "Category and tag come from the product. With a filter you see products that match it (same product or a new one, category not confirmed, no category) and purchases where at least one line is such a product (total does not match, missing price). A category group includes its subcategories; an AI-suggested category counts too.",
+        "Each product counts once: a new product without a category or with an unconfirmed one is only under “Products”, not under “Categories” as well.",
+        "After “Yes, this one”, later receipts with that spelling go straight to the chosen product. A merge cannot be undone, so “Accept all suggested” never merges. The item goes away and the number on the “Review” card and the “Home” tab goes down.",
+        "The number on the “Review” card and the “Home” tab is everything waiting, even while a category or tag is picked on the screen. Ratings are personal: yours do not clear items for another family member. Checked lines, products and categories are shared by the family.",
+        "Category and tag come from the product. With a filter you see products that match it and purchases where at least one line is such a product. A category group includes its subcategories; an AI-suggested category counts too.",
         "When everything is done — “All checked”."
       ],
       trouble: [
-        "Only the first items of each group are shown; the rest appear as you work through these.",
-        "The queue is computed from saved data: an item disappears as soon as its cause is fixed.",
+        "A section first shows up to 20 items of each kind; the rest appear as you work through these.",
+        "“Review” is computed from saved data: an item disappears as soon as its cause is fixed.",
+        "Remembered barcodes are kept on this phone only: another phone does not have them, and signing out clears them. With a category or tag picked they are hidden.",
+        "“Rate purchases” lists products from the last 30 days, at most 50.",
+        "“Accept all suggested” accepts at most 100 categories at a time; with more, the button says “Accept the first suggested”.",
+        "“Purchases” also lists only purchases saved in the last 30 days: older ones are not here, but you can still check their lines in the purchase itself.",
         "With a category or tag picked, failed or unsaved receipts are hidden: they have no products yet, so no category or tag either. Reset the filter to see them.",
-        "“Nothing to check for this filter” means the matching products are fine; the rest of the queue may still have items.",
-        "“Could not save the decision” — check the connection and press again. If the product was already merged elsewhere, the item disappears once the queue refreshes.",
+        "“Nothing to check for this filter” means the matching products are fine; the rest may still have items.",
+        "“Could not save the decision” — check the connection and press again. If the product was already merged elsewhere, the item disappears once the list refreshes.",
         "The similar products were deleted or merged since — then “It's a different product” and “Open product” remain, and the product card has “Merge with…”."
       ]
     },
@@ -955,7 +967,7 @@ export const helpEn: HelpText = {
         "“That does not look like a question about purchases” — rephrase it around spending, products, stores or prices.",
         "Up to 20 new questions in a row, then one every 3 minutes. A question asked before is answered from the history and does not count; “Ask again” calls the model and does count. The filters of an existing answer still work after the limit.",
         "If questions are turned off on the server, an existing answer can still be changed with filters.",
-        "Answer looks off — check “Needs attention” for lines without a price or products without a category.",
+        "Answer looks off — check “Review” for lines without a price or products without a category.",
         "“A tag was not found — that filter was removed”: the tag was deleted or doesn't exist, and the answer is computed without it. With several tags (from a question or MCP) only products carrying all of them are counted."
       ]
     },
@@ -987,7 +999,7 @@ export const helpEn: HelpText = {
       summary: "The server exposes MCP — a way for an AI assistant to read purchase history and ask analytics questions. It's an extra entry point; the app itself is the main one.",
       steps: [
         "The address is /mcp on the same server. Only approved members have access, just like the app.",
-        "Tools: search purchases and products (by tag too), categories, brands, tags, the “Needs attention” queue, impressions, analytics by plan, purchase drafts."
+        "Tools: search purchases and products (by tag too), categories, brands, tags, the “Review” queue, impressions, analytics by plan, purchase drafts."
       ],
       see: [
         "Analytics numbers over MCP are computed the same way as in the app: the server checks the plan and counts itself."

@@ -3,9 +3,10 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Suspense, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router";
-import { getRecognitionStatus, getReviewQueueCount, listRecentReceipts } from "../api/client";
+import { getRecognitionStatus, listRecentReceipts } from "../api/client";
 import type { ReceiptStatus, RecognitionStatus } from "../api/types";
-import { reviewQueueCountQueryKey, reviewQueueQueryKey } from "../features/review-queue/reviewQueueQueries";
+import { reviewQueueQueryKey } from "../features/review-queue/reviewQueueQueries";
+import { useReviewCount } from "../features/review-queue/useReviewCount";
 import { AppShell } from "./AppShell/AppShell";
 import { PlaceMemory } from "./PlaceMemory";
 import { lazyPage, ScreenErrorBoundary } from "./lazyPage";
@@ -40,8 +41,8 @@ export function AppRoutes() {
     queryFn: () => listRecentReceipts(20),
     refetchInterval: (query) => query.state.data?.some((receipt) => isActive(receipt.status)) ? 1_200 : false
   });
-  // The badge refreshes after queue actions, when a receipt finishes, and once a minute.
-  const reviewCountQuery = useQuery({ queryKey: reviewQueueCountQueryKey, queryFn: getReviewQueueCount, retry: false, staleTime: 30_000, refetchInterval: 60_000 });
+  // One count for the tab badge and the Home card (see useReviewCount).
+  const reviewCount = useReviewCount();
   const previousStatuses = useRef<Map<string, ReceiptStatus> | null>(null);
 
   useEffect(() => {
@@ -74,13 +75,13 @@ export function AppRoutes() {
     : recognition;
 
   return (
-    <AppShell reviewCount={reviewCountQuery.data?.totalCount ?? null}>
+    <AppShell reviewCount={reviewCount.total}>
       <ToastNavigationBridge />
       <PlaceMemory />
       <ScreenErrorBoundary resetKey={location.pathname}>
         <Suspense fallback={<PageLoading />}>
           <Routes>
-            <Route path="/" element={<HomePage recognition={recognition} recognitionFailed={recognitionFailed} receipts={receiptsQuery.data ?? []} receiptsFailed={receiptsQuery.isError} reviewCount={reviewCountQuery.data?.totalCount ?? null} />} />
+            <Route path="/" element={<HomePage recognition={recognition} recognitionFailed={recognitionFailed} receipts={receiptsQuery.data ?? []} receiptsFailed={receiptsQuery.isError} reviewCount={reviewCount.total} />} />
             <Route path="/purchases" element={<PurchasesPage />} />
             <Route path="/purchases/new" element={<CapturePage recognition={captureRecognition} />} />
             <Route path="/purchases/:purchaseId" element={<PurchaseDetailPage />} />

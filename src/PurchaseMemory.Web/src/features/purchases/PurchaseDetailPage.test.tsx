@@ -5,6 +5,7 @@ import { ApiError, fetchProtectedBlob, getProduct, getProductCatalog, getPurchas
 import type { PurchaseDetail, ReceiptView } from "../../api/types";
 import { AppProviders } from "../../app/AppProviders";
 import { dialog } from "../../test/ionicHelpers";
+import { clearPlaces } from "../../app/place";
 import { PurchaseDetailPage } from "./PurchaseDetailPage";
 
 vi.mock("../../api/client", async (importOriginal) => {
@@ -135,7 +136,7 @@ describe("PurchaseDetailPage", () => {
     expect(vi.mocked(updatePurchase).mock.calls[0][1].receiptTotal).toBe(18.5);
   });
 
-  it("returns to «Нужно проверить» with its filters after saving a purchase opened from there", async () => {
+  it("returns to «Ревью» with its filters after saving a purchase opened from there", async () => {
     vi.mocked(updatePurchase).mockResolvedValue({ ...purchase, updatedAt: "2026-07-02T00:00:00Z", issues: [] });
     renderAt("/purchases/p1?edit=1&focus=total", { returnTo: "/needs-attention?category=milk&tag=kid" });
 
@@ -149,7 +150,7 @@ describe("PurchaseDetailPage", () => {
     renderAt("/purchases/p1", { returnTo: "/needs-attention" });
 
     await screen.findByRole("heading", { level: 1, name: "Żabka" });
-    expect(screen.getByRole("link", { name: /Нужно проверить/ })).toHaveAttribute("href", "/needs-attention");
+    expect(screen.getByRole("link", { name: /Ревью/ })).toHaveAttribute("href", "/needs-attention");
     fireEvent.click(screen.getByRole("button", { name: "Исправить" }));
     fireEvent.click(await screen.findByRole("button", { name: "Отмена" }));
     fireEvent.click(await screen.findByRole("button", { name: "Исправить" }));
@@ -331,6 +332,22 @@ describe("PurchaseDetailPage line review (carousel)", () => {
     expect(await within(review).findByRole("img", { name: "Фото чека, выделена строка «KAWA»" })).toHaveAttribute("src", "blob:receipt-photo");
     // Lines add to 18 against a total of 20.
     expect(within(review).getByText(/^Строки дают 18,00.* из 20,00.* · не хватает 2,00/)).toBeInTheDocument();
+  });
+
+  it("opened with «Проверить строки» from «Ревью», starts the review on the first unchecked line, once", async () => {
+    clearPlaces();
+    vi.mocked(getPurchase).mockResolvedValue({ ...withPhoto, items: [{ ...withPhoto.items[0], approved: true }, withPhoto.items[1]] });
+    const view = renderAt("/purchases/p1", { returnTo: "/needs-attention", openLineReview: true });
+
+    const review = await screen.findByRole("dialog");
+    expect(within(review).getByText("Товар 2 из 2")).toBeInTheDocument();
+    expect(shownName()).toBe("Ser Gouda 250g");
+    view.unmount();
+
+    // The same entry again (back from a product, a reload): the flag does not reopen a closed review.
+    renderAt("/purchases/p1", { returnTo: "/needs-attention", openLineReview: true });
+    expect(await screen.findByRole("button", { name: /^KAWA/ })).toBeInTheDocument();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
   it("shows a line without a box on the whole photo", async () => {

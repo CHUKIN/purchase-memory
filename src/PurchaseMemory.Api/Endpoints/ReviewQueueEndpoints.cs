@@ -1,12 +1,17 @@
+using System.Security.Claims;
 using System.Text.Json;
+using PurchaseMemory.Api.Auth;
 using PurchaseMemory.Application.ReviewQueue;
 
 namespace PurchaseMemory.Api.Endpoints;
 
 /// <summary>
-/// «Нужно проверить»: what in the stored data still needs a person. Read-only;
-/// fixes go through the existing receipt and product endpoints. Behind the
-/// approved-user fallback policy like every other data endpoint.
+/// «Ревью»: what in the stored data still needs a person, plus purchases with
+/// unchecked lines and the caller's own lines to rate. Read-only; fixes go
+/// through the existing receipt, purchase, product and impression endpoints.
+/// Behind the approved-user fallback policy like every other data endpoint;
+/// the rating part is always the caller's (from the token), the rest is the
+/// household's shared data, as everywhere else.
 /// The list takes the feed's classification filters — <c>categoryId</c> (with
 /// its subcategories) or <c>uncategorized=true</c>, and a repeatable
 /// <c>tagId</c> (all tags required); the count stays the whole queue, because
@@ -26,6 +31,7 @@ public static class ReviewQueueEndpoints
         Guid? categoryId,
         bool? uncategorized,
         string[]? tagId,
+        ClaimsPrincipal user,
         IReviewQueueService service,
         CancellationToken cancellationToken)
     {
@@ -44,9 +50,10 @@ public static class ReviewQueueEndpoints
 
         try
         {
-            var queue = await service.GetAsync(
+            var queue = await service.GetHubAsync(
                 limit,
                 new ReviewQueueFilter(categoryId, uncategorized ?? false, tagIds),
+                AppUser.Actor(user).UserId,
                 cancellationToken);
             return Results.Ok(ReviewQueueResponse.From(queue));
         }
@@ -65,18 +72,34 @@ public static class ReviewQueueEndpoints
         }
     }
 
-    private static async Task<IResult> CountAsync(IReviewQueueService service, CancellationToken cancellationToken)
+    private static async Task<IResult> CountAsync(ClaimsPrincipal user, IReviewQueueService service, CancellationToken cancellationToken)
     {
-        var queue = await service.GetAsync(0, cancellationToken);
+        var queue = await service.GetHubAsync(0, ReviewQueueFilter.None, AppUser.Actor(user).UserId, cancellationToken);
         return Results.Ok(new ReviewQueueCountResponse(
             queue.TotalCount,
-            queue.Groups.ToDictionary(group => KindToWire(group.Kind), group => group.TotalCount)));
+            queue.Groups.ToDictionary(group => KindToWire(group.Kind), group => group.TotalCount),
+            ReviewQueueSummaryResponse.From(queue.Summary)));
     }
 
     public static string KindToWire(ReviewQueueItemKind kind) => JsonNamingPolicy.CamelCase.ConvertName(kind.ToString());
+
+    public static string SectionToWire(ReviewQueueSection section) => JsonNamingPolicy.CamelCase.ConvertName(section.ToString());
 }
 
-public sealed record ReviewQueueCountResponse(int TotalCount, IReadOnlyDictionary<string, int> ByKind);
+public sealed record ReviewQueueCountResponse(int TotalCount, IReadOnlyDictionary<string, int> ByKind, ReviewQueueSummaryResponse? Summary);
+
+public sealed record ReviewQueueSectionCountResponse(string Section, int Count);
+
+/// <summary>The whole hub (never filtered): the Home card, the tab badge and the hub read the same numbers.</summary>
+public sealed record ReviewQueueSummaryResponse(int TotalCount, IReadOnlyList<ReviewQueueSectionCountResponse> Sections)
+{
+    public static ReviewQueueSummaryResponse? From(ReviewQueueSummary? summary) => summary is null
+        ? null
+        : new(
+            summary.TotalCount,
+            summary.Sections.Select(section => new ReviewQueueSectionCountResponse(
+                ReviewQueueEndpoints.SectionToWire(section.Section), section.Count)).ToList());
+}
 
 public sealed record ReviewQueueItemResponse(
     string Kind,
@@ -98,7 +121,13 @@ public sealed record ReviewQueueItemResponse(
     // Flagged product only: distinct purchases it appears on.
     int? PurchaseCount,
     // Flagged product only: it has no category either; the same item asks for one.
-    bool NeedsCategory);
+    bool NeedsCategory,
+    // Unchecked purchase only: all its lines; affectedLineCount is the unchecked ones.
+    int? LineCount,
+    // Unrated line only: the line to rate, its store and price.
+    Guid? PurchaseItemId,
+    string? MerchantName,
+    decimal? Price);
 
 public sealed record ReviewQueueCandidateResponse(
     Guid ProductId,
@@ -110,7 +139,11 @@ public sealed record ReviewQueueCandidateResponse(
 
 public sealed record ReviewQueueGroupResponse(string Kind, int TotalCount, IReadOnlyList<ReviewQueueItemResponse> Items);
 
-public sealed record ReviewQueueResponse(int TotalCount, IReadOnlyList<ReviewQueueGroupResponse> Groups)
+public sealed record ReviewQueueResponse(
+    int TotalCount,
+    IReadOnlyList<ReviewQueueGroupResponse> Groups,
+    // The hub only (null from the MCP tool): the whole queue by section, whatever the filter.
+    ReviewQueueSummaryResponse? Summary)
 {
     public static ReviewQueueResponse From(ReviewQueueResult result) => new(
         result.TotalCount,
@@ -144,7 +177,12 @@ public sealed record ReviewQueueResponse(int TotalCount, IReadOnlyList<ReviewQue
                                 candidate.Score))
                             .ToList(),
                         item.PurchaseCount,
-                        item.NeedsCategory))
+                        item.NeedsCategory,
+                        item.LineCount,
+                        item.PurchaseItemId,
+                        item.MerchantName,
+                        item.Price))
                     .ToList()))
-            .ToList());
+            .ToList(),
+        ReviewQueueSummaryResponse.From(result.Summary));
 }
