@@ -14,7 +14,7 @@ using PurchaseMemory.Infrastructure.Persistence;
 
 namespace PurchaseMemory.IntegrationTests;
 
-/// <summary>The «Нужно проверить» queue: each kind from real stored data, limits and access.</summary>
+/// <summary>The review queue («Ревью»): each kind from real stored data, limits and access. The hub's own kinds: ReviewHubTests.</summary>
 public sealed class ReviewQueueTests
 {
     private static readonly DateTimeOffset July1 = new(2026, 7, 1, 10, 0, 0, TimeSpan.Zero);
@@ -317,14 +317,15 @@ public sealed class ReviewQueueTests
         using var client = host.CreateClientFor(AuthTestHost.Token());
 
         var queue = await client.GetFromJsonAsync<JsonElement>("/api/review-queue?limitPerKind=5", Cancel);
-        Assert.Equal(2, queue.GetProperty("totalCount").GetInt32());
+        // The hub also lists the purchase's unchecked lines (ReviewHubTests); its line is too old to rate.
+        Assert.Equal(3, queue.GetProperty("totalCount").GetInt32());
         var kinds = queue.GetProperty("groups").EnumerateArray().Select(g => g.GetProperty("kind").GetString()).ToList();
-        Assert.Equal(["totalMismatch", "missingCategory"], kinds);
+        Assert.Equal(["totalMismatch", "missingCategory", "unapprovedLines"], kinds);
         var item = queue.GetProperty("groups")[0].GetProperty("items")[0];
         Assert.Equal(15.00m, item.GetProperty("linesTotal").GetDecimal());
 
         var count = await client.GetFromJsonAsync<JsonElement>("/api/review-queue/count", Cancel);
-        Assert.Equal(2, count.GetProperty("totalCount").GetInt32());
+        Assert.Equal(3, count.GetProperty("totalCount").GetInt32());
         Assert.Equal(1, count.GetProperty("byKind").GetProperty("totalMismatch").GetInt32());
 
         Assert.Equal(HttpStatusCode.BadRequest, (await client.GetAsync("/api/review-queue?limitPerKind=0", Cancel)).StatusCode);
@@ -453,23 +454,24 @@ public sealed class ReviewQueueTests
         using var client = host.CreateClientFor(AuthTestHost.Token());
 
         var filtered = await client.GetFromJsonAsync<JsonElement>($"/api/review-queue?limitPerKind=5&tagId={kid}", Cancel);
-        Assert.Equal(2, filtered.GetProperty("totalCount").GetInt32());
+        // Each purchase is also in the hub with its unchecked lines.
+        Assert.Equal(3, filtered.GetProperty("totalCount").GetInt32());
         var titles = filtered.GetProperty("groups").EnumerateArray()
             .SelectMany(group => group.GetProperty("items").EnumerateArray())
             .Select(item => item.GetProperty("title").GetString())
             .ToList();
-        Assert.Equal(["Lidl", "SOK JABLKOWY"], titles);
+        Assert.Equal(["Lidl", "SOK JABLKOWY", "Lidl"], titles);
 
         var both = await client.GetFromJsonAsync<JsonElement>($"/api/review-queue?tagId={promo}&tagId={kid}", Cancel);
-        Assert.Equal(2, both.GetProperty("totalCount").GetInt32());
+        Assert.Equal(3, both.GetProperty("totalCount").GetInt32());
         var promoOnly = await client.GetFromJsonAsync<JsonElement>($"/api/review-queue?tagId={promo}", Cancel);
-        Assert.Equal(4, promoOnly.GetProperty("totalCount").GetInt32());
+        Assert.Equal(6, promoOnly.GetProperty("totalCount").GetInt32());
         var blank = await client.GetFromJsonAsync<JsonElement>("/api/review-queue?tagId=", Cancel);
-        Assert.Equal(4, blank.GetProperty("totalCount").GetInt32());
+        Assert.Equal(6, blank.GetProperty("totalCount").GetInt32());
 
         // The navigation badge counts the whole queue whatever the screen shows.
         var count = await client.GetFromJsonAsync<JsonElement>($"/api/review-queue/count?tagId={kid}", Cancel);
-        Assert.Equal(4, count.GetProperty("totalCount").GetInt32());
+        Assert.Equal(6, count.GetProperty("totalCount").GetInt32());
 
         Assert.Equal(HttpStatusCode.BadRequest, (await client.GetAsync("/api/review-queue?tagId=детское", Cancel)).StatusCode);
         Assert.Equal(HttpStatusCode.BadRequest, (await client.GetAsync($"/api/review-queue?tagId={Guid.NewGuid()}", Cancel)).StatusCode);
@@ -630,17 +632,18 @@ public sealed class ReviewQueueTests
 
         using var client = host.CreateClientFor(AuthTestHost.Token());
 
+        // Every purchase is also in the hub with its unchecked lines (ReviewHubTests).
         var juices = await client.GetFromJsonAsync<JsonElement>($"/api/review-queue?categoryId={Juices}", Cancel);
-        Assert.Equal(1, juices.GetProperty("totalCount").GetInt32());
+        Assert.Equal(2, juices.GetProperty("totalCount").GetInt32());
         var drinks = await client.GetFromJsonAsync<JsonElement>($"/api/review-queue?categoryId={ProductCategorySeed.IdFor(33)}", Cancel);
-        Assert.Equal(1, drinks.GetProperty("totalCount").GetInt32());
+        Assert.Equal(2, drinks.GetProperty("totalCount").GetInt32());
         var none = await client.GetFromJsonAsync<JsonElement>("/api/review-queue?uncategorized=true", Cancel);
-        // KAWA's mismatch and category, Gouda 150g's category, and the flagged 250g product once.
-        Assert.Equal(4, none.GetProperty("totalCount").GetInt32());
+        // KAWA's mismatch and category, Gouda 150g's category, the flagged 250g product once, and three unchecked purchases.
+        Assert.Equal(7, none.GetProperty("totalCount").GetInt32());
 
         // The whole list carries the flagged product's candidates.
         var all = await client.GetFromJsonAsync<JsonElement>("/api/review-queue", Cancel);
-        Assert.Equal(5, all.GetProperty("totalCount").GetInt32());
+        Assert.Equal(9, all.GetProperty("totalCount").GetInt32());
         var flagged = all.GetProperty("groups").EnumerateArray()
             .Single(group => group.GetProperty("kind").GetString() == "productNeedsReview")
             .GetProperty("items")[0];
@@ -656,7 +659,7 @@ public sealed class ReviewQueueTests
         Assert.Equal(JsonValueKind.Null, candidate.GetProperty("categoryId").ValueKind);
 
         var count = await client.GetFromJsonAsync<JsonElement>($"/api/review-queue/count?categoryId={Juices}", Cancel);
-        Assert.Equal(5, count.GetProperty("totalCount").GetInt32());
+        Assert.Equal(9, count.GetProperty("totalCount").GetInt32());
         Assert.Equal(1, count.GetProperty("byKind").GetProperty("productNeedsReview").GetInt32());
 
         Assert.Equal(HttpStatusCode.BadRequest, (await client.GetAsync($"/api/review-queue?categoryId={Guid.NewGuid()}", Cancel)).StatusCode);

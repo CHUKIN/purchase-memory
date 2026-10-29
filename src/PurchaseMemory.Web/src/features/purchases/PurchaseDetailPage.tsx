@@ -46,6 +46,7 @@ import { ProductLinkNote, ProductLinkRows, productStatusText } from "./ProductLi
 import { PurchaseLineReview, type LineChange, type ReviewStart } from "../line-review/PurchaseLineReview";
 import { useApprovalSync, useLineApprovals } from "../line-review/useLineApprovals";
 import { usePurchaseReceiptPhoto } from "./usePurchaseReceiptPhoto";
+import { useOpenLineReviewOnArrival } from "./openLineReview";
 
 const editFromViewKey = "editFromView";
 
@@ -146,7 +147,14 @@ function PurchaseSummary({ purchase, back, onEdit }: { purchase: PurchaseDetail;
   // first line with a problem (else the first line).
   // Coming back from a product (or a fresh reload of the same place) reopens the review at the line that was open.
   const arrival = useArrivalPlace();
-  const [review, setReview] = useState<ReviewStart | null>(() => arrival?.line !== undefined ? { index: arrival.line, nonce: 1 } : null);
+  // «Проверить строки» in «Ревью» opens the review at once, on the first line not checked yet.
+  const openOnArrival = useOpenLineReviewOnArrival();
+  const [review, setReview] = useState<ReviewStart | null>(() => {
+    if (arrival?.line !== undefined) return { index: arrival.line, nonce: 1 };
+    if (!openOnArrival) return null;
+    const unchecked = purchase.items.findIndex((item) => !approvals.isApproved(item));
+    return { index: unchecked === -1 ? null : unchecked, nonce: 1 };
+  });
   const openReview = (index: number | null) => setReview((current) => ({ index, nonce: (current?.nonce ?? 0) + 1 }));
   const saveLines = useSaveLines(purchase, approvals);
   const removeLine = useRemoveLine(purchase, approvals);

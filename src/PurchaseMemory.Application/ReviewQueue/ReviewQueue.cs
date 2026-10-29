@@ -1,3 +1,4 @@
+using PurchaseMemory.Application.Impressions;
 using PurchaseMemory.Application.Products;
 using PurchaseMemory.Application.Products.Categories;
 using PurchaseMemory.Application.Products.Tags;
@@ -46,7 +47,63 @@ public enum ReviewQueueItemKind
     /// Nobody (person or AI) has given the product a category. Never for a
     /// flagged product: its <see cref="ProductNeedsReview"/> item says so.
     /// </summary>
-    MissingCategory
+    MissingCategory,
+
+    /// <summary>
+    /// A saved purchase with lines nobody has marked «Верно» in the line
+    /// review yet. Only in the «Ревью» hub (<see cref="IReviewQueueService.GetHubAsync"/>).
+    /// </summary>
+    UnapprovedLines,
+
+    /// <summary>
+    /// A recent line the viewer has not rated yet (the same list as «Оценить
+    /// недавнее»). Personal: every person sees their own. Only in the hub.
+    /// </summary>
+    UnratedPurchase
+}
+
+/// <summary>
+/// The «Ревью» hub's sections, most important first. Every kind belongs to
+/// exactly one, so the section counts add up to the total.
+/// </summary>
+public enum ReviewQueueSection
+{
+    Receipts,
+    Purchases,
+    Products,
+    Categories,
+    Ratings
+}
+
+/// <summary>How many items a hub section has.</summary>
+public sealed record ReviewQueueSectionCount(ReviewQueueSection Section, int Count);
+
+/// <summary>
+/// The whole hub at a glance: what the Home card, the tab badge and the hub
+/// headers show. Always the unfiltered queue; <see cref="TotalCount"/> is the
+/// sum of <see cref="Sections"/>.
+/// </summary>
+public sealed record ReviewQueueSummary(int TotalCount, IReadOnlyList<ReviewQueueSectionCount> Sections)
+{
+    public static ReviewQueueSection SectionOf(ReviewQueueItemKind kind) => kind switch
+    {
+        ReviewQueueItemKind.FailedReceipt or ReviewQueueItemKind.UnsavedReceipt
+            or ReviewQueueItemKind.TotalMismatch or ReviewQueueItemKind.MissingPrice => ReviewQueueSection.Receipts,
+        ReviewQueueItemKind.UnapprovedLines => ReviewQueueSection.Purchases,
+        ReviewQueueItemKind.ProductNeedsReview => ReviewQueueSection.Products,
+        ReviewQueueItemKind.SuggestedCategory or ReviewQueueItemKind.MissingCategory => ReviewQueueSection.Categories,
+        ReviewQueueItemKind.UnratedPurchase => ReviewQueueSection.Ratings,
+        _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+    };
+
+    public static ReviewQueueSummary From(IEnumerable<ReviewQueueItem> items)
+    {
+        var counts = items.GroupBy(item => SectionOf(item.Kind)).ToDictionary(group => group.Key, group => group.Count());
+        var sections = Enum.GetValues<ReviewQueueSection>()
+            .Select(section => new ReviewQueueSectionCount(section, counts.GetValueOrDefault(section)))
+            .ToList();
+        return new ReviewQueueSummary(sections.Sum(section => section.Count), sections);
+    }
 }
 
 /// <summary>
@@ -76,7 +133,13 @@ public sealed record ReviewQueueItem(
     // Flagged product only: distinct purchases it appears on.
     int? PurchaseCount = null,
     // Flagged product only: it has no category either, so the card also asks for one.
-    bool NeedsCategory = false);
+    bool NeedsCategory = false,
+    // Unchecked purchase only: all its lines (AffectedLineCount is the unchecked ones).
+    int? LineCount = null,
+    // Unrated line only: the line to rate, where and for how much it was bought.
+    Guid? PurchaseItemId = null,
+    string? MerchantName = null,
+    decimal? Price = null);
 
 /// <summary>An existing product a flagged product might really be.</summary>
 public sealed record ReviewQueueCandidate(
@@ -103,7 +166,11 @@ public sealed record ReviewQueueFilter(
 
 public sealed record ReviewQueueGroup(ReviewQueueItemKind Kind, int TotalCount, IReadOnlyList<ReviewQueueItem> Items);
 
-public sealed record ReviewQueueResult(int TotalCount, IReadOnlyList<ReviewQueueGroup> Groups);
+/// <summary>
+/// <see cref="TotalCount"/> and <see cref="Groups"/> follow the filter;
+/// <see cref="Summary"/> (hub only) is always the whole queue.
+/// </summary>
+public sealed record ReviewQueueResult(int TotalCount, IReadOnlyList<ReviewQueueGroup> Groups, ReviewQueueSummary? Summary = null);
 
 // Raw facts read from storage; the service decides what needs attention.
 public sealed record ReviewReceiptFact(
@@ -123,7 +190,9 @@ public sealed record ReviewPurchaseFact(
     decimal? ReceiptTotal,
     IReadOnlyList<PurchaseDraftIssueItem> Items,
     // Catalog products the purchase's lines are linked to; only the tag filter reads them.
-    IReadOnlyCollection<Guid>? ProductIds = null);
+    IReadOnlyCollection<Guid>? ProductIds = null,
+    // Positions of the lines nobody has marked «Верно» yet, in order (discounts included).
+    IReadOnlyList<int>? UnapprovedPositions = null);
 
 public sealed record ReviewFlaggedProductFact(
     Guid Id,
@@ -182,6 +251,17 @@ public interface IReviewQueueService
         int limitPerKind,
         ReviewQueueFilter filter,
         CancellationToken cancellationToken);
+
+    /// <summary>
+    /// The «Ревью» hub: the queue above plus purchases with unchecked lines
+    /// and the viewer's own lines to rate, with a <see cref="ReviewQueueSummary"/>
+    /// of the whole hub. Same filter rules as <see cref="GetAsync(int, ReviewQueueFilter, CancellationToken)"/>.
+    /// </summary>
+    Task<ReviewQueueResult> GetHubAsync(
+        int limitPerKind,
+        ReviewQueueFilter filter,
+        string viewerUserId,
+        CancellationToken cancellationToken);
 }
 
 /// <summary>
@@ -192,7 +272,9 @@ public sealed class ReviewQueueService(
     IReviewQueueRepository repository,
     IProductCatalogRepository catalog,
     IProductCategoryRepository categories,
-    IProductTagRepository tags) : IReviewQueueService
+    IProductTagRepository tags,
+    IProductImpressionRepository impressions,
+    TimeProvider timeProvider) : IReviewQueueService
 {
     public const int DefaultLimitPerKind = 20;
     public const int MaximumLimitPerKind = 100;
@@ -212,9 +294,27 @@ public sealed class ReviewQueueService(
         CancellationToken cancellationToken) =>
         GetAsync(limitPerKind, new ReviewQueueFilter(TagIds: tagIds), cancellationToken);
 
-    public async Task<ReviewQueueResult> GetAsync(
+    public Task<ReviewQueueResult> GetAsync(
         int limitPerKind,
         ReviewQueueFilter filter,
+        CancellationToken cancellationToken) =>
+        LoadAsync(limitPerKind, filter, viewerUserId: null, cancellationToken);
+
+    public Task<ReviewQueueResult> GetHubAsync(
+        int limitPerKind,
+        ReviewQueueFilter filter,
+        string viewerUserId,
+        CancellationToken cancellationToken)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(viewerUserId);
+        return LoadAsync(limitPerKind, filter, viewerUserId, cancellationToken);
+    }
+
+    /// <summary><paramref name="viewerUserId"/> null: the data queue only; set: the whole hub.</summary>
+    private async Task<ReviewQueueResult> LoadAsync(
+        int limitPerKind,
+        ReviewQueueFilter filter,
+        string? viewerUserId,
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(filter);
@@ -236,7 +336,23 @@ public sealed class ReviewQueueService(
             : await catalog.ListMatchingProductIdsAsync(classification, cancellationToken);
 
         var facts = await repository.LoadFactsAsync(MaximumScannedPurchases, cancellationToken);
-        var items = Build(facts, matchingProducts);
+        var all = BuildAll(facts);
+        ReviewQueueSummary? summary = null;
+        if (viewerUserId is not null)
+        {
+            // Both hub kinds look back over the same window as «Оценить недавнее»: purchases
+            // saved before line approvals existed would otherwise all wait for a check.
+            var since = timeProvider.GetUtcNow().AddDays(-ProductImpressionService.DefaultUnratedDays);
+            var unrated = await impressions.ListUnratedAsync(
+                viewerUserId,
+                since,
+                ProductImpressionService.MaximumUnratedLimit,
+                cancellationToken);
+            all.AddRange(BuildHubExtras(facts, unrated, since));
+            summary = ReviewQueueSummary.From(all);
+        }
+
+        var items = Filter(all, facts, matchingProducts);
         var groups = items
             .GroupBy(item => item.Kind)
             .OrderBy(group => group.Key)
@@ -248,7 +364,7 @@ public sealed class ReviewQueueService(
                     .ToList()))
             .ToList();
 
-        return new ReviewQueueResult(items.Count, groups);
+        return new ReviewQueueResult(items.Count, groups, summary);
     }
 
     /// <summary>
@@ -261,9 +377,11 @@ public sealed class ReviewQueueService(
     /// <paramref name="matchingProducts"/> is the products passing the filter,
     /// or <c>null</c> for no filter.
     /// </summary>
-    public static List<ReviewQueueItem> Build(ReviewQueueFacts facts, IReadOnlySet<Guid>? matchingProducts = null)
+    public static List<ReviewQueueItem> Build(ReviewQueueFacts facts, IReadOnlySet<Guid>? matchingProducts = null) =>
+        Filter(BuildAll(facts), facts, matchingProducts);
+
+    private static List<ReviewQueueItem> Filter(List<ReviewQueueItem> items, ReviewQueueFacts facts, IReadOnlySet<Guid>? matchingProducts)
     {
-        var items = BuildAll(facts);
         if (matchingProducts is null)
         {
             return items;
@@ -279,9 +397,10 @@ public sealed class ReviewQueueService(
     private static bool MatchesProducts(ReviewQueueItem item, IReadOnlySet<Guid> matchingProducts, HashSet<Guid> matchingPurchases) =>
         item.Kind switch
         {
-            ReviewQueueItemKind.SuggestedCategory or ReviewQueueItemKind.MissingCategory or ReviewQueueItemKind.ProductNeedsReview =>
+            ReviewQueueItemKind.SuggestedCategory or ReviewQueueItemKind.MissingCategory
+                or ReviewQueueItemKind.ProductNeedsReview or ReviewQueueItemKind.UnratedPurchase =>
                 item.ProductId is { } productId && matchingProducts.Contains(productId),
-            ReviewQueueItemKind.TotalMismatch or ReviewQueueItemKind.MissingPrice =>
+            ReviewQueueItemKind.TotalMismatch or ReviewQueueItemKind.MissingPrice or ReviewQueueItemKind.UnapprovedLines =>
                 item.PurchaseId is { } purchaseId && matchingPurchases.Contains(purchaseId),
             _ => false
         };
@@ -393,6 +512,52 @@ public sealed class ReviewQueueService(
         }
 
         return items;
+    }
+
+    /// <summary>
+    /// The hub's own kinds: a purchase with lines not marked «Верно» yet (one
+    /// item per purchase saved since <paramref name="since"/>, opened on its
+    /// first unchecked line) and the viewer's recent lines to rate.
+    /// </summary>
+    private static IEnumerable<ReviewQueueItem> BuildHubExtras(
+        ReviewQueueFacts facts,
+        IReadOnlyList<RateablePurchaseItemView> unrated,
+        DateTimeOffset since)
+    {
+        foreach (var purchase in facts.Purchases)
+        {
+            if (purchase.CreatedAt < since || purchase.UnapprovedPositions is not { Count: > 0 } unapproved)
+            {
+                continue;
+            }
+
+            yield return new ReviewQueueItem(
+                ReviewQueueItemKind.UnapprovedLines,
+                Key(ReviewQueueItemKind.UnapprovedLines, purchase.Id),
+                purchase.MerchantName ?? string.Empty,
+                purchase.PurchasedAt ?? purchase.CreatedAt,
+                ReceiptId: purchase.SourceReceiptId,
+                PurchaseId: purchase.Id,
+                Currency: purchase.Currency,
+                AffectedLineCount: unapproved.Count,
+                ItemPosition: unapproved[0],
+                LineCount: purchase.Items.Count);
+        }
+
+        foreach (var line in unrated)
+        {
+            yield return new ReviewQueueItem(
+                ReviewQueueItemKind.UnratedPurchase,
+                Key(ReviewQueueItemKind.UnratedPurchase, line.PurchaseItemId),
+                line.ProductName ?? line.ItemName,
+                line.PurchasedAt,
+                PurchaseId: line.PurchaseId,
+                ProductId: line.ProductId,
+                Currency: line.Currency,
+                PurchaseItemId: line.PurchaseItemId,
+                MerchantName: line.MerchantName,
+                Price: line.UnitPrice ?? line.LineTotal);
+        }
     }
 
     private static bool IsSuggestedCategory(ReviewProductFact product) =>

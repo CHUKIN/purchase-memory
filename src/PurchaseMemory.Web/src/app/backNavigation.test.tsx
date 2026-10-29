@@ -35,7 +35,7 @@ function renderAt(entries: Entry[], initialIndex = entries.length - 1) {
   );
 }
 
-const backLink = () => screen.getByRole("link", { name: /Товары|Нужно проверить|Главная|Покупки|Назад/ });
+const backLink = () => screen.getByRole("link", { name: /Товары|Ревью|Главная|Покупки|Назад/ });
 
 afterEach(() => window.history.replaceState(null, ""));
 
@@ -45,7 +45,7 @@ describe("back navigation", () => {
     fireEvent.click(screen.getByRole("link", { name: "Kawa" }));
 
     expect(await screen.findByRole("heading", { level: 1, name: "Kawa" })).toBeInTheDocument();
-    expect(backLink()).toHaveAccessibleName("Нужно проверить");
+    expect(backLink()).toHaveAccessibleName("Ревью");
     fireEvent.click(backLink());
     expect(screen.getByTestId("where")).toHaveTextContent("/needs-attention?tag=kid");
   });
@@ -87,7 +87,7 @@ describe("back navigation", () => {
     ]);
 
     expect(await screen.findByRole("heading", { level: 1, name: "Kawa" })).toBeInTheDocument();
-    expect(backLink()).toHaveAccessibleName("Нужно проверить");
+    expect(backLink()).toHaveAccessibleName("Ревью");
     fireEvent.click(backLink());
     expect(screen.getByTestId("where")).toHaveTextContent("/needs-attention?tag=kid");
   });

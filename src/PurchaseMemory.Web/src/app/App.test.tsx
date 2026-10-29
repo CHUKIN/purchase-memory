@@ -42,7 +42,7 @@ describe("App", () => {
     render(<AppProviders><App /></AppProviders>);
     expect(await screen.findByRole("heading", { level: 1, name: "Главная" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Сфотографировать чек/ })).toHaveAttribute("href", "/purchases/new");
-    expect(screen.getByRole("link", { name: /^Нужно проверить/ })).toHaveAttribute("href", "/needs-attention");
+    expect(screen.getByRole("link", { name: /^Ревью/ })).toHaveAttribute("href", "/needs-attention");
     // A working service needs no sentence; only an outage is announced.
     await waitFor(() => expect(getRecognitionStatus).toHaveBeenCalled());
     expect(screen.queryByText(/Сервис сейчас недоступен/)).not.toBeInTheDocument();

@@ -1,6 +1,6 @@
-import { IonBadge, IonButton, IonLabel, IonList, IonProgressBar } from "@ionic/react";
+import { IonButton, IonLabel, IonList, IonProgressBar } from "@ionic/react";
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, CircleCheck, CircleEllipsis, ReceiptText } from "lucide-react";
+import { CircleEllipsis, ReceiptText } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getPurchaseFeed } from "../../api/client";
@@ -12,6 +12,7 @@ import { HomeCaptureActions } from "../product-scan/HomeCaptureActions";
 import { UnratedPurchasesBlock } from "../impressions/ImpressionSections";
 import { PurchaseCards, PurchaseRow } from "../purchases/PurchaseRow";
 import { useReturnState } from "../../app/backNavigation";
+import { HomeReviewCard } from "./HomeReviewCard";
 
 // uploaded -> queued -> processing -> ready/failed, used to drive the
 // progress bar of a receipt still in flight.
@@ -29,19 +30,18 @@ export interface HomePageProps {
   recognitionFailed?: boolean;
   receipts: ReceiptView[];
   receiptsFailed?: boolean;
-  /** Items in «Нужно проверить»; null while unknown. */
+  /** Everything waiting in «Ревью» (see useReviewCount); null while unknown. */
   reviewCount?: number | null;
 }
 
 /**
  * «Главная»: «Сфотографировать чек» and «Сканировать» (two looks, see
- * product-scan/scanVariant.ts), then only what needs the user
- * now — receipts in flight, the review queue, recent lines to rate — and the
+ * product-scan/scanVariant.ts) with the «Ревью» card under them, then only
+ * what needs the user now — receipts in flight, recent lines to rate — and the
  * last few purchases. Help and sign-out sit behind «Ещё».
  */
 export function HomePage({ recognition, recognitionFailed = false, receipts, receiptsFailed = false, reviewCount = null }: HomePageProps) {
   const { t, i18n } = useTranslation();
-  const returnState = useReturnState();
   const locale = i18n.resolvedLanguage === "en" ? "en-GB" : "ru-RU";
   const [settingsOpen, setSettingsOpen] = useState(false);
   const available = recognition?.available === true && !recognitionFailed;
@@ -65,6 +65,7 @@ export function HomePage({ recognition, recognitionFailed = false, receipts, rec
       )}
     >
       <HomeCaptureActions />
+      <HomeReviewCard count={reviewCount} />
       <div role="status">
         {recognitionDown && <Footnote tone="warning">{t("productionHome.recognitionOffline")}</Footnote>}
       </div>
@@ -82,18 +83,6 @@ export function HomePage({ recognition, recognitionFailed = false, receipts, rec
         </>
       )}
       {receiptsFailed && <Notice tone="danger" role="alert"><p>{t("receiptJobs.loadFailed")}</p></Notice>}
-
-      <IonList inset>
-        <ItemLink to="/needs-attention" state={returnState}>
-          {reviewCount ? <AlertTriangle slot="start" size={22} className="pm-row-icon pm-row-icon-warning" aria-hidden="true" /> : <CircleCheck slot="start" size={22} className="pm-row-icon" aria-hidden="true" />}
-          <IonLabel className="pm-wrap">
-            <h2>{t("common.review")}</h2>
-            {/* The badge shows the count; the sentence stays for screen readers. */}
-            <p className="visually-hidden">{reviewCount ? t("reviewQueue.summary", { count: reviewCount }) : t("reviewQueue.emptyTitle")}</p>
-          </IonLabel>
-          {reviewCount ? <IonBadge slot="end" color="danger" aria-hidden="true">{reviewCount > 99 ? "99+" : reviewCount}</IonBadge> : null}
-        </ItemLink>
-      </IonList>
 
       <UnratedPurchasesBlock locale={locale} />
 

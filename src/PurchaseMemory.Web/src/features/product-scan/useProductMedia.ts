@@ -6,7 +6,8 @@ import {
   type AddBarcodeResult,
   type BarcodeSource,
   type OffProductHint,
-  type ProductMedia
+  type ProductMedia,
+  type RememberedBarcode
 } from "./productMediaStore";
 
 /*
@@ -59,6 +60,27 @@ export function useRememberedBarcode(code: string | null) {
     queryFn: () => store.findRememberedBarcode(code ?? ""),
     enabled: Boolean(code)
   });
+}
+
+/**
+ * Codes «Запомнить на потом» on this device, newest first. They live on the
+ * phone only (no backend yet), so «Ревью» counts them next to the server's numbers.
+ */
+export function useRememberedBarcodes() {
+  return useQuery({
+    queryKey: [...rememberedKey, "list"],
+    queryFn: () => store.listRememberedBarcodes(),
+    staleTime: Infinity
+  });
+}
+
+/** Drops a remembered code without linking it. */
+export function useForgetBarcode() {
+  const queryClient = useQueryClient();
+  return async (code: string) => {
+    await store.forgetBarcode(code);
+    await queryClient.invalidateQueries({ queryKey: productMediaQueryKey });
+  };
 }
 
 /** An object URL for a stored photo; revoked when the photo or the component goes away. */
@@ -152,4 +174,4 @@ export function useLinkBarcode() {
   };
 }
 
-export type { ProductMedia };
+export type { ProductMedia, RememberedBarcode };

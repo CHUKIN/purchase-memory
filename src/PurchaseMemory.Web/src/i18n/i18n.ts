@@ -20,7 +20,7 @@ export const resources = {
         purchases: "Покупки",
         products: "Товары",
         analytics: "Аналитика",
-        review: "Нужно проверить",
+        review: "Ревью",
         captureReceipt: "Сфотографировать чек",
         recentPurchases: "Последние покупки",
         viewAll: "Смотреть все",
@@ -194,7 +194,46 @@ export const resources = {
         recognitionOffline: "Сервис сейчас недоступен. История покупок по-прежнему доступна.",
       },
       reviewQueue: {
-        title: "Нужно проверить",
+        title: "Ревью",
+        sections: {
+          receipts: { title: "Чеки" },
+          purchases: { title: "Покупки" },
+          products: { title: "Товары" },
+          categories: { title: "Категории" },
+          barcodes: { title: "Штрихкоды" },
+          ratings: { title: "Оценить покупки" }
+        },
+        oneByOne: "Проверять по одной",
+        showAll: "Показать все ({{count}})",
+        acceptAllSuggested: "Принять все предложенные ({{count}})",
+        acceptFirstSuggested: "Принять первые предложенные ({{count}})",
+        alreadyAccepted: "Категории уже приняты. Изменить категорию можно в карточке товара.",
+        acceptedSuggested: "Принято категорий: {{count}}",
+        acceptAllFailed: "Не удалось принять категорий: {{count}}. Попробуйте ещё раз.",
+        undo: "Вернуть",
+        checkLines: "Проверить строки",
+        checkLinesFor: "Проверить строки покупки «{{name}}»",
+        cards: {
+          progress: "{{current}} из {{total}}",
+          skip: "Пропустить",
+          next: "Дальше",
+          previous: "Предыдущая карточка",
+          correct: "Верно, дальше",
+          otherCategory: "Другая категория",
+          answered: "Готово",
+          empty: "Здесь всё проверено"
+        },
+        barcodes: {
+          remembered: "Запомнен {{date}} на этом телефоне",
+          link: "Привязать к товару",
+          linkFor: "Привязать штрихкод {{code}} к товару",
+          linkTitle: "Привязать штрихкод",
+          chooseFor: "Привязать к «{{name}}»",
+          linked: "Штрихкод привязан к «{{name}}»",
+          taken: "Этот штрихкод уже привязан к другому товару.",
+          forget: "Забыть",
+          forgetFor: "Забыть штрихкод {{code}}"
+        },
         loading: "Загружаем очередь проверки",
         loadError: "Не удалось загрузить очередь проверки.",
         retry: "Повторить",
@@ -227,7 +266,6 @@ export const resources = {
         badgeLabel_many: "{{count}} пунктов требуют внимания",
         badgeLabel_other: "{{count}} пункта требуют внимания",
         openReceipt: "Открыть чек",
-        openPurchases: "Открыть покупки",
         openPurchase: "Открыть покупку",
         fixPurchase: "Исправить",
         fixPurchaseFor: "Исправить покупку «{{name}}»",
@@ -281,6 +319,13 @@ export const resources = {
           },
           missingCategory: {
             title: "Без категории",
+          },
+          unapprovedLines: {
+            title: "Строки не проверены",
+            reason: "Проверено строк: {{approved}} из {{total}}."
+          },
+          unratedPurchase: {
+            title: "Оценить"
           }
         }
       },
@@ -1289,7 +1334,7 @@ export const resources = {
         purchases: "Purchases",
         products: "Products",
         analytics: "Insights",
-        review: "Needs attention",
+        review: "Review",
         captureReceipt: "Photograph a receipt",
         recentPurchases: "Recent purchases",
         viewAll: "View all",
@@ -1461,7 +1506,46 @@ export const resources = {
         recognitionOffline: "The service is unavailable right now. Your purchase history is still available.",
       },
       reviewQueue: {
-        title: "Needs attention",
+        title: "Review",
+        sections: {
+          receipts: { title: "Receipts" },
+          purchases: { title: "Purchases" },
+          products: { title: "Products" },
+          categories: { title: "Categories" },
+          barcodes: { title: "Barcodes" },
+          ratings: { title: "Rate purchases" }
+        },
+        oneByOne: "Check one by one",
+        showAll: "Show all ({{count}})",
+        acceptAllSuggested: "Accept all suggested ({{count}})",
+        acceptFirstSuggested: "Accept the first suggested ({{count}})",
+        alreadyAccepted: "The categories are already accepted. You can change a category on the product's card.",
+        acceptedSuggested: "Categories accepted: {{count}}",
+        acceptAllFailed: "Could not accept {{count}} categories. Please try again.",
+        undo: "Undo",
+        checkLines: "Check lines",
+        checkLinesFor: "Check the lines of “{{name}}”",
+        cards: {
+          progress: "{{current}} of {{total}}",
+          skip: "Skip",
+          next: "Next",
+          previous: "Previous card",
+          correct: "Right, next",
+          otherCategory: "Another category",
+          answered: "Done",
+          empty: "Everything here is checked"
+        },
+        barcodes: {
+          remembered: "Remembered on {{date}} on this phone",
+          link: "Link to a product",
+          linkFor: "Link barcode {{code}} to a product",
+          linkTitle: "Link barcode",
+          chooseFor: "Link to “{{name}}”",
+          linked: "Barcode linked to “{{name}}”",
+          taken: "This barcode already belongs to another product.",
+          forget: "Forget",
+          forgetFor: "Forget barcode {{code}}"
+        },
         loading: "Loading the review queue",
         loadError: "Could not load the review queue.",
         retry: "Retry",
@@ -1484,7 +1568,6 @@ export const resources = {
         badgeLabel_one: "{{count}} item needs attention",
         badgeLabel_other: "{{count}} items need attention",
         openReceipt: "Open receipt",
-        openPurchases: "Open purchases",
         openPurchase: "Open purchase",
         fixPurchase: "Correct",
         fixPurchaseFor: "Correct the purchase “{{name}}”",
@@ -1536,6 +1619,13 @@ export const resources = {
           },
           missingCategory: {
             title: "No category",
+          },
+          unapprovedLines: {
+            title: "Lines not checked",
+            reason: "Lines checked: {{approved}} of {{total}}."
+          },
+          unratedPurchase: {
+            title: "Rate"
           }
         }
       },

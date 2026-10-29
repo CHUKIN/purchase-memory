@@ -558,3 +558,35 @@ ion-item ion-button.pm-icon-button.pm-rate-button { width: 44px; height: 44px; m
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+/* «Ревью» on Главная (HomeReviewCard): a card like the purchase cards, warm with ⚠ and a count while something waits. */
+.pm-review-card {
+  display: flex; align-items: center; gap: 12px; min-height: 56px; box-sizing: border-box; margin: 12px 20px 0; padding: 10px 12px 10px 14px;
+  border: 1px solid #e1e1e6; border-radius: 16px; background: #fff; color: var(--ion-text-color, #1c1c1e); text-decoration: none;
+}
+.pm-review-card[data-tone="warning"] { background: #fdf3e6; border-color: #f1d9b8; }
+.pm-review-card:focus-visible { outline: 2px solid var(--ion-color-primary); outline-offset: 2px; }
+.pm-review-card:active { filter: brightness(.97); }
+.pm-review-card-icon { flex: none; color: var(--ion-color-primary); }
+.pm-review-card[data-tone="warning"] .pm-review-card-icon { color: var(--pm-warning-text); }
+.pm-review-card-text { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+.pm-review-card-title { font-size: 17px; font-weight: 600; }
+.pm-review-card-note { margin-top: 2px; color: var(--pm-muted); font-size: 14px; }
+.pm-review-card-badge {
+  display: inline-grid; place-items: center; flex: none; min-width: 22px; height: 22px; padding: 0 6px; box-sizing: border-box;
+  border-radius: 11px; background: #c5302b; color: #fff; font-size: 13px; font-weight: 600;
+}
+.pm-review-card-chevron { flex: none; color: #c4c4c9; }
+
+/* «Ревью» hub sections and «Проверять по одной». */
+.pm-review-bulk { display: flex; flex-wrap: wrap; gap: 4px; margin: -4px 12px 4px; }
+.pm-review-cards { padding-top: 8px; }
+.pm-review-cards-progress { margin: 4px 20px 6px; color: var(--pm-muted); font-size: 15px; font-variant-numeric: tabular-nums; }
+.pm-review-cards-bar { margin: 0 20px 8px; width: auto; height: 3px; border-radius: 2px; }
+.pm-review-cards-card { touch-action: pan-y; }
+.pm-review-cards-card ion-list { border: 1px solid #e1e1e6; border-radius: 16px; }
+.pm-review-cards-title { font-size: 20px; font-weight: 700; }
+.pm-review-cards-primary-row { padding: 8px 16px; }
+.pm-review-cards-primary { margin: 0; min-height: 44px; --padding-top: 12px; --padding-bottom: 12px; font-size: 17px; }
+.pm-review-cards-nav { display: flex; justify-content: space-between; align-items: center; margin: 0 12px; }
+.pm-barcode-code { font-variant-numeric: tabular-nums; letter-spacing: .04em; }

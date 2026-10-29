@@ -126,7 +126,7 @@ describe("back to the exact scroll position (fallback path)", () => {
 
     // Back (no browser history positions here): opens the address with the place in state.
     content.scroller.scrollTop = 0;
-    fireEvent.click(screen.getByRole("link", { name: "Нужно проверить" }));
+    fireEvent.click(screen.getByRole("link", { name: "Ревью" }));
     await act(async () => { await Promise.resolve(); });
     expect(screen.getByTestId("where")).toHaveTextContent("/needs-attention?tag=kid");
     expect(content.scrollToPoint).toHaveBeenCalledWith(0, 840, 0);
