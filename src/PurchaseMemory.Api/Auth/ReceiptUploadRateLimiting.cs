@@ -52,6 +52,21 @@ public sealed class TagSuggestionRateLimitOptions
     public int ReplenishmentPeriodSeconds { get; set; } = 120;
 }
 
+/// <summary>
+/// Per-user token bucket for «Название по фото»: one vision call per photo, a
+/// burst of 20 and then one more every 3 minutes (about 20 an hour).
+/// </summary>
+public sealed class NameFromPhotoRateLimitOptions
+{
+    public const string SectionName = "RateLimiting:NameFromPhoto";
+
+    public int TokenLimit { get; set; } = 20;
+
+    public int TokensPerPeriod { get; set; } = 1;
+
+    public int ReplenishmentPeriodSeconds { get; set; } = 180;
+}
+
 public static class ReceiptUploadRateLimiting
 {
     public const string PolicyName = "receipt-uploads";
@@ -76,6 +91,9 @@ public static class ReceiptUploadRateLimiting
     /// </summary>
     public const string NameSuggestionsPolicyName = "name-suggestions";
 
+    /// <summary>«Название по фото»: a paid vision call per photo, a bucket of its own.</summary>
+    public const string NameFromPhotoPolicyName = "name-from-photo";
+
     public static IServiceCollection AddReceiptUploadRateLimiting(
         this IServiceCollection services,
         IConfiguration configuration)
@@ -99,6 +117,13 @@ public static class ReceiptUploadRateLimiting
         if (tagSuggestions.TokenLimit < 1 || tagSuggestions.TokensPerPeriod < 1 || tagSuggestions.ReplenishmentPeriodSeconds < 1)
         {
             throw new InvalidOperationException($"{TagSuggestionRateLimitOptions.SectionName} values must be positive.");
+        }
+
+        var nameFromPhoto = configuration.GetSection(NameFromPhotoRateLimitOptions.SectionName).Get<NameFromPhotoRateLimitOptions>()
+            ?? new NameFromPhotoRateLimitOptions();
+        if (nameFromPhoto.TokenLimit < 1 || nameFromPhoto.TokensPerPeriod < 1 || nameFromPhoto.ReplenishmentPeriodSeconds < 1)
+        {
+            throw new InvalidOperationException($"{NameFromPhotoRateLimitOptions.SectionName} values must be positive.");
         }
 
         // Not a middleware policy: whether a question costs a model call is only
@@ -168,6 +193,18 @@ public static class ReceiptUploadRateLimiting
                         AutoReplenishment = true
                     }));
 
+            options.AddPolicy(NameFromPhotoPolicyName, context =>
+                RateLimitPartition.GetTokenBucketLimiter(
+                    AppUser.UserId(context.User) ?? "anonymous",
+                    _ => new TokenBucketRateLimiterOptions
+                    {
+                        TokenLimit = nameFromPhoto.TokenLimit,
+                        TokensPerPeriod = nameFromPhoto.TokensPerPeriod,
+                        ReplenishmentPeriod = TimeSpan.FromSeconds(nameFromPhoto.ReplenishmentPeriodSeconds),
+                        QueueLimit = 0,
+                        AutoReplenishment = true
+                    }));
+
             options.OnRejected = async (rejected, cancellationToken) =>
             {
                 var context = rejected.HttpContext;
@@ -187,8 +224,10 @@ public static class ReceiptUploadRateLimiting
                         && context.Request.Path.Value?.EndsWith("/refresh", StringComparison.Ordinal) == true);
                 var tagSuggestion = context.Request.Path.Value?.EndsWith("/tag-suggestions", StringComparison.Ordinal) == true;
                 var nameSuggestion = context.Request.Path.Value?.EndsWith("/name-suggestions", StringComparison.Ordinal) == true;
+                var photoName = context.Request.Path.Value?.EndsWith("/name-from-photo", StringComparison.Ordinal) == true;
                 var (title, detail) = (backfill, analytics) switch
                 {
+                    _ when photoName => ("Too many photo names", "Too many names from photos in a short time. Names can still be typed by hand."),
                     _ when nameSuggestion => ("Too many name suggestions", "Too many name suggestions in a short time. Names can still be typed by hand."),
                     _ when tagSuggestion => ("Too many tag suggestions", "Too many tag suggestions in a short time. Tags can still be chosen by hand."),
                     _ when rerun => ("Too many recalculations", "Too many recalculations in a short time. Try again in a minute."),

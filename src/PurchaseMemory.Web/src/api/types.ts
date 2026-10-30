@@ -420,6 +420,23 @@ export interface ProductNames {
 
 export type ProductNameLanguage = "pl" | "ru";
 
+/**
+ * One language after «Название по фото»: `replaced` (the previous name is what
+ * «Вернуть» puts back), `proposed` (a person's name stays; `name` is offered),
+ * `unchanged` or `notRead` (the model was not sure).
+ */
+export interface PhotoNameLanguageResult {
+  language: ProductNameLanguage;
+  outcome: "replaced" | "proposed" | "unchanged" | "notRead";
+  name: string | null;
+  previousName: string | null;
+  previousSource: AttributeSource | null;
+}
+
+export interface ProductPhotoNameResult extends ProductNames {
+  languages: PhotoNameLanguageResult[];
+}
+
 export interface ProductMergeResult {
   sourceProductId: string;
   sourceName: string;

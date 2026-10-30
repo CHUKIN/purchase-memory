@@ -1,7 +1,9 @@
 using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using PurchaseMemory.Api.Auth;
 using PurchaseMemory.Application.Products;
 using PurchaseMemory.Application.Products.Categories;
+using PurchaseMemory.Application.Products.PhotoNames;
 using PurchaseMemory.Application.Products.Tags;
 using PurchaseMemory.Domain.Products;
 
@@ -13,11 +15,14 @@ namespace PurchaseMemory.Api.Endpoints;
 /// products, settle a «проверить» flag, edit the human names. Data is shared
 /// by every approved user in this version (no households), so the
 /// approved-user fallback policy is the whole access rule, as for every other
-/// data endpoint. Only «name-suggestions» calls a paid model, so only it is
-/// rate limited.
+/// data endpoint. Only «name-suggestions» and «name-from-photo» call a paid
+/// model, so only they are rate limited.
 /// </summary>
 public static class ProductEndpoints
 {
+    /// <summary>The 1.5 MB photo plus multipart overhead; anything bigger is cut off by the server.</summary>
+    public const long MaximumPhotoRequestBytes = 2 * 1024 * 1024;
+
     public static IEndpointRouteBuilder MapProductEndpoints(this IEndpointRouteBuilder endpoints)
     {
         endpoints.MapGet("/api/products", GetCatalogAsync)
@@ -43,6 +48,21 @@ public static class ProductEndpoints
         endpoints.MapPost("/api/products/{productId:guid}/name-suggestions", SuggestNamesAsync)
             .WithName("SuggestProductNames")
             .RequireRateLimiting(ReceiptUploadRateLimiting.NameSuggestionsPolicyName);
+
+        // «Название по фото»: one package photo (multipart field «photo», at most
+        // 1.5 MB) read by a paid vision model, a per-user bucket of its own. The
+        // photo is not stored and not logged.
+        endpoints.MapPost("/api/products/{productId:guid}/name-from-photo", NameFromPhotoAsync)
+            .DisableAntiforgery()
+            .WithMetadata(
+                new RequestSizeLimitAttribute(MaximumPhotoRequestBytes),
+                new RequestFormLimitsAttribute { MultipartBodyLengthLimit = MaximumPhotoRequestBytes })
+            .WithName("NameProductFromPhoto")
+            .RequireRateLimiting(ReceiptUploadRateLimiting.NameFromPhotoPolicyName);
+
+        // «Вернуть» after a photo replaced a name: puts the previous one back.
+        endpoints.MapPost("/api/products/{productId:guid}/names/undo-photo", UndoPhotoNameAsync)
+            .WithName("UndoProductPhotoName");
 
         endpoints.MapPost("/api/products/{productId:guid}/merge-into/{targetProductId:guid}", MergeAsync)
             .WithName("MergeProduct");
@@ -207,6 +227,107 @@ public static class ProductEndpoints
             }
         });
 
+    private static async Task<IResult> NameFromPhotoAsync(
+        Guid productId,
+        HttpRequest request,
+        ClaimsPrincipal user,
+        IProductPhotoNamingService service,
+        CancellationToken cancellationToken)
+    {
+        if (!request.HasFormContentType)
+        {
+            return PhotoProblem(StatusCodes.Status400BadRequest, "photoMissing", "Send the photo as multipart/form-data in a field named photo.");
+        }
+
+        IFormCollection form;
+        try
+        {
+            form = await request.ReadFormAsync(cancellationToken);
+        }
+        catch (InvalidDataException)
+        {
+            return PhotoProblem(StatusCodes.Status413PayloadTooLarge, "photoTooLarge", "The photo is too large. Send a compressed JPEG.");
+        }
+
+        if (form.Files.Count != 1 || form.Files[0].Name != "photo")
+        {
+            return PhotoProblem(StatusCodes.Status400BadRequest, "photoMissing", "Attach exactly one file, named photo.");
+        }
+
+        var file = form.Files[0];
+        if (file.Length > ProductPhotoRules.MaximumBytes)
+        {
+            return PhotoProblem(StatusCodes.Status413PayloadTooLarge, "photoTooLarge", "The photo is too large. Send a compressed JPEG.");
+        }
+
+        byte[] bytes;
+        await using (var stream = file.OpenReadStream())
+        using (var buffer = new MemoryStream((int)file.Length))
+        {
+            await stream.CopyToAsync(buffer, cancellationToken);
+            bytes = buffer.ToArray();
+        }
+
+        return await HandleAsync(async () =>
+        {
+            try
+            {
+                var image = ProductPhotoRules.Check(bytes);
+                var result = await service.NameFromPhotoAsync(productId, image, AppUser.Actor(user), cancellationToken);
+                return Results.Ok(ProductPhotoNameResponse.From(result));
+            }
+            catch (InvalidProductPhotoException exception)
+            {
+                return exception.Reason switch
+                {
+                    InvalidProductPhotoReason.TooLarge => PhotoProblem(StatusCodes.Status413PayloadTooLarge, "photoTooLarge", exception.Message),
+                    InvalidProductPhotoReason.NotAnImage => PhotoProblem(StatusCodes.Status415UnsupportedMediaType, "photoNotAnImage", exception.Message),
+                    _ => PhotoProblem(StatusCodes.Status400BadRequest, "photoMissing", exception.Message)
+                };
+            }
+            catch (ProductPhotoNamingUnavailableException)
+            {
+                // The cause (no key, timeout, provider error) is in the log.
+                return PhotoProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    "nameFromPhotoUnavailable",
+                    "Reading names from photos is unavailable right now. Names can still be typed by hand.");
+            }
+        });
+    }
+
+    private static IResult PhotoProblem(int statusCode, string code, string detail) =>
+        Results.Problem(
+            detail: detail,
+            statusCode: statusCode,
+            extensions: new Dictionary<string, object?> { ["code"] = code });
+
+    private static Task<IResult> UndoPhotoNameAsync(
+        Guid productId,
+        UndoPhotoNameRequest request,
+        ClaimsPrincipal user,
+        IProductPhotoNamingService service,
+        CancellationToken cancellationToken) =>
+        HandleAsync(async () => Results.Ok(ProductNamesResponse.From(
+            await service.UndoAsync(
+                productId,
+                ParseLanguage(request.Language),
+                request.PhotoName ?? string.Empty,
+                request.PreviousName,
+                AppUser.Actor(user),
+                cancellationToken))));
+
+    internal static ProductNameLanguage ParseLanguage(string? language) =>
+        language?.Trim().ToLowerInvariant() switch
+        {
+            "pl" => ProductNameLanguage.Polish,
+            "ru" => ProductNameLanguage.Russian,
+            _ => throw new ArgumentException("language must be 'pl' or 'ru'.")
+        };
+
+    internal static string LanguageToWire(ProductNameLanguage language) =>
+        language == ProductNameLanguage.Polish ? "pl" : "ru";
+
     private static Task<IResult> MergeAsync(
         Guid productId,
         Guid targetProductId,
@@ -294,6 +415,56 @@ public sealed record RenameProductRequest(string? Name, string? Language = null)
 
 /// <summary>The names shown when «Верно» was pressed; <c>null</c> for a name that was not there.</summary>
 public sealed record ConfirmProductNamesRequest(string? NamePl, string? NameRu);
+
+/// <param name="PhotoName">The name the photo set (it must still be there).</param>
+/// <param name="PreviousName">The name before; <c>null</c> = none (the receipt text shows).</param>
+public sealed record UndoPhotoNameRequest(string? Language, string? PhotoName, string? PreviousName);
+
+/// <summary>
+/// One language after «Название по фото». <c>outcome</c>: «replaced» (the
+/// previous name/source are what «Вернуть» puts back), «proposed» (a person's
+/// name stays, <c>name</c> is offered), «unchanged» or «notRead».
+/// </summary>
+public sealed record PhotoNameLanguageResponse(
+    string Language,
+    string Outcome,
+    string? Name,
+    string? PreviousName,
+    string? PreviousSource);
+
+/// <summary>The names after «Название по фото» plus what happened per language.</summary>
+public sealed record ProductPhotoNameResponse(
+    Guid ProductId,
+    string? NamePl,
+    string? NamePlSource,
+    string? NameRu,
+    string? NameRuSource,
+    IReadOnlyList<PhotoNameLanguageResponse> Languages)
+{
+    public static ProductPhotoNameResponse From(ProductPhotoNamingResult result)
+    {
+        ArgumentNullException.ThrowIfNull(result);
+        var names = ProductNamesResponse.From(result.Names);
+        return new ProductPhotoNameResponse(
+            names.ProductId,
+            names.NamePl,
+            names.NamePlSource,
+            names.NameRu,
+            names.NameRuSource,
+            result.Languages.Select(language => new PhotoNameLanguageResponse(
+                ProductEndpoints.LanguageToWire(language.Language),
+                language.Outcome switch
+                {
+                    PhotoNameOutcome.Replaced => "replaced",
+                    PhotoNameOutcome.Proposed => "proposed",
+                    PhotoNameOutcome.Unchanged => "unchanged",
+                    _ => "notRead"
+                },
+                language.Name,
+                language.PreviousName,
+                CategoryEndpoints.SourceToWire(language.PreviousSource))).ToList());
+    }
+}
 
 /// <summary>A product's human names after an edit, confirmation or new suggestion.</summary>
 public sealed record ProductNamesResponse(
