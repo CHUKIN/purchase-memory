@@ -540,7 +540,9 @@ public sealed record ProductReviewCandidateResponse(
     string? Brand,
     Guid? CategoryId,
     int PurchaseCount,
-    double Score);
+    double Score,
+    string? NamePl = null,
+    string? NameRu = null);
 
 public sealed record ProductResponse(
     Guid Id,
@@ -698,7 +700,9 @@ public sealed record ProductDetailResponse(
                     candidate.Brand,
                     candidate.CategoryId,
                     candidate.PurchaseCount,
-                    candidate.Score))
+                    candidate.Score,
+                    candidate.NamePl,
+                    candidate.NameRu))
                 .ToList(),
             detail.Names?.NamePl,
             CategoryEndpoints.SourceToWire(detail.Names?.NamePlSource),

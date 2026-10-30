@@ -8,6 +8,7 @@ import type { TFunction } from "i18next";
 import { getProduct } from "../../api/client";
 import { SectionHeader } from "../../design-system/components";
 import { CatalogSearchModal } from "../products/CatalogSearchModal";
+import { displayName, receiptText, russianName } from "../products/productNameText";
 
 /** The status of a line's catalog product, as one short sentence. */
 export function productStatusText(t: TFunction, line: Pick<LinkableLine, "productLink" | "productName" | "name" | "productNeedsReview">) {
@@ -157,9 +158,12 @@ function ProductPicker({ isOpen, number, line, onChoose, onClose }: {
                 button
                 detail={false}
                 onClick={() => onChoose({ productLink: "existing", productId: candidate.productId, productName: candidate.name, productNeedsReview: false })}
-                aria-label={t("purchaseEdit.useProduct", { name: candidate.name })}
+                aria-label={t("purchaseEdit.useProduct", { name: displayName(candidate) })}
               >
-                <IonLabel className="pm-wrap">{candidate.name}</IonLabel>
+                <IonLabel className="pm-wrap">
+                  <h3>{displayName(candidate)}</h3>
+                  {(russianName(candidate) || receiptText(candidate)) && <p>{[russianName(candidate), receiptText(candidate)].filter(Boolean).join(" · ")}</p>}
+                </IonLabel>
               </IonItem>
             ))}
           </IonList>

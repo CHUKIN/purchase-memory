@@ -15,6 +15,7 @@ import { formatMoney } from "../purchases/money";
 import { purchaseEditPath } from "../purchases/PurchaseDetailPage";
 import { openLineReviewKey } from "../purchases/openLineReview";
 import { MergeConfirmAlert, useConfirmDistinct, useMergeProduct, type MergeRequest } from "../products/productMerge";
+import { displayName, receiptText, russianName } from "../products/productNameText";
 import { reviewQueueQueryKey } from "./reviewQueueQueries";
 
 type Translate = ReturnType<typeof useTranslation>["t"];
@@ -258,6 +259,8 @@ export function FlaggedProductSuggestions({ item, title, categories, onResolved,
       <div role="list" aria-label={t("reviewQueue.suggestionsFor", { name: title })}>
         {candidates.map((candidate, index) => {
           const details = [
+            russianName(candidate),
+            receiptText(candidate),
             candidate.brand,
             categoryPath(t, categories, candidate.categoryId),
             candidate.purchaseCount !== undefined ? t("products.purchaseCount", { count: candidate.purchaseCount }) : null
@@ -266,7 +269,7 @@ export function FlaggedProductSuggestions({ item, title, categories, onResolved,
             <IonItem key={candidate.productId} role="listitem">
               <IonLabel className="pm-wrap">
                 {index === 0 && <p className="pm-overline" aria-hidden="true">{t("reviewQueue.suggestionsLabel")}</p>}
-                <h3><Link className="pm-text-link" to={`/products/${candidate.productId}`} state={returnState}>{candidate.name}</Link></h3>
+                <h3><Link className="pm-text-link" to={`/products/${candidate.productId}`} state={returnState}>{displayName(candidate)}</Link></h3>
                 {details && <p>{details}</p>}
               </IonLabel>
               <ActionButton
@@ -276,8 +279,8 @@ export function FlaggedProductSuggestions({ item, title, categories, onResolved,
                 fill={index === 0 ? "solid" : "outline"}
                 loading={merge.isPending && mergingInto === candidate.productId}
                 disabled={busy && mergingInto !== candidate.productId}
-                onClick={() => setRequest({ source: { id: productId, name: title }, target: { id: candidate.productId, name: candidate.name } })}
-                aria-label={t("reviewQueue.acceptCandidateFor", { name: title, product: candidate.name })}
+                onClick={() => setRequest({ source: { id: productId, name: title }, target: { id: candidate.productId, name: displayName(candidate) } })}
+                aria-label={t("reviewQueue.acceptCandidateFor", { name: title, product: displayName(candidate) })}
               >
                 {t("reviewQueue.acceptCandidate")}
               </ActionButton>

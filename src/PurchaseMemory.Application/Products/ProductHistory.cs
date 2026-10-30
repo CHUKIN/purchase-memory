@@ -99,4 +99,6 @@ public sealed record ProductReviewCandidateView(
     string? Brand,
     Guid? CategoryId,
     int PurchaseCount,
-    double Score);
+    double Score,
+    string? NamePl = null,
+    string? NameRu = null);

@@ -23,6 +23,14 @@ export function russianName(product: NamedProduct): string | null {
   return product.nameRu?.trim() || null;
 }
 
+/**
+ * The receipt text as a secondary detail: only when a human name is shown
+ * instead of it (else it would repeat the title).
+ */
+export function receiptText(product: NamedProduct): string | null {
+  return product.namePl?.trim() ? product.name : null;
+}
+
 /** A shown name (Polish or Russian) is still an AI suggestion nobody confirmed. */
 export function isNameSuggested(product: NamedProduct): boolean {
   return (Boolean(product.namePl?.trim()) && product.namePlSource === "suggested")

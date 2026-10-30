@@ -158,6 +158,8 @@ public sealed class ReviewQueueRepository(PurchaseMemoryDbContext dbContext) : I
                 product.CanonicalName,
                 product.Brand,
                 product.CategoryId,
+                product.NamePl,
+                product.NameRu,
                 PurchaseCount = dbContext.PurchaseDrafts
                     .Count(draft => draft.Items.Any(item => item.ProductId == product.Id))
             })
@@ -175,7 +177,8 @@ public sealed class ReviewQueueRepository(PurchaseMemoryDbContext dbContext) : I
                     {
                         var product = products[row.CandidateProductId];
                         return new ReviewQueueCandidate(
-                            product.Id, product.CanonicalName, product.Brand, product.CategoryId, product.PurchaseCount, row.Score);
+                            product.Id, product.CanonicalName, product.Brand, product.CategoryId, product.PurchaseCount, row.Score,
+                            product.NamePl, product.NameRu);
                     })
                     .ToList());
     }

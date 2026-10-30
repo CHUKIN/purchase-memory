@@ -377,6 +377,8 @@ export interface ProductReviewCandidate {
   categoryId: string | null;
   purchaseCount: number;
   score: number;
+  namePl?: string | null;
+  nameRu?: string | null;
 }
 
 export interface CreateProductRequest {
@@ -756,6 +758,8 @@ export interface ReviewQueueCandidate {
   /** Optional only so older fixtures stay valid. */
   purchaseCount?: number;
   score?: number;
+  namePl?: string | null;
+  nameRu?: string | null;
 }
 
 export interface ReviewQueueGroup {

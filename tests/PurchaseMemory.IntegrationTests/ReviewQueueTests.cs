@@ -207,6 +207,8 @@ public sealed class ReviewQueueTests
                 .ToArray();
             products[0].ConfirmBrand("Hochland", "hochland", July1);
             products[0].ConfirmCategory(Cheese, July1);
+            products[0].ConfirmName(ProductNameLanguage.Polish, "Ser Gouda 150 g", "ser gouda 150 g", July1);
+            products[0].ConfirmName(ProductNameLanguage.Russian, "Сыр Гауда, 150 г", "сыр гауда 150 г", July1);
             dbContext.Products.AddRange(products);
             var flagged = await dbContext.Products.SingleAsync(product => product.CanonicalName == "SER ZOLTY", Cancel);
             flagged.FlagForReview(ProductReviewReason.AmbiguousMatch, July1);
@@ -226,7 +228,8 @@ public sealed class ReviewQueueTests
         var item = Assert.Single(Group(await GetQueueAsync(services, 20), ReviewQueueItemKind.ProductNeedsReview).Items);
 
         Assert.Equal([productIds[0], productIds[1], productIds[2]], item.Candidates!.Select(candidate => candidate.ProductId));
-        Assert.Equal(new ReviewQueueCandidate(productIds[0], "Gouda 150g", "Hochland", Cheese, 0, 0.90), item.Candidates![0]);
+        Assert.Equal(new ReviewQueueCandidate(productIds[0], "Gouda 150g", "Hochland", Cheese, 0, 0.90, "Ser Gouda 150 g", "Сыр Гауда, 150 г"), item.Candidates![0]);
+        Assert.Null(item.Candidates[1].NamePl);
         Assert.Null(item.Candidates[1].Brand);
         Assert.Null(item.Candidates[1].CategoryId);
     }

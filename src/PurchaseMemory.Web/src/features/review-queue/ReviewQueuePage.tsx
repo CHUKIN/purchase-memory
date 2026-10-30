@@ -1,7 +1,7 @@
 import { IonButton, IonList } from "@ionic/react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { CheckCircle2, Layers, SearchX } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useMemo, useRef, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router";
 import { classifyProduct, confirmProductNames, getReviewQueue, listCategories, listTags } from "../../api/client";
@@ -158,10 +158,11 @@ export function ReviewQueueView({
   const canFilter = categories.length > 0 || tags.length > 0;
   const resetButton = <IonButton fill="clear" onClick={onResetFilters}>{t("reviewQueue.resetFilter")}</IonButton>;
   const back = useBackTarget({ to: "/", labelKey: "common.home" });
-  const accept = useAcceptSuggested();
+  const filterKey = `${category}|${tag}`;
+  const accept = useAcceptSuggested(filterKey);
   // Remembered codes have no product, so a product filter leaves them out (like unsaved receipts).
   const shownBarcodes = filtered ? [] : barcodes;
-  const total = (queue?.totalCount ?? 0) - accept.hidden.size + shownBarcodes.length;
+  const total = (queue?.totalCount ?? 0) - countHidden(queue?.groups.map((group) => group.kind) ?? [], queue, accept.hiddenBy, filterKey) + shownBarcodes.length;
 
   return (
     <Page
@@ -220,7 +221,7 @@ export function ReviewQueueView({
               .filter((group) => group !== undefined);
             const items = groups.flatMap((group) => group.items).filter((item) => !accept.hidden.has(item.id));
             // Accepted categories leave at once, the ones not loaded on this screen too.
-            const count = groups.reduce((sum, group) => sum + group.totalCount, 0) - countHidden(section, accept.hidden);
+            const count = groups.reduce((sum, group) => sum + group.totalCount, 0) - countHidden(sectionKinds[section], queue, accept.hiddenBy, filterKey);
             if (count <= 0) return null;
             const isOpen = openSections.includes(section);
             const shown = isOpen ? items : items.slice(0, collapsedItemCount);
@@ -228,7 +229,7 @@ export function ReviewQueueView({
             const bulk = section === "categories" || section === "names" ? bulkAccepts[section] : undefined;
             const suggestedGroup = bulk ? groups.find((group) => group.kind === bulk.kind) : undefined;
             // What the bulk accepts: every suggested category, up to the server's maximum per request.
-            const suggestedCount = Math.min((suggestedGroup?.totalCount ?? 0) - countHidden(section, accept.hidden), bulkLimitPerKind);
+            const suggestedCount = Math.min((suggestedGroup?.totalCount ?? 0) - countHidden(sectionKinds[section], queue, accept.hiddenBy, filterKey), bulkLimitPerKind);
             return (
               <HubSection key={section} section={section} count={count}>
                 {(cardSections as readonly string[]).includes(section) && <CardsButton section={section} />}
@@ -238,6 +239,7 @@ export function ReviewQueueView({
                       fill="outline"
                       size="small"
                       loading={accept.loading}
+                      disabled={accept.busy}
                       onClick={() => accept.run(bulk!, loadSuggested ? () => loadSuggested(bulk!) : async () => suggestedOf(queue, bulk!))}
                     >
                       {suggestedGroup!.totalCount > bulkLimitPerKind
@@ -277,11 +279,23 @@ export function ReviewQueueView({
   );
 }
 
-/** Hidden (just accepted) items of a section; an item's id starts with its kind. */
-function countHidden(section: ReviewSectionId, hidden: Set<string>) {
-  if (section === "barcodes") return 0;
-  const kinds = sectionKinds[section];
-  return [...hidden].filter((id) => kinds.some((kind) => id.startsWith(`${kind}:`))).length;
+/**
+ * Just accepted items still counted by the server, of the given kinds (an
+ * item's id starts with its kind). A filter change must not subtract items
+ * the new list never counted: an item counts if the loaded list shows it, or
+ * if it was accepted under the very same filter (so it may sit beyond the
+ * loaded window).
+ */
+function countHidden(kinds: readonly ReviewQueueKind[], queue: ReviewQueue | undefined, hiddenBy: ReadonlyMap<string, string>, filterKey: string) {
+  const loaded = new Set(
+    queue?.groups.filter((group) => kinds.includes(group.kind)).flatMap((group) => group.items.map((item) => item.id)) ?? []
+  );
+  let count = 0;
+  for (const [id, key] of hiddenBy) {
+    if (kinds.some((kind) => id.startsWith(`${kind}:`)) && (loaded.has(id) || key === filterKey)) count += 1;
+  }
+
+  return count;
 }
 
 /** «Принять все предложенные» reads this many per kind: the server's maximum. */
@@ -368,17 +382,34 @@ function CardsButton({ section }: { section: ReviewSectionId }) {
  * as soon as the page is hidden or closed, whichever comes first. «Вернуть»
  * after that only says they are already accepted.
  */
-function useAcceptSuggested() {
+function useAcceptSuggested(filterKey: string) {
   const { t } = useTranslation();
   const showToast = useToast();
   const queryClient = useQueryClient();
-  const [hidden, setHidden] = useState<Set<string>>(() => new Set());
+  // Hidden id -> the filter it was accepted under (see countHidden).
+  const [hiddenBy, setHiddenBy] = useState<ReadonlyMap<string, string>>(() => new Map());
   const [loading, setLoading] = useState(false);
+  // Synchronous mirrors of the state: a second click can land before a re-render.
+  const hiddenRef = useRef(new Set<string>());
+  const loadingRef = useRef(false);
+  const pendingRef = useRef(0);
+  const [pending, setPending] = useState(0);
+  const hidden = useMemo(() => new Set(hiddenBy.keys()), [hiddenBy]);
 
   const accept = (bulk: BulkAccept, items: ReviewQueueItem[]) => {
     const ids = items.map((item) => item.id);
-    const unhide = () => setHidden((current) => new Set([...current].filter((id) => !ids.includes(id))));
-    setHidden((current) => new Set([...current, ...ids]));
+    const unhide = () => {
+      ids.forEach((id) => hiddenRef.current.delete(id));
+      setHiddenBy((current) => new Map([...current].filter(([id]) => !ids.includes(id))));
+    };
+    const settle = () => {
+      pendingRef.current -= 1;
+      setPending(pendingRef.current);
+    };
+    ids.forEach((id) => hiddenRef.current.add(id));
+    setHiddenBy((current) => new Map([...current, ...ids.map((id) => [id, filterKey] as const)]));
+    pendingRef.current += 1;
+    setPending(pendingRef.current);
     let undone = false;
     let committed = false;
     const onPageHide = () => void commit();
@@ -398,6 +429,7 @@ function useAcceptSuggested() {
         queryClient.invalidateQueries({ queryKey: ["purchases"] })
       ]);
       unhide();
+      settle();
       const failed = results.filter((result) => result.status === "rejected").length;
       if (failed > 0) showToast({ id: `accept-failed-${Date.now()}`, message: t(bulk.failedKey, { count: failed }), tone: "danger" });
     };
@@ -417,6 +449,7 @@ function useAcceptSuggested() {
           undone = true;
           stopListening();
           unhide();
+          settle();
         }
       },
       onDismiss: () => void commit()
@@ -424,18 +457,22 @@ function useAcceptSuggested() {
   };
 
   const run = async (bulk: BulkAccept, load: () => Promise<ReviewQueueItem[]>) => {
+    // A second press while the first is loading or waiting for its toast would re-pick the same items.
+    if (loadingRef.current || pendingRef.current > 0) return;
+    loadingRef.current = true;
     setLoading(true);
     try {
-      const items = await load();
+      const items = (await load()).filter((item) => !hiddenRef.current.has(item.id));
       if (items.length > 0) accept(bulk, items);
     } catch {
       showToast({ id: `accept-load-failed-${Date.now()}`, message: t("reviewQueue.loadError"), tone: "danger" });
     } finally {
+      loadingRef.current = false;
       setLoading(false);
     }
   };
 
-  return { hidden, loading, run };
+  return { hidden, hiddenBy, loading, busy: loading || pending > 0, run };
 }
 
 /** «из категории «Молоко» с тегом «Для ребёнка»»: the words after the count in the summary. */

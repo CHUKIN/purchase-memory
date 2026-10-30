@@ -88,6 +88,10 @@ public sealed class OpenAiProductCategorizerTests
         Assert.Contains("1: BANANY [nameRu: Бананы]", prompt, StringComparison.Ordinal);
         Assert.Contains("2: CHLEB\n", prompt.ReplaceLineEndings("\n"), StringComparison.Ordinal);
         Assert.Contains("was set by a person", prompt, StringComparison.Ordinal);
+        Assert.Contains("agreeing with its noun in gender", prompt, StringComparison.Ordinal);
+        Assert.Contains("Brand abbreviations", prompt, StringComparison.Ordinal);
+        Assert.Contains("never invent one", prompt, StringComparison.Ordinal);
+        Assert.Contains("Multipacks", prompt, StringComparison.Ordinal);
     }
 
     [Fact]
