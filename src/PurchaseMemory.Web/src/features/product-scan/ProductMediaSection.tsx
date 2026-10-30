@@ -1,6 +1,6 @@
 import type { TFunction } from "i18next";
 import { IonActionSheet, IonButton, IonItem, IonLabel, IonList, IonToggle } from "@ionic/react";
-import { Ban, Camera, ImagePlus, Plus, ScanBarcode, Trash2 } from "lucide-react";
+import { Ban, Camera, ImagePlus, Plus, ScanBarcode, ScanText, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useReturnState } from "../../app/backNavigation";
@@ -12,6 +12,7 @@ import { PhotoDecodeError } from "./compressImage";
 import type { AvoidMark, BarcodeSource, ProductBarcode, ProductMedia } from "./productMediaStore";
 import { ProductPhotoImage, usePhotoPicker } from "./ProductPhoto";
 import { useScanVariant } from "./scanVariant";
+import { useNameFromPhoto } from "./useNameFromPhoto";
 import { useProductMedia, useProductMediaActions } from "./useProductMedia";
 import "./productScan.css";
 
@@ -39,6 +40,7 @@ export function ProductMediaSection({ productId, productName, intro, locale }: P
   const [scanning, setScanning] = useState(false);
   const [confirmPhoto, setConfirmPhoto] = useState<string | null>(null);
   const [confirmCode, setConfirmCode] = useState<string | null>(null);
+  const naming = useNameFromPhoto(productId);
   const media: ProductMedia = mediaQuery.data ?? { productId, photos: [], mainPhotoId: null, barcodes: [], avoid: null };
 
   async function run(action: () => Promise<unknown>) {
@@ -54,7 +56,12 @@ export function ProductMediaSection({ productId, productName, intro, locale }: P
   }
 
   const picker = usePhotoPicker(
-    (file) => void run(() => actions.addPhoto(file)),
+    // A new photo is usually the package front: its name is read right away
+    // (a suggested name is replaced with «Вернуть», a person's name only offered).
+    (file) => void run(async () => {
+      await actions.addPhoto(file);
+      void naming.start(file, { automatic: true });
+    }),
     { camera: t("productScan.takePhoto"), library: t("productScan.pickPhoto") }
   );
 
@@ -73,6 +80,17 @@ export function ProductMediaSection({ productId, productName, intro, locale }: P
     onMakeMain: (photoId) => void run(() => actions.setMainPhoto(photoId)),
     onDelete: setConfirmPhoto
   };
+  const nameFromMainPhoto = async () => {
+    const photo = media.mainPhotoId ? await actions.readPhoto(media.mainPhotoId) : null;
+    if (photo) await naming.start(photo);
+  };
+  const nameFromPhotoButton = media.photos.length > 0 && (
+    <div className="pm-media-actions">
+      <IonButton fill="clear" size="small" disabled={busy || naming.busy} onClick={() => void nameFromMainPhoto()}>
+        <ScanText size={18} aria-hidden="true" />{t("products.names.fromPhoto")}
+      </IonButton>
+    </div>
+  );
   const barcodeProps: BarcodeBlockProps = {
     barcodes: media.barcodes,
     busy,
@@ -90,6 +108,7 @@ export function ProductMediaSection({ productId, productName, intro, locale }: P
           <>
             <p className="pm-home-intro">{intro}</p>
             <GalleryA {...photoProps} />
+            {nameFromPhotoButton}
             {error && <ErrorNotice error={error} />}
             <BarcodeListA {...barcodeProps} />
           </>
@@ -97,6 +116,7 @@ export function ProductMediaSection({ productId, productName, intro, locale }: P
         : (
           <>
             <CompactB {...photoProps} intro={intro} />
+            {nameFromPhotoButton}
             {error && <ErrorNotice error={error} />}
             <BarcodeChipsB {...barcodeProps} />
           </>
@@ -118,6 +138,7 @@ export function ProductMediaSection({ productId, productName, intro, locale }: P
       <Footnote>{t("productScan.avoidToggleNote")} {t("productScan.deviceNote")}</Footnote>
 
       <BarcodeScanModal isOpen={scanning} onClose={() => setScanning(false)} onCode={addBarcode} />
+      {naming.dialog}
       <IonActionSheet
         isOpen={confirmPhoto !== null}
         header={t("productScan.deletePhotoConfirm")}

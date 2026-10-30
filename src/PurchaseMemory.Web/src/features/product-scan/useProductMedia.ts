@@ -119,6 +119,10 @@ export function useProductMediaActions(productId: string) {
       await refresh();
       return entry;
     },
+    /** The stored JPEG of one photo (for «Название по фото»), or null when it is gone. */
+    readPhoto(photoId: string) {
+      return store.getPhotoBlob(photoId);
+    },
     async removePhoto(photoId: string) {
       await store.removePhoto(productId, photoId);
       queryClient.removeQueries({ queryKey: photoKey(photoId) });

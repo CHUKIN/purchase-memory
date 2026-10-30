@@ -1,6 +1,7 @@
 import type {
   ProductNameLanguage,
   ProductNames,
+  ProductPhotoNameResult,
   BrandSummary,
   AnalyticsAnswer,
   AnalyticsAskResponse,
@@ -315,6 +316,25 @@ export const confirmProductNames = (productId: string, shown: { namePl: string |
  */
 export const suggestProductNames = (productId: string) =>
   request<ProductNames>(`/api/products/${encodeURIComponent(productId)}/name-suggestions`, { method: "POST" });
+
+/**
+ * «Название по фото»: one compressed package photo (JPEG, at most 1.5 MB) is
+ * read by a paid vision model (per-user limit). The server keeps no copy.
+ * Suggested or missing names are replaced, a person's names only proposed.
+ * 503 (`nameFromPhotoUnavailable`), 429, 413 and 415 are expected answers.
+ */
+export function nameProductFromPhoto(productId: string, photo: Blob): Promise<ProductPhotoNameResult> {
+  const form = new FormData();
+  form.append("photo", photo, "photo.jpg");
+  return request<ProductPhotoNameResult>(`/api/products/${encodeURIComponent(productId)}/name-from-photo`, { method: "POST", body: form });
+}
+
+/**
+ * «Вернуть» after a photo replaced a name: puts `previousName` back (null: no
+ * name, the receipt text shows). 409 when the name changed since.
+ */
+export const undoPhotoName = (productId: string, change: { language: ProductNameLanguage; photoName: string; previousName: string | null }) =>
+  request<ProductNames>(`/api/products/${encodeURIComponent(productId)}/names/undo-photo`, jsonBody("POST", change));
 
 /** Moves everything of `productId` into `targetProductId` and deletes it. No undo. */
 export const mergeProduct = (productId: string, targetProductId: string) =>

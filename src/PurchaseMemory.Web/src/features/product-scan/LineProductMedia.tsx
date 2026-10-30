@@ -8,6 +8,7 @@ import { BarcodeScanModal } from "./BarcodeScanModal";
 import { PhotoDecodeError } from "./compressImage";
 import type { BarcodeSource } from "./productMediaStore";
 import { ProductThumb, usePhotoPicker } from "./ProductPhoto";
+import { useNameFromPhoto } from "./useNameFromPhoto";
 import { useProductMedia, useProductMediaActions } from "./useProductMedia";
 import "./productScan.css";
 
@@ -40,6 +41,7 @@ function LinkedLineMedia({ productId, productName }: { productId: string; produc
   const { t } = useTranslation();
   const media = useProductMedia(productId);
   const actions = useProductMediaActions(productId);
+  const naming = useNameFromPhoto(productId);
   const [busy, setBusy] = useState(false);
   const [scanning, setScanning] = useState(false);
   const [message, setMessage] = useState<{ tone: "success" | "danger"; text: string } | null>(null);
@@ -60,7 +62,12 @@ function LinkedLineMedia({ productId, productName }: { productId: string; produc
   }
 
   const picker = usePhotoPicker(
-    (file) => void run(async () => { await actions.addPhoto(file); return t("productScan.photoAdded"); }),
+    (file) => void run(async () => {
+      await actions.addPhoto(file);
+      // The name on the package is read right away, as on the product card.
+      void naming.start(file, { automatic: true });
+      return t("productScan.photoAdded");
+    }),
     { camera: t("productScan.lineTakePhoto"), library: t("productScan.linePickPhoto") }
   );
 
@@ -105,6 +112,7 @@ function LinkedLineMedia({ productId, productName }: { productId: string; produc
         ? <Notice tone={message.tone} role={message.tone === "danger" ? "alert" : "status"}><p>{message.text}</p></Notice>
         : <Footnote>{t("productScan.lineAttachNote")}</Footnote>}
       <BarcodeScanModal isOpen={scanning} onClose={() => setScanning(false)} onCode={addBarcode} />
+      {naming.dialog}
     </>
   );
 }

@@ -341,16 +341,20 @@ export const helpRu: HelpText = {
         "Названия верные — нажмите «Верно»: все предложенные названия станут подтверждёнными.",
         "Чтобы исправить, нажмите карандаш рядом с названием, впишите своё и нажмите «Сохранить». Пустое поле — показывать текст из чека.",
         "«Предложить заново» просит AI ещё раз. Кнопки нет, когда оба названия уже подтверждены.",
+        "Название по фото: когда вы добавляете фото товара (в карточке или из покупки), AI читает название с упаковки. Название «предложено» или его не было — оно сразу заменяется, а вверху появляется «Название обновлено по фото: …» с кнопкой «Вернуть». Название вы подтвердили сами — оно не меняется, появляется «Предложить название» — «По фото: … Заменить?». Прочитать ещё раз с главного фото — кнопка «Название по фото» под фото в карточке товара.",
         "В покупке строка называется так, как в чеке, а под ней — польское название товара: «→ Kefir naturalny Activia 280 g».",
         "Непроверенные названия собраны в «Ревью», в разделе «Названия предложено»: «Верно» — подтвердить, «Изменить» — открыть товар, «Принять все предложенные» — подтвердить все сразу. «Проверять по одной» показывает их по одному с кнопкой «Верно, дальше»."
       ],
       see: [
         "Поиск находит товар и по польскому, и по русскому названию, и по тексту из чека; регистр и польские буквы не важны.",
         "AI никогда не меняет название, которое вы подтвердили или вписали сами, даже после «Предложить заново».",
-        "Новые товары получают названия сами через несколько секунд после сохранения чека — вместе с категорией."
+        "Новые товары получают названия сами через несколько секунд после сохранения чека — вместе с категорией.",
+        "Для «Название по фото» уменьшенная копия фото один раз отправляется AI и нигде на сервере не сохраняется."
       ],
       trouble: [
         "«Сейчас не получилось предложить названия» — AI недоступен или запросов было слишком много. Впишите название вручную или попробуйте позже.",
+        "«Название по фото сейчас недоступно» — нет интернета, AI недоступен или фото было слишком много подряд. Фото при этом сохранено; попробуйте кнопку «Название по фото» позже.",
+        "«На фото не получилось уверенно прочитать название» — на снимке не видно названия (обратная сторона, блик). Сфотографируйте лицевую сторону упаковки.",
         "Названия нет — AI не узнал товар по сокращению из чека и не стал угадывать. Впишите название сами.",
         "Название подтверждено, но неверное — нажмите карандаш и исправьте его.",
         "«Названия изменились, пока экран был открыт» — AI успел предложить новые. «Верно» подтверждает только то, что вы видели: проверьте новые названия и нажмите ещё раз."
@@ -360,7 +364,7 @@ export const helpRu: HelpText = {
       title: "Фото, штрихкод и скан в магазине",
       summary: "Сфотографируйте упаковку и привяжите штрихкод к товару один раз. Потом в магазине наведите камеру на штрихкод — приложение покажет, покупали ли вы этот товар, когда, где и почём, и как он вам.",
       steps: [
-        "Фото товара: откройте карточку товара. В варианте A под большим фото есть «Сфотографировать» и «Из галереи», а для показанного фото — «Сделать главным» и «Удалить фото»; другое фото выбирается миниатюрой. В варианте B — «Снять» над лентой фото и «+ Добавить» в её конце (из галереи); нажмите на фото в ленте, чтобы появились «Сделать главным» и «Удалить фото». Главное фото видно в списке «Товары».",
+        "Фото товара: откройте карточку товара. В варианте A под большим фото есть «Сфотографировать» и «Из галереи», а для показанного фото — «Сделать главным» и «Удалить фото»; другое фото выбирается миниатюрой. В варианте B — «Снять» над лентой фото и «+ Добавить» в её конце (из галереи); нажмите на фото в ленте, чтобы появились «Сделать главным» и «Удалить фото». Главное фото видно в списке «Товары». После добавления фото AI читает с упаковки название товара — см. «Названия товаров».",
         "Штрихкод: в карточке товара нажмите «Сканировать штрихкод» (или «Сканировать» рядом со штрихкодами) и наведите камеру. Не читается — кнопка с клавиатурой вверху, «Ввести код вручную», цифры под штрихкодом и «Добавить».",
         "Из покупки: нажмите на строку — в проверке строк под строкой, в разделе «Товар», есть «Сфотографировать товар», «Выбрать фото из галереи» и «Сканировать штрихкод». Фото и код попадут в карточку товара, к которому привязана строка.",
         "В магазине: на «Главной» нажмите «Сканировать штрихкод» (или плитку «Сканировать») и наведите камеру на штрихкод.",
@@ -853,16 +857,20 @@ export const helpEn: HelpText = {
         "The names are right — press “Correct”: every suggested name becomes confirmed.",
         "To fix one, press the pencil next to it, type your own and press “Save”. Leave it empty to show the receipt text.",
         "“Suggest again” asks AI once more. The button is gone when both names are confirmed.",
+        "Name from photo: when you add a product photo (on the card or from a purchase), AI reads the name from the package. A “suggested” or missing name is replaced at once, and “Name updated from the photo: …” appears at the top with “Undo”. A name you confirmed yourself is not changed; “Suggested name” appears — “From the photo: … Replace?”. To read the main photo again, press “Name from photo” under the photos on the product card.",
         "In a purchase the line keeps the receipt's wording, with the product's Polish name under it: “→ Kefir naturalny Activia 280 g”.",
         "Unchecked names are collected in “Review”, section “Suggested names”: “Correct” confirms them, “Change” opens the product, “Accept all suggested” confirms them all at once. “Check one by one” shows them one at a time with “Right, next”."
       ],
       see: [
         "Search finds a product by its Polish name, its Russian name and the receipt text; case and Polish letters do not matter.",
         "AI never changes a name you confirmed or typed yourself, not even after “Suggest again”.",
-        "New products get their names on their own a few seconds after the receipt is saved — together with the category."
+        "New products get their names on their own a few seconds after the receipt is saved — together with the category.",
+        "For “Name from photo” a smaller copy of the photo is sent to AI once and is not stored on the server."
       ],
       trouble: [
         "“Could not suggest names right now” — AI is unavailable or there were too many requests. Type the name yourself or try later.",
+        "“Name from photo is unavailable right now” — no internet, AI is unavailable or there were too many photos in a row. The photo is still saved; try “Name from photo” later.",
+        "“Could not read the name from the photo with confidence” — the name is not visible (back of the package, glare). Take a photo of the front.",
         "No name — AI did not recognise the product from the receipt abbreviation and did not guess. Type the name yourself.",
         "A confirmed name is wrong — press the pencil and correct it.",
         "“The names changed while the screen was open” — AI suggested new ones meanwhile. “Correct” only confirms what you saw: check the new names and press it again."
@@ -872,7 +880,7 @@ export const helpEn: HelpText = {
       title: "Photo, barcode and scanning in the shop",
       summary: "Take a photo of the package and link its barcode to the product once. Later, in the shop, point the camera at the barcode — the app shows whether you bought it, when, where and for how much, and how you liked it.",
       steps: [
-        "Product photo: open the product card. In variant A the big photo has “Take photo” and “From library” under it, plus “Make main” and “Delete photo” for the photo shown; pick another photo by its thumbnail. In variant B there is “Shoot” above the photo strip and “+ Add” at its end (from the library); tap a photo in the strip to get “Make main” and “Delete photo”. The main photo shows in the Products list.",
+        "Product photo: open the product card. In variant A the big photo has “Take photo” and “From library” under it, plus “Make main” and “Delete photo” for the photo shown; pick another photo by its thumbnail. In variant B there is “Shoot” above the photo strip and “+ Add” at its end (from the library); tap a photo in the strip to get “Make main” and “Delete photo”. The main photo shows in the Products list. After a photo is added, AI reads the product name from the package — see “Product names”.",
         "Barcode: on the product card press “Scan barcode” (or “Scan” next to the barcodes) and point the camera. If it won't read, press the keyboard button at the top, “Type the code”, enter the digits under the barcode and press “Add”.",
         "From a purchase: tap a line — in the line check, under the line in “Product”, there are “Take a product photo”, “Pick a photo from the library” and “Scan barcode”. They go to the card of the product the line is linked to.",
         "In the shop: on Home press “Scan barcode” (or the “Scan” tile) and point the camera at the barcode.",

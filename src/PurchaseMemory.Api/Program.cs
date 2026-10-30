@@ -14,6 +14,7 @@ using PurchaseMemory.Application.Analytics;
 using PurchaseMemory.Application.Impressions;
 using PurchaseMemory.Application.Products;
 using PurchaseMemory.Application.Products.Categories;
+using PurchaseMemory.Application.Products.PhotoNames;
 using PurchaseMemory.Application.Products.Tags;
 using PurchaseMemory.Application.Purchases;
 using PurchaseMemory.Application.Receipts;
@@ -24,6 +25,7 @@ using PurchaseMemory.Infrastructure.Analytics;
 using PurchaseMemory.Infrastructure.Categorization;
 using PurchaseMemory.Infrastructure.Images;
 using PurchaseMemory.Infrastructure.Persistence;
+using PurchaseMemory.Infrastructure.PhotoNames;
 using PurchaseMemory.Infrastructure.Processing;
 using PurchaseMemory.Infrastructure.Recognition;
 using PurchaseMemory.Infrastructure.Tagging;
@@ -59,6 +61,18 @@ builder.Services.AddSingleton<ITagSuggester>(serviceProvider =>
     serviceProvider.GetRequiredService<AnthropicTagSuggester>());
 builder.Services.AddScoped<IProductTagSuggestionService, ProductTagSuggestionService>();
 builder.Services.AddScoped<IProductCategorizationService, ProductCategorizationService>();
+// «Название по фото»: a package photo is read by Claude once and not kept.
+builder.Services
+    .AddOptions<ProductPhotoNamingOptions>()
+    .Bind(builder.Configuration.GetSection(ProductPhotoNamingOptions.SectionName))
+    .ValidateOnStart();
+builder.Services.AddSingleton<
+    Microsoft.Extensions.Options.IValidateOptions<ProductPhotoNamingOptions>,
+    ProductPhotoNamingOptionsValidator>();
+builder.Services.AddSingleton<AnthropicProductPhotoNamer>();
+builder.Services.AddSingleton<IProductPhotoNamer>(serviceProvider =>
+    serviceProvider.GetRequiredService<AnthropicProductPhotoNamer>());
+builder.Services.AddScoped<IProductPhotoNamingService, ProductPhotoNamingService>();
 builder.Services
     .AddOptions<ProductCategorizationOptions>()
     .Bind(builder.Configuration.GetSection(ProductCategorizationOptions.SectionName));
