@@ -335,6 +335,39 @@ public sealed class Product
     }
 
     /// <summary>
+    /// «Вернуть» after a name read from a photo: puts back what the name was
+    /// before — a suggestion, or nothing (the receipt text shows). A person's
+    /// name is never the «before» here, since a photo never replaces it.
+    /// </summary>
+    public void RestoreSuggestedName(
+        ProductNameLanguage language,
+        string? name,
+        string? normalizedName,
+        DateTimeOffset updatedAt)
+    {
+        var clean = CleanDisplayName(name);
+        var normalized = clean is null ? null : LimitDisplayName(normalizedName);
+        var source = clean is null ? (ProductAttributeSource?)null : ProductAttributeSource.Suggested;
+        switch (language)
+        {
+            case ProductNameLanguage.Polish:
+                NamePl = clean;
+                NormalizedNamePl = normalized;
+                NamePlSource = source;
+                break;
+            case ProductNameLanguage.Russian:
+                NameRu = clean;
+                NormalizedNameRu = normalized;
+                NameRuSource = source;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(language), language, "Unknown name language.");
+        }
+
+        UpdatedAt = updatedAt;
+    }
+
+    /// <summary>
     /// «Верно»: every suggested name that has a value becomes confirmed as is.
     /// Returns the languages that changed.
     /// </summary>

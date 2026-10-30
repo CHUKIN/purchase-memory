@@ -53,6 +53,7 @@ internal sealed class AuthTestHost : WebApplicationFactory<Program>
             ["Categorization:Enabled"] = "false",
             ["Analytics:Enabled"] = "false",
             ["TagSuggestions:Enabled"] = "false",
+            ["ProductPhotoNaming:Enabled"] = "false",
             // Never an Azure call either, even if AZURE_DOCINTEL_* is set.
             ["TextLocation:Enabled"] = "false"
         };

@@ -19,9 +19,32 @@ export class PhotoDecodeError extends Error {
   }
 }
 
+/**
+ * «Название по фото» sends a smaller copy (~200 KB at most): package text
+ * stays readable at 1024 px, and the vision call is cheaper and faster.
+ */
+export const namingPhotoLimits = {
+  maxSide: 1024,
+  quality: 0.75,
+  targetBytes: 200 * 1024,
+  fallbackQuality: 0.55
+} as const;
+
 export async function compressPhoto(file: Blob): Promise<{ blob: Blob; width: number; height: number }> {
+  return shrink(file, productPhotoLimits);
+}
+
+/** The copy sent to the server for «Название по фото»; never stored. */
+export async function photoForNaming(file: Blob): Promise<Blob> {
+  return (await shrink(file, namingPhotoLimits)).blob;
+}
+
+async function shrink(
+  file: Blob,
+  limits: { maxSide: number; quality: number; targetBytes: number; fallbackQuality: number }
+): Promise<{ blob: Blob; width: number; height: number }> {
   const image = await loadImage(file);
-  const scale = Math.min(1, productPhotoLimits.maxSide / Math.max(image.naturalWidth, image.naturalHeight));
+  const scale = Math.min(1, limits.maxSide / Math.max(image.naturalWidth, image.naturalHeight));
   const width = Math.max(1, Math.round(image.naturalWidth * scale));
   const height = Math.max(1, Math.round(image.naturalHeight * scale));
   const canvas = document.createElement("canvas");
@@ -33,8 +56,8 @@ export async function compressPhoto(file: Blob): Promise<{ blob: Blob; width: nu
   context.fillStyle = "#fff";
   context.fillRect(0, 0, width, height);
   context.drawImage(image, 0, 0, width, height);
-  let blob = await toJpeg(canvas, productPhotoLimits.quality);
-  if (blob.size > productPhotoLimits.targetBytes) blob = await toJpeg(canvas, productPhotoLimits.fallbackQuality);
+  let blob = await toJpeg(canvas, limits.quality);
+  if (blob.size > limits.targetBytes) blob = await toJpeg(canvas, limits.fallbackQuality);
   // Free the canvas memory at once; iOS caps the total canvas area per page.
   canvas.width = 0;
   canvas.height = 0;
