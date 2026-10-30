@@ -308,6 +308,8 @@ public sealed class SqliteProductCatalogRepository : IProductCatalogRepository
                     product.CanonicalName,
                     product.Brand,
                     product.CategoryId,
+                    product.NamePl,
+                    product.NameRu,
                     PurchaseCount = _dbContext.PurchaseDrafts
                         .Count(draft => draft.Items.Any(item => item.ProductId == product.Id))
                 })
@@ -326,7 +328,9 @@ public sealed class SqliteProductCatalogRepository : IProductCatalogRepository
                         row.Brand,
                         row.CategoryId,
                         row.PurchaseCount,
-                        row.Score))
+                        row.Score,
+                        row.NamePl,
+                        row.NameRu))
                     .ToList());
     }
 

@@ -8,7 +8,7 @@ import { useBackTarget } from "../../app/backNavigation";
 import { clearPlaces } from "../../app/place";
 import { useBack } from "../../design-system/components";
 import { useRememberedBarcodes } from "../product-scan/useProductMedia";
-import { ReviewQueuePage } from "./ReviewQueuePage";
+import { ReviewQueuePage, ReviewQueueView } from "./ReviewQueuePage";
 
 vi.mock("../../api/client", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../../api/client")>()),
@@ -243,6 +243,86 @@ describe("«Ревью» hub", () => {
 
       const categories = await screen.findByRole("region", { name: "Категории" });
       expect(within(categories).getByRole("button", { name: "Принять первые предложенные (100)" })).toBeInTheDocument();
+    });
+  });
+
+  it("shows a candidate by its human name, Russian and receipt text under it", async () => {
+    const candidates = [
+      { productId: "c1", name: "SER GOUDA 250", brand: "Hochland", categoryId: null, purchaseCount: 2, namePl: "Ser Gouda 250 g", nameRu: "Сыр Гауда, 250 г" },
+      { productId: "c2", name: "SER ZOLTY", brand: null, categoryId: null, purchaseCount: 1 }
+    ];
+    vi.mocked(getReviewQueue).mockResolvedValue({
+      ...hub,
+      groups: hub.groups.map((group) => group.kind === "productNeedsReview"
+        ? { ...group, items: [item({ kind: "productNeedsReview", id: "productNeedsReview:f1", title: "Ser Gouda 250g", productId: "f1", candidates })] }
+        : group)
+    });
+    renderHub();
+
+    const products = await screen.findByRole("region", { name: "Товары" });
+    expect(within(products).getByRole("link", { name: "Ser Gouda 250 g" })).toBeInTheDocument();
+    expect(within(products).getByText(/Сыр Гауда, 250 г · SER GOUDA 250 · Hochland/)).toBeInTheDocument();
+    // Without a human name the receipt text is the title, as before.
+    expect(within(products).getByRole("link", { name: "SER ZOLTY" })).toBeInTheDocument();
+  });
+
+  describe("«Принять все предложенные» while one is pending", () => {
+    const bigHub = { ...hub, groups: hub.groups.map((group) => group.kind === "suggestedCategory" ? { ...group, totalCount: 140 } : group) };
+
+    it("cannot be pressed again before the first is settled, so the same items are not picked twice", async () => {
+      vi.mocked(getReviewQueue).mockResolvedValue(bigHub);
+      renderHub();
+
+      const categories = await screen.findByRole("region", { name: "Категории" });
+      const button = within(categories).getByRole("button", { name: "Принять первые предложенные (100)" });
+      fireEvent.click(button);
+      await screen.findByText("Принято категорий: 4");
+      const loads = vi.mocked(getReviewQueue).mock.calls.filter(([limit]) => limit === 100).length;
+
+      const again = within(screen.getByRole("region", { name: "Категории" })).getByRole("button", { name: /Принять первые предложенные/ });
+      expect(again).toBeDisabled();
+      fireEvent.click(again);
+      fireEvent.click(again);
+
+      await act(async () => { await Promise.resolve(); });
+      expect(vi.mocked(getReviewQueue).mock.calls.filter(([limit]) => limit === 100)).toHaveLength(loads);
+      expect(screen.getAllByText("Принято категорий: 4")).toHaveLength(1);
+    });
+
+    it("does not under-count when the filter changes during a pending accept", async () => {
+      const unfiltered = { ...hub, groups: hub.groups.filter((group) => group.kind === "suggestedCategory"), totalCount: 4 };
+      const filtered: ReviewQueue = {
+        totalCount: 2,
+        groups: [{ kind: "suggestedCategory", totalCount: 2, items: [suggested("x1", "SER"), suggested("x2", "JAJA")] }]
+      };
+      const props = {
+        loading: false,
+        error: false,
+        onRetry: () => undefined,
+        categories: [],
+        tags: [],
+        tag: "",
+        onCategoryChange: () => undefined,
+        onTagChange: () => undefined,
+        onResetFilters: () => undefined,
+        loadSuggested: async () => unfiltered.groups[0].items
+      };
+      const view = (queue: ReviewQueue, category: string) => (
+        <AppProviders locale="ru">
+          <MemoryRouter>
+            <ReviewQueueView {...props} queue={queue} category={category} />
+          </MemoryRouter>
+        </AppProviders>
+      );
+      const { rerender } = render(view(unfiltered, ""));
+
+      fireEvent.click(await screen.findByRole("button", { name: "Принять все предложенные (4)" }));
+      await screen.findByText("Принято категорий: 4");
+      rerender(view(filtered, "milk"));
+
+      const region = await screen.findByRole("region", { name: "Категории" });
+      expect(within(region).getAllByRole("article")).toHaveLength(2);
+      expect(within(region).getByRole("button", { name: "Принять все предложенные (2)" })).toBeInTheDocument();
     });
   });
 

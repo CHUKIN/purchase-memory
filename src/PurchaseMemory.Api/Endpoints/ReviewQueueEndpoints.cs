@@ -141,7 +141,9 @@ public sealed record ReviewQueueCandidateResponse(
     string? Brand,
     Guid? CategoryId,
     int PurchaseCount,
-    double Score);
+    double Score,
+    string? NamePl = null,
+    string? NameRu = null);
 
 public sealed record ReviewQueueGroupResponse(string Kind, int TotalCount, IReadOnlyList<ReviewQueueItemResponse> Items);
 
@@ -180,7 +182,9 @@ public sealed record ReviewQueueResponse(
                                 candidate.Brand,
                                 candidate.CategoryId,
                                 candidate.PurchaseCount,
-                                candidate.Score))
+                                candidate.Score,
+                                candidate.NamePl,
+                                candidate.NameRu))
                             .ToList(),
                         item.PurchaseCount,
                         item.NeedsCategory,

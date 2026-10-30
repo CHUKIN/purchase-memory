@@ -9,6 +9,7 @@ import { useReturnState } from "../../app/backNavigation";
 import { categoryPath } from "../categories/categoryText";
 import { HelpLink } from "../help/HelpLink";
 import { CatalogSearchModal } from "./CatalogSearchModal";
+import { displayName, receiptText, russianName } from "./productNameText";
 import { MergeConfirmAlert, type MergeRequest, type MergeSide } from "./productMerge";
 
 export interface ProductReviewActions {
@@ -61,6 +62,8 @@ export function ProductReviewBanner({ product, categories, actions }: {
         </IonItem>
         {candidates.map((candidate, index) => {
           const details = [
+            russianName(candidate),
+            receiptText(candidate),
             candidate.brand,
             categoryPath(t, categories, candidate.categoryId),
             t("products.purchaseCount", { count: candidate.purchaseCount })
@@ -69,7 +72,7 @@ export function ProductReviewBanner({ product, categories, actions }: {
             <IonItem key={candidate.productId}>
               <IonLabel className="pm-wrap">
                 {index === 0 && <p className="pm-overline" aria-hidden="true">{t("reviewQueue.suggestionsLabel")}</p>}
-                <h3><Link className="pm-text-link" to={`/products/${candidate.productId}`} state={returnState}>{candidate.name}</Link></h3>
+                <h3><Link className="pm-text-link" to={`/products/${candidate.productId}`} state={returnState}>{displayName(candidate)}</Link></h3>
                 <p>{details}</p>
               </IonLabel>
               <ActionButton
@@ -79,7 +82,7 @@ export function ProductReviewBanner({ product, categories, actions }: {
                 fill={index === 0 ? "solid" : "outline"}
                 loading={busy === candidate.productId}
                 disabled={busy !== null && busy !== candidate.productId}
-                onClick={() => setRequest({ source: self, target: { id: candidate.productId, name: candidate.name } })}
+                onClick={() => setRequest({ source: self, target: { id: candidate.productId, name: displayName(candidate) } })}
                 aria-label={t("reviewQueue.acceptCandidateFor", { name: product.name, product: candidate.name })}
               >
                 {t("reviewQueue.acceptCandidate")}

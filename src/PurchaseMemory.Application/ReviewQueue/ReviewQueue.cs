@@ -163,7 +163,9 @@ public sealed record ReviewQueueCandidate(
     string? Brand,
     Guid? CategoryId,
     int PurchaseCount = 0,
-    double Score = 0);
+    double Score = 0,
+    string? NamePl = null,
+    string? NameRu = null);
 
 /// <summary>
 /// What the «Нужно проверить» screen narrows the queue to. Same meaning as the
