@@ -63,9 +63,11 @@ function LinkedLineMedia({ productId, productName }: { productId: string; produc
 
   const picker = usePhotoPicker(
     (file) => void run(async () => {
+      // Only the first photo of a product is read right away, as on the product card
+      // (unknown while the device list is still loading: then nothing is renamed).
+      const isFirstPhoto = media.data?.photos.length === 0;
       await actions.addPhoto(file);
-      // The name on the package is read right away, as on the product card.
-      void naming.start(file, { automatic: true });
+      if (isFirstPhoto) void naming.start(file, { automatic: true });
       return t("productScan.photoAdded");
     }),
     { camera: t("productScan.lineTakePhoto"), library: t("productScan.linePickPhoto") }

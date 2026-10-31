@@ -178,6 +178,7 @@ describe("Name from photo", () => {
 
 describe("«Название по фото» on the product card", () => {
   const readPhoto = vi.fn();
+  const addPhoto = vi.fn();
 
   function renderSection(photos: number) {
     vi.mocked(useProductMedia).mockReturnValue({
@@ -189,7 +190,7 @@ describe("«Название по фото» on the product card", () => {
         avoid: null
       }
     } as unknown as ReturnType<typeof useProductMedia>);
-    vi.mocked(useProductMediaActions).mockReturnValue({ readPhoto } as unknown as ReturnType<typeof useProductMediaActions>);
+    vi.mocked(useProductMediaActions).mockReturnValue({ readPhoto, addPhoto } as unknown as ReturnType<typeof useProductMediaActions>);
     return render(
       <AppProviders locale="ru">
         <MemoryRouter>
@@ -204,6 +205,29 @@ describe("«Название по фото» on the product card", () => {
       language({ language: "pl", outcome: "replaced", name: "Kefir naturalny Activia 280 g" })
     ]));
     readPhoto.mockReset().mockResolvedValue(photo);
+    addPhoto.mockReset().mockResolvedValue({ id: "new" });
+  });
+
+  const pickFile = () => fireEvent.change(screen.getByLabelText("Из галереи"), { target: { files: [new File(["x"], "a.jpg", { type: "image/jpeg" })] } });
+
+  it("names the product from its first photo right away", async () => {
+    renderSection(0);
+    pickFile();
+
+    await waitFor(() => expect(nameProductFromPhoto).toHaveBeenCalledTimes(1));
+    expect(addPhoto).toHaveBeenCalledTimes(1);
+  });
+
+  it("never renames from a later photo; the button still does it on demand", async () => {
+    renderSection(1);
+    pickFile();
+
+    await waitFor(() => expect(addPhoto).toHaveBeenCalledTimes(1));
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(nameProductFromPhoto).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole("button", { name: "Название по фото" }));
+    await waitFor(() => expect(nameProductFromPhoto).toHaveBeenCalledTimes(1));
   });
 
   it("is there only when the device has a photo, and reads the main one", async () => {
