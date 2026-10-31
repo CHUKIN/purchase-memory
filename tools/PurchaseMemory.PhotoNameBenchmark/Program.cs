@@ -12,11 +12,13 @@ using PurchaseMemory.Infrastructure.PhotoNames;
 // database, no API host. Every photo is shrunk the way the app does it
 // (long side 1024 px, JPEG) before it is sent.
 // Run (the key is read from ANTHROPIC_API_KEY by the namer and never printed):
-//   zsh -ic './scripts/dotnet.sh run --project tools/PurchaseMemory.PhotoNameBenchmark -- <photos-folder> <out.csv> --budget-usd 0.05 [--model claude-haiku-5-5] [--limit 20]'
+//   zsh -ic './scripts/dotnet.sh run --project tools/PurchaseMemory.PhotoNameBenchmark -- <photos-folder> <out.csv> --budget-usd 0.05 [--model claude-haiku-5-5] [--limit 20] [--hints hints.csv]'
+// --hints: optional CSV (UTF-8, header row `file,receipt_name,brand`) giving each photo the receipt
+// text and brand the app would pass as the hint; a photo with no row is sent without a hint.
 
 if (args.Length < 2 || args[0].StartsWith("--", StringComparison.Ordinal) || args[1].StartsWith("--", StringComparison.Ordinal))
 {
-    Console.Error.WriteLine("Usage: <photos-folder> <out.csv> --budget-usd <amount> [--model <id>] [--limit <n>]");
+    Console.Error.WriteLine("Usage: <photos-folder> <out.csv> --budget-usd <amount> [--model <id>] [--limit <n>] [--hints <csv>]");
     return 2;
 }
 
@@ -50,6 +52,27 @@ if (!namer.IsConfigured)
     return 2;
 }
 
+var hints = new Dictionary<string, ProductPhotoHint>(StringComparer.OrdinalIgnoreCase);
+if (ArgValue("--hints") is { Length: > 0 } hintsPath)
+{
+    if (!File.Exists(hintsPath))
+    {
+        Console.Error.WriteLine($"Hints file not found: {hintsPath}");
+        return 2;
+    }
+
+    foreach (var fields in ParseCsv(await File.ReadAllTextAsync(hintsPath, Encoding.UTF8)).Skip(1))
+    {
+        if (fields.Count >= 2 && fields[0].Trim().Length > 0 && fields[1].Trim().Length > 0)
+        {
+            var brandField = fields.Count > 2 ? fields[2].Trim() : "";
+            hints[fields[0].Trim()] = new ProductPhotoHint(fields[1].Trim(), brandField.Length > 0 ? brandField : null);
+        }
+    }
+
+    Console.WriteLine($"{hints.Count} hints loaded");
+}
+
 string[] extensions = [".jpg", ".jpeg", ".png", ".webp", ".heic"];
 var photos = Directory.EnumerateFiles(folder)
     .Where(path => extensions.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase))
@@ -65,7 +88,7 @@ var compressor = new ReceiptImageCompressor(new ReceiptDisplayCopyOptions { Maxi
 var assumedCallCost = 0.002m;
 var maxObservedCost = 0m;
 var spent = 0m;
-var rows = new List<string> { "file,name_pl,name_ru,brand,ms,input_tokens,output_tokens,cost_usd,image_bytes,error" };
+var rows = new List<string> { "file,hint,name_pl,name_ru,brand,ms,input_tokens,output_tokens,cost_usd,image_bytes,error" };
 
 foreach (var path in photos)
 {
@@ -76,10 +99,12 @@ foreach (var path in photos)
     }
 
     var name = Path.GetFileName(path);
+    hints.TryGetValue(name, out var hint);
+    var hintText = hint is null ? null : hint.Brand is null ? hint.ReceiptText : $"{hint.ReceiptText} [{hint.Brand}]";
     var copy = compressor.TryCreate(await File.ReadAllBytesAsync(path));
     if (copy is null)
     {
-        rows.Add(Csv(name, null, null, null, 0, null, null, null, 0, "could not decode"));
+        rows.Add(Csv(name, hintText, null, null, null, 0, null, null, null, 0, "could not decode"));
         Console.WriteLine($"- {name}: could not decode, skipped (no call)");
         continue;
     }
@@ -88,14 +113,14 @@ foreach (var path in photos)
     try
     {
         var image = ProductPhotoRules.Check(copy.Content);
-        var reading = await namer.ReadAsync(image, null, CancellationToken.None);
+        var reading = await namer.ReadAsync(image, hint, CancellationToken.None);
         stopwatch.Stop();
         // No price known for this model: count the call at the assumed cost so the cap still holds.
         var cost = reading.CostUsd ?? assumedCallCost;
         spent += cost;
         maxObservedCost = Math.Max(maxObservedCost, cost);
         assumedCallCost = maxObservedCost > 0 ? maxObservedCost : assumedCallCost;
-        rows.Add(Csv(name, reading.NamePl, reading.NameRu, reading.Brand, stopwatch.ElapsedMilliseconds,
+        rows.Add(Csv(name, hintText, reading.NamePl, reading.NameRu, reading.Brand, stopwatch.ElapsedMilliseconds,
             reading.InputTokens, reading.OutputTokens, reading.CostUsd, copy.Content.Length, null));
         Console.WriteLine($"- {name}: {reading.NamePl ?? "—"} | {reading.NameRu ?? "—"} ({stopwatch.ElapsedMilliseconds} ms, ${cost.ToString("0.000000", CultureInfo.InvariantCulture)})");
     }
@@ -104,7 +129,7 @@ foreach (var path in photos)
         stopwatch.Stop();
         // A failed call reports no usage but may still be billed: count it as a full call.
         spent += assumedCallCost;
-        rows.Add(Csv(name, null, null, null, stopwatch.ElapsedMilliseconds, null, null, null, copy.Content.Length, exception.Message));
+        rows.Add(Csv(name, hintText, null, null, null, stopwatch.ElapsedMilliseconds, null, null, null, copy.Content.Length, exception.Message));
         Console.WriteLine($"- {name}: FAILED ({exception.Message})");
     }
 }
@@ -119,9 +144,10 @@ string? ArgValue(string flag)
     return index >= 0 && index + 1 < args.Length ? args[index + 1] : null;
 }
 
-static string Csv(string file, string? namePl, string? nameRu, string? brand, long ms, long? input, long? outputTokens, decimal? cost, int imageBytes, string? error) =>
+static string Csv(string file, string? hint, string? namePl, string? nameRu, string? brand, long ms, long? input, long? outputTokens, decimal? cost, int imageBytes, string? error) =>
     string.Join(',',
         Quote(file),
+        Quote(hint),
         Quote(namePl),
         Quote(nameRu),
         Quote(brand),
@@ -134,3 +160,41 @@ static string Csv(string file, string? namePl, string? nameRu, string? brand, lo
 
 static string Quote(string? value) =>
     value is null ? "" : "\"" + value.Replace("\"", "\"\"", StringComparison.Ordinal) + "\"";
+
+// Minimal CSV reader: quoted fields, "" as an escaped quote, commas and line breaks inside quotes.
+static List<List<string>> ParseCsv(string text)
+{
+    var records = new List<List<string>>();
+    var fields = new List<string>();
+    var field = new StringBuilder();
+    var quoted = false;
+    for (var i = 0; i < text.Length; i++)
+    {
+        var c = text[i];
+        if (quoted)
+        {
+            if (c == '"' && i + 1 < text.Length && text[i + 1] == '"') { field.Append('"'); i++; }
+            else if (c == '"') quoted = false;
+            else field.Append(c);
+        }
+        else if (c == '"') quoted = true;
+        else if (c == ',') { fields.Add(field.ToString()); field.Clear(); }
+        else if (c == '\n' || c == '\r')
+        {
+            if (c == '\r' && i + 1 < text.Length && text[i + 1] == '\n') i++;
+            fields.Add(field.ToString());
+            field.Clear();
+            if (fields.Count > 1 || fields[0].Length > 0) records.Add(fields);
+            fields = [];
+        }
+        else field.Append(c);
+    }
+
+    if (field.Length > 0 || fields.Count > 0)
+    {
+        fields.Add(field.ToString());
+        records.Add(fields);
+    }
+
+    return records;
+}

@@ -341,7 +341,7 @@ export const helpRu: HelpText = {
         "Названия верные — нажмите «Верно»: все предложенные названия станут подтверждёнными.",
         "Чтобы исправить, нажмите карандаш рядом с названием, впишите своё и нажмите «Сохранить». Пустое поле — показывать текст из чека.",
         "«Предложить заново» просит AI ещё раз. Кнопки нет, когда оба названия уже подтверждены.",
-        "Название по фото: когда вы добавляете фото товара (в карточке или из покупки), AI читает название с упаковки. Название «предложено» или его не было — оно сразу заменяется, а вверху появляется «Название обновлено по фото: …» с кнопкой «Вернуть». Название вы подтвердили сами — оно не меняется, появляется «Предложить название» — «По фото: … Заменить?». Прочитать ещё раз с главного фото — кнопка «Название по фото» под фото в карточке товара.",
+        "Название по фото: когда вы добавляете первое фото товара (в карточке или из покупки), AI читает название с упаковки. Следующие фото название не меняют. Название «предложено» или его не было — оно сразу заменяется, а вверху появляется «Название обновлено по фото: …» с кнопкой «Вернуть». Название вы подтвердили сами — оно не меняется, появляется «Предложить название» — «По фото: … Заменить?». Прочитать название с главного фото в любой момент — кнопка «Название по фото» под фото в карточке товара.",
         "В покупке строка называется так, как в чеке, а под ней — польское название товара: «→ Kefir naturalny Activia 280 g».",
         "Непроверенные названия собраны в «Ревью», в разделе «Названия предложено»: «Верно» — подтвердить, «Изменить» — открыть товар, «Принять все предложенные» — подтвердить все сразу. «Проверять по одной» показывает их по одному с кнопкой «Верно, дальше»."
       ],
@@ -857,7 +857,7 @@ export const helpEn: HelpText = {
         "The names are right — press “Correct”: every suggested name becomes confirmed.",
         "To fix one, press the pencil next to it, type your own and press “Save”. Leave it empty to show the receipt text.",
         "“Suggest again” asks AI once more. The button is gone when both names are confirmed.",
-        "Name from photo: when you add a product photo (on the card or from a purchase), AI reads the name from the package. A “suggested” or missing name is replaced at once, and “Name updated from the photo: …” appears at the top with “Undo”. A name you confirmed yourself is not changed; “Suggested name” appears — “From the photo: … Replace?”. To read the main photo again, press “Name from photo” under the photos on the product card.",
+        "Name from photo: when you add the first photo of a product (on the card or from a purchase), AI reads the name from the package. Later photos do not change the name. A “suggested” or missing name is replaced at once, and “Name updated from the photo: …” appears at the top with “Undo”. A name you confirmed yourself is not changed; “Suggested name” appears — “From the photo: … Replace?”. To read the name from the main photo at any time, press “Name from photo” under the photos on the product card.",
         "In a purchase the line keeps the receipt's wording, with the product's Polish name under it: “→ Kefir naturalny Activia 280 g”.",
         "Unchecked names are collected in “Review”, section “Suggested names”: “Correct” confirms them, “Change” opens the product, “Accept all suggested” confirms them all at once. “Check one by one” shows them one at a time with “Right, next”."
       ],

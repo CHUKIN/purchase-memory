@@ -56,11 +56,13 @@ export function ProductMediaSection({ productId, productName, intro, locale }: P
   }
 
   const picker = usePhotoPicker(
-    // A new photo is usually the package front: its name is read right away
-    // (a suggested name is replaced with «Вернуть», a person's name only offered).
+    // The first photo of a product is usually the package front: its name is read
+    // right away (a suggested name is replaced with «Вернуть», a person's name only
+    // offered). Later photos (back, sides) never rename; «Название по фото» does it on demand.
     (file) => void run(async () => {
+      const isFirstPhoto = media.photos.length === 0;
       await actions.addPhoto(file);
-      void naming.start(file, { automatic: true });
+      if (isFirstPhoto) void naming.start(file, { automatic: true });
     }),
     { camera: t("productScan.takePhoto"), library: t("productScan.pickPhoto") }
   );
