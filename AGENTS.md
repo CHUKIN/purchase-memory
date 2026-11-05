@@ -1,256 +1,254 @@
-# Purchase Memory — обязательный рабочий процесс агентов
+# Purchase Memory — mandatory agent workflow
 
-Этот файл является памятью проекта для root-агента (Claude Code, Codex и др.) и дочерних агентов. Он применяется
-ко всем следующим этапам разработки, если пользователь явно не изменил процесс.
+This file is the project memory for the root agent (Claude Code, Codex, etc.)
+and its child agents. It applies to every following development stage unless
+the owner explicitly changes the process.
 
-## Безопасность данных и секретов (обязательно, без исключений)
+## Data and secret safety (mandatory, no exceptions)
 
-- `data/purchases.db` — настоящая база владельца. Не открывать, не читать, не
-  копировать, не мигрировать и не направлять на неё тесты, `dotnet ef`,
-  запуски приложения или любые инструменты. `data/receipts/` и
-  `data/backups/` не трогать.
-- API при старте сам мигрирует базу. Любой запуск API агентом — только с
-  `Paths__DataDirectory`, указывающим на свежую папку во временном каталоге.
-- После этапа, затрагивающего backend, сверять, что дата изменения и размер
-  `data/purchases.db` не изменились.
-- Фото чеков владельца вне `test-data/` только читать и не копировать в
-  репозиторий.
-- Git (с 06.10.2026): приватный репозиторий `CHUKIN/purchase-memory`, ветка
-  `main`. Агенты-исполнители и review используют только читающие git-команды
-  (`status`, `diff`, `log`); коммит и push делает root-агент после принятого
-  review, без force-push и переписывания истории. Перед коммитом проверять, что
-  в индекс не попали `data/`, `logs/`, фото чеков владельца и секреты.
-- Временные файлы — только во временном каталоге сессии, у каждого агента своя
-  подпапка.
-- Собирать и запускать .NET только через `./scripts/dotnet.sh`, sidecar — через
+- `data/purchases.db` is the owner's real database. Do not open, read, copy or
+  migrate it, and do not point tests, `dotnet ef`, app runs or any tool at it.
+  Do not touch `data/receipts/` and `data/backups/`.
+- The API migrates its database on start. An agent runs the API only with
+  `Paths__DataDirectory` pointing to a fresh folder in the temp directory.
+- After a stage that touches the backend, check that the modification time and
+  size of `data/purchases.db` have not changed.
+- The owner's receipt photos outside `test-data/` are read-only and are never
+  copied into the repository.
+- Git (since 2026-10-06): private repository `CHUKIN/purchase-memory`, branch
+  `main`. Implementation and review agents use read-only git commands only
+  (`status`, `diff`, `log`); the root agent commits and pushes after an
+  accepted review, with no force-push and no history rewriting. Before a
+  commit, check that `data/`, `logs/`, the owner's receipt photos and secrets
+  are not in the index.
+- Temporary files go only into the session temp directory, one subfolder per
+  agent.
+- Build and run .NET only via `./scripts/dotnet.sh`, the sidecar only via
   `./scripts/build-apple-sidecar.sh`.
-- Агент никогда сам не вводит и не принимает из чата ключи и токены. Если
-  пользователь прислал ключ в чат — не использовать и попросить отозвать.
-  Ключи живут в `~/.zshrc` (например `OPENAI_API_KEY`); команды, которым они
-  нужны, запускать через `zsh -ic '…'`. Значение не печатать, не логировать, не
-  передавать аргументом, не запускать `env`/`printenv`; проверять можно только
-  наличие или длину.
-- Платные вызовы (OpenAI, платные модели Ollama и др.) — только с заранее
-  названным пользователю бюджетом.
+- An agent never types in keys or tokens itself and never accepts them from
+  chat. If the owner sends a key in chat, do not use it and ask them to revoke
+  it. Keys live in `~/.zshrc` (e.g. `OPENAI_API_KEY`); run commands that need
+  them via `zsh -ic '…'`. Never print, log or pass the value as an argument,
+  never run `env`/`printenv`; only check presence or length.
+- Paid calls (OpenAI, Anthropic, paid Ollama models, etc.) only with a budget
+  named to the owner in advance.
 
-## Источники продуктовых решений
+## Sources of product decisions
 
-Перед планированием этапа сверяться с:
+Before planning a stage, check:
 
-- `ПРОДУКТОВАЯ_СЕССИЯ.md` — подтверждённые требования и границы продукта;
-- `ДИЗАЙН_БРИФ_И_UI_СТЕК.md` — визуальная система и UI-этапы;
-- `РЕЗУЛЬТАТЫ_ТЕХНИЧЕСКОГО_ЯДРА.md` — доказанные возможности и известные
-  ограничения;
-- `КОНТЕКСТ_ПРОЕКТА.md` — текущая архитектура, принятые решения и карта
-  документов (планы `ПЛАН_*.md`, результаты этапов `РЕЗУЛЬТАТЫ_*.md`);
-- актуальным кодом и тестами — документация не заменяет проверку реализации.
+- `ПРОДУКТОВАЯ_СЕССИЯ.md` — confirmed requirements and product boundaries;
+- `ДИЗАЙН_БРИФ_И_UI_СТЕК.md` — visual system and UI stages;
+- `РЕЗУЛЬТАТЫ_ТЕХНИЧЕСКОГО_ЯДРА.md` — proven capabilities and known limits;
+- `КОНТЕКСТ_ПРОЕКТА.md` — current architecture, decisions made and the map of
+  documents (plans `ПЛАН_*.md`, stage results `РЕЗУЛЬТАТЫ_*.md`);
+- the actual code and tests — documentation does not replace checking the
+  implementation.
 
-## Когда начинать этап
+## When to start a stage
 
-- Обсуждение, идея или вопрос не являются разрешением менять код.
-- Новый этап начинается только после явного согласия пользователя его
-  реализовать.
-- Разрешение относится к одному согласованному этапу и не даёт права
-  автоматически переходить к следующему.
-- Исключение (решение владельца 17.10.2026): владелец может одобрить сразу
-  несколько этапов плана («делай 1.2, 1.6, 1.3 подряд»). Тогда root-агент идёт
-  по ним без остановок и останавливается только когда нужен выбор владельца
-  (макет, вариант), при блокере или существенном изменении scope и перед
-  выкладкой. Выкладка всегда требует отдельного «да».
+- A discussion, idea or question is not permission to change code.
+- A new stage starts only after the owner explicitly agrees to implement it.
+- Permission covers one agreed stage and does not allow moving on to the next
+  one automatically.
+- Exception (owner's decision 2026-10-17): the owner may approve several plan
+  stages at once ("do 1.2, 1.6, 1.3 in a row"). The root agent then goes
+  through them without stopping and stops only when the owner must choose
+  (mockup, variant), on a blocker or a significant scope change, and before a
+  deploy. A deploy always needs a separate "yes".
 
-## Обязательный цикл одного этапа
+## Mandatory cycle of one stage
 
-1. Root-агент формулирует ограниченный task brief: цель, scope, non-goals,
-   критерии приёмки, обязательные проверки и документы, которые нужно обновить.
-2. Root-агент самостоятельно выбирает подходящую модель и reasoning effort и
-   запускает отдельного implementation-агента. Пользователю не нужно выбирать
-   модель, если он сам этого не просит.
-3. Пока implementation-агент работает, root-агент не читает и не проверяет
-   затрагиваемый код напрямую — это сберегает его контекстное окно для
-   координации нескольких этапов подряд. Промежуточные сообщения пользователю
-   не нужны, кроме случаев, перечисленных в разделе «Коммуникация с
-   пользователем».
-4. После ответа implementation-агента root-агент запускает отдельного
-   независимого review-агента, не участвовавшего в реализации. Review-агент
-   лично проверяет все изменения (архитектуру, читаемость, доступность,
-   обработку ошибок, безопасность, миграции, конфигурацию, зависимости,
-   отсутствие случайных изменений) и самостоятельно запускает релевантные
-   build, unit, integration, frontend, e2e и visual проверки в объёме,
-   соответствующем риску этапа. Review-агенту передаётся task brief и полный
-   отчёт implementation-агента, но не более — он должен сам изучить diff и
-   перепроверить факты, а не пересказывать чужой отчёт.
-5. Review-агент возвращает root-агенту компактный вердикт: конкретные
-   результаты проверок (числа, статусы), найденные недостатки (если есть) и
-   итоговую готовность этапа. Root-агент не обязан лично перечитывать код,
-   чтобы принять этот вердикт, но обязан прочитать сам вердикт целиком и не
-   выдавать его бездумно за собственное заключение.
-6. Если review-агент нашёл недостатки, root-агент отправляет implementation-
-   агенту конкретный follow-up со списком исправлений со слов review-агента.
-   После исправлений review-агент (тот же или новый) повторяет проверку.
-   Этап нельзя считать готовым только по отчёту implementation-агента без
-   отдельного review-агента.
-7. После успешной проверки root-агент обновляет планы и файл результата этапа:
-   что сделано, что проверено, известные ограничения и следующий кандидатный
-   шаг.
-8. Перед следующим этапом root-агент останавливается, показывает пользователю
-   результат или способ открыть его, объясняет принятые решения и задаёт только
-   необходимые вопросы. Продолжение требует нового явного согласия, если
-   владелец заранее не одобрил несколько этапов подряд (см. «Когда начинать
-   этап»).
+1. The root agent writes a bounded task brief: goal, scope, non-goals,
+   acceptance criteria, required checks and the documents to update.
+2. The root agent picks the model and reasoning effort itself and starts a
+   separate implementation agent. The owner does not choose the model unless
+   they ask to.
+3. While the implementation agent works, the root agent does not read or check
+   the affected code directly — this saves its context window for
+   coordinating several stages in a row. No intermediate messages to the owner
+   except the cases in "Communication with the owner".
+4. After the implementation agent answers, the root agent starts a separate,
+   independent review agent that took no part in the implementation. The
+   review agent personally checks all changes (architecture, readability,
+   accessibility, error handling, security, migrations, configuration,
+   dependencies, no accidental changes) and runs the relevant build, unit,
+   integration, frontend, e2e and visual checks to the extent the stage's risk
+   requires. The review agent gets the task brief and the implementation
+   agent's full report, nothing more — it must study the diff itself and
+   re-verify facts, not retell someone else's report.
+5. The review agent returns a compact verdict to the root agent: concrete check
+   results (numbers, statuses), defects found (if any) and the stage's overall
+   readiness. The root agent need not re-read the code to accept this verdict,
+   but must read the verdict in full and not pass it off blindly as its own
+   conclusion.
+6. If the review agent found defects, the root agent sends the implementation
+   agent a concrete follow-up listing the fixes in the review agent's words.
+   After the fixes the review agent (same or new) re-checks. A stage cannot be
+   considered ready based only on the implementation agent's report without a
+   separate review agent.
+7. After a successful check the root agent updates the plans and the stage
+   result file: what was done, what was checked, known limits and the next
+   candidate step.
+8. Before the next stage the root agent stops, shows the owner the result or
+   how to open it, explains the decisions made and asks only the necessary
+   questions. Continuing needs a new explicit consent, unless the owner
+   approved several stages in advance (see "When to start a stage").
 
-При действительно независимых подзадачах root-агент может использовать
-несколько агентов параллельно, но обязан заранее разделить владение файлами и
-самостоятельно провести итоговое интеграционное review.
+For truly independent subtasks the root agent may run several agents in
+parallel, but must split file ownership in advance and do the final
+integration review itself.
 
-## Уровни проверки по риску (решение владельца 17.10.2026)
+## Check levels by risk (owner's decision 2026-10-17)
 
-Root-агент в task brief называет уровень этапа. При сомнении — уровень выше.
+The root agent names the stage level in the task brief. When in doubt, go one
+level higher.
 
-- **Лёгкий** — тексты, переводы, подсказки, мелкие правки вида экрана без новой
-  логики. Один исполнитель; review-агент читает diff (может быть той же силы,
-  что исполнитель); прогоняются typecheck, frontend-тесты и сборка.
-- **Обычный** — экраны, новые кнопки и переходы, эндпоинты без миграций, фиксы.
-  Исполнитель + независимый review-агент. Исполнитель гоняет только тесты своей
-  области; полный набор (backend + frontend + build) один раз гоняет
-  review-агент перед слиянием.
-- **Полный** — база и миграции, вход и доступ, деплой и инфраструктура, деньги,
-  распознавание чеков. Весь цикл выше без поблажек: полный набор на SQLite и
-  на временном Postgres, проверка миграции Down/Up, Opus-исполнитель и
-  Opus-review. Реальные попытки обхода защиты — в проверке перед выкладкой
-  (ниже), не в review этапа.
+- **Light** — texts, translations, help, small screen tweaks without new
+  logic. One implementer; the review agent reads the diff (may be as strong as
+  the implementer); run typecheck, frontend tests and the build.
+- **Normal** — screens, new buttons and navigation, endpoints without
+  migrations, fixes. Implementer + independent review agent. The implementer
+  runs only the tests of its area; the full set (backend + frontend + build)
+  is run once by the review agent before merging.
+- **Full** — database and migrations, sign-in and access, deploy and
+  infrastructure, money, receipt recognition. The whole cycle above with no
+  shortcuts: full set on SQLite and on a temporary Postgres, migration Down/Up
+  check, Opus implementer and Opus review. Real bypass attempts belong to the
+  pre-deploy check (below), not to the stage review.
 
-Экономия лимитов (решение владельца 29.10.2026, важнее правил выше при
-конфликте):
+Saving limits (owner's decision 2026-10-29; overrides the rules above on
+conflict):
 
-- Лёгкий и Обычный уровень: исполнитель — Sonnet; review — Sonnet (или Opus
-  только при реальном риске), одно ревью: читает diff и один раз гоняет полный
-  набор тестов. Без скриншотов, Storybook-сборок и e2e, если этап не про вид
-  экрана, где без картинки не обойтись.
-- Opus и полный цикл — только для уровня «Полный».
-- Мелкие (low/cosmetic) замечания review не порождают новый круг: они
-  записываются в `ЧТО_ДАЛЬШЕ.md` как бэклог. Круг исправлений — только для
-  настоящих ошибок; после него root-агент сам смотрит diff и один раз гоняет
-  тесты, повторный review-агент не нужен.
-- Исполнитель гоняет только тесты своей области; полный прогон — один раз.
-- Простые макеты root-агент рисует сам, без агентов.
+- Light and Normal level: implementer is Sonnet; review is Sonnet (Opus only
+  for real risk), one review: reads the diff and runs the full test set once.
+  No screenshots, Storybook builds or e2e unless the stage is about how a
+  screen looks and cannot do without a picture.
+- Opus and the full cycle only for the "Full" level.
+- Minor (low/cosmetic) review findings do not start a new round: they go to
+  `ЧТО_ДАЛЬШЕ.md` as backlog. A fix round is only for real bugs; after it the
+  root agent looks at the diff itself and runs the tests once, no second
+  review agent.
+- The implementer runs only the tests of its area; the full run happens once.
+- The root agent draws simple mockups itself, without agents.
 
-Тесты и сборки (решение владельца 17.10.2026, смягчает правило «не запускать
-проверки после изменений, спроси меня»): внутри одобренного этапа агенты сами
-запускают тесты, typecheck и сборки в объёме своего уровня. Платные вызовы и
-всё, что трогает прод, — только с согласия владельца.
+Tests and builds (owner's decision 2026-10-17, softens the rule "do not run
+checks after changes, ask me"): inside an approved stage agents run tests,
+typecheck and builds themselves to the extent of their level. Paid calls and
+anything that touches prod only with the owner's consent.
 
-Независимые этапы можно вести параллельно в отдельных worktree; общее
-интеграционное review и полный набор тестов — один раз после слияния.
+Independent stages may run in parallel in separate worktrees; the shared
+integration review and the full test set run once after merging.
 
-Выкладка: можно копить несколько готовых этапов и выкладывать пачкой после
-`scripts/smoke-deploy.sh` (см. `ЧТО_ДАЛЬШЕ.md`). Этап с миграцией базы
-выкладывается отдельно, с резервной копией прод-базы перед ним.
+Deploy: several finished stages may be accumulated and deployed as a batch
+after `scripts/smoke-deploy.sh` (see `ЧТО_ДАЛЬШЕ.md`). A stage with a database
+migration is deployed on its own, with a prod database backup before it.
 
-Проверка безопасности перед выкладкой (решение владельца 05.11.2026): review
-этапа проверяет защиту чтением кода и тестами, а реальные попытки обхода
-делаются один раз на всю пачку перед выкладкой. Root-агент запускает одного
-Opus-агента на diff от последней выложенной версии до `main`: API на временных
-данных, запросы без токена, с поддельным и просроченным токеном, к чужим id,
-обход путей, большие и поддельные файлы, лимиты, внешние запросы (SSRF), а
-также сеть/прокси для этапов про вход и деплой. Без этой проверки пачку не
-выкладывать; если в пачке нет изменений API, входа или доступа — достаточно
-smoke после выкладки.
+Pre-deploy security check (owner's decision 2026-11-05): the stage review
+checks protection by reading code and tests; real bypass attempts happen once
+for the whole batch before deploy. The root agent starts one Opus agent on the
+diff from the last deployed version to `main`: API on temporary data, requests
+without a token, with a forged and an expired token, to other users' ids, path
+traversal, large and fake files, limits, outbound requests (SSRF), plus
+network/proxy for stages about sign-in and deploy. No deploy of a batch
+without this check; if the batch has no API, sign-in or access changes, a
+smoke check after deploy is enough.
 
-Файл результата этапа — коротко: что сделано, цифры проверок, ограничения,
-следующий шаг (без пересказа кода).
+Stage result file — short: what was done, check numbers, limits, next step (no
+retelling of the code).
 
-## Уроки прошлых этапов
+## Lessons from past stages
 
-- Изменения распознавания чеков (промпты, схема, модели, пайплайн) принимать
-  только по измерению на размеченных данных
+- Accept changes to receipt recognition (prompts, schema, models, pipeline)
+  only by a measurement on labelled data
   (`test-data/receipts/household-2026-08/results/ground_truth_items.json`,
-  `score_items.py`) с цифрами «было/стало».
-- Агент не сдаёт отчёт, пока его фоновые задачи не завершились; root-агент
-  проверяет это до запуска review.
-- Для этапов про вход, доступ, сеть и деплой защиту проверяют реальными
-  попытками обхода (запросы без токена, с поддельным токеном, из сети/через
-  прокси), а не только чтением кода — один раз на пачку, в проверке перед
-  выкладкой.
-- Результат каждого этапа — файл `РЕЗУЛЬТАТЫ_<ЭТАП>.md`.
-- Язык (решение владельца 06.10.2026): планы (`ПЛАН_*.md`, `ЧТО_ДАЛЬШЕ.md`),
-  файлы результатов и прочие рабочие заметки для агентов — кратко на
-  английском. На русском, простым языком — сообщения владельцу в чате и
-  документы, которые владелец сам попросил написать для себя (инструкции,
-  объяснения). Существующие русские файлы не переводить.
-- `CapturePage.test.tsx › keeps the existing review…` известен как
-  нестабильный: одиночное падение перепроверять повторным прогоном, прежде чем
-  считать регрессией.
-- Раздел подсказок в приложении («Подсказки», `/help`) — часть продукта.
-  Каждый этап, который добавляет или меняет видимое пользователю поведение, в
-  task brief и критериях приёмки обязан включать обновление подсказок:
-  тексты тем на обоих языках — `src/PurchaseMemory.Web/src/features/help/helpText.ts`
-  (`helpRu` и `helpEn`), структура тем и ссылки в приложение —
-  `src/PurchaseMemory.Web/src/features/help/topics.ts`, ссылка «Как это
-  работает» на экране — компонент `HelpLink`. Названия кнопок в подсказках
-  должны совпадать с `i18n.ts`. Review-агент сверяет подсказки с реальным
-  поведением и интерфейсом, а не с отчётом; `Help.test.tsx` проверяет только
-  структуру (ключи ru/en, существующие темы).
+  `score_items.py`) with before/after numbers.
+- An agent does not hand in its report until its background tasks have
+  finished; the root agent checks this before starting the review.
+- For stages about sign-in, access, network and deploy, protection is checked
+  with real bypass attempts (requests without a token, with a forged token,
+  from the network/through a proxy), not only by reading code — once per
+  batch, in the pre-deploy check.
+- Each stage's result is a file `РЕЗУЛЬТАТЫ_<STAGE>.md`.
+- Language (owner's decisions 2026-10-06 and 2026-11-05): agent instructions
+  (`AGENTS.md`), plans (`ПЛАН_*.md`, `ЧТО_ДАЛЬШЕ.md`), result files and other
+  working notes for agents are in short English. Messages to the owner in chat
+  and documents the owner asked to have written for themselves (guides,
+  explanations) are in plain, simple Russian. Do not translate other existing
+  Russian files.
+- `CapturePage.test.tsx › keeps the existing review…` is known to be flaky: a
+  single failure is re-checked with a second run before treating it as a
+  regression.
+- The help section in the app («Подсказки», `/help`) is part of the product.
+  Every stage that adds or changes user-visible behaviour must include a help
+  update in its task brief and acceptance criteria: topic texts in both
+  languages — `src/PurchaseMemory.Web/src/features/help/helpText.ts` (`helpRu`
+  and `helpEn`), topic structure and links into the app —
+  `src/PurchaseMemory.Web/src/features/help/topics.ts`, the on-screen «Как это
+  работает» link — the `HelpLink` component. Button names in the help must
+  match `i18n.ts`. The review agent compares the help with the real behaviour
+  and UI, not with the report; `Help.test.tsx` checks only the structure
+  (ru/en keys, existing topics).
 
-## Выбор модели
+## Model choice
 
-Распределение по уровням (решение владельца 13.10.2026; для Claude Code:
-Opus / Sonnet / Haiku, для других инструментов — их аналоги по силе):
+Split by level (owner's decision 2026-10-13; for Claude Code: Opus / Sonnet /
+Haiku, for other tools their equivalents by strength):
 
-- **Старшая модель (Opus) — root-агент.** План, task brief, решения,
-  координация, интеграция, финальное review. Она же исполнитель и
-  review-агент для рискованных этапов: вход и доступ, деплой и
-  инфраструктура, миграции и данные, распознавание чеков, большие сквозные
-  переделки (например смена UI-стека).
-- **Средняя модель (Sonnet) — исполнитель по умолчанию** для обычных
-  этапов: экраны, эндпоинты, фиксы, тесты. Может быть review-агентом для
-  несложных этапов без риска для данных и доступа.
-- **Быстрая модель (Haiku) — только механика:** сбор фактов и поиск по коду,
-  переименования, тексты и переводы, обновление документов, прогон проверок.
-  Не поручать ей рефакторинг с изменением логики и не делать её review-агентом.
-- Эскалация: если этап средней модели дважды не прошёл review, исполнение
-  переходит к старшей модели.
-- Review-агент никогда не слабее исполнителя этапа.
-- Скорость и стоимость не должны снижать качество этапа. При сомнении выбирать
-  более сильного исполнителя и уменьшать scope задачи.
+- **Senior model (Opus) — root agent.** Plan, task brief, decisions,
+  coordination, integration, final review. It is also implementer and review
+  agent for risky stages: sign-in and access, deploy and infrastructure,
+  migrations and data, receipt recognition, large end-to-end rewrites (e.g. a
+  UI stack change).
+- **Middle model (Sonnet) — default implementer** for normal stages: screens,
+  endpoints, fixes, tests. May be the review agent for simple stages with no
+  risk to data or access.
+- **Fast model (Haiku) — mechanics only:** gathering facts and searching code,
+  renames, texts and translations, updating documents, running checks. Do not
+  give it refactoring that changes logic and do not make it a review agent.
+- Escalation: if a middle-model stage fails review twice, implementation moves
+  to the senior model.
+- The review agent is never weaker than the stage's implementer.
+- Speed and cost must not lower a stage's quality. When in doubt, pick a
+  stronger implementer and shrink the task scope.
 
-## Коммуникация с пользователем
+## Communication with the owner
 
-- По умолчанию работать тихо и возвращаться с единым итоговым сообщением:
-  результатом, кратким саммари, вопросами и необходимой информацией.
-- Не публиковать ход размышлений, служебные детали и промежуточные статусы, если
-  они не помогают пользователю принять решение и не влияют на выполнение.
-- Сообщать о старте отдельного агента только когда это требуется активными
-  системными правилами либо когда пользователю важно знать о делегировании.
-- Промежуточно обращаться к пользователю только при блокере, необходимом
-  согласовании/разрешении, существенном изменении scope или действительно долгой
-  операции, для которой без статуса нельзя понять, продолжается ли работа.
-- Если активные системные правила требуют более частых обновлений, соблюдать их,
-  но делать сообщения максимально короткими и не раскрывать внутренний ход
-  рассуждений.
-- Не выдавать отчёт implementation-агента за проверку: готовность этапа
-  подтверждает только отдельный review-агент.
-- В финале этапа сообщать: результат, изменённые области, выполненные тесты,
-  способ открыть/проверить, известные ограничения и вопросы перед продолжением.
+- By default work quietly and come back with one final message: result, short
+  summary, questions and the needed information.
+- Do not publish reasoning, internal details and intermediate statuses unless
+  they help the owner decide or affect the work.
+- Mention starting a separate agent only when active system rules require it
+  or when it matters to the owner to know about the delegation.
+- Contact the owner mid-way only on a blocker, a needed approval/permission, a
+  significant scope change, or a really long operation where without a status
+  it is unclear whether work continues.
+- If active system rules require more frequent updates, follow them, but keep
+  messages as short as possible and do not reveal internal reasoning.
+- Do not pass off the implementation agent's report as a check: only a
+  separate review agent confirms a stage is ready.
+- At the end of a stage report: result, changed areas, tests run, how to
+  open/check it, known limits and questions before continuing.
 
-## Качество реализации
+## Implementation quality
 
-- Использовать последние стабильные версии .NET, C#, React, TypeScript и
-  библиотек на момент этапа; фиксировать точные версии в lock-файлах.
-- Писать человекочитаемый код с чистыми границами. Комментарии объясняют
-  неочевидное решение или ограничение, а не повторяют синтаксис.
-- Внешние AI-провайдеры, файловые/object storage и инфраструктурные механизмы
-  скрывать за прикладными контрактами там, где действительно нужна сменяемость.
-- Не хранить секреты во frontend, исходниках или committed configuration.
-- Сохранять файловое логирование и добавлять структурированный контекст без
-  попадания секретов и полных пользовательских изображений в лог.
-- Сохранять существующие пользовательские изменения и не выполнять
-  destructive git/file операции без отдельного разрешения.
-- Не усложнять первую версию функциями из `later`, если они не нужны для
-  согласованного этапа или безопасной эволюции архитектуры.
+- Use the latest stable versions of .NET, C#, React, TypeScript and libraries
+  at the time of the stage; pin exact versions in lock files.
+- Write human-readable code with clean boundaries. Comments explain a
+  non-obvious decision or constraint, not the syntax.
+- Hide external AI providers, file/object storage and infrastructure
+  mechanisms behind application contracts where swapping is really needed.
+- No secrets in the frontend, sources or committed configuration.
+- Keep file logging and add structured context without secrets or full user
+  images in the log.
+- Preserve existing user changes and do not run destructive git/file
+  operations without separate permission.
+- Do not complicate the first version with `later` features unless they are
+  needed for the agreed stage or a safe evolution of the architecture.
 
-## Специальное правило UI-0
+## Special rule for UI-0
 
-Этап `UI-0` заканчивается только после walkthrough Storybook на компонентах
-Purchase Memory. Root-агент показывает владельцу на реальных примерах, как
-подключаются стили и providers, как stories и Controls создают состояния, как
-меняются locale и viewport и как утверждённый вариант попадает в приложение.
+Stage `UI-0` ends only after a Storybook walkthrough on Purchase Memory
+components. The root agent shows the owner on real examples how styles and
+providers are wired, how stories and Controls create states, how locale and
+viewport change, and how an approved variant gets into the app.
