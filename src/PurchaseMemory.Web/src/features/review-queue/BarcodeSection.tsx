@@ -16,8 +16,8 @@ export interface BarcodeItemsProps {
 /**
  * «Штрихкоды»: codes scanned in the shop with «Запомнить на потом». Each one
  * is linked to a product found by name («Привязать к товару», a full-screen
- * search that is one back step) or forgotten. The codes live on this phone
- * only, like product photos and barcodes until stage 2 of the photo plan.
+ * search that is one back step) or forgotten. The codes are the household's:
+ * both members see and settle the same list.
  */
 export function BarcodeItems({ codes, onLink, onForget }: BarcodeItemsProps) {
   const { t, i18n } = useTranslation();

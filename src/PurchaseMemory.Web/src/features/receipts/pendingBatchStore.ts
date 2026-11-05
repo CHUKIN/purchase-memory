@@ -67,6 +67,8 @@ export interface BatchKeyValue {
   put: (key: string, value: unknown) => Promise<void>;
   delete: (key: string) => Promise<void>;
   clear: () => Promise<void>;
+  /** Every key; only the product-media move (stage 2) needs to enumerate. */
+  keys?: () => Promise<string[]>;
 }
 
 interface StoredPhotoBytes {
@@ -228,7 +230,8 @@ export function openIndexedDbKeyValue(databaseName: string, objectStoreName: str
         get: (key) => run("readonly", (store) => store.get(key)),
         put: async (key, value) => { await run("readwrite", (store) => store.put(value, key)); },
         delete: async (key) => { await run("readwrite", (store) => store.delete(key)); },
-        clear: async () => { await run("readwrite", (store) => store.clear()); }
+        clear: async () => { await run("readwrite", (store) => store.clear()); },
+        keys: async () => (await run("readonly", (store) => store.getAllKeys())).map(String)
       });
     };
   });
@@ -241,7 +244,8 @@ export function createMemoryStorage(): BatchKeyValue {
     get: async (key) => values.get(key),
     put: async (key, value) => { values.set(key, value); },
     delete: async (key) => { values.delete(key); },
-    clear: async () => { values.clear(); }
+    clear: async () => { values.clear(); },
+    keys: async () => [...values.keys()]
   };
 }
 

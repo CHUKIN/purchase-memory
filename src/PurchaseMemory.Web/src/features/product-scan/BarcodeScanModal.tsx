@@ -6,7 +6,7 @@ import { useHistoryLayer } from "../../design-system/history/historyLayers";
 import { HelpLink } from "../help/HelpLink";
 import { BarcodeCamera } from "./BarcodeCamera";
 import { ManualBarcodeForm } from "./ManualBarcodeForm";
-import type { BarcodeSource } from "./productMediaStore";
+import type { BarcodeSource } from "../../api/types";
 import "./productScan.css";
 
 /**

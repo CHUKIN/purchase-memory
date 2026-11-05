@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { confirmDistinctProduct, mergeProduct } from "../../api/client";
 import { brandsQueryKey, categoriesQueryKey } from "../categories/categoryQueries";
-import { useMoveProductMedia } from "../product-scan/useProductMedia";
+import { productMediaQueryKey } from "../product-scan/useProductMedia";
 import { reviewQueueQueryKey } from "../review-queue/reviewQueueQueries";
 import { tagsQueryKey } from "../tags/tagQueries";
 
@@ -30,25 +30,20 @@ function useRefreshAfterProductChange() {
     queryClient.invalidateQueries({ queryKey: ["purchases"] }),
     queryClient.invalidateQueries({ queryKey: tagsQueryKey }),
     queryClient.invalidateQueries({ queryKey: categoriesQueryKey }),
-    queryClient.invalidateQueries({ queryKey: brandsQueryKey })
+    queryClient.invalidateQueries({ queryKey: brandsQueryKey }),
+    // Photos, barcodes and «Больше не покупать» move with the merge on the server.
+    queryClient.invalidateQueries({ queryKey: productMediaQueryKey })
   ]);
 }
 
 /**
- * Merges `source` into `target` on the server, then moves this device's
- * photos, barcodes and «Больше не покупать» of the source to the target
- * (they live on the phone only, so the server cannot). A device that cannot
- * keep media loses nothing that the server holds, so that step never fails the merge.
+ * Merges `source` into `target` on the server; its photos, barcodes and
+ * «Больше не покупать» go along there too.
  */
 export function useMergeProduct() {
   const refresh = useRefreshAfterProductChange();
-  const moveMedia = useMoveProductMedia();
   return useMutation({
-    mutationFn: async ({ source, target }: MergeRequest) => {
-      const result = await mergeProduct(source.id, target.id);
-      await moveMedia(source.id, target.id).catch(() => undefined);
-      return result;
-    },
+    mutationFn: ({ source, target }: MergeRequest) => mergeProduct(source.id, target.id),
     // Not awaited: the caller moves on to the target at once, so the source's
     // page never shows its own «not found» while the lists refresh.
     onSuccess: () => { void refresh(); }

@@ -112,6 +112,12 @@ public sealed class Product
     /// <summary>Why <see cref="NeedsReview"/> is set; <c>null</c> when it is not.</summary>
     public ProductReviewReason? ReviewReason { get; private set; }
 
+    /// <summary>
+    /// «Больше не покупать»: when a household member marked the product as one
+    /// not to buy again (shown red in the shop scan); <c>null</c> when not marked.
+    /// </summary>
+    public DateTimeOffset? AvoidSince { get; private set; }
+
     public DateTimeOffset CreatedAt { get; private set; }
 
     public DateTimeOffset UpdatedAt { get; private set; }
@@ -241,6 +247,39 @@ public sealed class Product
         }
 
         return (polish, russian);
+    }
+
+    /// <summary>
+    /// Sets or clears «Больше не покупать». Marking an already marked product
+    /// keeps the original date. Returns whether anything changed.
+    /// </summary>
+    public bool SetAvoid(bool avoid, DateTimeOffset since, DateTimeOffset updatedAt)
+    {
+        if (avoid == AvoidSince.HasValue)
+        {
+            return false;
+        }
+
+        AvoidSince = avoid ? since : null;
+        UpdatedAt = updatedAt;
+        return true;
+    }
+
+    /// <summary>
+    /// A mark on the merged-away product marks this one too; with marks on
+    /// both, the earlier date stays. Returns whether this product changed.
+    /// </summary>
+    public bool AbsorbAvoidFrom(Product source, DateTimeOffset updatedAt)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        if (source.AvoidSince is not { } sourceSince || (AvoidSince is { } own && own <= sourceSince))
+        {
+            return false;
+        }
+
+        AvoidSince = sourceSince;
+        UpdatedAt = updatedAt;
+        return true;
     }
 
     public void Rename(string canonicalName, string normalizedName, DateTimeOffset updatedAt)

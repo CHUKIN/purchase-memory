@@ -1,11 +1,20 @@
 import { Package } from "lucide-react";
 import { useRef, type ChangeEvent } from "react";
-import { usePhotoUrl, useProductMedia } from "./useProductMedia";
+import { usePhotoUrl } from "./useProductMedia";
 import "./productScan.css";
 
-/** One stored product photo; a grey package tile while it loads or when it is gone. */
-export function ProductPhotoImage({ photoId, alt, className = "" }: { photoId: string | null | undefined; alt: string; className?: string }) {
-  const { url } = usePhotoUrl(photoId);
+/**
+ * One stored product photo; a grey package tile while it loads or when it is
+ * gone. The screens show photos at most ~100 px wide, so the small thumbnail
+ * (~256 px) is the default; the full copy is fetched only where it is needed.
+ */
+export function ProductPhotoImage({ photoId, alt, className = "", variant = "thumbnail" }: {
+  photoId: string | null | undefined;
+  alt: string;
+  className?: string;
+  variant?: "photo" | "thumbnail";
+}) {
+  const { url } = usePhotoUrl(photoId, variant);
   if (!url) {
     return (
       <span className={`pm-media-photo-empty ${className}`} role={alt ? "img" : undefined} aria-label={alt || undefined} aria-hidden={alt ? undefined : true}>
@@ -18,17 +27,16 @@ export function ProductPhotoImage({ photoId, alt, className = "" }: { photoId: s
 
 /**
  * The product's main photo as a small square at the start of a list row.
- * Renders nothing when the product has no photo, so rows without photos look
- * as before; `placeholder` keeps a grey tile instead, so a list where some
- * rows have photos stays aligned.
+ * Renders nothing without a photo, so rows without photos look as before;
+ * `placeholder` keeps a grey tile instead, so a list where some rows have
+ * photos stays aligned. Lists pass the `mainPhotoId` they already got from
+ * the server, so there is no request per row.
  */
-export function ProductThumb({ productId, slot = "start", placeholder = false }: { productId: string; slot?: string; placeholder?: boolean }) {
-  const media = useProductMedia(productId);
-  const mainPhotoId = media.data?.mainPhotoId ?? null;
-  if (!mainPhotoId && !placeholder) return null;
+export function ProductThumb({ photoId, slot = "start", placeholder = false }: { photoId: string | null | undefined; slot?: string; placeholder?: boolean }) {
+  if (!photoId && !placeholder) return null;
   return (
     <span slot={slot} className="pm-media-thumb" aria-hidden="true">
-      <ProductPhotoImage photoId={mainPhotoId} alt="" />
+      <ProductPhotoImage photoId={photoId} alt="" />
     </span>
   );
 }

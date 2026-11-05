@@ -36,6 +36,9 @@ public sealed class PostgresSchemaTests
         Assert.Contains("receipt_captures", tables);
         Assert.Contains("product_tags", tables);
         Assert.Contains("product_tag_links", tables);
+        Assert.Contains("product_photos", tables);
+        Assert.Contains("product_barcodes", tables);
+        Assert.Contains("remembered_barcodes", tables);
         Assert.Contains("analytics_questions", tables);
         Assert.Contains("__EFMigrationsHistory", tables);
 

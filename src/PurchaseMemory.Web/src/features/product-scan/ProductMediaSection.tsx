@@ -1,37 +1,34 @@
 import type { TFunction } from "i18next";
-import { IonActionSheet, IonButton, IonItem, IonLabel, IonList, IonToggle } from "@ionic/react";
+import { IonActionSheet, IonButton, IonItem, IonList, IonToggle } from "@ionic/react";
 import { Ban, Camera, ImagePlus, Plus, ScanBarcode, ScanText, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useReturnState } from "../../app/backNavigation";
 import { useToast } from "../../app/toasts";
-import { ButtonLink, EmptyState, Footnote, Notice, SectionHeader } from "../../design-system/components";
+import { ButtonLink, Footnote, Notice, SectionHeader } from "../../design-system/components";
 import { formatBarcode } from "./barcode";
 import { BarcodeScanModal } from "./BarcodeScanModal";
 import { PhotoDecodeError } from "./compressImage";
-import type { AvoidMark, BarcodeSource, ProductBarcode, ProductMedia } from "./productMediaStore";
 import { ProductPhotoImage, usePhotoPicker } from "./ProductPhoto";
-import { useScanVariant } from "./scanVariant";
 import { useNameFromPhoto } from "./useNameFromPhoto";
-import { useProductMedia, useProductMediaActions } from "./useProductMedia";
+import { useProductMedia, useProductMediaActions, type AvoidMark, type BarcodeSource, type ProductBarcode, type ProductMedia } from "./useProductMedia";
 import "./productScan.css";
 
 export interface ProductMediaSectionProps {
   productId: string;
   productName: string;
-  /** «4 покупки»: the line under the title, which variant B puts beside the photo. */
+  /** «4 покупки»: the line under the title, shown beside the main photo. */
   intro: string;
   locale: string;
 }
 
 /**
- * Photos, barcodes and «Больше не покупать» on the product card, in the look
- * chosen in Настройки (variant A: big gallery; B: compact strip and chips).
- * Kept on this device for now, see productMediaStore.ts.
+ * Photos, barcodes and «Больше не покупать» on the product card: a small main
+ * photo beside the purchase count, a strip of all photos and the codes as
+ * chips. Shared by the household on the server.
  */
 export function ProductMediaSection({ productId, productName, intro, locale }: ProductMediaSectionProps) {
   const { t } = useTranslation();
-  const variant = useScanVariant();
   const showToast = useToast();
   const mediaQuery = useProductMedia(productId);
   const actions = useProductMediaActions(productId);
@@ -59,10 +56,10 @@ export function ProductMediaSection({ productId, productName, intro, locale }: P
     // The first photo of a product is usually the package front: its name is read
     // right away (a suggested name is replaced with «Вернуть», a person's name only
     // offered). Later photos (back, sides) never rename; «Название по фото» does it on demand.
+    // «First» is the server's answer, so a photo the other member added meanwhile counts.
     (file) => void run(async () => {
-      const isFirstPhoto = media.photos.length === 0;
-      await actions.addPhoto(file);
-      if (isFirstPhoto) void naming.start(file, { automatic: true });
+      const added = await actions.addPhoto(file);
+      if (added.firstPhoto) void naming.start(file, { automatic: true });
     }),
     { camera: t("productScan.takePhoto"), library: t("productScan.pickPhoto") }
   );
@@ -105,24 +102,10 @@ export function ProductMediaSection({ productId, productName, intro, locale }: P
       {picker.inputs}
       {media.avoid && <AvoidBanner avoid={media.avoid} locale={locale} />}
 
-      {variant === "a"
-        ? (
-          <>
-            <p className="pm-home-intro">{intro}</p>
-            <GalleryA {...photoProps} />
-            {nameFromPhotoButton}
-            {error && <ErrorNotice error={error} />}
-            <BarcodeListA {...barcodeProps} />
-          </>
-        )
-        : (
-          <>
-            <CompactB {...photoProps} intro={intro} />
-            {nameFromPhotoButton}
-            {error && <ErrorNotice error={error} />}
-            <BarcodeChipsB {...barcodeProps} />
-          </>
-        )}
+      <PhotoStrip {...photoProps} intro={intro} />
+      {nameFromPhotoButton}
+      {error && <ErrorNotice error={error} />}
+      <BarcodeChips {...barcodeProps} />
 
       <IonList inset>
         <IonItem lines="none">
@@ -137,7 +120,7 @@ export function ProductMediaSection({ productId, productName, intro, locale }: P
           </IonToggle>
         </IonItem>
       </IonList>
-      <Footnote>{t("productScan.avoidToggleNote")} {t("productScan.deviceNote")}</Footnote>
+      <Footnote>{t("productScan.avoidToggleNote")} {t("productScan.sharedNote")}</Footnote>
 
       <BarcodeScanModal isOpen={scanning} onClose={() => setScanning(false)} onCode={addBarcode} />
       {naming.dialog}
@@ -201,57 +184,8 @@ interface PhotoBlockProps {
   onDelete: (photoId: string) => void;
 }
 
-/** Variant A: a big photo on top, thumbnails under it, actions under those. */
-function GalleryA({ media, productName, busy, onCamera, onLibrary, onMakeMain, onDelete }: PhotoBlockProps) {
-  const { t } = useTranslation();
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const photos = media.photos;
-  const selected = photos.find((photo) => photo.id === selectedId) ?? photos.find((photo) => photo.id === media.mainPhotoId) ?? photos[0] ?? null;
-
-  return (
-    <div className="pm-media-gallery">
-      {selected ? (
-        <div className="pm-media-gallery-main">
-          <ProductPhotoImage photoId={selected.id} alt={t("productScan.photoAlt", { name: productName })} />
-          {selected.id === media.mainPhotoId && <span className="pm-media-badge">{t("productScan.mainBadge")}</span>}
-        </div>
-      ) : (
-        <EmptyState icon={<Camera />} title={t("productScan.noPhotosTitle")} description={t("productScan.noPhotosText")} headingLevel={3} />
-      )}
-      {photos.length > 1 && (
-        <div className="pm-media-thumbs" role="group" aria-label={t("productScan.photosTitle")}>
-          {photos.map((photo, index) => (
-            <button
-              key={photo.id}
-              type="button"
-              className="pm-media-thumb-button"
-              aria-pressed={photo.id === selected?.id}
-              aria-label={thumbLabel(t, index, photos.length, photo.id === media.mainPhotoId)}
-              onClick={() => setSelectedId(photo.id)}
-            >
-              <ProductPhotoImage photoId={photo.id} alt="" />
-            </button>
-          ))}
-        </div>
-      )}
-      <div className="pm-media-actions">
-        <IonButton fill="clear" size="small" disabled={busy} onClick={onCamera}><Camera size={18} aria-hidden="true" />{t("productScan.takePhoto")}</IonButton>
-        <IonButton fill="clear" size="small" disabled={busy} onClick={onLibrary}><ImagePlus size={18} aria-hidden="true" />{t("productScan.pickPhoto")}</IonButton>
-        {selected && selected.id !== media.mainPhotoId && (
-          <IonButton fill="clear" size="small" disabled={busy} onClick={() => onMakeMain(selected.id)}>{t("productScan.makeMain")}</IonButton>
-        )}
-        {selected && (
-          <IonButton fill="clear" size="small" color="danger" disabled={busy} onClick={() => onDelete(selected.id)}>
-            <Trash2 size={18} aria-hidden="true" />{t("productScan.deletePhoto")}
-          </IonButton>
-        )}
-      </div>
-    </div>
-  );
-}
-
-/** Variant B: a small main photo beside the purchase count, then a strip of all photos. */
-function CompactB({ media, productName, busy, onCamera, onLibrary, onMakeMain, onDelete, intro }: PhotoBlockProps & { intro: string }) {
+/** A small main photo beside the purchase count, then a strip of all photos. */
+function PhotoStrip({ media, productName, busy, onCamera, onLibrary, onMakeMain, onDelete, intro }: PhotoBlockProps & { intro: string }) {
   const { t } = useTranslation();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const photos = media.photos;
@@ -323,45 +257,8 @@ interface BarcodeBlockProps {
   onDelete: (code: string) => void;
 }
 
-/** Variant A: barcodes as list rows with a bin each. */
-function BarcodeListA({ barcodes, busy, onScan, onDelete }: BarcodeBlockProps) {
-  const { t } = useTranslation();
-  return (
-    <>
-      <SectionHeader>{t("productScan.barcodesTitle")}</SectionHeader>
-      <IonList inset className="pm-after-header">
-        {barcodes.map((barcode) => (
-          <IonItem key={barcode.code}>
-            <ScanBarcode slot="start" size={22} className="pm-row-icon" aria-hidden="true" />
-            <IonLabel>
-              <h3 className="pm-media-code-text">{formatBarcode(barcode.code)}</h3>
-              <p>{t(`productScan.source.${barcode.source}`)}</p>
-            </IonLabel>
-            <IonButton
-              slot="end"
-              fill="clear"
-              color="danger"
-              className="pm-icon-button"
-              disabled={busy}
-              aria-label={t("productScan.deleteBarcode", { code: formatBarcode(barcode.code) })}
-              onClick={() => onDelete(barcode.code)}
-            >
-              <Trash2 size={20} aria-hidden="true" />
-            </IonButton>
-          </IonItem>
-        ))}
-        <IonItem button detail={false} lines="none" disabled={busy} onClick={onScan}>
-          <ScanBarcode slot="start" size={22} className="pm-row-icon" aria-hidden="true" />
-          <IonLabel color="primary">{t("productScan.scanBarcode")}</IonLabel>
-        </IonItem>
-      </IonList>
-      {barcodes.length === 0 && <Footnote>{t("productScan.noBarcodes")}</Footnote>}
-    </>
-  );
-}
-
-/** Variant B: barcodes as chips; tapping one asks whether to delete it. */
-function BarcodeChipsB({ barcodes, busy, onScan, onDelete }: BarcodeBlockProps) {
+/** Barcodes as chips; tapping one asks whether to delete it. */
+function BarcodeChips({ barcodes, busy, onScan, onDelete }: BarcodeBlockProps) {
   const { t } = useTranslation();
   return (
     <>

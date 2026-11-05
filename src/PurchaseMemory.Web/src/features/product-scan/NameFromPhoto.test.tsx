@@ -190,6 +190,8 @@ describe("«Название по фото» on the product card", () => {
         avoid: null
       }
     } as unknown as ReturnType<typeof useProductMedia>);
+    // The server answers whether the upload was the product's first photo.
+    addPhoto.mockReset().mockResolvedValue({ id: "new", firstPhoto: photos === 0 });
     vi.mocked(useProductMediaActions).mockReturnValue({ readPhoto, addPhoto } as unknown as ReturnType<typeof useProductMediaActions>);
     return render(
       <AppProviders locale="ru">
@@ -205,7 +207,6 @@ describe("«Название по фото» on the product card", () => {
       language({ language: "pl", outcome: "replaced", name: "Kefir naturalny Activia 280 g" })
     ]));
     readPhoto.mockReset().mockResolvedValue(photo);
-    addPhoto.mockReset().mockResolvedValue({ id: "new" });
   });
 
   const pickFile = () => fireEvent.change(screen.getByLabelText("Из галереи"), { target: { files: [new File(["x"], "a.jpg", { type: "image/jpeg" })] } });
@@ -216,6 +217,16 @@ describe("«Название по фото» on the product card", () => {
 
     await waitFor(() => expect(nameProductFromPhoto).toHaveBeenCalledTimes(1));
     expect(addPhoto).toHaveBeenCalledTimes(1);
+  });
+
+  it("follows the server: no automatic name when the other member added a photo meanwhile", async () => {
+    renderSection(0);
+    addPhoto.mockResolvedValue({ id: "new", firstPhoto: false });
+    pickFile();
+
+    await waitFor(() => expect(addPhoto).toHaveBeenCalledTimes(1));
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(nameProductFromPhoto).not.toHaveBeenCalled();
   });
 
   it("never renames from a later photo; the button still does it on demand", async () => {
@@ -230,7 +241,7 @@ describe("«Название по фото» on the product card", () => {
     await waitFor(() => expect(nameProductFromPhoto).toHaveBeenCalledTimes(1));
   });
 
-  it("is there only when the device has a photo, and reads the main one", async () => {
+  it("is there only when the product has a photo, and reads the main one", async () => {
     const { unmount } = renderSection(0);
     expect(screen.queryByRole("button", { name: "Название по фото" })).not.toBeInTheDocument();
     unmount();

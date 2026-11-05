@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router";
 import { getRecognitionStatus, listRecentReceipts } from "../api/client";
 import type { ReceiptStatus, RecognitionStatus } from "../api/types";
+import { DeviceMediaMover } from "../features/product-scan/DeviceMediaMover";
 import { reviewQueueQueryKey } from "../features/review-queue/reviewQueueQueries";
 import { useReviewCount } from "../features/review-queue/useReviewCount";
 import { AppShell } from "./AppShell/AppShell";
@@ -77,6 +78,7 @@ export function AppRoutes() {
   return (
     <AppShell reviewCount={reviewCount.total}>
       <ToastNavigationBridge />
+      <DeviceMediaMover />
       <PlaceMemory />
       <ScreenErrorBoundary resetKey={location.pathname}>
         <Suspense fallback={<PageLoading />}>

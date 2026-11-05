@@ -94,6 +94,18 @@ public static class ReceiptUploadRateLimiting
     /// <summary>«Название по фото»: a paid vision call per photo, a bucket of its own.</summary>
     public const string NameFromPhotoPolicyName = "name-from-photo";
 
+    /// <summary>
+    /// Product photo uploads cost storage, not money: a burst large enough for
+    /// the one-time move of a phone's photos (100), then one every 6 seconds.
+    /// </summary>
+    public const string ProductPhotosPolicyName = "product-photos";
+
+    /// <summary>
+    /// Open Food Facts lookups go to a free public service that asks clients to
+    /// stay polite: per user, 30 at once, then one every 4 seconds.
+    /// </summary>
+    public const string OpenFoodFactsPolicyName = "open-food-facts";
+
     public static IServiceCollection AddReceiptUploadRateLimiting(
         this IServiceCollection services,
         IConfiguration configuration)
@@ -205,6 +217,30 @@ public static class ReceiptUploadRateLimiting
                         AutoReplenishment = true
                     }));
 
+            options.AddPolicy(ProductPhotosPolicyName, context =>
+                RateLimitPartition.GetTokenBucketLimiter(
+                    AppUser.UserId(context.User) ?? "anonymous",
+                    _ => new TokenBucketRateLimiterOptions
+                    {
+                        TokenLimit = 100,
+                        TokensPerPeriod = 1,
+                        ReplenishmentPeriod = TimeSpan.FromSeconds(6),
+                        QueueLimit = 0,
+                        AutoReplenishment = true
+                    }));
+
+            options.AddPolicy(OpenFoodFactsPolicyName, context =>
+                RateLimitPartition.GetTokenBucketLimiter(
+                    AppUser.UserId(context.User) ?? "anonymous",
+                    _ => new TokenBucketRateLimiterOptions
+                    {
+                        TokenLimit = 30,
+                        TokensPerPeriod = 1,
+                        ReplenishmentPeriod = TimeSpan.FromSeconds(4),
+                        QueueLimit = 0,
+                        AutoReplenishment = true
+                    }));
+
             options.OnRejected = async (rejected, cancellationToken) =>
             {
                 var context = rejected.HttpContext;
@@ -225,8 +261,13 @@ public static class ReceiptUploadRateLimiting
                 var tagSuggestion = context.Request.Path.Value?.EndsWith("/tag-suggestions", StringComparison.Ordinal) == true;
                 var nameSuggestion = context.Request.Path.Value?.EndsWith("/name-suggestions", StringComparison.Ordinal) == true;
                 var photoName = context.Request.Path.Value?.EndsWith("/name-from-photo", StringComparison.Ordinal) == true;
+                var productPhoto = context.Request.Path.StartsWithSegments("/api/products", StringComparison.Ordinal)
+                    && context.Request.Path.Value?.EndsWith("/photos", StringComparison.Ordinal) == true;
+                var openFoodFacts = context.Request.Path.StartsWithSegments("/api/open-food-facts", StringComparison.Ordinal);
                 var (title, detail) = (backfill, analytics) switch
                 {
+                    _ when productPhoto => ("Too many photos", "Too many product photos in a short time. Try again in a minute."),
+                    _ when openFoodFacts => ("Too many lookups", "Too many product database lookups in a short time. Try again in a minute."),
                     _ when photoName => ("Too many photo names", "Too many names from photos in a short time. Names can still be typed by hand."),
                     _ when nameSuggestion => ("Too many name suggestions", "Too many name suggestions in a short time. Names can still be typed by hand."),
                     _ when tagSuggestion => ("Too many tag suggestions", "Too many tag suggestions in a short time. Tags can still be chosen by hand."),

@@ -30,6 +30,18 @@ public sealed class ProductAuditEntry
     /// merged-away product, new value this one, both as «name (id)».
     /// </summary>
     public const string MergeField = "merge";
+    /// <summary>A photo was added (new value = photo id) or deleted (old value).</summary>
+    public const string PhotoField = "photo";
+
+    /// <summary>The main photo changed; values are photo ids.</summary>
+    public const string MainPhotoField = "mainPhoto";
+
+    /// <summary>A barcode was added (new value = «code (source)») or removed (old value = code).</summary>
+    public const string BarcodeField = "barcode";
+
+    /// <summary>«Больше не покупать» was set (new value «Avoid») or cleared (old value «Avoid»).</summary>
+    public const string AvoidField = "avoid";
+
     public const int MaximumValueLength = 500;
 
     private ProductAuditEntry()

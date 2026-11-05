@@ -7,7 +7,6 @@ import { EmptyState, FilterButton, ItemLink, LoadingList, Notice, Page, SectionH
 import { CategoryTile, categoryGroupKey } from "../categories/CategoryTile";
 import { HelpLink } from "../help/HelpLink";
 import { ProductThumb } from "../product-scan/ProductPhoto";
-import { useProductMedia } from "../product-scan/useProductMedia";
 import { categoryLabel } from "../categories/categoryText";
 import { BrandFilterRow, CategoryFilterRow, TagFilterRow } from "../filters/FilterRows";
 import { TagChips } from "../tags/TagChips";
@@ -144,7 +143,7 @@ export function ProductCatalog({
           <IonList inset className="pm-after-header pm-catalog-list">
             {products.map((product) => (
               <ItemLink key={product.id} to={`/products/${product.id}`} state={returnState}>
-                <ProductLeading productId={product.id} group={categories.length > 0 ? categoryGroupKey(categories, product.categoryId) : null} />
+                <ProductLeading photoId={product.mainPhotoId} group={categories.length > 0 ? categoryGroupKey(categories, product.categoryId) : null} />
                 <IonLabel className="pm-wrap">
                   <h2><ProductTitle product={product} /></h2>
                   <p className="pm-product-meta"><ProductMeta product={product} categories={categories} /></p>
@@ -193,9 +192,8 @@ export function ProductCatalog({
 }
 
 /** The product's main photo when it has one, else its category's tile. */
-function ProductLeading({ productId, group }: { productId: string; group: string | null }) {
-  const media = useProductMedia(productId);
-  return media.data?.mainPhotoId ? <ProductThumb productId={productId} /> : <CategoryTile group={group} />;
+function ProductLeading({ photoId, group }: { photoId: string | null | undefined; group: string | null }) {
+  return photoId ? <ProductThumb photoId={photoId} /> : <CategoryTile group={group} />;
 }
 
 /**

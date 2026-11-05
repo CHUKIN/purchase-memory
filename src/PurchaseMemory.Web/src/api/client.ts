@@ -4,6 +4,13 @@ import type {
   ProductPhotoNameResult,
   BrandSummary,
   AnalyticsAnswer,
+  BarcodeLookupResponse,
+  BarcodeSource,
+  OffProductHint,
+  OpenFoodFactsResponse,
+  ProductMediaResponse,
+  ProductPhotoUploadResponse,
+  RememberedBarcodeResponse,
   AnalyticsAskResponse,
   AnalyticsContext,
   AnalyticsHistoryDetail,
@@ -493,3 +500,61 @@ export const listPurchaseImpressions = (purchaseId: string) =>
 
 export const listUnratedPurchaseItems = (limit = 6) =>
   request<RateablePurchaseItem[]>(`/api/impressions/unrated?limit=${limit}`);
+
+/* ---------- product photos, barcodes, «Больше не покупать», remembered codes ---------- */
+
+const productPath = (productId: string) => `/api/products/${encodeURIComponent(productId)}`;
+
+export const getProductMedia = (productId: string) =>
+  request<ProductMediaResponse>(`${productPath(productId)}/media`);
+
+/**
+ * One compressed photo (JPEG, at most 1.5 MB). `clientId` (a device photo id)
+ * makes a repeated upload return the stored photo instead of a second copy.
+ * 413, 415 and 409 (`photoLimit`) are expected answers.
+ */
+export function uploadProductPhoto(productId: string, photo: Blob, clientId?: string): Promise<ProductPhotoUploadResponse> {
+  const form = new FormData();
+  form.append("photo", photo, "photo.jpg");
+  if (clientId) form.append("clientId", clientId);
+  return request<ProductPhotoUploadResponse>(`${productPath(productId)}/photos`, { method: "POST", body: form });
+}
+
+export const deleteProductPhoto = (productId: string, photoId: string) =>
+  request<void>(`${productPath(productId)}/photos/${encodeURIComponent(photoId)}`, { method: "DELETE" });
+
+export const setMainProductPhoto = (productId: string, photoId: string) =>
+  request<ProductMediaResponse>(`${productPath(productId)}/photos/${encodeURIComponent(photoId)}/main`, { method: "PUT" });
+
+export const productPhotoUrl = (photoId: string, variant: "photo" | "thumbnail" = "photo") =>
+  `/api/product-photos/${encodeURIComponent(photoId)}${variant === "thumbnail" ? "/thumbnail" : ""}`;
+
+/** 409 `barcodeTaken` (with `existingProductId`) when another product has the code. */
+export const addProductBarcode = (productId: string, code: string, source: BarcodeSource) =>
+  request<{ barcode: { code: string; source: BarcodeSource; createdAt: string }; created: boolean }>(
+    `${productPath(productId)}/barcodes`,
+    jsonBody("POST", { code, source })
+  );
+
+export const deleteProductBarcode = (productId: string, code: string) =>
+  request<void>(`${productPath(productId)}/barcodes/${encodeURIComponent(code)}`, { method: "DELETE" });
+
+/** `since` keeps the date of a mark moved from a phone. */
+export const setProductAvoid = (productId: string, avoid: boolean, since?: string) =>
+  request<ProductMediaResponse>(`${productPath(productId)}/avoid`, jsonBody("PUT", since ? { avoid, since } : { avoid }));
+
+export const lookupBarcode = (code: string) =>
+  request<BarcodeLookupResponse>(`/api/barcodes/${encodeURIComponent(code)}`);
+
+export const listRememberedBarcodes = () => request<RememberedBarcodeResponse[]>("/api/remembered-barcodes");
+
+/** 409 `barcodeTaken` when the code already belongs to a product. */
+export const rememberBarcode = (code: string, off: OffProductHint | null) =>
+  request<RememberedBarcodeResponse>(`/api/remembered-barcodes/${encodeURIComponent(code)}`, jsonBody("PUT", { off }));
+
+export const forgetRememberedBarcode = (code: string) =>
+  request<void>(`/api/remembered-barcodes/${encodeURIComponent(code)}`, { method: "DELETE" });
+
+/** Through our server, which sends Open Food Facts only the barcode; «error» means it did not answer. */
+export const lookupOpenFoodFactsProduct = (code: string, signal?: AbortSignal) =>
+  request<OpenFoodFactsResponse>(`/api/open-food-facts/${encodeURIComponent(code)}`, { signal });
