@@ -1,6 +1,6 @@
 /*
- * Product photos, barcodes and the shop scanner (variants A and B, see
- * scanVariant.ts). Grown out of the stage 1 mock styles in
+ * Product photos, barcodes and the shop scanner (the compact look the owner
+ * kept after stage 1b). Grown out of the stage 1 mock styles in
  * product-scan-prototype/prototype.css.
  */
 
@@ -10,15 +10,11 @@
 .pm-media-thumb { flex: 0 0 auto; width: 44px; height: 44px; margin-right: 12px; }
 .pm-media-thumb .pm-media-photo, .pm-media-thumb .pm-media-photo-empty { border-radius: 8px; }
 
-/* Variant A: big gallery card */
-.pm-media-gallery { margin: 0 16px 8px; border-radius: 10px; background: #fff; overflow: hidden; }
-.pm-media-gallery-main { position: relative; aspect-ratio: 4 / 3; background: #e5e5ea; }
-.pm-media-gallery-main .pm-media-photo { border-radius: 0; object-fit: contain; background: #f2f2f7; }
+/* Main-photo badge on a strip thumbnail */
 .pm-media-badge {
   position: absolute; left: 8px; top: 8px; padding: 2px 8px; border-radius: 10px;
   background: #fff; color: var(--ion-color-primary); font-size: 12px; font-weight: 700;
 }
-.pm-media-thumbs { display: flex; gap: 8px; padding: 10px 12px; overflow-x: auto; }
 .pm-media-thumb-button {
   flex: 0 0 auto; width: 64px; height: 64px; padding: 0; border: 2px solid transparent; border-radius: 12px;
   background: none; cursor: pointer;
@@ -61,16 +57,6 @@
 }
 .pm-avoid-banner svg { flex: 0 0 auto; color: var(--pm-danger-text); }
 .pm-avoid-banner small { display: block; font-size: 13px; font-weight: 400; }
-
-/* ---------- Home entry ---------- */
-.pm-scan-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 8px 20px 0; }
-.pm-scan-tile {
-  display: grid; justify-items: center; align-content: center; gap: 6px; min-height: 112px; padding: 16px 8px; border-radius: 16px;
-  font-size: 16px; font-weight: 600; text-decoration: none; cursor: pointer;
-}
-.pm-scan-tile.pm-scan-tile-main { background: var(--ion-color-primary); color: #fff; }
-.pm-scan-tile.pm-scan-tile-second { background: #fff; color: var(--ion-color-primary); border: 1px solid #e1e1e6; }
-.pm-scan-tile:focus-visible { outline: 2px solid var(--ion-color-primary); outline-offset: 2px; }
 
 /* ---------- scanner screen ---------- */
 .pm-scan-content { --background: #000; }

@@ -1,44 +1,38 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { lookupOpenFoodFacts } from "./openFoodFacts";
 
-/** A fetch that answers only by failing once its signal aborts, like a server that never replies. */
-function hangingFetch() {
-  return vi.fn((_url: string, init?: RequestInit) => new Promise<Response>((_resolve, reject) => {
-    init?.signal?.addEventListener("abort", () => reject(init.signal?.reason));
-  }));
-}
+const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
 
 describe("Open Food Facts lookup", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
   });
 
-  it("gives up after the timeout and reports «not answering»", async () => {
-    vi.stubGlobal("fetch", hangingFetch());
-    await expect(lookupOpenFoodFacts("5900512320045", undefined, 20)).resolves.toEqual({ status: "error" });
-  });
+  it("asks our server, never Open Food Facts directly", async () => {
+    const fetchMock = vi.fn(async () => json({ status: "found", product: { name: "Kefir", brand: "Piątnica", quantity: "1 l", imageUrl: null } }));
+    vi.stubGlobal("fetch", fetchMock);
 
-  it("stops at once when the caller cancels", async () => {
-    vi.stubGlobal("fetch", hangingFetch());
-    const caller = new AbortController();
-    const lookup = lookupOpenFoodFacts("5900512320045", caller.signal, 60_000);
-    caller.abort();
-    await expect(lookup).resolves.toEqual({ status: "error" });
-  });
-
-  it("reads a found product and keeps only safe image hosts", async () => {
-    vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({
-      status: 1,
-      product: { product_name: " Kefir ", brands: "Piątnica", quantity: "1 l", image_front_small_url: "https://evil.example/x.jpg" }
-    }))));
     await expect(lookupOpenFoodFacts("5900512320045")).resolves.toEqual({
       status: "found",
       product: { name: "Kefir", brand: "Piątnica", quantity: "1 l", imageUrl: null }
     });
+    const [url] = fetchMock.mock.calls[0] as unknown as [string];
+    expect(url).toBe("/api/open-food-facts/5900512320045");
   });
 
-  it("treats 404 as an unknown code", async () => {
-    vi.stubGlobal("fetch", vi.fn(async () => new Response("", { status: 404 })));
+  it("passes «not found» and «not answering» on", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => json({ status: "notFound", product: null })));
     await expect(lookupOpenFoodFacts("5900512320045")).resolves.toEqual({ status: "notFound" });
+
+    vi.stubGlobal("fetch", vi.fn(async () => json({ status: "error", product: null })));
+    await expect(lookupOpenFoodFacts("5900512320045")).resolves.toEqual({ status: "error" });
+  });
+
+  it("reports «not answering» when our server fails or the limit is reached", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => json({ detail: "Too many lookups" }, 429)));
+    await expect(lookupOpenFoodFacts("5900512320045")).resolves.toEqual({ status: "error" });
+
+    vi.stubGlobal("fetch", vi.fn(async () => { throw new TypeError("offline"); }));
+    await expect(lookupOpenFoodFacts("5900512320045")).resolves.toEqual({ status: "error" });
   });
 });

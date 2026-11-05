@@ -150,6 +150,9 @@ namespace PurchaseMemory.Infrastructure.Postgres.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
+                    b.Property<long?>("AvoidSince")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Brand")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
@@ -326,6 +329,46 @@ namespace PurchaseMemory.Infrastructure.Postgres.Migrations
                     b.HasIndex("ProductId", "OccurredAt");
 
                     b.ToTable("product_audit_entries", "purchase_memory");
+                });
+
+            modelBuilder.Entity("PurchaseMemory.Domain.Products.ProductBarcode", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("character varying(13)");
+
+                    b.Property<long>("CreatedAt")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("CreatedByEmail")
+                        .HasMaxLength(320)
+                        .HasColumnType("character varying(320)");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("product_barcodes", "purchase_memory");
                 });
 
             modelBuilder.Entity("PurchaseMemory.Domain.Products.ProductCategory", b =>
@@ -931,6 +974,65 @@ namespace PurchaseMemory.Infrastructure.Postgres.Migrations
                         });
                 });
 
+            modelBuilder.Entity("PurchaseMemory.Domain.Products.ProductPhoto", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ClientId")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<long>("CreatedAt")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("CreatedByEmail")
+                        .HasMaxLength(320)
+                        .HasColumnType("character varying(320)");
+
+                    b.Property<int>("Height")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<long>("SizeBytes")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("StorageKey")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<string>("ThumbnailKey")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<long>("ThumbnailSizeBytes")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Width")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId", "ClientId")
+                        .IsUnique();
+
+                    b.HasIndex("ProductId", "CreatedAt");
+
+                    b.ToTable("product_photos", "purchase_memory");
+                });
+
             modelBuilder.Entity("PurchaseMemory.Domain.Products.ProductReviewCandidate", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1003,6 +1105,43 @@ namespace PurchaseMemory.Infrastructure.Postgres.Migrations
                     b.HasIndex("TagId");
 
                     b.ToTable("product_tag_links", "purchase_memory");
+                });
+
+            modelBuilder.Entity("PurchaseMemory.Domain.Products.RememberedBarcode", b =>
+                {
+                    b.Property<string>("Code")
+                        .HasMaxLength(13)
+                        .HasColumnType("character varying(13)");
+
+                    b.Property<string>("OffBrand")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("OffImageUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("OffName")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("OffQuantity")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<long>("RememberedAt")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("RememberedBy")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.HasKey("Code");
+
+                    b.HasIndex("RememberedAt");
+
+                    b.ToTable("remembered_barcodes", "purchase_memory");
                 });
 
             modelBuilder.Entity("PurchaseMemory.Domain.Purchases.PurchaseDraft", b =>
@@ -1428,12 +1567,30 @@ namespace PurchaseMemory.Infrastructure.Postgres.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("PurchaseMemory.Domain.Products.ProductBarcode", b =>
+                {
+                    b.HasOne("PurchaseMemory.Domain.Products.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("PurchaseMemory.Domain.Products.ProductCategory", b =>
                 {
                     b.HasOne("PurchaseMemory.Domain.Products.ProductCategory", null)
                         .WithMany()
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("PurchaseMemory.Domain.Products.ProductPhoto", b =>
+                {
+                    b.HasOne("PurchaseMemory.Domain.Products.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PurchaseMemory.Domain.Products.ProductReviewCandidate", b =>

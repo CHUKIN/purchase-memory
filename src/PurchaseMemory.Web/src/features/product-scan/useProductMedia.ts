@@ -1,96 +1,183 @@
-import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { compressPhoto } from "./compressImage";
 import {
-  deviceProductMediaStore,
-  type AddBarcodeResult,
-  type BarcodeSource,
-  type OffProductHint,
-  type ProductMedia,
-  type RememberedBarcode
-} from "./productMediaStore";
+  addProductBarcode,
+  ApiError,
+  deleteProductBarcode,
+  deleteProductPhoto,
+  fetchProtectedBlob,
+  forgetRememberedBarcode,
+  getProductMedia,
+  listRememberedBarcodes,
+  lookupBarcode,
+  productPhotoUrl,
+  rememberBarcode,
+  setMainProductPhoto,
+  setProductAvoid,
+  uploadProductPhoto
+} from "../../api/client";
+import type {
+  BarcodeLookupResponse,
+  BarcodeSource,
+  OffProductHint,
+  ProductMediaResponse,
+  RememberedBarcodeResponse
+} from "../../api/types";
+import { compressPhoto } from "./compressImage";
 
 /*
- * React side of the product media store. Screens use only these hooks, so
- * stage 2 can move the data to the API by changing the query functions here.
+ * Product photos, barcodes, «Больше не покупать» and codes remembered for
+ * later. Since stage 2 they live on the server and are shared by the
+ * household; screens use only these hooks.
  */
 
-const store = deviceProductMediaStore;
+export type { BarcodeSource, OffProductHint };
+
+export interface ProductPhoto {
+  id: string;
+  /** Unix milliseconds. */
+  createdAt: number;
+  width: number;
+  height: number;
+  /** Bytes of the stored copy. */
+  size: number;
+}
+
+export interface ProductBarcode {
+  code: string;
+  source: BarcodeSource;
+  addedAt: number;
+}
+
+export interface AvoidMark {
+  since: number;
+}
+
+export interface ProductMedia {
+  productId: string;
+  /** Oldest first. */
+  photos: ProductPhoto[];
+  /** Always one of `photos` while there are any; null without photos. */
+  mainPhotoId: string | null;
+  barcodes: ProductBarcode[];
+  /** «Больше не покупать»; null when not marked. */
+  avoid: AvoidMark | null;
+}
+
+/** A barcode scanned in the shop that is not tied to any product yet. */
+export interface RememberedBarcode {
+  code: string;
+  rememberedAt: number;
+  /** Null: Open Food Facts did not know it (or was not asked). */
+  off: OffProductHint | null;
+}
+
+export type AddBarcodeResult =
+  | { ok: true }
+  /** The code already belongs to another product; one code, one product. */
+  | { ok: false; reason: "taken"; productId: string };
 
 export const productMediaQueryKey = ["product-media"] as const;
 const mediaKey = (productId: string) => [...productMediaQueryKey, "product", productId] as const;
-const photoKey = (photoId: string) => [...productMediaQueryKey, "photo", photoId] as const;
+const photoKey = (photoId: string, variant: "photo" | "thumbnail") => [...productMediaQueryKey, "photo", photoId, variant] as const;
 const barcodeKey = (code: string) => [...productMediaQueryKey, "barcode", code] as const;
 const rememberedKey = [...productMediaQueryKey, "remembered"] as const;
+
+/** Changes by the other household member show up after this, or at once after one's own change. */
+const sharedStaleMs = 30_000;
+
+export function toProductMedia(response: ProductMediaResponse): ProductMedia {
+  return {
+    productId: response.productId,
+    photos: response.photos.map((photo) => ({
+      id: photo.id,
+      createdAt: Date.parse(photo.createdAt),
+      width: photo.width,
+      height: photo.height,
+      size: photo.size
+    })),
+    mainPhotoId: response.mainPhotoId,
+    barcodes: response.barcodes.map((barcode) => ({ code: barcode.code, source: barcode.source, addedAt: Date.parse(barcode.createdAt) })),
+    avoid: response.avoid ? { since: Date.parse(response.avoid.since) } : null
+  };
+}
+
+export function toRemembered(response: RememberedBarcodeResponse): RememberedBarcode {
+  return { code: response.code, rememberedAt: Date.parse(response.rememberedAt), off: response.off };
+}
 
 export function useProductMedia(productId: string | null | undefined) {
   return useQuery({
     queryKey: mediaKey(productId ?? ""),
-    queryFn: () => store.getProductMedia(productId ?? ""),
+    queryFn: async () => toProductMedia(await getProductMedia(productId ?? "")),
     enabled: Boolean(productId),
-    staleTime: Infinity
+    staleTime: sharedStaleMs
   });
 }
 
-/** Whether any of these products has a main photo; a list then keeps a thumbnail slot on every row. */
-export function useAnyMainPhoto(productIds: string[]): boolean {
-  return useQueries({
-    queries: productIds.map((productId) => ({
-      queryKey: mediaKey(productId),
-      queryFn: () => store.getProductMedia(productId),
-      staleTime: Infinity
-    })),
-    combine: (results) => results.some((result) => Boolean(result.data?.mainPhotoId))
-  });
-}
-
-/** The product a barcode belongs to on this device, or null. */
-export function useBarcodeOwner(code: string | null) {
+/** What the server knows about a scanned code: one lookup serves the owner and the «remembered» note. */
+function useBarcodeLookup<T>(code: string | null, select: (lookup: BarcodeLookupResponse) => T) {
   return useQuery({
     queryKey: barcodeKey(code ?? ""),
-    queryFn: () => store.findProductByBarcode(code ?? ""),
+    queryFn: () => lookupBarcode(code ?? ""),
     enabled: Boolean(code),
-    staleTime: 0
+    staleTime: 0,
+    select
   });
+}
+
+/** The product a barcode belongs to in the household, or null. */
+export function useBarcodeOwner(code: string | null) {
+  return useBarcodeLookup(code, (lookup) => lookup.productIds[0] ?? null);
 }
 
 export function useRememberedBarcode(code: string | null) {
-  return useQuery({
-    queryKey: [...rememberedKey, code ?? ""],
-    queryFn: () => store.findRememberedBarcode(code ?? ""),
-    enabled: Boolean(code)
-  });
+  return useBarcodeLookup(code, (lookup) => (lookup.remembered ? toRemembered(lookup.remembered) : null));
 }
 
-/**
- * Codes «Запомнить на потом» on this device, newest first. They live on the
- * phone only (no backend yet), so «Ревью» counts them next to the server's numbers.
- */
+/** Codes «Запомнить на потом» of the household, newest first; «Ревью» counts them next to the queue. */
 export function useRememberedBarcodes() {
   return useQuery({
     queryKey: [...rememberedKey, "list"],
-    queryFn: () => store.listRememberedBarcodes(),
-    staleTime: Infinity
+    queryFn: async () => (await listRememberedBarcodes()).map(toRemembered),
+    staleTime: sharedStaleMs
   });
+}
+
+/** Everything that shows photos, codes or the mark: media, lookups, remembered codes and list thumbnails. */
+function useRefreshMedia() {
+  const queryClient = useQueryClient();
+  return () => Promise.all([
+    queryClient.invalidateQueries({ queryKey: productMediaQueryKey }),
+    queryClient.invalidateQueries({ queryKey: ["products"] })
+  ]);
 }
 
 /** Drops a remembered code without linking it. */
 export function useForgetBarcode() {
-  const queryClient = useQueryClient();
+  const refresh = useRefreshMedia();
   return async (code: string) => {
-    await store.forgetBarcode(code);
-    await queryClient.invalidateQueries({ queryKey: productMediaQueryKey });
+    await forgetRememberedBarcode(code);
+    await refresh();
   };
 }
 
-/** An object URL for a stored photo; revoked when the photo or the component goes away. */
-export function usePhotoUrl(photoId: string | null | undefined): { url: string | null; failed: boolean } {
+/**
+ * An object URL for a stored photo (or its small thumbnail), fetched with the
+ * session token; revoked when the photo or the component goes away.
+ */
+export function usePhotoUrl(
+  photoId: string | null | undefined,
+  variant: "photo" | "thumbnail" = "photo"
+): { url: string | null; failed: boolean } {
   const blob = useQuery({
-    queryKey: photoKey(photoId ?? ""),
-    queryFn: () => store.getPhotoBlob(photoId ?? ""),
+    queryKey: photoKey(photoId ?? "", variant),
+    queryFn: ({ signal }) => fetchProtectedBlob(productPhotoUrl(photoId ?? "", variant), signal),
     enabled: Boolean(photoId),
+    // The bytes behind a photo id never change.
     staleTime: Infinity,
-    gcTime: 60_000
+    gcTime: 5 * 60_000,
+    retry: (count, error) => !(error instanceof ApiError && error.status === 404) && count < 2
   });
   const [url, setUrl] = useState<string | null>(null);
   const data = blob.data ?? null;
@@ -103,79 +190,88 @@ export function usePhotoUrl(photoId: string | null | undefined): { url: string |
     setUrl(next);
     return () => URL.revokeObjectURL(next);
   }, [data]);
-  return { url, failed: blob.isError || (blob.isSuccess && blob.data === null) };
+  return { url, failed: blob.isError };
 }
 
-/** Changes to one product's photos, barcodes and «Больше не покупать». Each refreshes every view of the store. */
+/** The 409 of a code that is on another product, as a result instead of an error. */
+async function addBarcodeResult(productId: string, code: string, source: BarcodeSource): Promise<AddBarcodeResult> {
+  try {
+    await addProductBarcode(productId, code, source);
+    return { ok: true };
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 409 && error.code === "barcodeTaken" && error.existingProductId) {
+      return { ok: false, reason: "taken", productId: error.existingProductId };
+    }
+    throw error;
+  }
+}
+
+export interface AddedPhoto {
+  id: string;
+  /** The product had no photos before (its name is then read from this one). */
+  firstPhoto: boolean;
+}
+
+/** Changes to one product's photos, barcodes and «Больше не покупать». Each refreshes every view of them. */
 export function useProductMediaActions(productId: string) {
   const queryClient = useQueryClient();
-  const refresh = () => queryClient.invalidateQueries({ queryKey: productMediaQueryKey });
+  const refresh = useRefreshMedia();
 
   return {
-    /** Compresses the picked file (~1280 px JPEG) and keeps it. */
-    async addPhoto(file: File) {
+    /** Compresses the picked file (~1280 px JPEG) and uploads it. */
+    async addPhoto(file: File): Promise<AddedPhoto> {
       const photo = await compressPhoto(file);
-      const entry = await store.addPhoto(productId, photo);
+      const result = await uploadProductPhoto(productId, photo.blob);
       await refresh();
-      return entry;
+      return { id: result.photo.id, firstPhoto: result.firstPhoto };
     },
-    /** The stored JPEG of one photo (for «Название по фото»), or null when it is gone. */
-    readPhoto(photoId: string) {
-      return store.getPhotoBlob(photoId);
+    /** The stored JPEG of one photo (for «Название по фото»). */
+    readPhoto(photoId: string): Promise<Blob> {
+      return queryClient.fetchQuery({
+        queryKey: photoKey(photoId, "photo"),
+        queryFn: ({ signal }) => fetchProtectedBlob(productPhotoUrl(photoId), signal),
+        staleTime: Infinity
+      });
     },
     async removePhoto(photoId: string) {
-      await store.removePhoto(productId, photoId);
-      queryClient.removeQueries({ queryKey: photoKey(photoId) });
+      await deleteProductPhoto(productId, photoId);
+      queryClient.removeQueries({ queryKey: [...productMediaQueryKey, "photo", photoId] });
       await refresh();
     },
     async setMainPhoto(photoId: string) {
-      await store.setMainPhoto(productId, photoId);
+      await setMainProductPhoto(productId, photoId);
       await refresh();
     },
     async addBarcode(code: string, source: BarcodeSource): Promise<AddBarcodeResult> {
-      const result = await store.addBarcode(productId, code, source);
+      const result = await addBarcodeResult(productId, code, source);
       await refresh();
       return result;
     },
     async removeBarcode(code: string) {
-      await store.removeBarcode(productId, code);
+      await deleteProductBarcode(productId, code);
       await refresh();
     },
     async setAvoid(avoid: boolean) {
-      await store.setAvoid(productId, avoid);
+      await setProductAvoid(productId, avoid);
       await refresh();
     }
   };
 }
 
 export function useRememberBarcode() {
-  const queryClient = useQueryClient();
+  const refresh = useRefreshMedia();
   return async (code: string, off: OffProductHint | null) => {
-    await store.rememberBarcode(code, off);
-    await queryClient.invalidateQueries({ queryKey: productMediaQueryKey });
-  };
-}
-
-/**
- * After a merge on the server: this device's photos, barcodes and mark of the
- * merged-away product move to the product it was merged into.
- */
-export function useMoveProductMedia() {
-  const queryClient = useQueryClient();
-  return async (fromProductId: string, toProductId: string) => {
-    await store.moveProductMedia(fromProductId, toProductId);
-    await queryClient.invalidateQueries({ queryKey: productMediaQueryKey });
+    await rememberBarcode(code, off);
+    await refresh();
   };
 }
 
 /** Attaches a code scanned in the shop to an existing product. */
 export function useLinkBarcode() {
-  const queryClient = useQueryClient();
+  const refresh = useRefreshMedia();
   return async (productId: string, code: string, source: BarcodeSource) => {
-    const result = await store.addBarcode(productId, code, source);
-    await queryClient.invalidateQueries({ queryKey: productMediaQueryKey });
+    const result = await addBarcodeResult(productId, code, source);
+    await refresh();
     return result;
   };
 }
-
-export type { ProductMedia, RememberedBarcode };

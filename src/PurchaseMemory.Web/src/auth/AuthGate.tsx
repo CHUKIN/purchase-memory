@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useRef, useState, type PropsWithChildr
 import { useTranslation } from "react-i18next";
 import { ApiError, getAuthConfig, getCurrentUser, type AuthConfig, type CurrentUser } from "../api/client";
 import { releaseApprovalSyncs } from "../features/line-review/approvalSync";
-import { deviceProductMediaStore } from "../features/product-scan/productMediaStore";
 import { deviceBatchStore } from "../features/receipts/pendingBatchStore";
 import { AccessStatusScreen } from "./AccessStatusScreen";
 import { AuthContext, type AuthContextValue } from "./AuthContext";
@@ -284,10 +283,10 @@ export function AuthGate({ children }: PropsWithChildren) {
     await clientRef.current?.auth.signOut().catch(() => undefined);
     signInProgress.clear();
     queryClient.clear();
-    // Photos of an unfinished batch stay on a shared device otherwise; the
-    // same goes for product photos and barcodes kept on this device.
+    // Photos of an unfinished batch stay on a shared device otherwise. (Product
+    // photos and barcodes live on the server since stage 2; a phone's leftovers
+    // from before are moved there after the next sign-in, not deleted here.)
     await deviceBatchStore.clear().catch(() => undefined);
-    await deviceProductMediaStore.clear().catch(() => undefined);
     setPhase({ kind: "signedOut", notice: null });
   }, [queryClient]);
 

@@ -93,6 +93,28 @@ public sealed class ProductMaintenanceRepository(PurchaseMemoryDbContext dbConte
             .Where(entry => entry.ProductId == sourceId)
             .ExecuteUpdateAsync(setters => setters.SetProperty(entry => entry.ProductId, targetId), cancellationToken);
 
+        // Photos and barcodes are the household's knowledge of the same thing.
+        // A code is unique across products, so moving one never collides. The
+        // target keeps its main photo; without one, the source's main stays main.
+        if (await dbContext.ProductPhotos.AnyAsync(photo => photo.ProductId == targetId && photo.IsMain, cancellationToken))
+        {
+            await dbContext.ProductPhotos
+                .Where(photo => photo.ProductId == sourceId && photo.IsMain)
+                .ExecuteUpdateAsync(setters => setters.SetProperty(photo => photo.IsMain, false), cancellationToken);
+        }
+
+        // A device photo id is unique per product; the moved copy forgets one the target already has.
+        await dbContext.ProductPhotos
+            .Where(photo => photo.ProductId == sourceId && photo.ClientId != null
+                && dbContext.ProductPhotos.Any(other => other.ProductId == targetId && other.ClientId == photo.ClientId))
+            .ExecuteUpdateAsync(setters => setters.SetProperty(photo => photo.ClientId, (string?)null), cancellationToken);
+        var photos = await dbContext.ProductPhotos
+            .Where(photo => photo.ProductId == sourceId)
+            .ExecuteUpdateAsync(setters => setters.SetProperty(photo => photo.ProductId, targetId), cancellationToken);
+        var barcodes = await dbContext.ProductBarcodes
+            .Where(barcode => barcode.ProductId == sourceId)
+            .ExecuteUpdateAsync(setters => setters.SetProperty(barcode => barcode.ProductId, targetId), cancellationToken);
+
         // Other flagged products that listed the source now list the target,
         // unless the target is that flagged product itself or already listed.
         await dbContext.ProductReviewCandidates
@@ -114,7 +136,7 @@ public sealed class ProductMaintenanceRepository(PurchaseMemoryDbContext dbConte
             .Where(link => link.ProductId == sourceId)
             .ExecuteDeleteAsync(cancellationToken);
 
-        return new ProductReferenceMove(lines, aliases, impressions, auditEntries);
+        return new ProductReferenceMove(lines, aliases, impressions, auditEntries, photos, barcodes);
     }
 
     public async Task InTransactionAsync(Func<Task> work, CancellationToken cancellationToken)

@@ -6,7 +6,7 @@ import { Footnote, Notice, SectionHeader } from "../../design-system/components"
 import { formatBarcode } from "./barcode";
 import { BarcodeScanModal } from "./BarcodeScanModal";
 import { PhotoDecodeError } from "./compressImage";
-import type { BarcodeSource } from "./productMediaStore";
+import type { BarcodeSource } from "../../api/types";
 import { ProductThumb, usePhotoPicker } from "./ProductPhoto";
 import { useNameFromPhoto } from "./useNameFromPhoto";
 import { useProductMedia, useProductMediaActions } from "./useProductMedia";
@@ -63,11 +63,10 @@ function LinkedLineMedia({ productId, productName }: { productId: string; produc
 
   const picker = usePhotoPicker(
     (file) => void run(async () => {
-      // Only the first photo of a product is read right away, as on the product card
-      // (unknown while the device list is still loading: then nothing is renamed).
-      const isFirstPhoto = media.data?.photos.length === 0;
-      await actions.addPhoto(file);
-      if (isFirstPhoto) void naming.start(file, { automatic: true });
+      // Only the first photo of a product is read right away, as on the product card;
+      // the server says whether it was the first.
+      const added = await actions.addPhoto(file);
+      if (added.firstPhoto) void naming.start(file, { automatic: true });
       return t("productScan.photoAdded");
     }),
     { camera: t("productScan.lineTakePhoto"), library: t("productScan.linePickPhoto") }
@@ -88,7 +87,7 @@ function LinkedLineMedia({ productId, productName }: { productId: string; produc
       <IonList inset className="pm-after-header">
         <IonItem lines="none">
           {media.data?.mainPhotoId
-            ? <ProductThumb productId={productId} />
+            ? <ProductThumb photoId={media.data.mainPhotoId} />
             : <Camera slot="start" size={22} className="pm-row-icon pm-muted-icon" aria-hidden="true" />}
           <IonLabel className="pm-wrap">
             <h3>{productName}</h3>

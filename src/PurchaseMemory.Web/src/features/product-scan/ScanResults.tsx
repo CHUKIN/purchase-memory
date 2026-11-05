@@ -54,7 +54,7 @@ export function FoundResult({ productId, code, locale, onOpenProduct, onScanAgai
   return (
     <>
       <div className="pm-scan-found-head">
-        <ProductThumb productId={productId} slot="" />
+        <ProductThumb photoId={media.data?.mainPhotoId ?? detail.mainPhotoId} slot="" />
         <div>
           <h3>{displayName(detail)}</h3>
           {russianName(detail) && <p className="pm-product-name-ru" lang="ru">{russianName(detail)}</p>}
@@ -169,8 +169,8 @@ export function NotFoundResult({ code, locale, onLinked, onScanAgain }: {
 
   /**
    * «Новый товар»: the product is created on the server (a namesake that
-   * already exists is used instead), then the code is tied to it on this
-   * device and the screen shows it as found.
+   * already exists is used instead), then the code is tied to it and the
+   * screen shows it as found.
    */
   async function createAndLink(name: string, brand: string) {
     setBusy(true);
@@ -251,7 +251,9 @@ export function NotFoundResult({ code, locale, onLinked, onScanAgain }: {
               lines={index === found.length - 1 ? "none" : undefined}
               onClick={() => void linkTo(product.id)}
             >
-              <ProductThumbOrIcon productId={product.id} />
+              {product.mainPhotoId
+                ? <ProductThumb photoId={product.mainPhotoId} />
+                : <Link2 slot="start" size={22} className="pm-row-icon" aria-hidden="true" />}
               <IonLabel className="pm-wrap">
                 <h3>{displayName(product)}</h3>
                 <p>{[russianName(product), product.brand, t("products.purchaseCount", { count: product.purchaseCount })].filter(Boolean).join(" · ")}</p>
@@ -349,13 +351,6 @@ function NewProductForm({ initialName, initialBrand, busy, onCreate, onCancel }:
       </div>
     </form>
   );
-}
-
-function ProductThumbOrIcon({ productId }: { productId: string }) {
-  const media = useProductMedia(productId);
-  return media.data?.mainPhotoId
-    ? <ProductThumb productId={productId} />
-    : <Link2 slot="start" size={22} className="pm-row-icon" aria-hidden="true" />;
 }
 
 /* ---------- shared ---------- */

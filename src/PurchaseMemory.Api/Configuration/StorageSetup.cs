@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Options;
 using PurchaseMemory.Application.Impressions;
+using PurchaseMemory.Application.Products.Media;
 using PurchaseMemory.Application.Receipts;
 using PurchaseMemory.Infrastructure.Images;
 using PurchaseMemory.Infrastructure.Persistence;
@@ -67,6 +68,8 @@ public static class StorageSetup
 
         services.AddSingleton<IReceiptImageStore, ReceiptImageStore>();
         services.AddSingleton<IImpressionPhotoStore, ImpressionPhotoStore>();
+        // Product photos share the receipt bucket under «products/»: no new bucket or secret.
+        services.AddSingleton<IProductPhotoStore, ProductPhotoStore>();
         return services;
     }
 

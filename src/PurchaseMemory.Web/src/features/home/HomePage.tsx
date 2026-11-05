@@ -35,8 +35,8 @@ export interface HomePageProps {
 }
 
 /**
- * «Главная»: «Сфотографировать чек» and «Сканировать» (two looks, see
- * product-scan/scanVariant.ts) with the «Ревью» card under them, then only
+ * «Главная»: «Сфотографировать чек» and «Сканировать штрихкод» with the
+ * «Ревью» card under them, then only
  * what needs the user now — receipts in flight, recent lines to rate — and the
  * last few purchases. Help and sign-out sit behind «Ещё».
  */

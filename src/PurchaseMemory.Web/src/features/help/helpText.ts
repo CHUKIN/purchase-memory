@@ -323,7 +323,7 @@ export const helpRu: HelpText = {
         "График «Как менялась цена» и та же таблица числами. Цены за разные единицы (штука, килограмм) считаются отдельно.",
         "«Названия на чеках» — все варианты написания товара по магазинам.",
         "«Последние покупки» — покупки этого товара, новые сверху (только те, где цена прочитана): нажмите на строку, чтобы открыть покупку. «Назад» возвращает туда, откуда вы пришли, и по возможности на то же место на экране; в очень длинных списках место может сдвинуться. Из результата сканера «Назад» приводит к камере, а не к результату.",
-        "При объединении к оставшемуся товару переходят все покупки, названия из чеков, теги, впечатления и история изменений; фото, штрихкоды и «Больше не покупать» с этого телефона тоже переходят. Подтверждённые человеком категория, бренд и названия оставшегося товара сохраняются, иначе берутся подтверждённые у второго. Итоги в «Аналитике» не меняются.",
+        "При объединении к оставшемуся товару переходят все покупки, названия из чеков, теги, впечатления и история изменений; фото, штрихкоды и отметка «Больше не покупать» тоже переходят (главным остаётся фото оставшегося товара). Подтверждённые человеком категория, бренд и названия оставшегося товара сохраняются, иначе берутся подтверждённые у второго. Итоги в «Аналитике» не меняются.",
         "После «Да, это он» или «Объединить» следующие чеки с тем же названием сразу попадут в оставшийся товар."
       ],
       trouble: [
@@ -364,29 +364,31 @@ export const helpRu: HelpText = {
       title: "Фото, штрихкод и скан в магазине",
       summary: "Сфотографируйте упаковку и привяжите штрихкод к товару один раз. Потом в магазине наведите камеру на штрихкод — приложение покажет, покупали ли вы этот товар, когда, где и почём, и как он вам.",
       steps: [
-        "Фото товара: откройте карточку товара. В варианте A под большим фото есть «Сфотографировать» и «Из галереи», а для показанного фото — «Сделать главным» и «Удалить фото»; другое фото выбирается миниатюрой. В варианте B — «Снять» над лентой фото и «+ Добавить» в её конце (из галереи); нажмите на фото в ленте, чтобы появились «Сделать главным» и «Удалить фото». Главное фото видно в списке «Товары». После добавления фото AI читает с упаковки название товара — см. «Названия товаров».",
-        "Штрихкод: в карточке товара нажмите «Сканировать штрихкод» (или «Сканировать» рядом со штрихкодами) и наведите камеру. Не читается — кнопка с клавиатурой вверху, «Ввести код вручную», цифры под штрихкодом и «Добавить».",
+        "Фото товара: откройте карточку товара. «Снять» над лентой фото открывает камеру, «+ Добавить» в конце ленты — галерею. Нажмите на фото в ленте, чтобы появились «Сделать главным» и «Удалить фото». Главное фото видно в списке «Товары» и в результате скана. После первого фото товара AI читает с упаковки его название; для других фото — кнопка «Название по фото» (см. «Названия товаров»).",
+        "Штрихкод: в карточке товара под «Штрихкоды» нажмите «Сканировать» и наведите камеру. Не читается — кнопка с клавиатурой вверху, «Ввести код вручную», цифры под штрихкодом и «Добавить». Чтобы удалить штрихкод, нажмите на него.",
         "Из покупки: нажмите на строку — в проверке строк под строкой, в разделе «Товар», есть «Сфотографировать товар», «Выбрать фото из галереи» и «Сканировать штрихкод». Фото и код попадут в карточку товара, к которому привязана строка.",
-        "В магазине: на «Главной» нажмите «Сканировать штрихкод» (или плитку «Сканировать») и наведите камеру на штрихкод.",
+        "В магазине: на «Главной» нажмите «Сканировать штрихкод» под кнопкой чека и наведите камеру на штрихкод. Результат выезжает шторкой над камерой; «Закрыть» или «Сканировать ещё» — и можно сканировать следующий.",
         "Знакомый товар: видны последняя покупка (дата, магазин, цена), где было дешевле всего, ваша оценка и отметка «Больше не покупать». Дальше — «Открыть карточку товара» или «Сканировать ещё».",
         "Новый штрихкод: найдите свой товар по названию и нажмите «Привязать». Товара ещё нет — «Новый товар»: проверьте название (если код есть в базе Open Food Facts, название и бренд уже подставлены) и нажмите «Создать товар». Товар появится в «Товарах» без покупок, штрихкод привяжется к нему, и откроется его результат скана. Или «Запомнить на потом» — ничего не создаётся, код просто запоминается.",
-        "«Больше не покупать»: включите переключатель в карточке товара. Отметка красная — и в карточке, и при скане.",
-        "Два вида экранов: «Ещё» на «Главной» → «Вид фото и сканера» → «Вариант A» или «Вариант B». A — большая галерея и плитки «Чек» / «Сканировать», результат скана на весь экран; B — компактная карточка, кнопка под чеком и результат шторкой над камерой."
+        "«Больше не покупать»: включите переключатель в карточке товара. Отметка красная — и в карточке, и при скане."
       ],
       see: [
-        "Пока фото, штрихкоды, отметки «Больше не покупать» и запомненные коды хранятся только на этом телефоне: второй участник их не видит, а при выходе из приложения («Выйти») они удаляются. Общее хранение на сервере появится следующим этапом.",
+        "Фото, штрихкоды, отметки «Больше не покупать» и запомненные коды хранятся на сервере и общие для семьи: их видит и второй участник, они остаются при смене телефона и после «Выйти».",
+        "Если раньше фото и штрихкоды сохранялись только на телефоне, после входа приложение один раз само переносит их на сервер и коротко сообщает об этом. Штрихкод, который уже привязан к другому товару, не переносится — об этом тоже будет сказано.",
         "Один штрихкод — один товар; у товара может быть несколько штрихкодов и фото.",
-        "Фото уменьшается до размера около 200 КБ — этого хватает, чтобы узнать упаковку.",
+        "Фото уменьшается до размера около 200 КБ (до 1280 точек по длинной стороне), без данных о месте съёмки; для списков сервер делает маленькую копию. Этого хватает, чтобы узнать упаковку.",
         "Созданный сканером товар — обычный товар: когда вы купите его и сохраните чек, строка чека найдёт его по похожему названию (или окажется отдельным товаром с отметкой «проверить» — тогда объедините их).",
         "Если товар с таким же названием уже есть, новый не создаётся: штрихкод привязывается к существующему.",
-        "В базу Open Food Facts уходит только штрихкод. Её данные — подсказка: польских товаров там не все, названия бывают неточными."
+        "В базу Open Food Facts уходит только штрихкод, и спрашивает её наш сервер, а не телефон. Её данные — подсказка: польских товаров там не все, названия бывают неточными."
       ],
       trouble: [
         "«Нет доступа к камере» — разрешите камеру: Настройки iPhone → Safari → Камера → «Спрашивать» или «Разрешить», затем «Попробовать ещё раз». Или «Ввести код вручную».",
         "Не читается штрихкод: держите телефон ровнее, на 15–20 см, при хорошем свете, чтобы штрихкод был внутри рамки. Фонарик — кнопка в углу камеры, если телефон его даёт (в Safari на iPhone обычно нет).",
         "«В коде ошибка: проверьте цифры» — в введённом коде опечатка: последняя цифра штрихкода проверочная.",
         "«Уже привязан к другому товару» — один код не может быть у двух товаров. Откройте тот товар и удалите штрихкод там, если он привязан по ошибке.",
-        "Первый скан бывает долгим: загружается распознаватель штрихкодов, а сервер может просыпаться до минуты."
+        "Первый скан бывает долгим: загружается распознаватель штрихкодов, а сервер может просыпаться до минуты.",
+        "«Нет ответа» после скана — сервер не ответил (нет интернета или он ещё просыпается): нажмите «Попробовать ещё раз». Без интернета скан не работает: знакомые товары и их фото хранятся на сервере.",
+        "«Не удалось сохранить» — фото, штрихкод или отметка не дошли до сервера. Проверьте интернет и повторите."
       ]
     },
     categories: {
@@ -478,7 +480,7 @@ export const helpRu: HelpText = {
       trouble: [
         "В разделе сначала видно до 20 пунктов каждого вида; остальные появятся, когда вы разберёте эти.",
         "«Ревью» считается по сохранённым данным: пункт исчезает сам, как только причина исправлена.",
-        "Запомненные штрихкоды хранятся только на этом телефоне: на другом телефоне их нет, а при выходе из приложения они стираются. С выбранной категорией или тегом их не видно.",
+        "Запомненные штрихкоды общие для семьи: их видят оба участника на любом телефоне. С выбранной категорией или тегом их не видно.",
         "«Оценить покупки» — товары за последние 30 дней, не больше 50.",
         "«Принять все предложенные» принимает не больше 100 категорий за раз; если их больше, кнопка называется «Принять первые предложенные».",
         "«Покупки» — тоже только сохранённые за последние 30 дней: более старые покупки сюда не попадают, их строки можно проверить в самой покупке.",
@@ -839,7 +841,7 @@ export const helpEn: HelpText = {
         "A “How the price moved” chart and the same table in numbers. Prices per different units (piece, kilogram) are counted separately.",
         "“Receipt spellings” — every spelling of the product by store.",
         "“Latest purchases” — this product's purchases, newest first (only those where the price was read): tap a row to open the purchase. “Back” returns to where you came from, and where possible to the same place on the screen; in very long lists the place may shift. From a scan result, “Back” leads to the camera, not to the result.",
-        "A merge moves every purchase, receipt spelling, tag, impression and the change history to the remaining product; photos, barcodes and “Don't buy again” on this phone move too. The remaining product keeps its person-confirmed category, brand and names, otherwise the other product's confirmed ones are taken. Totals in “Insights” do not change.",
+        "A merge moves every purchase, receipt spelling, tag, impression and the change history to the remaining product; photos, barcodes and the “Don't buy again” mark move too (the remaining product's main photo stays main). The remaining product keeps its person-confirmed category, brand and names, otherwise the other product's confirmed ones are taken. Totals in “Insights” do not change.",
         "After “Yes, this one” or “Merge”, later receipts with the same spelling go straight to the remaining product."
       ],
       trouble: [
@@ -880,29 +882,31 @@ export const helpEn: HelpText = {
       title: "Photo, barcode and scanning in the shop",
       summary: "Take a photo of the package and link its barcode to the product once. Later, in the shop, point the camera at the barcode — the app shows whether you bought it, when, where and for how much, and how you liked it.",
       steps: [
-        "Product photo: open the product card. In variant A the big photo has “Take photo” and “From library” under it, plus “Make main” and “Delete photo” for the photo shown; pick another photo by its thumbnail. In variant B there is “Shoot” above the photo strip and “+ Add” at its end (from the library); tap a photo in the strip to get “Make main” and “Delete photo”. The main photo shows in the Products list. After a photo is added, AI reads the product name from the package — see “Product names”.",
-        "Barcode: on the product card press “Scan barcode” (or “Scan” next to the barcodes) and point the camera. If it won't read, press the keyboard button at the top, “Type the code”, enter the digits under the barcode and press “Add”.",
+        "Product photo: open the product card. “Shoot” above the photo strip opens the camera, “+ Add” at its end the library. Tap a photo in the strip to get “Make main” and “Delete photo”. The main photo shows in the Products list and in the scan result. After a product's first photo, AI reads its name from the package; for other photos there is “Name from photo” (see “Product names”).",
+        "Barcode: on the product card, under “Barcodes”, press “Scan” and point the camera. If it won't read, press the keyboard button at the top, “Type the code”, enter the digits under the barcode and press “Add”. To delete a barcode, tap it.",
         "From a purchase: tap a line — in the line check, under the line in “Product”, there are “Take a product photo”, “Pick a photo from the library” and “Scan barcode”. They go to the card of the product the line is linked to.",
-        "In the shop: on Home press “Scan barcode” (or the “Scan” tile) and point the camera at the barcode.",
+        "In the shop: on Home press “Scan barcode” under the receipt button and point the camera at the barcode. The result slides up as a sheet over the camera; “Close” or “Scan another” and you can scan the next one.",
         "A known product shows the last purchase (date, store, price), where it was cheapest, your rating and the “Don't buy again” mark. Then “Open product card” or “Scan another”.",
         "A new barcode: find your product by name and press “Link”. Not there yet — “New product”: check the name (if Open Food Facts knows the code, the name and brand are filled in) and press “Create product”. The product appears in “Products” with no purchases, the barcode is linked to it and its scan result opens. Or “Remember for later” — nothing is created, the code is just kept.",
-        "“Don't buy again”: turn on the switch on the product card. The mark is red on the card and in the scan result.",
-        "Two looks: “More” on Home → “Photo and scanner look” → “Variant A” or “Variant B”. A has a big gallery and the “Receipt” / “Scan” tiles, the scan result full screen; B has a compact card, a button under the receipt button and the result as a sheet over the camera."
+        "“Don't buy again”: turn on the switch on the product card. The mark is red on the card and in the scan result."
       ],
       see: [
-        "For now photos, barcodes, “Don't buy again” marks and remembered codes are kept on this phone only: the other member does not see them, and “Sign out” deletes them. Shared storage on the server comes in the next stage.",
+        "Photos, barcodes, “Don't buy again” marks and remembered codes are kept on the server and shared by the household: the other member sees them, and they stay after a phone change and after “Sign out”.",
+        "If photos and barcodes used to be saved on the phone only, after sign-in the app moves them to the server once by itself and says so briefly. A barcode that already belongs to another product is not moved — that is said too.",
         "One barcode belongs to one product; a product can have several barcodes and photos.",
-        "Photos are shrunk to about 200 KB — enough to recognise the package.",
+        "Photos are shrunk to about 200 KB (at most 1280 pixels on the long side), without the location they were taken at; the server keeps a small copy for lists. That is enough to recognise the package.",
         "A product created from the scanner is an ordinary product: when you buy it and save the receipt, the receipt line finds it by a similar name (or becomes a separate product marked “check” — then merge them).",
         "If a product with the same name already exists, no new one is created: the barcode is linked to the existing one.",
-        "Only the barcode is sent to Open Food Facts. Its data is a hint: it does not know every Polish product, and names can be off."
+        "Only the barcode is sent to Open Food Facts, and our server asks it, not the phone. Its data is a hint: it does not know every Polish product, and names can be off."
       ],
       trouble: [
         "“No camera access” — allow the camera: iPhone Settings → Safari → Camera → “Ask” or “Allow”, then “Try again”. Or “Type the code”.",
         "The barcode won't read: hold the phone level, 15–20 cm away, in good light, with the barcode inside the frame. The torch button is in the camera corner if the phone offers it (Safari on iPhone usually does not).",
         "“The code has a typo” — the last digit of a barcode is a check digit, so a typo is caught.",
         "“Already belongs to another product” — one code cannot be on two products. Open that product and remove the barcode there if it was linked by mistake.",
-        "The first scan can be slow: the barcode reader downloads, and the server may take up to a minute to wake up."
+        "The first scan can be slow: the barcode reader downloads, and the server may take up to a minute to wake up.",
+        "“No answer” after a scan — the server did not answer (no internet, or it is still waking up): press “Try again”. Scanning needs the internet: known products and their photos are kept on the server.",
+        "“Could not save” — a photo, barcode or mark did not reach the server. Check the connection and try again."
       ]
     },
     categories: {
@@ -994,7 +998,7 @@ export const helpEn: HelpText = {
       trouble: [
         "A section first shows up to 20 items of each kind; the rest appear as you work through these.",
         "“Review” is computed from saved data: an item disappears as soon as its cause is fixed.",
-        "Remembered barcodes are kept on this phone only: another phone does not have them, and signing out clears them. With a category or tag picked they are hidden.",
+        "Remembered barcodes are shared by the household: both members see them on any phone. With a category or tag picked they are hidden.",
         "“Rate purchases” lists products from the last 30 days, at most 50.",
         "“Accept all suggested” accepts at most 100 categories at a time; with more, the button says “Accept the first suggested”.",
         "“Purchases” also lists only purchases saved in the last 30 days: older ones are not here, but you can still check their lines in the purchase itself.",

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PurchaseMemory.Api.Auth;
 using PurchaseMemory.Application.Products;
 using PurchaseMemory.Application.Products.Categories;
+using PurchaseMemory.Application.Products.Media;
 using PurchaseMemory.Application.Products.PhotoNames;
 using PurchaseMemory.Application.Products.Tags;
 using PurchaseMemory.Domain.Products;
@@ -96,6 +97,7 @@ public static class ProductEndpoints
         int? pageSize,
         IProductCatalogService catalog,
         IProductCatalogRepository repository,
+        IProductMediaService media,
         CancellationToken cancellationToken)
     {
         if (!TagEndpoints.TryParseTagIds(tagId, out var tagIds))
@@ -138,8 +140,10 @@ public static class ProductEndpoints
         // its own endpoint: it is what the catalog's tappable «N товаров нужно
         // проверить» shows, whatever filter the page currently has.
         var needsReviewCount = await repository.CountProductsNeedingReviewAsync(cancellationToken);
+        // The main photo id per row, so a list shows thumbnails without a request per product.
+        var mainPhotos = await media.MainPhotoIdsAsync(catalogPage.Items.Select(item => item.ProductId).ToList(), cancellationToken);
 
-        return Results.Ok(ProductCatalogResponse.FromPage(catalogPage, needsReviewCount));
+        return Results.Ok(ProductCatalogResponse.FromPage(catalogPage, needsReviewCount, mainPhotos));
     }
 
     private static Task<IResult> CreateAsync(
@@ -397,12 +401,20 @@ public static class ProductEndpoints
     private static async Task<IResult> GetProductAsync(
         Guid productId,
         IProductCatalogService catalog,
+        IProductMediaService media,
         CancellationToken cancellationToken)
     {
         var product = await catalog.GetProductAsync(productId, cancellationToken);
-        return product is null
-            ? Results.Problem(detail: "Product was not found.", statusCode: StatusCodes.Status404NotFound)
-            : Results.Ok(ProductDetailResponse.FromDetail(product));
+        if (product is null)
+        {
+            return Results.Problem(detail: "Product was not found.", statusCode: StatusCodes.Status404NotFound);
+        }
+
+        var mainPhotos = await media.MainPhotoIdsAsync([product.ProductId], cancellationToken);
+        return Results.Ok(ProductDetailResponse.FromDetail(product) with
+        {
+            MainPhotoId = mainPhotos.TryGetValue(product.ProductId, out var photoId) ? photoId : null
+        });
     }
 }
 
@@ -563,7 +575,9 @@ public sealed record ProductResponse(
     string? NamePl = null,
     string? NamePlSource = null,
     string? NameRu = null,
-    string? NameRuSource = null);
+    string? NameRuSource = null,
+    // The main product photo (GET /api/product-photos/{id}/thumbnail); null without photos.
+    Guid? MainPhotoId = null);
 
 public sealed record ProductCatalogResponse(
     IReadOnlyList<ProductResponse> Items,
@@ -574,7 +588,10 @@ public sealed record ProductCatalogResponse(
     // Products carrying the «проверить» flag in the whole catalog, whatever the filter.
     int NeedsReviewCount)
 {
-    public static ProductCatalogResponse FromPage(ProductCatalogPage page, int needsReviewCount)
+    public static ProductCatalogResponse FromPage(
+        ProductCatalogPage page,
+        int needsReviewCount,
+        IReadOnlyDictionary<Guid, Guid>? mainPhotoIds = null)
     {
         ArgumentNullException.ThrowIfNull(page);
 
@@ -598,7 +615,8 @@ public sealed record ProductCatalogResponse(
                     entry.Names?.NamePl,
                     CategoryEndpoints.SourceToWire(entry.Names?.NamePlSource),
                     entry.Names?.NameRu,
-                    CategoryEndpoints.SourceToWire(entry.Names?.NameRuSource)))
+                    CategoryEndpoints.SourceToWire(entry.Names?.NameRuSource),
+                    mainPhotoIds is not null && mainPhotoIds.TryGetValue(entry.ProductId, out var photoId) ? photoId : null))
                 .ToList(),
             page.Page,
             page.PageSize,
@@ -657,7 +675,8 @@ public sealed record ProductDetailResponse(
     string? NamePl = null,
     string? NamePlSource = null,
     string? NameRu = null,
-    string? NameRuSource = null)
+    string? NameRuSource = null,
+    Guid? MainPhotoId = null)
 {
     public static ProductDetailResponse FromDetail(ProductDetail detail)
     {

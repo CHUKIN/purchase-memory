@@ -9,13 +9,13 @@ export interface ReviewCount {
   total: number | null;
   /** The server's part, by section. */
   summary: ReviewQueueSummary | null;
-  /** Codes remembered on this device, not linked to a product yet. */
+  /** Codes remembered in the household, not linked to a product yet. */
   barcodes: number;
 }
 
 /**
- * The one number of «Ревью»: the server's summary plus this device's
- * remembered barcodes. The tab badge, the Home card and the hub all read it,
+ * The one number of «Ревью»: the server's summary plus the remembered
+ * barcodes (a list of their own on the server). The tab badge, the Home card and the hub all read it,
  * so they always agree. Refreshes after queue actions, when a receipt
  * finishes (both invalidate `reviewQueueQueryKey`) and once a minute.
  */

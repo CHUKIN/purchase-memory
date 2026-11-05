@@ -348,6 +348,8 @@ export interface ProductSummary {
   /** Russian translation of the Polish name. */
   nameRu?: string | null;
   nameRuSource?: AttributeSource | null;
+  /** The main product photo (thumbnail at `/api/product-photos/{id}/thumbnail`); null/absent without photos. */
+  mainPhotoId?: string | null;
   /** Alphabetical. Optional only so older fixtures stay valid. */
   tags?: ProductTag[];
   /** Distinct shopping trips, the same definition the product page counts by. */
@@ -497,6 +499,8 @@ export interface ProductDetail {
   /** Russian translation of the Polish name. */
   nameRu?: string | null;
   nameRuSource?: AttributeSource | null;
+  /** The main product photo; null/absent without photos. */
+  mainPhotoId?: string | null;
   /** Alphabetical. Optional only so older fixtures stay valid. */
   tags?: ProductTag[];
   createdAt: string;
@@ -822,4 +826,69 @@ export interface RateablePurchaseItem {
   currency: string | null;
   unitPrice: number | null;
   lineTotal: number | null;
+}
+
+/* ---------- product photos, barcodes, «Больше не покупать» (stage 2) ---------- */
+
+export type BarcodeSource = "scan" | "manual" | "openFoodFacts";
+
+export interface ProductPhotoInfo {
+  id: string;
+  createdAt: string;
+  width: number;
+  height: number;
+  /** Bytes of the stored copy. */
+  size: number;
+  isMain: boolean;
+  url: string;
+  thumbnailUrl: string;
+}
+
+export interface ProductBarcodeInfo {
+  code: string;
+  source: BarcodeSource;
+  createdAt: string;
+}
+
+/** A product's photos (oldest first), barcodes and «Больше не покупать» mark, shared in the household. */
+export interface ProductMediaResponse {
+  productId: string;
+  photos: ProductPhotoInfo[];
+  mainPhotoId: string | null;
+  barcodes: ProductBarcodeInfo[];
+  avoid: { since: string } | null;
+}
+
+export interface ProductPhotoUploadResponse {
+  photo: ProductPhotoInfo;
+  /** False when this device photo (`clientId`) was uploaded before. */
+  created: boolean;
+  /** The product had no photos before this one (its name is read from it). */
+  firstPhoto: boolean;
+}
+
+/** What Open Food Facts said about a barcode; a hint only, never trusted. */
+export interface OffProductHint {
+  name: string | null;
+  brand: string | null;
+  quantity: string | null;
+  imageUrl: string | null;
+}
+
+export interface RememberedBarcodeResponse {
+  code: string;
+  rememberedAt: string;
+  off: OffProductHint | null;
+}
+
+export interface BarcodeLookupResponse {
+  /** The normalized code. */
+  code: string;
+  productIds: string[];
+  remembered: RememberedBarcodeResponse | null;
+}
+
+export interface OpenFoodFactsResponse {
+  status: "found" | "notFound" | "error";
+  product: OffProductHint | null;
 }

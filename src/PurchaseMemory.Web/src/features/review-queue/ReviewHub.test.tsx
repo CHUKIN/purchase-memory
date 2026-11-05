@@ -146,7 +146,7 @@ describe("«Ревью» hub", () => {
     await screen.findByRole("region", { name: "Чеки" });
     expect(sectionNames()).toEqual(["Чеки", "Покупки", "Товары", "Категории", "Штрихкоды", "Оценить покупки"]);
     expect(within(screen.getByRole("region", { name: "Категории" })).getByLabelText("4 пункта")).toBeInTheDocument();
-    // The server's nine and the one code on this phone.
+    // The server's nine and the one remembered code.
     expect(screen.getByText("10 пунктов требуют внимания.")).toBeInTheDocument();
     const barcodes = screen.getByRole("region", { name: "Штрихкоды" });
     expect(within(barcodes).getByRole("button", { name: "Привязать штрихкод 5901234123457 к товару" })).toBeInTheDocument();

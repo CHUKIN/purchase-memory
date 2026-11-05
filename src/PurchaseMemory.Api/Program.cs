@@ -14,6 +14,7 @@ using PurchaseMemory.Application.Analytics;
 using PurchaseMemory.Application.Impressions;
 using PurchaseMemory.Application.Products;
 using PurchaseMemory.Application.Products.Categories;
+using PurchaseMemory.Application.Products.Media;
 using PurchaseMemory.Application.Products.PhotoNames;
 using PurchaseMemory.Application.Products.Tags;
 using PurchaseMemory.Application.Purchases;
@@ -24,6 +25,7 @@ using PurchaseMemory.Infrastructure;
 using PurchaseMemory.Infrastructure.Analytics;
 using PurchaseMemory.Infrastructure.Categorization;
 using PurchaseMemory.Infrastructure.Images;
+using PurchaseMemory.Infrastructure.OpenFoodFacts;
 using PurchaseMemory.Infrastructure.Persistence;
 using PurchaseMemory.Infrastructure.PhotoNames;
 using PurchaseMemory.Infrastructure.Processing;
@@ -46,6 +48,16 @@ builder.Services.AddScoped<IPurchaseDraftService, PurchaseDraftService>();
 builder.Services.AddScoped<IPurchaseEditService, PurchaseEditService>();
 builder.Services.AddScoped<IPurchaseLineApprovalService, PurchaseLineApprovalService>();
 builder.Services.AddScoped<IProductImpressionService, ProductImpressionService>();
+builder.Services.AddScoped<IProductMediaService, ProductMediaService>();
+builder.Services.AddSingleton<OpenFoodFactsCache>();
+builder.Services
+    .AddHttpClient<IOpenFoodFactsClient, OpenFoodFactsClient>(OpenFoodFactsClient.HttpClientName, client =>
+    {
+        client.BaseAddress = OpenFoodFactsClient.BaseAddress;
+        client.DefaultRequestHeaders.UserAgent.ParseAdd(OpenFoodFactsClient.UserAgent);
+        // The client cuts the lookup itself; this only backs it up.
+        client.Timeout = OpenFoodFactsClient.Timeout + TimeSpan.FromSeconds(5);
+    });
 builder.Services.AddScoped<IReceiptProcessingService, ReceiptProcessingService>();
 builder.Services.AddScoped<IProductCategoryService, ProductCategoryService>();
 builder.Services.AddScoped<IProductTagService, ProductTagService>();
@@ -311,6 +323,7 @@ app.MapTagEndpoints();
 app.MapAnalyticsEndpoints();
 app.MapReviewQueueEndpoints();
 app.MapImpressionEndpoints();
+app.MapProductMediaEndpoints();
 // Unknown API and MCP paths are real 404s, never the SPA page. Literal
 // prefixes outrank the catch-all below, and real endpoints outrank both.
 app.MapFallback("/api/{**path}", () => Results.NotFound()).AllowAnonymous();

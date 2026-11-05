@@ -34,6 +34,12 @@ public sealed class PurchaseMemoryDbContext(DbContextOptions<PurchaseMemoryDbCon
 
     public DbSet<ProductImpression> ProductImpressions => Set<ProductImpression>();
 
+    public DbSet<ProductPhoto> ProductPhotos => Set<ProductPhoto>();
+
+    public DbSet<ProductBarcode> ProductBarcodes => Set<ProductBarcode>();
+
+    public DbSet<RememberedBarcode> RememberedBarcodes => Set<RememberedBarcode>();
+
     public DbSet<AnalyticsQuestionEntry> AnalyticsQuestions => Set<AnalyticsQuestionEntry>();
 
     /// <summary>
@@ -140,6 +146,7 @@ public sealed class PurchaseMemoryDbContext(DbContextOptions<PurchaseMemoryDbCon
             .IsRequired();
         product.Property(entity => entity.ReviewReason).HasConversion<string>().HasMaxLength(30);
         product.HasIndex(entity => entity.NeedsReview);
+        product.Property(entity => entity.AvoidSince).HasConversion(nullableDateTimeOffsetConverter);
 
         // The service moves products out of a category before deleting it; the
         // SetNull rule is only the database's last line of defence.
@@ -254,6 +261,59 @@ public sealed class PurchaseMemoryDbContext(DbContextOptions<PurchaseMemoryDbCon
 
         // Plan, period and answer are JSON text rather than jsonb: the same
         // column type on SQLite and Postgres, and nothing queries inside them.
+        var productPhoto = modelBuilder.Entity<ProductPhoto>();
+        productPhoto.ToTable("product_photos");
+        productPhoto.HasKey(entity => entity.Id);
+        productPhoto.Property(entity => entity.Id).ValueGeneratedNever();
+        productPhoto.Property(entity => entity.StorageKey).HasMaxLength(300).IsRequired();
+        productPhoto.Property(entity => entity.ThumbnailKey).HasMaxLength(300).IsRequired();
+        productPhoto.Property(entity => entity.ClientId).HasMaxLength(ProductPhoto.MaximumClientIdLength);
+        productPhoto.Property(entity => entity.CreatedBy).HasMaxLength(200).IsRequired();
+        productPhoto.Property(entity => entity.CreatedByEmail).HasMaxLength(320);
+        productPhoto.Property(entity => entity.CreatedAt).HasConversion(dateTimeOffsetConverter);
+        productPhoto.HasIndex(entity => new { entity.ProductId, entity.CreatedAt });
+        // A repeated upload of one device photo returns the stored row; the
+        // index settles two uploads of it at the same moment. NULLs (photos
+        // taken after stage 2) never collide in SQLite or Postgres.
+        productPhoto.HasIndex(entity => new { entity.ProductId, entity.ClientId }).IsUnique();
+        // Products are deleted only by a merge, which moves the photos first.
+        productPhoto
+            .HasOne<Product>()
+            .WithMany()
+            .HasForeignKey(entity => entity.ProductId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        var productBarcode = modelBuilder.Entity<ProductBarcode>();
+        productBarcode.ToTable("product_barcodes");
+        productBarcode.HasKey(entity => entity.Id);
+        productBarcode.Property(entity => entity.Id).ValueGeneratedNever();
+        productBarcode.Property(entity => entity.Code).HasMaxLength(Barcode.MaximumLength).IsRequired();
+        productBarcode.Property(entity => entity.Source).HasConversion<string>().HasMaxLength(20).IsRequired();
+        productBarcode.Property(entity => entity.CreatedBy).HasMaxLength(200).IsRequired();
+        productBarcode.Property(entity => entity.CreatedByEmail).HasMaxLength(320);
+        productBarcode.Property(entity => entity.CreatedAt).HasConversion(dateTimeOffsetConverter);
+        // One code, one product in the household; the service checks first,
+        // the index settles two people tying the same code at once.
+        productBarcode.HasIndex(entity => entity.Code).IsUnique();
+        productBarcode.HasIndex(entity => entity.ProductId);
+        productBarcode
+            .HasOne<Product>()
+            .WithMany()
+            .HasForeignKey(entity => entity.ProductId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        var remembered = modelBuilder.Entity<RememberedBarcode>();
+        remembered.ToTable("remembered_barcodes");
+        remembered.HasKey(entity => entity.Code);
+        remembered.Property(entity => entity.Code).HasMaxLength(Barcode.MaximumLength);
+        remembered.Property(entity => entity.RememberedBy).HasMaxLength(200).IsRequired();
+        remembered.Property(entity => entity.RememberedAt).HasConversion(dateTimeOffsetConverter);
+        remembered.Property(entity => entity.OffName).HasMaxLength(RememberedBarcode.MaximumHintLength);
+        remembered.Property(entity => entity.OffBrand).HasMaxLength(RememberedBarcode.MaximumHintLength);
+        remembered.Property(entity => entity.OffQuantity).HasMaxLength(RememberedBarcode.MaximumHintLength);
+        remembered.Property(entity => entity.OffImageUrl).HasMaxLength(RememberedBarcode.MaximumImageUrlLength);
+        remembered.HasIndex(entity => entity.RememberedAt);
+
         var question = modelBuilder.Entity<AnalyticsQuestionEntry>();
         question.ToTable("analytics_questions");
         question.HasKey(entity => entity.Id);

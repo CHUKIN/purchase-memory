@@ -62,7 +62,7 @@ public sealed class ProductConflictException(string message, Guid? existingProdu
 }
 
 /// <summary>What a merge moved, as counted by the storage layer.</summary>
-public sealed record ProductReferenceMove(int Lines, int Aliases, int Impressions, int AuditEntries);
+public sealed record ProductReferenceMove(int Lines, int Aliases, int Impressions, int AuditEntries, int Photos = 0, int Barcodes = 0);
 
 /// <summary>Persistence for <see cref="IProductManagementService"/>.</summary>
 public interface IProductMaintenanceRepository
@@ -88,7 +88,8 @@ public interface IProductMaintenanceRepository
     /// Repoints every row that refers to <paramref name="sourceId"/> at
     /// <paramref name="targetId"/>: purchase lines, impressions, aliases (which
     /// become human-confirmed: a person just said this wording is the target),
-    /// audit entries and other flagged products' candidates (a candidate that
+    /// audit entries, photos and barcodes (the target's main photo stays main),
+    /// and other flagged products' candidates (a candidate that
     /// would point at its own product, or repeat one already listed, is
     /// dropped). The source's own tag links and candidate list are deleted;
     /// tags are re-linked by the caller. Runs immediately, so call it inside
@@ -286,6 +287,11 @@ public sealed partial class ProductManagementService(
                     ProductCategoryService.DescribeName(target.NameRu, target.NameRuSource), now);
             }
 
+            if (target.AbsorbAvoidFrom(source, now))
+            {
+                Audit(target.Id, actor, ProductAuditEntry.AvoidField, null, Media.ProductMediaService.AvoidValue, now);
+            }
+
             Audit(target.Id, actor, ProductAuditEntry.MergeField, Describe(source), Describe(target), now);
             repository.RemoveProduct(source);
             await repository.SaveChangesAsync(cancellationToken);
@@ -297,7 +303,7 @@ public sealed partial class ProductManagementService(
                 target.CanonicalName,
                 moved.Lines,
                 moved.Aliases);
-            ProductsMerged(source.Id, target.Id, moved.Lines, moved.Aliases, moved.Impressions, added.Count);
+            ProductsMerged(source.Id, target.Id, moved.Lines, moved.Aliases, moved.Impressions, added.Count, moved.Photos, moved.Barcodes);
         }, cancellationToken);
 
         return result!;
@@ -369,6 +375,6 @@ public sealed partial class ProductManagementService(
     private partial void ProductCreated(Guid productId, ProductOrigin origin);
 
     [LoggerMessage(EventId = 3402, Level = LogLevel.Information,
-        Message = "Product {SourceProductId} merged into {TargetProductId}: {Lines} lines, {Aliases} aliases, {Impressions} impressions, {AddedTags} tags moved")]
-    private partial void ProductsMerged(Guid sourceProductId, Guid targetProductId, int lines, int aliases, int impressions, int addedTags);
+        Message = "Product {SourceProductId} merged into {TargetProductId}: {Lines} lines, {Aliases} aliases, {Impressions} impressions, {AddedTags} tags, {Photos} photos, {Barcodes} barcodes moved")]
+    private partial void ProductsMerged(Guid sourceProductId, Guid targetProductId, int lines, int aliases, int impressions, int addedTags, int photos, int barcodes);
 }
