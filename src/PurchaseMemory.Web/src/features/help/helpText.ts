@@ -343,7 +343,8 @@ export const helpRu: HelpText = {
         "«Предложить заново» просит AI ещё раз. Кнопки нет, когда оба названия уже подтверждены.",
         "Название по фото: когда вы добавляете первое фото товара (в карточке или из покупки), AI читает название с упаковки. Следующие фото название не меняют. Название «предложено» или его не было — оно сразу заменяется, а вверху появляется «Название обновлено по фото: …» с кнопкой «Вернуть». Название вы подтвердили сами — оно не меняется, появляется «Предложить название» — «По фото: … Заменить?». Прочитать название с главного фото в любой момент — кнопка «Название по фото» под фото в карточке товара.",
         "В покупке строка называется так, как в чеке, а под ней — польское название товара: «→ Kefir naturalny Activia 280 g».",
-        "Непроверенные названия собраны в «Ревью», в разделе «Названия предложено»: «Верно» — подтвердить, «Изменить» — открыть товар, «Принять все предложенные» — подтвердить все сразу. «Проверять по одной» показывает их по одному с кнопкой «Верно, дальше»."
+        "Непроверенные названия собраны в «Ревью», в разделе «Названия предложено»: «Верно» — подтвердить, «Изменить» — открыть товар, «Принять все предложенные» — подтвердить все сразу. «Проверять по одной» показывает их по одному с кнопкой «Верно, дальше».",
+        "Старые товары без названий и категорий можно дозаполнить разом: «Ещё» на «Главной» → «Дозаполнить названия и категории». Приложение покажет, сколько товаров ждут. Нажмите «Дозаполнить», затем подтвердите кнопкой «Да, запустить». За раз берётся до 100 товаров; если их больше, запустите ещё раз. Галочка «Повторить для тех, где раньше не получилось» снова отправляет AI товары, по которым он раньше не ответил. Это платный запрос к AI, около 0,0001 $ за товар. Предложенное AI потом ждёт проверки в «Ревью»."
       ],
       see: [
         "Поиск находит товар и по польскому, и по русскому названию, и по тексту из чека; регистр и польские буквы не важны.",
@@ -357,7 +358,9 @@ export const helpRu: HelpText = {
         "«На фото не получилось уверенно прочитать название» — на снимке не видно названия (обратная сторона, блик). Сфотографируйте лицевую сторону упаковки.",
         "Названия нет — AI не узнал товар по сокращению из чека и не стал угадывать. Впишите название сами.",
         "Название подтверждено, но неверное — нажмите карандаш и исправьте его.",
-        "«Названия изменились, пока экран был открыт» — AI успел предложить новые. «Верно» подтверждает только то, что вы видели: проверьте новые названия и нажмите ещё раз."
+        "«Названия изменились, пока экран был открыт» — AI успел предложить новые. «Верно» подтверждает только то, что вы видели: проверьте новые названия и нажмите ещё раз.",
+        "«Уже идёт, подождите» при «Дозаполнить» — другой запуск ещё не закончился. Подождите минуту и откройте экран заново.",
+        "«AI на сервере не подключён» — на сервере нет ключа AI, ничего не потрачено. Дозаполнение заработает, когда ключ добавят."
       ]
     },
     "product-scan": {
@@ -885,7 +888,8 @@ export const helpEn: HelpText = {
         "“Suggest again” asks AI once more. The button is gone when both names are confirmed.",
         "Name from photo: when you add the first photo of a product (on the card or from a purchase), AI reads the name from the package. Later photos do not change the name. A “suggested” or missing name is replaced at once, and “Name updated from the photo: …” appears at the top with “Undo”. A name you confirmed yourself is not changed; “Suggested name” appears — “From the photo: … Replace?”. To read the name from the main photo at any time, press “Name from photo” under the photos on the product card.",
         "In a purchase the line keeps the receipt's wording, with the product's Polish name under it: “→ Kefir naturalny Activia 280 g”.",
-        "Unchecked names are collected in “Review”, section “Suggested names”: “Correct” confirms them, “Change” opens the product, “Accept all suggested” confirms them all at once. “Check one by one” shows them one at a time with “Right, next”."
+        "Unchecked names are collected in “Review”, section “Suggested names”: “Correct” confirms them, “Change” opens the product, “Accept all suggested” confirms them all at once. “Check one by one” shows them one at a time with “Right, next”.",
+        "Older products without names and categories can be filled in at once: “More” on Home → “Fill in names and categories”. The app shows how many products are waiting. Press “Fill in”, then confirm with “Yes, run it”. Up to 100 products are taken at a time; if there are more, run it again. The “Retry the ones that failed before” checkbox sends AI the products it did not answer for earlier. This uses the paid AI, about $0.0001 per product. What AI suggested then waits for your check in “Review”."
       ],
       see: [
         "Search finds a product by its Polish name, its Russian name and the receipt text; case and Polish letters do not matter.",
@@ -899,7 +903,9 @@ export const helpEn: HelpText = {
         "“Could not read the name from the photo with confidence” — the name is not visible (back of the package, glare). Take a photo of the front.",
         "No name — AI did not recognise the product from the receipt abbreviation and did not guess. Type the name yourself.",
         "A confirmed name is wrong — press the pencil and correct it.",
-        "“The names changed while the screen was open” — AI suggested new ones meanwhile. “Correct” only confirms what you saw: check the new names and press it again."
+        "“The names changed while the screen was open” — AI suggested new ones meanwhile. “Correct” only confirms what you saw: check the new names and press it again.",
+        "“Already running, please wait” after “Fill in” — another run has not finished. Wait a minute and open the screen again.",
+        "“AI is not set up on the server” — the server has no AI key, nothing was spent. Filling in works once the key is added."
       ]
     },
     "product-scan": {

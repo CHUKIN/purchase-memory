@@ -95,6 +95,24 @@ public sealed class ProductCategoryRepository : IProductCategoryRepository
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<PendingSuggestionCounts> CountProductsToSuggestAsync(CancellationToken cancellationToken)
+    {
+        var products = _dbContext.Products.AsNoTracking();
+        var unclassified = await products
+            .CountAsync(product => product.CategorySource == null && product.CategorizationAttemptedAt == null, cancellationToken);
+        var unnamed = await products
+            .CountAsync(product => (product.NamePlSource == null || product.NameRuSource == null)
+                && product.NamingAttemptedAt == null, cancellationToken);
+        var waiting = await products
+            .CountAsync(product => (product.CategorySource == null && product.CategorizationAttemptedAt == null)
+                || ((product.NamePlSource == null || product.NameRuSource == null) && product.NamingAttemptedAt == null),
+                cancellationToken);
+        var withRetry = await products
+            .CountAsync(product => product.CategorySource == null
+                || product.NamePlSource == null || product.NameRuSource == null, cancellationToken);
+        return new PendingSuggestionCounts(unclassified, unnamed, waiting, withRetry);
+    }
+
     public async Task<SuggestionWrite> ApplySuggestionAsync(
         Guid productId,
         Guid? categoryId,

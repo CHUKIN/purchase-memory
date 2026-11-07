@@ -302,6 +302,18 @@ export interface CategorizationRunSummary {
   namesSuggested?: number;
 }
 
+/** Products waiting for a backfill (`GET /api/products/categorization/pending`). */
+export interface CategorizationPending {
+  /** Not yet asked about a category. */
+  unclassified: number;
+  /** Not yet asked about human names. */
+  unnamed: number;
+  /** Distinct products a default run picks up. */
+  waiting: number;
+  /** Distinct products when «повторить» also asks again for answered ones. */
+  waitingWithRetry: number;
+}
+
 /** A household tag as it appears on a product. */
 export interface ProductTag {
   id: string;

@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import type { RecognitionStatus } from "../api/types";
 import { useAuth } from "../auth/AuthContext";
 import { Footnote, ItemLink, SectionHeader, Sheet } from "../design-system/components";
+import { BackfillSection } from "../features/categories/BackfillSection";
 import { helpPath } from "../features/help/topics";
 import { isAppLocale } from "../i18n/i18n";
 import { LANGUAGE_SWITCH_ENABLED, useAppLocale } from "./LocaleContext";
@@ -69,6 +70,8 @@ export function SettingsSheet({ isOpen, onClose, recognition, recognitionFailed 
             : <IonNote slot="end" className="pm-pick-value pm-wrap">{recognitionText}</IonNote>}
         </IonItem>
       </IonList>
+
+      <BackfillSection />
 
       {auth && (
         <>

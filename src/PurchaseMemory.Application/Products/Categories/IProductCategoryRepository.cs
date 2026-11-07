@@ -44,6 +44,13 @@ public interface IProductCategoryRepository
         CancellationToken cancellationToken);
 
     /// <summary>
+    /// How many products a backfill would pick up: those the model has not
+    /// answered for yet, and (separately) the total when attempted ones are
+    /// retried too. Read-only.
+    /// </summary>
+    Task<PendingSuggestionCounts> CountProductsToSuggestAsync(CancellationToken cancellationToken);
+
+    /// <summary>
     /// Writes a suggestion in single conditional statements, so a person's
     /// confirmation made while the model was thinking always wins: the category
     /// changes only where it is not confirmed, the brand likewise. Also stamps
@@ -104,3 +111,11 @@ public sealed record ProductNameSuggestion(
 }
 
 public sealed record NameSuggestionWrite(bool PolishWritten, bool RussianWritten);
+
+/// <summary>
+/// Products waiting for a backfill. <see cref="Unclassified"/> and
+/// <see cref="Unnamed"/> count products not yet attempted (a product can be in
+/// both); <see cref="Waiting"/> is the distinct total for a default run and
+/// <see cref="WaitingWithRetry"/> the distinct total when retrying attempted ones.
+/// </summary>
+public sealed record PendingSuggestionCounts(int Unclassified, int Unnamed, int Waiting, int WaitingWithRetry);

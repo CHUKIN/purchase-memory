@@ -571,6 +571,9 @@ public sealed class ProductManagementTests
         public Task<IReadOnlyList<Product>> ListProductsToSuggestAsync(int maximumProducts, bool includeAttempted, CancellationToken cancellationToken) =>
             inner.ListProductsToSuggestAsync(maximumProducts, includeAttempted, cancellationToken);
 
+        public Task<PendingSuggestionCounts> CountProductsToSuggestAsync(CancellationToken cancellationToken) =>
+            inner.CountProductsToSuggestAsync(cancellationToken);
+
         public Task<NameSuggestionWrite> ApplyNameSuggestionAsync(Guid productId, ProductNameSuggestion names, bool replaceSuggested, DateTimeOffset now, CancellationToken cancellationToken) =>
             inner.ApplyNameSuggestionAsync(productId, names, replaceSuggested, now, cancellationToken);
 
