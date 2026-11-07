@@ -82,6 +82,22 @@ public sealed class FindByPhotoRateLimitOptions
     public int ReplenishmentPeriodSeconds { get; set; } = 180;
 }
 
+/// <summary>
+/// Per-user token bucket for «Сфотографировать покупки»: one bigger vision
+/// call per shopping trip, so a smaller bucket: a burst of 10, then one more
+/// every 6 minutes (about 10 an hour).
+/// </summary>
+public sealed class HaulPhotoRateLimitOptions
+{
+    public const string SectionName = "RateLimiting:HaulPhoto";
+
+    public int TokenLimit { get; set; } = 10;
+
+    public int TokensPerPeriod { get; set; } = 1;
+
+    public int ReplenishmentPeriodSeconds { get; set; } = 360;
+}
+
 public static class ReceiptUploadRateLimiting
 {
     public const string PolicyName = "receipt-uploads";
@@ -111,6 +127,9 @@ public static class ReceiptUploadRateLimiting
 
     /// <summary>«Найти по фото»: a paid vision call per photo, a bucket of its own.</summary>
     public const string FindByPhotoPolicyName = "find-by-photo";
+
+    /// <summary>«Сфотографировать покупки»: a paid vision call per photo, a bucket of its own.</summary>
+    public const string HaulPhotoPolicyName = "haul-photo";
 
     /// <summary>
     /// Product photo uploads cost storage, not money: a burst large enough for
@@ -161,6 +180,13 @@ public static class ReceiptUploadRateLimiting
         if (findByPhoto.TokenLimit < 1 || findByPhoto.TokensPerPeriod < 1 || findByPhoto.ReplenishmentPeriodSeconds < 1)
         {
             throw new InvalidOperationException($"{FindByPhotoRateLimitOptions.SectionName} values must be positive.");
+        }
+
+        var haulPhoto = configuration.GetSection(HaulPhotoRateLimitOptions.SectionName).Get<HaulPhotoRateLimitOptions>()
+            ?? new HaulPhotoRateLimitOptions();
+        if (haulPhoto.TokenLimit < 1 || haulPhoto.TokensPerPeriod < 1 || haulPhoto.ReplenishmentPeriodSeconds < 1)
+        {
+            throw new InvalidOperationException($"{HaulPhotoRateLimitOptions.SectionName} values must be positive.");
         }
 
         // Not a middleware policy: whether a question costs a model call is only
@@ -254,6 +280,18 @@ public static class ReceiptUploadRateLimiting
                         AutoReplenishment = true
                     }));
 
+            options.AddPolicy(HaulPhotoPolicyName, context =>
+                RateLimitPartition.GetTokenBucketLimiter(
+                    AppUser.UserId(context.User) ?? "anonymous",
+                    _ => new TokenBucketRateLimiterOptions
+                    {
+                        TokenLimit = haulPhoto.TokenLimit,
+                        TokensPerPeriod = haulPhoto.TokensPerPeriod,
+                        ReplenishmentPeriod = TimeSpan.FromSeconds(haulPhoto.ReplenishmentPeriodSeconds),
+                        QueueLimit = 0,
+                        AutoReplenishment = true
+                    }));
+
             options.AddPolicy(ProductPhotosPolicyName, context =>
                 RateLimitPartition.GetTokenBucketLimiter(
                     AppUser.UserId(context.User) ?? "anonymous",
@@ -302,8 +340,13 @@ public static class ReceiptUploadRateLimiting
                 var productPhoto = context.Request.Path.StartsWithSegments("/api/products", StringComparison.Ordinal)
                     && context.Request.Path.Value?.EndsWith("/photos", StringComparison.Ordinal) == true;
                 var openFoodFacts = context.Request.Path.StartsWithSegments("/api/open-food-facts", StringComparison.Ordinal);
+                var haul = context.Request.Path.StartsWithSegments("/api/purchases", StringComparison.Ordinal)
+                    && context.Request.Path.Value?.Contains("/haul-photo", StringComparison.Ordinal) == true;
+                var haulSave = haul && context.Request.Path.Value?.EndsWith("/save", StringComparison.Ordinal) == true;
                 var (title, detail) = (backfill, analytics) switch
                 {
+                    _ when haulSave => ("Too many photos", "Too many product photos in a short time. Try again in a minute."),
+                    _ when haul => ("Too many haul photos", "Too many photos of purchases in a short time. Try again in a few minutes."),
                     _ when productPhoto => ("Too many photos", "Too many product photos in a short time. Try again in a minute."),
                     _ when openFoodFacts => ("Too many lookups", "Too many product database lookups in a short time. Try again in a minute."),
                     _ when findByPhotoRequest => ("Too many photo searches", "Too many searches by photo in a short time. Products can still be found by name."),

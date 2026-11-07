@@ -480,6 +480,61 @@ export interface PhotoSearchResult {
   candidateCount: number;
 }
 
+/** «Сфотографировать покупки»: whether the server offers it (switched on and configured). */
+export interface HaulPhotoStatus {
+  enabled: boolean;
+}
+
+/** A rectangle as fractions (0..1) of the upright photo that was sent. */
+export interface HaulPhotoBox {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+/** One item the model found on the table photo. */
+export interface HaulPhotoItem {
+  index: number;
+  box: HaulPhotoBox;
+  /** The proposed purchase line; null when no line fits. */
+  lineId: string | null;
+  confidence: PhotoMatchConfidence;
+}
+
+export interface HaulPhotoProposal {
+  items: HaulPhotoItem[];
+  /** How many product lines the model chose from. */
+  lineCount: number;
+}
+
+/** A confirmed item: the line and the item's box from the proposal. */
+export interface HaulPhotoPair extends HaulPhotoBox {
+  lineId: string;
+}
+
+export type HaulPhotoSaveStatus =
+  | "saved"
+  | "alreadySaved"
+  | "noProduct"
+  | "lineNotFound"
+  | "invalidBox"
+  | "photoLimit"
+  | "productGone"
+  | "failed";
+
+export interface HaulPhotoPairResult {
+  lineId: string;
+  status: HaulPhotoSaveStatus;
+  productId: string | null;
+  photoId: string | null;
+  isMain: boolean;
+}
+
+export interface HaulPhotoSaveResult {
+  results: HaulPhotoPairResult[];
+}
+
 export interface ProductMergeResult {
   sourceProductId: string;
   sourceName: string;

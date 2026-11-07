@@ -22,6 +22,7 @@ vi.mock("../api/client", async (importOriginal) => ({
   getReceipt: vi.fn(), reviewReceipt: vi.fn(), saveReceipt: vi.fn(), processReceipt: vi.fn(),
   getReceiptAuditTrail: vi.fn(async () => []),
   getPurchase: vi.fn(), updatePurchase: vi.fn(), postLineApprovals: vi.fn(),
+  getHaulPhotoStatus: vi.fn(async () => ({ enabled: false })),
   listPurchaseImpressions: vi.fn(async () => []), createImpression: vi.fn(), deleteImpression: vi.fn(),
   getProductCatalog: vi.fn(), getProduct: vi.fn(),
   fetchProtectedBlob: vi.fn(() => new Promise(() => undefined))

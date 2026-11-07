@@ -66,16 +66,16 @@ public sealed class FindByPhotoBenchmarkCoreTests
             new BenchmarkPhoto(new PhotoLabel("broken.heic", [Kefir.ToString()]), new HashSet<Guid> { Kefir }, () => null)
         };
 
-        var report = await new FindByPhotoBenchmarkRunner(matcher, 1m).RunAsync(photos, [], Cancel);
+        var report = await new FindByPhotoBenchmarkRunner(matcher, 1m, HaikuWorstCase).RunAsync(photos, [], Cancel);
 
         var summary = report.Summary;
         Assert.Equal((6, 3, 1, 2), (summary.Photos, summary.InListPhotos, summary.NonePhotos, summary.Failed));
         Assert.Equal(0.333m, summary.Top1Rate);
         Assert.Equal(0.667m, summary.Top3Rate);
         Assert.Equal(1m, summary.NoneCorrectRate);
-        // Four answered calls at 0.002 plus the failed one charged at the most expensive so far; the undecodable photo is free.
-        Assert.Equal(0.010m, summary.TotalCostUsd);
-        Assert.Equal(0.002m, summary.MeanCostUsd);
+        // Four answered calls at 0.002 plus the failed one charged at the worst case (0.004); the undecodable photo is free.
+        Assert.Equal(0.012m, summary.TotalCostUsd);
+        Assert.Equal(0.0024m, summary.MeanCostUsd);
         Assert.False(summary.StoppedByBudget);
         Assert.Equal(5, matcher.Calls);
         Assert.Contains("top-1 33.3%; top-3 66.7%", BenchmarkOutput.SummaryText(summary), StringComparison.Ordinal);
@@ -88,19 +88,39 @@ public sealed class FindByPhotoBenchmarkCoreTests
         var matcher = new ScriptedMatcher([Kefir], [Kefir], [Kefir], [Kefir], [Kefir]) { CostPerCall = 0.004m };
         var photos = Enumerable.Range(0, 5).Select(index => Photo($"{index}.jpg", Kefir)).ToList();
 
-        // 0.005 assumed for the first call, then 0.004 per call: 0.004 + 0.004 = 0.008, a third would reach 0.012 > 0.010.
-        var report = await new FindByPhotoBenchmarkRunner(matcher, 0.010m).RunAsync(photos, [], Cancel);
+        // Every call is assumed at the worst case 0.006: 0.004 + 0.004 = 0.008, then 0.008 + 0.006 > 0.010 stops.
+        var report = await new FindByPhotoBenchmarkRunner(matcher, 0.010m, 0.006m).RunAsync(photos, [], Cancel);
 
         Assert.Equal(2, matcher.Calls);
         Assert.True(report.Summary.StoppedByBudget);
         Assert.Equal(0.008m, report.Summary.TotalCostUsd);
 
-        // A budget below the first call's estimate spends nothing at all.
+        // A budget below the worst case of one call spends nothing at all.
         var none = new ScriptedMatcher([Kefir]);
-        Assert.True((await new FindByPhotoBenchmarkRunner(none, 0.001m).RunAsync(photos, [], Cancel)).Summary.StoppedByBudget);
+        Assert.True((await new FindByPhotoBenchmarkRunner(none, 0.003m, HaikuWorstCase).RunAsync(photos, [], Cancel)).Summary.StoppedByBudget);
         Assert.Equal(0, none.Calls);
-        await Assert.ThrowsAsync<InvalidOperationException>(() => new FindByPhotoBenchmarkRunner(none, 0m).RunAsync(photos, [], Cancel));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => new FindByPhotoBenchmarkRunner(none, 0m, HaikuWorstCase).RunAsync(photos, [], Cancel));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => new FindByPhotoBenchmarkRunner(none, 1m, 0m).RunAsync(photos, [], Cancel));
     }
+
+    [Fact]
+    public async Task AfterACheapAnswerFailedCallsAreStillChargedAtTheWorstCaseAndTheBudgetHolds()
+    {
+        // Haiku: 20 000 input tokens at $0.10/M + 4 000 output tokens at $0.50/M.
+        Assert.Equal(0.004m, HaikuWorstCase);
+        var matcher = new ScriptedMatcher([Kefir], null, null, null, null) { CostPerCall = 0.001m };
+        var photos = Enumerable.Range(0, 5).Select(index => Photo($"{index}.jpg", Kefir)).ToList();
+
+        var report = await new FindByPhotoBenchmarkRunner(matcher, 0.010m, HaikuWorstCase).RunAsync(photos, [], Cancel);
+
+        // 0.001, then two failures at 0.004 each = 0.009; a third failure could reach 0.013 > 0.010.
+        Assert.Equal(3, matcher.Calls);
+        Assert.Equal(0.009m, report.Summary.TotalCostUsd);
+        Assert.True(report.Summary.TotalCostUsd <= 0.010m);
+        Assert.True(report.Summary.StoppedByBudget);
+    }
+
+    private static decimal HaikuWorstCase => FindByPhotoBenchmarkRunner.WorstCaseCallUsd(0.10m, 0.50m, 4_000);
 
     [Fact]
     public async Task UsageWithoutAPriceIsChargedAtTheCeilingSoTheBudgetStillHolds()
@@ -112,7 +132,7 @@ public sealed class FindByPhotoBenchmarkCoreTests
         Assert.Equal(0.001m, FindByPhotoBenchmarkRunner.Charge(reading with { CostUsd = 0.001m }, 0.005m));
 
         var matcher = new ScriptedMatcher([Kefir], [Kefir], [Kefir]) { CostPerCall = null };
-        var report = await new FindByPhotoBenchmarkRunner(matcher, 0.5m)
+        var report = await new FindByPhotoBenchmarkRunner(matcher, 0.5m, HaikuWorstCase)
             .RunAsync(Enumerable.Range(0, 3).Select(index => Photo($"{index}.jpg", Kefir)).ToList(), [], Cancel);
 
         // The first call is charged $0.405; a second could reach $0.81 > $0.50.

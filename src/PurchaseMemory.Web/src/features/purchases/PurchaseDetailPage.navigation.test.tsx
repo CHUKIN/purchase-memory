@@ -15,6 +15,7 @@ vi.mock("../../api/client", async (importOriginal) => {
   return {
     ApiError: actual.ApiError,
     getPurchase: vi.fn(),
+    getHaulPhotoStatus: vi.fn(async () => ({ enabled: false })),
     updatePurchase: vi.fn(),
     getProductCatalog: vi.fn(),
     getProduct: vi.fn(),
