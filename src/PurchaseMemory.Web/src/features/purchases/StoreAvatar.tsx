@@ -1,4 +1,6 @@
 import { Receipt } from "lucide-react";
+import { useState } from "react";
+import { findStoreLogo } from "./storeLogos";
 
 /** Tinted background and a darker letter; every pair is at least 4.5:1 (checked in StoreAvatar.test.tsx). */
 export const storeAvatarPalette: ReadonlyArray<{ background: string; color: string }> = [
@@ -34,15 +36,23 @@ export function storeInitial(name: string | null | undefined): string | null {
 }
 
 /**
- * The round mark at the start of a purchase card: the store's first letter.
- * The letter is the fallback shape — a real store logo can later replace the
- * inside of this circle and keep the letter for stores without one.
- * Decorative: the store name is read from the card itself.
+ * The round mark at the start of a purchase card: the bundled logo of a known
+ * chain, otherwise the store's first letter. A logo that fails to load falls
+ * back to the letter. Decorative: the store name is read from the card itself.
  */
 export function StoreAvatar({ name }: { name: string | null | undefined }) {
   const initial = storeInitial(name);
+  const logo = findStoreLogo(name);
+  const [failedLogo, setFailedLogo] = useState<string | null>(null);
   if (initial === null) {
     return <span className="pm-store-avatar pm-store-avatar-unknown" aria-hidden="true"><Receipt size={20} /></span>;
+  }
+  if (logo && failedLogo !== logo.id) {
+    return (
+      <span className="pm-store-avatar pm-store-avatar-logo" aria-hidden="true">
+        <img src={logo.src} alt="" onError={() => setFailedLogo(logo.id)} />
+      </span>
+    );
   }
   const { background, color } = storeAvatarColors(name!);
   return <span className="pm-store-avatar" style={{ background, color }} aria-hidden="true">{initial}</span>;

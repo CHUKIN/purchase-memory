@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { fireEvent, render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { StoreAvatar, storeAvatarColors, storeAvatarPalette, storeInitial } from "./StoreAvatar";
 
@@ -18,6 +18,27 @@ describe("StoreAvatar", () => {
     const avatar = container.querySelector(".pm-store-avatar");
     expect(avatar?.textContent).toBe("B");
     expect(avatar?.getAttribute("aria-hidden")).toBe("true");
+  });
+
+  it("shows the bundled logo for a known chain, aria-hidden", () => {
+    const { container } = render(<StoreAvatar name="E.Leclerc URSYNÓW" />);
+    const avatar = container.querySelector(".pm-store-avatar");
+    expect(avatar?.getAttribute("aria-hidden")).toBe("true");
+    expect(avatar?.querySelector("img")?.getAttribute("alt")).toBe("");
+    expect(avatar?.textContent).toBe("");
+  });
+
+  it("falls back to the letter when the logo fails to load", () => {
+    const { container } = render(<StoreAvatar name="Rossmann" />);
+    fireEvent.error(container.querySelector("img")!);
+    expect(container.querySelector("img")).toBeNull();
+    expect(container.querySelector(".pm-store-avatar")?.textContent).toBe("R");
+  });
+
+  it("keeps the letter for a store without a logo", () => {
+    const { container } = render(<StoreAvatar name="Dino Polska" />);
+    expect(container.querySelector("img")).toBeNull();
+    expect(container.querySelector(".pm-store-avatar")?.textContent).toBe("D");
   });
 
   it("handles Polish diacritics", () => {
