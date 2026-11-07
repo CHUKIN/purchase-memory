@@ -13,11 +13,11 @@ vi.mock("../../api/client", async (importOriginal) => {
 
 vi.mock("./openFoodFacts", () => ({ lookupOpenFoodFacts: vi.fn() }));
 
-function renderResult(code: string, onLinked = vi.fn()) {
+function renderResult(code: string, onLinked = vi.fn(), onCreated?: (productId: string) => void) {
   render(
     <AppProviders locale="ru">
       <MemoryRouter>
-        <NotFoundResult code={code} locale="ru-RU" onLinked={onLinked} onScanAgain={vi.fn()} />
+        <NotFoundResult code={code} locale="ru-RU" onLinked={onLinked} onCreated={onCreated} onScanAgain={vi.fn()} />
       </MemoryRouter>
     </AppProviders>
   );
@@ -114,6 +114,20 @@ describe("NotFoundResult «Новый товар»", () => {
     fireEvent.click(screen.getByRole("button", { name: "Создать товар" }));
 
     expect(await screen.findByRole("alert")).toHaveTextContent("Этот штрихкод уже привязан к другому товару.");
+    expect(onLinked).not.toHaveBeenCalled();
+  });
+
+  it("hands a created product to onCreated (the scan screen opens its card) and not to onLinked", async () => {
+    vi.mocked(lookupOpenFoodFacts).mockResolvedValue({ status: "notFound" });
+    vi.mocked(createProduct).mockResolvedValue(created("new-3", "Ser"));
+    const onCreated = vi.fn();
+    const onLinked = renderResult("5901234123457", vi.fn(), onCreated);
+
+    fireEvent.click(await screen.findByRole("button", { name: /^Новый товар/ }));
+    fireEvent.change(screen.getByLabelText("Название товара"), { target: { value: "Ser" } });
+    fireEvent.click(screen.getByRole("button", { name: "Создать товар" }));
+
+    await waitFor(() => expect(onCreated).toHaveBeenCalledWith("new-3"));
     expect(onLinked).not.toHaveBeenCalled();
   });
 });

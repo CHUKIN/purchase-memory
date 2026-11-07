@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { CheckCircle2, Layers, SearchX } from "lucide-react";
 import { useMemo, useRef, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { classifyProduct, confirmProductNames, getReviewQueue, listCategories, listTags } from "../../api/client";
 import type { ProductCategory, ProductSummary, ReviewQueue, ReviewQueueItem, ReviewQueueKind, TagSummary } from "../../api/types";
 import {
@@ -24,12 +24,12 @@ import { CategoryFilterRow, TagFilterRow } from "../filters/FilterRows";
 import { knownCategoryFilter, knownTagFilter } from "../filters/categoryFilter";
 import { useUrlFilters } from "../filters/useUrlFilters";
 import { tagsQueryKey } from "../tags/tagQueries";
-import { useForgetBarcode, useLinkBarcode, useRememberedBarcodes, type RememberedBarcode } from "../product-scan/useProductMedia";
+import { useCreateProductForBarcode, useForgetBarcode, useLinkBarcode, useRememberedBarcodes, type RememberedBarcode } from "../product-scan/useProductMedia";
 import { reviewQueueQueryKey } from "./reviewQueueQueries";
 import { useBackTarget, useReturnState } from "../../app/backNavigation";
 import { useToast } from "../../app/toasts";
 import { HelpLink } from "../help/HelpLink";
-import { BarcodeItems } from "./BarcodeSection";
+import { BarcodeItems, type BarcodeItemsProps } from "./BarcodeSection";
 import { ItemCard, shownNames } from "./ReviewItemCards";
 import { ReviewCards } from "./ReviewCards";
 import { cardSections, isCardSection, reviewSectionOrder, sectionKinds, type ReviewSectionId } from "./reviewSections";
@@ -72,6 +72,9 @@ export function ReviewQueuePage() {
   const remembered = useRememberedBarcodes();
   const linkBarcode = useLinkBarcode();
   const forgetBarcode = useForgetBarcode();
+  const createForBarcode = useCreateProductForBarcode();
+  const navigate = useNavigate();
+  const returnState = useReturnState();
 
   if (isCardSection(cards)) return <ReviewCards key={cards} section={cards} category={category} tag={tag} />;
 
@@ -95,6 +98,8 @@ export function ReviewQueuePage() {
       onLinkBarcode={async (code, product) => (await linkBarcode(product.id, code, "scan")).ok}
       loadSuggested={async (bulk) => suggestedOf(await getReviewQueue(bulkLimitPerKind, { category: category || undefined, tag: tag || undefined }), bulk)}
       onForgetBarcode={forgetBarcode}
+      onCreateForBarcode={createForBarcode}
+      onOpenProduct={(productId) => navigate(`/products/${productId}`, { state: returnState })}
     />
   );
 }
@@ -122,6 +127,9 @@ export interface ReviewQueueViewProps {
   barcodes?: RememberedBarcode[];
   onLinkBarcode?: (code: string, product: ProductSummary) => Promise<boolean>;
   onForgetBarcode?: (code: string) => Promise<void>;
+  /** «Создать товар» for a remembered code; without it the button is not shown. */
+  onCreateForBarcode?: BarcodeItemsProps["onCreate"];
+  onOpenProduct?: (productId: string) => void;
   /**
    * Every suggestion of the kind «Принять все предложенные» confirms (up to
    * `bulkLimitPerKind`), read fresh with the screen's filters; by default the loaded ones.
@@ -148,6 +156,8 @@ export function ReviewQueueView({
   barcodes = [],
   onLinkBarcode = async () => false,
   onForgetBarcode = async () => undefined,
+  onCreateForBarcode,
+  onOpenProduct,
   loadSuggested,
   initialFiltersOpen = false
 }: ReviewQueueViewProps) {
@@ -212,7 +222,7 @@ export function ReviewQueueView({
             if (section === "barcodes") {
               return shownBarcodes.length === 0 ? null : (
                 <HubSection key={section} section={section} count={shownBarcodes.length}>
-                  <BarcodeItems codes={shownBarcodes} onLink={onLinkBarcode} onForget={onForgetBarcode} />
+                  <BarcodeItems codes={shownBarcodes} onLink={onLinkBarcode} onForget={onForgetBarcode} onCreate={onCreateForBarcode} onOpenProduct={onOpenProduct} />
                 </HubSection>
               );
             }

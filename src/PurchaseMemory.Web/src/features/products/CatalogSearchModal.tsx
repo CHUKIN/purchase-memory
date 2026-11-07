@@ -9,6 +9,7 @@ import { Footnote } from "../../design-system/components";
 import { useHistoryLayer } from "../../design-system/history/historyLayers";
 import { useDebounced } from "../filters/useDebounced";
 import { displayName, russianName } from "./productNameText";
+import { ProductThumb } from "../product-scan/ProductPhoto";
 import { ReviewFlagChip } from "./ReviewFlagChip";
 
 export interface CatalogSearchModalProps {
@@ -85,6 +86,8 @@ export function CatalogSearchModal({
                 const selected = product.id === selectedProductId;
                 return (
                   <IonItem key={product.id} button detail={false} onClick={() => onChoose(product)} aria-label={chooseLabel(displayName(product))} aria-current={selected || undefined}>
+                    {/* The catalog already says which photo is the main one: no request per row. */}
+                    <ProductThumb photoId={product.mainPhotoId} placeholder />
                     <IonLabel className="pm-wrap">
                       <h3>{displayName(product)}</h3>
                       <p>{[russianName(product), product.brand, t("products.purchaseCount", { count: product.purchaseCount })].filter(Boolean).join(" · ")}</p>
