@@ -230,7 +230,7 @@ export const helpRu: HelpText = {
         "Нажмите на покупку в списке, чтобы открыть её. «Показать ещё» догружает следующие покупки."
       ],
       see: [
-        "Карточка покупки: кружок с первой буквой магазина, рядом магазин со значком ✓ (проверено) — или, ниже, ⚠ и что именно не так; дата, число позиций и сумма справа. Над списком — сколько покупок найдено.",
+        "Карточка покупки: кружок с логотипом магазина (у известных сетей) или с его первой буквой, рядом магазин со значком ✓ (проверено) — или, ниже, ⚠ и что именно не так; дата, число позиций и сумма справа. Над списком — сколько покупок найдено.",
         "Фильтры складываются друг с другом; «Сбросить» в окне фильтров убирает всё, кроме поиска, а «Сбросить фильтры» под пустым результатом — всё сразу."
       ],
       trouble: [
@@ -775,7 +775,7 @@ export const helpEn: HelpText = {
         "Tap a purchase in the list to open it. “Show more” loads the next purchases."
       ],
       see: [
-        "A purchase card: a circle with the store's first letter, then the store with a ✓ (reviewed) — or, below it, ⚠ and what exactly is wrong; date, number of lines and the total on the right. Above the list — how many purchases were found.",
+        "A purchase card: a circle with the store's logo (for well-known chains) or its first letter, then the store with a ✓ (reviewed) — or, below it, ⚠ and what exactly is wrong; date, number of lines and the total on the right. Above the list — how many purchases were found.",
         "Filters combine; “Reset” in the filter sheet clears everything but the search, and “Reset filters” under an empty result clears everything at once."
       ],
       trouble: [
