@@ -233,6 +233,8 @@ internal static class AnthropicPricing
             ["claude-haiku-5-5"] = (0.10m, 0.50m)
         };
 
+    public static bool IsKnown(string model) => Prices.ContainsKey(model);
+
     public static decimal? EstimateCostUsd(string model, long? inputTokens, long? outputTokens) =>
         Prices.TryGetValue(model, out var price) && inputTokens is not null && outputTokens is not null
             ? decimal.Round((inputTokens.Value * price.Input + outputTokens.Value * price.Output) / 1_000_000m, 6)

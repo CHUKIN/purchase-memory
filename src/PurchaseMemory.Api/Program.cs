@@ -16,6 +16,7 @@ using PurchaseMemory.Application.Products;
 using PurchaseMemory.Application.Products.Categories;
 using PurchaseMemory.Application.Products.Media;
 using PurchaseMemory.Application.Products.PhotoNames;
+using PurchaseMemory.Application.Products.PhotoSearch;
 using PurchaseMemory.Application.Products.Tags;
 using PurchaseMemory.Application.Purchases;
 using PurchaseMemory.Application.Receipts;
@@ -28,6 +29,7 @@ using PurchaseMemory.Infrastructure.Images;
 using PurchaseMemory.Infrastructure.OpenFoodFacts;
 using PurchaseMemory.Infrastructure.Persistence;
 using PurchaseMemory.Infrastructure.PhotoNames;
+using PurchaseMemory.Infrastructure.PhotoSearch;
 using PurchaseMemory.Infrastructure.Processing;
 using PurchaseMemory.Infrastructure.Recognition;
 using PurchaseMemory.Infrastructure.Tagging;
@@ -85,6 +87,19 @@ builder.Services.AddSingleton<AnthropicProductPhotoNamer>();
 builder.Services.AddSingleton<IProductPhotoNamer>(serviceProvider =>
     serviceProvider.GetRequiredService<AnthropicProductPhotoNamer>());
 builder.Services.AddScoped<IProductPhotoNamingService, ProductPhotoNamingService>();
+// «Найти по фото»: the photo and a text list of the household's products go to
+// Claude once; off unless ProductPhotoSearch__Enabled is true.
+builder.Services
+    .AddOptions<ProductPhotoSearchOptions>()
+    .Bind(builder.Configuration.GetSection(ProductPhotoSearchOptions.SectionName))
+    .ValidateOnStart();
+builder.Services.AddSingleton<
+    Microsoft.Extensions.Options.IValidateOptions<ProductPhotoSearchOptions>,
+    ProductPhotoSearchOptionsValidator>();
+builder.Services.AddSingleton<AnthropicProductPhotoMatcher>();
+builder.Services.AddSingleton<IProductPhotoMatcher>(serviceProvider =>
+    serviceProvider.GetRequiredService<AnthropicProductPhotoMatcher>());
+builder.Services.AddScoped<IProductPhotoSearchService, ProductPhotoSearchService>();
 builder.Services
     .AddOptions<ProductCategorizationOptions>()
     .Bind(builder.Configuration.GetSection(ProductCategorizationOptions.SectionName));
@@ -318,6 +333,7 @@ app.MapMcp("/mcp");
 app.MapReceiptEndpoints();
 app.MapPurchaseEndpoints();
 app.MapProductEndpoints();
+app.MapProductPhotoSearchEndpoints();
 app.MapCategoryEndpoints();
 app.MapTagEndpoints();
 app.MapAnalyticsEndpoints();

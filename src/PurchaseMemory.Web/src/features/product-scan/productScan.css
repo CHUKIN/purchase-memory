@@ -97,3 +97,4 @@
 .pm-scan-buttons ion-button svg { margin-right: 6px; }
 .pm-scan-spin { display: grid; justify-items: center; gap: 12px; padding: 36px 24px; color: var(--pm-muted); text-align: center; }
 .pm-scan-off-image { width: 44px; height: 44px; margin-right: 12px; border-radius: 8px; object-fit: contain; background: #fff; }
+.pm-photo-back { margin: 0 8px 4px; }
