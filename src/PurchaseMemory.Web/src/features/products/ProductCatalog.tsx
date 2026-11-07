@@ -1,5 +1,5 @@
 import { IonButton, IonItem, IonLabel, IonList, IonSearchbar, IonToggle } from "@ionic/react";
-import { CircleAlert, PackageSearch, SearchX, Sparkles } from "lucide-react";
+import { CircleAlert, PackageSearch, ScanBarcode, SearchX, Sparkles } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { BrandSummary, ProductCategory, ProductSummary, TagSummary } from "../../api/types";
@@ -10,6 +10,7 @@ import { ProductThumb } from "../product-scan/ProductPhoto";
 import { categoryLabel } from "../categories/categoryText";
 import { BrandFilterRow, CategoryFilterRow, TagFilterRow } from "../filters/FilterRows";
 import { TagChips } from "../tags/TagChips";
+import { useNavigate } from "react-router";
 import { useOriginBack, useReturnState } from "../../app/backNavigation";
 import { displayName, isNameSuggested, russianName } from "./productNameText";
 
@@ -80,6 +81,7 @@ export function ProductCatalog({
 }: ProductCatalogProps) {
   const { t } = useTranslation();
   const returnState = useReturnState();
+  const navigate = useNavigate();
   // A tab root has no back button, except when a detail screen sent the person here («Товары в этой категории»).
   const back = useOriginBack();
   const [filtersOpen, setFiltersOpen] = useState(initialFiltersOpen);
@@ -101,7 +103,7 @@ export function ProductCatalog({
     <Page
       title={t("products.pageTitle")}
       back={back}
-      end={<><HelpLink topic="products" />{filterable && <FilterButton count={sheetCount} onClick={() => setFiltersOpen(true)} />}</>}
+      end={<><HelpLink topic="products" /><IonButton className="pm-icon-button" aria-label={t("productScan.homeScanButton")} onClick={() => navigate("/scan", { state: returnState })}><ScanBarcode size={22} aria-hidden="true" /></IonButton>{filterable && <FilterButton count={sheetCount} onClick={() => setFiltersOpen(true)} />}</>}
       search={(
         <IonSearchbar
           value={query}

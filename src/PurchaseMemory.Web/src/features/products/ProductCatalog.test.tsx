@@ -91,3 +91,11 @@ describe("ProductCatalog rows", () => {
     expect(categoryGroupKey(categories, "gone")).toBeNull();
   });
 });
+
+describe("ProductCatalog scan entry", () => {
+  it("has a one-tap «Сканировать штрихкод» button in the header", () => {
+    renderCatalog();
+
+    expect(screen.getByRole("button", { name: "Сканировать штрихкод" })).toBeInTheDocument();
+  });
+});
