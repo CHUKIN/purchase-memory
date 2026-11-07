@@ -17,6 +17,8 @@ vi.mock("../api/client", () => ({
   listBrands: vi.fn().mockResolvedValue([]),
   listTags: vi.fn().mockResolvedValue([]),
   listUnratedPurchaseItems: vi.fn().mockResolvedValue([]),
+  getCategorizationPending: vi.fn().mockResolvedValue({ unclassified: 0, unnamed: 0, waiting: 0, waitingWithRetry: 0 }),
+  runCategorizationBackfill: vi.fn(),
   createImpression: vi.fn(),
   deleteImpression: vi.fn(),
   getAnalyticsContext: vi.fn().mockResolvedValue({ enabled: true, today: "2026-09-26", merchants: [], brands: [] }),
@@ -65,6 +67,7 @@ describe("App", () => {
     fireEvent.click(await screen.findByRole("button", { name: "Ещё: подсказки, настройки, выход" }));
     const settings = screen.getByRole("dialog");
     expect(within(settings).getByRole("link", { name: /Подсказки/ })).toHaveAttribute("href", "/help");
+    expect(within(settings).getByRole("button", { name: "Дозаполнить названия и категории" })).toBeInTheDocument();
     expect(within(settings).queryByRole("tab", { name: "English" })).not.toBeInTheDocument();
     expect(within(settings).queryByText("Язык")).not.toBeInTheDocument();
   });

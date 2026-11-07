@@ -18,6 +18,7 @@ import type {
   AnalyticsHistoryDetail,
   AnalyticsHistoryPage,
   AnalyticsPlan,
+  CategorizationPending,
   CategorizationRunSummary,
   CreateProductRequest,
   Impression,
@@ -288,6 +289,19 @@ export const getProduct = (productId: string) =>
   request<ProductDetail>(`/api/products/${encodeURIComponent(productId)}`);
 
 export const listCategories = () => request<ProductCategory[]>("/api/categories");
+
+/** Free: how many products a backfill would pick up. */
+export const getCategorizationPending = () => request<CategorizationPending>("/api/products/categorization/pending");
+
+/**
+ * The paid AI backfill of categories, brands and names. 409 when a run is
+ * already going, 429 when asked too often. Never repeated automatically.
+ */
+export const runCategorizationBackfill = (limit: number, retryAttempted: boolean) =>
+  request<CategorizationRunSummary>(
+    `/api/products/categorization/backfill?limit=${limit}&retryAttempted=${retryAttempted}`,
+    { method: "POST" }
+  );
 
 export const listBrands = () => request<BrandSummary[]>("/api/brands");
 

@@ -24,6 +24,9 @@ public interface IProductCategorizationService
         bool retryAttempted,
         CancellationToken cancellationToken);
 
+    /// <summary>Read-only count of products a backfill would pick up (no model call).</summary>
+    Task<PendingSuggestionCounts> GetPendingAsync(CancellationToken cancellationToken);
+
     /// <summary>
     /// «Предложить заново» for one product's human names: asks the model again
     /// and replaces suggested (never confirmed) names with what it says now. A
@@ -129,6 +132,9 @@ public sealed partial class ProductCategorizationService : IProductCategorizatio
         var products = await _repository.ListProductsToSuggestAsync(maximumProducts, retryAttempted, cancellationToken);
         return await SuggestAsync(products, SuggestionScope.FillMissing(retryAttempted), cancellationToken);
     }
+
+    public Task<PendingSuggestionCounts> GetPendingAsync(CancellationToken cancellationToken) =>
+        _repository.CountProductsToSuggestAsync(cancellationToken);
 
     public async Task<ProductNamesView> SuggestNamesAsync(Guid productId, CancellationToken cancellationToken)
     {

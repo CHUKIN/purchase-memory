@@ -21,6 +21,7 @@ public sealed class CategoryApiTests
         { "PUT", $"/api/products/{Guid.NewGuid()}/classification" },
         { "GET", $"/api/products/{Guid.NewGuid()}/audit" },
         { "POST", "/api/products/categorization/backfill" },
+        { "GET", "/api/products/categorization/pending" },
         { "GET", $"/api/products?categoryId={Milk}" }
     };
 
@@ -76,6 +77,12 @@ public sealed class CategoryApiTests
         Assert.False(summary.GetProperty("configured").GetBoolean());
         Assert.Equal(HttpStatusCode.BadRequest,
             (await client.PostAsync("/api/products/categorization/backfill?limit=501", null, Cancel)).StatusCode);
+
+        var pending = await client.GetFromJsonAsync<JsonElement>("/api/products/categorization/pending", Cancel);
+        Assert.Equal(0, pending.GetProperty("unclassified").GetInt32());
+        Assert.Equal(0, pending.GetProperty("unnamed").GetInt32());
+        Assert.Equal(0, pending.GetProperty("waiting").GetInt32());
+        Assert.Equal(0, pending.GetProperty("waitingWithRetry").GetInt32());
 
         var badFilter = await client.GetAsync($"/api/products?categoryId={Guid.NewGuid()}", Cancel);
         Assert.Equal(HttpStatusCode.BadRequest, badFilter.StatusCode);

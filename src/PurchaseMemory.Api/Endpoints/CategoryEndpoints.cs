@@ -20,6 +20,7 @@ public static class CategoryEndpoints
         endpoints.MapDelete("/api/categories/{categoryId:guid}", DeleteAsync).WithName("DeleteCategory");
         endpoints.MapPut("/api/products/{productId:guid}/classification", ClassifyAsync).WithName("ClassifyProduct");
         endpoints.MapGet("/api/products/{productId:guid}/audit", AuditAsync).WithName("GetProductAuditTrail");
+        endpoints.MapGet("/api/products/categorization/pending", PendingAsync).WithName("GetPendingCategorization");
         endpoints.MapPost("/api/products/categorization/backfill", BackfillAsync)
             .WithName("BackfillProductCategories")
             .RequireRateLimiting(ReceiptUploadRateLimiting.BackfillPolicyName);
@@ -140,6 +141,16 @@ public static class CategoryEndpoints
                 summary.NamesSuggested));
         });
 
+    /// <summary>How many products a backfill would pick up. Read-only, no model call.</summary>
+    private static async Task<IResult> PendingAsync(
+        IProductCategorizationService service,
+        CancellationToken cancellationToken)
+    {
+        var counts = await service.GetPendingAsync(cancellationToken);
+        return Results.Ok(new CategorizationPendingResponse(
+            counts.Unclassified, counts.Unnamed, counts.Waiting, counts.WaitingWithRetry));
+    }
+
     private static async Task<IResult> HandleAsync(Func<Task<IResult>> operation)
     {
         try
@@ -216,6 +227,8 @@ public sealed record CategorizationRunResponse(
     int OutputTokens,
     // Products that got a new suggested human name (also counted in Suggested).
     int NamesSuggested = 0);
+
+public sealed record CategorizationPendingResponse(int Unclassified, int Unnamed, int Waiting, int WaitingWithRetry);
 
 /// <summary>Process-wide single-flight guard for the paid backfill.</summary>
 public sealed class CategorizationBackfillGate

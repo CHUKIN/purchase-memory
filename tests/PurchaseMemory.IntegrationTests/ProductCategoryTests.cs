@@ -235,6 +235,33 @@ public sealed class ProductCategoryTests
     }
 
     [Fact]
+    public async Task PendingCountsFollowWhatTheModelAlreadyAnsweredFor()
+    {
+        await using var application = await TestApplication.CreateAsync();
+        var first = await SaveProductAsync(application, "Jabłka");
+        await SaveProductAsync(application, "Banany");
+
+        await using (var scope = application.Services.CreateAsyncScope())
+        {
+            var before = await CreateService(scope, new FakeCategorizer((_, _) => [])).GetPendingAsync(Cancel);
+            Assert.Equal(new PendingSuggestionCounts(2, 2, 2, 2), before);
+        }
+
+        var silent = new FakeCategorizer((products, _) =>
+            products.Select(product => new ProductCategorySuggestion(
+                product.ProductId, product.ProductId == first ? ProductCategorySeed.IdFor(15) : null, null)).ToList());
+        await RunBackfillAsync(application, silent);
+
+        await using var after = application.Services.CreateAsyncScope();
+        var counts = await CreateService(after, silent).GetPendingAsync(Cancel);
+        // Both were asked once; only retrying would ask again, and only for what is still unclassified or unnamed.
+        Assert.Equal(0, counts.Unclassified);
+        Assert.Equal(0, counts.Unnamed);
+        Assert.Equal(0, counts.Waiting);
+        Assert.Equal(2, counts.WaitingWithRetry);
+    }
+
+    [Fact]
     public async Task BatchesFollowTheCategorizerLimit()
     {
         await using var application = await TestApplication.CreateAsync();
