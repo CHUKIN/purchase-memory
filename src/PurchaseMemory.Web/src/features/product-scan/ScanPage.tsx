@@ -1,5 +1,5 @@
 import { IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar } from "@ionic/react";
-import { Keyboard, RotateCw } from "lucide-react";
+import { Bookmark, Keyboard, RotateCw } from "lucide-react";
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
@@ -9,7 +9,7 @@ import { HelpLink } from "../help/HelpLink";
 import { BarcodeCamera } from "./BarcodeCamera";
 import { ManualBarcodeForm } from "./ManualBarcodeForm";
 import { FoundResult, NotFoundResult, Searching } from "./ScanResults";
-import { useBarcodeOwner } from "./useProductMedia";
+import { useBarcodeOwner, useRememberedBarcodes } from "./useProductMedia";
 import "./productScan.css";
 
 /**
@@ -30,6 +30,7 @@ export function ScanPage() {
   /** Set after linking an unknown code, so the result turns into «found» without a rescan. */
   const [linkedProductId, setLinkedProductId] = useState<string | null>(null);
   const owner = useBarcodeOwner(code);
+  const rememberedCount = useRememberedBarcodes().data?.length ?? 0;
   const productId = linkedProductId ?? owner.data ?? null;
 
   const showCode = useCallback((next: string) => {
@@ -45,6 +46,8 @@ export function ScanPage() {
     setCode(null);
     navigate(`/products/${id}`, { state: returnState });
   };
+  // The remembered codes are a section of «Ревью»: link, create or forget them there.
+  const openRemembered = () => navigate("/needs-attention?open=barcodes", { state: returnState });
   const fromManual = (next: string) => {
     setManualOpen(false);
     showCode(next);
@@ -75,7 +78,7 @@ export function ScanPage() {
       )
     : productId
       ? <FoundResult productId={productId} code={code} locale={locale} onOpenProduct={() => openProduct(productId)} onScanAgain={scanAgain} />
-      : <NotFoundResult code={code} locale={locale} onLinked={setLinkedProductId} onScanAgain={scanAgain} />;
+      : <NotFoundResult code={code} locale={locale} onLinked={setLinkedProductId} onCreated={openProduct} onScanAgain={scanAgain} />;
 
   return (
     <div className="ion-page">
@@ -100,6 +103,11 @@ export function ScanPage() {
             <IonButton fill="clear" color="light" onClick={() => setManualOpen(true)}>
               <Keyboard size={20} aria-hidden="true" />&nbsp;{t("productScan.manualEntry")}
             </IonButton>
+            {rememberedCount > 0 && (
+              <IonButton fill="clear" color="light" onClick={openRemembered}>
+                <Bookmark size={20} aria-hidden="true" />&nbsp;{t("productScan.rememberedList", { count: rememberedCount })}
+              </IonButton>
+            )}
           </div>
         </div>
       </IonContent>

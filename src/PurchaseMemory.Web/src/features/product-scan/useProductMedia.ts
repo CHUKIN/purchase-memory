@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import {
   addProductBarcode,
   ApiError,
+  createProduct,
   deleteProductBarcode,
   deleteProductPhoto,
   fetchProtectedBlob,
@@ -273,5 +274,46 @@ export function useLinkBarcode() {
     const result = await addBarcodeResult(productId, code, source);
     await refresh();
     return result;
+  };
+}
+
+export type CreateForBarcodeResult =
+  | { ok: true; productId: string }
+  /** The server refused the name (400); `message` is its wording. */
+  | { ok: false; reason: "invalid" | "failed"; message: string | null }
+  /** The code went to another product meanwhile. */
+  | { ok: false; reason: "taken" }
+  /** The product exists but the code was not saved. */
+  | { ok: false; reason: "notLinked" };
+
+/**
+ * «Новый товар» for a scanned or remembered code: creates the product on the
+ * server (a namesake that already exists is used instead) and ties the code
+ * to it. The source is `openFoodFacts` when the name was left as the database
+ * gave it, `scan` otherwise. Linking also drops the remembered code.
+ */
+export function useCreateProductForBarcode() {
+  const queryClient = useQueryClient();
+  const link = useLinkBarcode();
+  return async (code: string, name: string, brand: string, offName: string | null): Promise<CreateForBarcodeResult> => {
+    let productId: string;
+    try {
+      productId = (await createProduct({ name, brand: brand.trim() || null, origin: "barcode" })).id;
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 409 && error.existingProductId) {
+        productId = error.existingProductId;
+      } else {
+        return error instanceof ApiError && error.status === 400
+          ? { ok: false, reason: "invalid", message: error.message }
+          : { ok: false, reason: "failed", message: null };
+      }
+    }
+    await queryClient.invalidateQueries({ queryKey: ["products"] });
+    try {
+      const result = await link(productId, code, offName !== null && name === offName ? "openFoodFacts" : "scan");
+      return result.ok ? { ok: true, productId } : { ok: false, reason: "taken" };
+    } catch {
+      return { ok: false, reason: "notLinked" };
+    }
   };
 }
