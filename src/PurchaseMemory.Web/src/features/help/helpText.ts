@@ -367,8 +367,8 @@ export const helpRu: HelpText = {
         "Фото товара: откройте карточку товара. «Снять» над лентой фото открывает камеру, «+ Добавить» в конце ленты — галерею. Нажмите на фото в ленте, чтобы появились «Сделать главным» и «Удалить фото». Главное фото видно в списке «Товары» и в результате скана. После первого фото товара AI читает с упаковки его название; для других фото — кнопка «Название по фото» (см. «Названия товаров»).",
         "Штрихкод: в карточке товара под «Штрихкоды» нажмите «Сканировать» и наведите камеру. Не читается — кнопка с клавиатурой вверху, «Ввести код вручную», цифры под штрихкодом и «Добавить». Чтобы удалить штрихкод, нажмите на него.",
         "Из покупки: нажмите на строку — в проверке строк под строкой, в разделе «Товар», есть «Сфотографировать товар», «Выбрать фото из галереи» и «Сканировать штрихкод». Фото и код попадут в карточку товара, к которому привязана строка.",
-        "В магазине: на «Главной» нажмите «Сканировать штрихкод» под кнопкой чека и наведите камеру на штрихкод. Результат выезжает шторкой над камерой; «Закрыть» или «Сканировать ещё» — и можно сканировать следующий.",
-        "Знакомый товар: видны последняя покупка (дата, магазин, цена), где было дешевле всего, ваша оценка и отметка «Больше не покупать». Дальше — «Открыть карточку товара» или «Сканировать ещё».",
+        "В магазине: на «Главной» нажмите «Сканировать штрихкод» под кнопкой чека (или значок штрихкода вверху вкладки «Товары») и наведите камеру на штрихкод. Результат выезжает шторкой над камерой; «Закрыть» или «Сканировать ещё» — и можно сканировать следующий.",
+        "Знакомый товар: видны последняя покупка (дата, магазин, цена), как часто покупали, где было дешевле всего, ваша оценка и отметка «Больше не покупать». Если вы оценили товар «Не нравится», вверху красная строка «Вы отметили: не нравится». Дальше — «Открыть карточку товара» или «Сканировать ещё».",
         "Новый штрихкод: найдите свой товар по названию и нажмите «Привязать». Товара ещё нет — «Новый товар»: проверьте название (если код есть в базе Open Food Facts, название и бренд уже подставлены) и нажмите «Создать товар». Товар появится в «Товарах» без покупок, штрихкод привяжется к нему, и откроется его карточка. Или «Запомнить на потом» — ничего не создаётся, код просто запоминается; кнопка «Запомненные коды» внизу камеры ведёт к списку таких кодов.",
         "«Больше не покупать»: включите переключатель в карточке товара. Отметка красная — и в карточке, и при скане."
       ],
@@ -386,7 +386,7 @@ export const helpRu: HelpText = {
         "Не читается штрихкод: держите телефон ровнее, на 15–20 см, при хорошем свете, чтобы штрихкод был внутри рамки. Фонарик — кнопка в углу камеры, если телефон его даёт (в Safari на iPhone обычно нет).",
         "«В коде ошибка: проверьте цифры» — в введённом коде опечатка: последняя цифра штрихкода проверочная.",
         "«Уже привязан к другому товару» — один код не может быть у двух товаров. Откройте тот товар и удалите штрихкод там, если он привязан по ошибке.",
-        "Первый скан бывает долгим: загружается распознаватель штрихкодов, а сервер может просыпаться до минуты.",
+        "Первый скан бывает долгим: загружается распознаватель штрихкодов, а сервер может просыпаться до минуты — если ответа нет несколько секунд, под «Ищу…» появится надпись «Сервер просыпается».",
         "«Нет ответа» после скана — сервер не ответил (нет интернета или он ещё просыпается): нажмите «Попробовать ещё раз». Без интернета скан не работает: знакомые товары и их фото хранятся на сервере.",
         "«Не удалось сохранить» — фото, штрихкод или отметка не дошли до сервера. Проверьте интернет и повторите."
       ]
@@ -885,8 +885,8 @@ export const helpEn: HelpText = {
         "Product photo: open the product card. “Shoot” above the photo strip opens the camera, “+ Add” at its end the library. Tap a photo in the strip to get “Make main” and “Delete photo”. The main photo shows in the Products list and in the scan result. After a product's first photo, AI reads its name from the package; for other photos there is “Name from photo” (see “Product names”).",
         "Barcode: on the product card, under “Barcodes”, press “Scan” and point the camera. If it won't read, press the keyboard button at the top, “Type the code”, enter the digits under the barcode and press “Add”. To delete a barcode, tap it.",
         "From a purchase: tap a line — in the line check, under the line in “Product”, there are “Take a product photo”, “Pick a photo from the library” and “Scan barcode”. They go to the card of the product the line is linked to.",
-        "In the shop: on Home press “Scan barcode” under the receipt button and point the camera at the barcode. The result slides up as a sheet over the camera; “Close” or “Scan another” and you can scan the next one.",
-        "A known product shows the last purchase (date, store, price), where it was cheapest, your rating and the “Don't buy again” mark. Then “Open product card” or “Scan another”.",
+        "In the shop: on Home press “Scan barcode” under the receipt button (or the barcode icon at the top of the Products tab) and point the camera at the barcode. The result slides up as a sheet over the camera; “Close” or “Scan another” and you can scan the next one.",
+        "A known product shows the last purchase (date, store, price), how often you bought it, where it was cheapest, your rating and the “Don't buy again” mark. If you rated it “Dislike”, a red line “You marked it: dislike” appears at the top. Then “Open product card” or “Scan another”.",
         "A new barcode: find your product by name and press “Link”. Not there yet — “New product”: check the name (if Open Food Facts knows the code, the name and brand are filled in) and press “Create product”. The product appears in “Products” with no purchases, the barcode is linked to it and its card opens. Or “Remember for later” — nothing is created, the code is just kept; the “Remembered codes” button under the camera leads to the list of such codes.",
         "“Don't buy again”: turn on the switch on the product card. The mark is red on the card and in the scan result."
       ],
@@ -904,7 +904,7 @@ export const helpEn: HelpText = {
         "The barcode won't read: hold the phone level, 15–20 cm away, in good light, with the barcode inside the frame. The torch button is in the camera corner if the phone offers it (Safari on iPhone usually does not).",
         "“The code has a typo” — the last digit of a barcode is a check digit, so a typo is caught.",
         "“Already belongs to another product” — one code cannot be on two products. Open that product and remove the barcode there if it was linked by mistake.",
-        "The first scan can be slow: the barcode reader downloads, and the server may take up to a minute to wake up.",
+        "The first scan can be slow: the barcode reader downloads, and the server may take up to a minute to wake up. If there is no answer for a few seconds, “The server is waking up” appears under “Looking up…”.",
         "“No answer” after a scan — the server did not answer (no internet, or it is still waking up): press “Try again”. Scanning needs the internet: known products and their photos are kept on the server.",
         "“Could not save” — a photo, barcode or mark did not reach the server. Check the connection and try again."
       ]

@@ -1,8 +1,8 @@
 import type { TFunction } from "i18next";
 import { IonButton, IonItem, IonLabel, IonList, IonSearchbar, IonSpinner } from "@ionic/react";
 import { useQuery } from "@tanstack/react-query";
-import { Bookmark, PackagePlus, Link2, Meh, ScanBarcode, Store, ThumbsDown, ThumbsUp, TrendingDown } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { Bookmark, PackagePlus, Link2, Meh, Repeat, ScanBarcode, Store, ThumbsDown, ThumbsUp, TrendingDown } from "lucide-react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { ApiError, getProduct, getProductCatalog, listProductImpressions } from "../../api/client";
 import type { ImpressionRating, ProductDetail, ProductPricePoint } from "../../api/types";
@@ -63,6 +63,13 @@ export function FoundResult({ productId, code, locale, onOpenProduct, onScanAgai
         </div>
       </div>
       {media.data?.avoid && <AvoidBanner avoid={media.data.avoid} locale={locale} />}
+      {/* A dislike is the «don't buy again» signal even when the explicit mark is off. */}
+      {mine?.rating === "dislike" && (
+        <div className="pm-avoid-banner" role="note">
+          <ThumbsDown size={24} aria-hidden="true" />
+          <div>{t("productScan.dislikedWarning")}{mine.note && <small>«{mine.note}»</small>}</div>
+        </div>
+      )}
       <IonList inset>
         <IonItem>
           <Store slot="start" size={22} className="pm-row-icon" aria-hidden="true" />
@@ -71,6 +78,15 @@ export function FoundResult({ productId, code, locale, onOpenProduct, onScanAgai
             <h3>{prices.last ? pointText(t, locale, prices.currency, prices.last) : t("productScan.noPurchases")}</h3>
           </IonLabel>
         </IonItem>
+        {detail.purchaseCount > 0 && (
+          <IonItem>
+            <Repeat slot="start" size={22} className="pm-row-icon" aria-hidden="true" />
+            <IonLabel className="pm-wrap">
+              <p>{t("productScan.howOften")}</p>
+              <h3>{howOften(t, detail)}</h3>
+            </IonLabel>
+          </IonItem>
+        )}
         {prices.cheapest && (
           <IonItem>
             <TrendingDown slot="start" size={22} className="pm-row-icon" aria-hidden="true" />
@@ -115,6 +131,14 @@ function priceFacts(product: ProductDetail): { currency: string | null; last: Pr
     // Bought once, or never cheaper than last time: the second row would repeat the first.
     cheapest: cheapest && cheapest.unitPrice < series.latestPoint.unitPrice ? cheapest : null
   };
+}
+
+function howOften(t: TFunction, product: ProductDetail): string {
+  const days = product.frequency?.averageDaysBetweenPurchases;
+  return [
+    t("products.purchaseCount", { count: product.purchaseCount }),
+    days == null ? null : t("products.frequencyEvery", { days: Math.round(days) })
+  ].filter(Boolean).join(" · ");
 }
 
 function pointText(t: TFunction, locale: string, currency: string | null, point: ProductPricePoint): string {
@@ -307,13 +331,22 @@ export function NotFoundResult({ code, locale, onLinked, onCreated, onScanAgain 
 
 /* ---------- shared ---------- */
 
+/** After this long without an answer the lookup says the server may be waking up. */
+export const slowLookupMs = 3000;
+
 export function Searching({ code }: { code: string }) {
   const { t } = useTranslation();
+  // Only a slow answer (cold start) deserves the explanation; a fast one just shows the spinner.
+  const [slow, setSlow] = useState(false);
+  useEffect(() => {
+    const timer = window.setTimeout(() => setSlow(true), slowLookupMs);
+    return () => window.clearTimeout(timer);
+  }, []);
   return (
     <div className="pm-scan-spin" role="status" aria-live="polite">
       <IonSpinner name="crescent" aria-hidden="true" />
       <span>{t("productScan.searching", { code: formatBarcode(code) })}</span>
-      <span style={{ fontSize: 13 }}>{t("productScan.serverWaking")}</span>
+      {slow && <span style={{ fontSize: 13 }}>{t("productScan.serverWaking")}</span>}
     </div>
   );
 }
