@@ -30,6 +30,7 @@
   <ItemGroup>
     <!-- Network-free core of the benchmark's openai command (the tool itself is an exe). -->
     <Compile Include="../../tools/PurchaseMemory.ReceiptBenchmarks/OpenAiBenchmarkCore.cs" Link="Benchmarks/OpenAiBenchmarkCore.cs" />
+    <Compile Include="../../tools/PurchaseMemory.FindByPhotoBenchmark/FindByPhotoBenchmarkCore.cs" Link="Benchmarks/FindByPhotoBenchmarkCore.cs" />
   </ItemGroup>
 
   <ItemGroup>

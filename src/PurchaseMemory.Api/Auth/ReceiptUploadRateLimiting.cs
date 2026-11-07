@@ -67,6 +67,21 @@ public sealed class NameFromPhotoRateLimitOptions
     public int ReplenishmentPeriodSeconds { get; set; } = 180;
 }
 
+/// <summary>
+/// Per-user token bucket for «Найти по фото»: one vision call per photo, the
+/// same shape as «Название по фото» but a bucket of its own.
+/// </summary>
+public sealed class FindByPhotoRateLimitOptions
+{
+    public const string SectionName = "RateLimiting:FindByPhoto";
+
+    public int TokenLimit { get; set; } = 20;
+
+    public int TokensPerPeriod { get; set; } = 1;
+
+    public int ReplenishmentPeriodSeconds { get; set; } = 180;
+}
+
 public static class ReceiptUploadRateLimiting
 {
     public const string PolicyName = "receipt-uploads";
@@ -93,6 +108,9 @@ public static class ReceiptUploadRateLimiting
 
     /// <summary>«Название по фото»: a paid vision call per photo, a bucket of its own.</summary>
     public const string NameFromPhotoPolicyName = "name-from-photo";
+
+    /// <summary>«Найти по фото»: a paid vision call per photo, a bucket of its own.</summary>
+    public const string FindByPhotoPolicyName = "find-by-photo";
 
     /// <summary>
     /// Product photo uploads cost storage, not money: a burst large enough for
@@ -136,6 +154,13 @@ public static class ReceiptUploadRateLimiting
         if (nameFromPhoto.TokenLimit < 1 || nameFromPhoto.TokensPerPeriod < 1 || nameFromPhoto.ReplenishmentPeriodSeconds < 1)
         {
             throw new InvalidOperationException($"{NameFromPhotoRateLimitOptions.SectionName} values must be positive.");
+        }
+
+        var findByPhoto = configuration.GetSection(FindByPhotoRateLimitOptions.SectionName).Get<FindByPhotoRateLimitOptions>()
+            ?? new FindByPhotoRateLimitOptions();
+        if (findByPhoto.TokenLimit < 1 || findByPhoto.TokensPerPeriod < 1 || findByPhoto.ReplenishmentPeriodSeconds < 1)
+        {
+            throw new InvalidOperationException($"{FindByPhotoRateLimitOptions.SectionName} values must be positive.");
         }
 
         // Not a middleware policy: whether a question costs a model call is only
@@ -217,6 +242,18 @@ public static class ReceiptUploadRateLimiting
                         AutoReplenishment = true
                     }));
 
+            options.AddPolicy(FindByPhotoPolicyName, context =>
+                RateLimitPartition.GetTokenBucketLimiter(
+                    AppUser.UserId(context.User) ?? "anonymous",
+                    _ => new TokenBucketRateLimiterOptions
+                    {
+                        TokenLimit = findByPhoto.TokenLimit,
+                        TokensPerPeriod = findByPhoto.TokensPerPeriod,
+                        ReplenishmentPeriod = TimeSpan.FromSeconds(findByPhoto.ReplenishmentPeriodSeconds),
+                        QueueLimit = 0,
+                        AutoReplenishment = true
+                    }));
+
             options.AddPolicy(ProductPhotosPolicyName, context =>
                 RateLimitPartition.GetTokenBucketLimiter(
                     AppUser.UserId(context.User) ?? "anonymous",
@@ -261,6 +298,7 @@ public static class ReceiptUploadRateLimiting
                 var tagSuggestion = context.Request.Path.Value?.EndsWith("/tag-suggestions", StringComparison.Ordinal) == true;
                 var nameSuggestion = context.Request.Path.Value?.EndsWith("/name-suggestions", StringComparison.Ordinal) == true;
                 var photoName = context.Request.Path.Value?.EndsWith("/name-from-photo", StringComparison.Ordinal) == true;
+                var findByPhotoRequest = context.Request.Path.StartsWithSegments("/api/products/find-by-photo", StringComparison.Ordinal);
                 var productPhoto = context.Request.Path.StartsWithSegments("/api/products", StringComparison.Ordinal)
                     && context.Request.Path.Value?.EndsWith("/photos", StringComparison.Ordinal) == true;
                 var openFoodFacts = context.Request.Path.StartsWithSegments("/api/open-food-facts", StringComparison.Ordinal);
@@ -268,6 +306,7 @@ public static class ReceiptUploadRateLimiting
                 {
                     _ when productPhoto => ("Too many photos", "Too many product photos in a short time. Try again in a minute."),
                     _ when openFoodFacts => ("Too many lookups", "Too many product database lookups in a short time. Try again in a minute."),
+                    _ when findByPhotoRequest => ("Too many photo searches", "Too many searches by photo in a short time. Products can still be found by name."),
                     _ when photoName => ("Too many photo names", "Too many names from photos in a short time. Names can still be typed by hand."),
                     _ when nameSuggestion => ("Too many name suggestions", "Too many name suggestions in a short time. Names can still be typed by hand."),
                     _ when tagSuggestion => ("Too many tag suggestions", "Too many tag suggestions in a short time. Tags can still be chosen by hand."),

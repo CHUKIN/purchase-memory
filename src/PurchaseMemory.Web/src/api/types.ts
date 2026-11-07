@@ -439,6 +439,35 @@ export interface ProductPhotoNameResult extends ProductNames {
   languages: PhotoNameLanguageResult[];
 }
 
+/** «Найти по фото»: whether the server offers it (switched on and configured). */
+export interface PhotoSearchStatus {
+  enabled: boolean;
+}
+
+export type PhotoMatchConfidence = "high" | "medium" | "low";
+
+/** One of the household's products the photo most likely shows. */
+export interface PhotoSearchMatch {
+  productId: string;
+  /** The receipt text (the catalog's canonical name). */
+  name: string;
+  namePl: string | null;
+  nameRu: string | null;
+  brand: string | null;
+  category: string | null;
+  mainPhotoId: string | null;
+  purchaseCount: number;
+  lastPurchasedAt: string | null;
+  confidence: PhotoMatchConfidence;
+}
+
+export interface PhotoSearchResult {
+  /** Best first, at most three; empty when nothing on the list fits. */
+  matches: PhotoSearchMatch[];
+  /** How many of the household's products the model chose from. */
+  candidateCount: number;
+}
+
 export interface ProductMergeResult {
   sourceProductId: string;
   sourceName: string;

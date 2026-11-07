@@ -46,6 +46,7 @@ public static class DependencyInjection
         services.AddScoped<IReviewQueueRepository, ReviewQueue.ReviewQueueRepository>();
         services.AddScoped<IProductImpressionRepository, ProductImpressionRepository>();
         services.AddScoped<PurchaseMemory.Application.Products.Media.IProductMediaRepository, ProductMediaRepository>();
+        services.AddScoped<PurchaseMemory.Application.Products.PhotoSearch.IProductPhotoCandidateRepository, ProductPhotoCandidateRepository>();
         services.AddScoped<IReceiptTextLayoutRepository, ReceiptTextLayoutRepository>();
         services.AddScoped<IReceiptTextHighlighter, ReceiptTextHighlighter>();
         // The API replaces this with the worker's doorbell.

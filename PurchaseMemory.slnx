@@ -13,6 +13,7 @@
     <Project Path="tools/PurchaseMemory.AnalyticsPlannerBenchmark/PurchaseMemory.AnalyticsPlannerBenchmark.csproj" />
     <Project Path="tools/PurchaseMemory.OllamaSmoke/PurchaseMemory.OllamaSmoke.csproj" />
     <Project Path="tools/PurchaseMemory.OpenAiSmoke/PurchaseMemory.OpenAiSmoke.csproj" />
+    <Project Path="tools/PurchaseMemory.FindByPhotoBenchmark/PurchaseMemory.FindByPhotoBenchmark.csproj" />
     <Project Path="tools/PurchaseMemory.PhotoNameBenchmark/PurchaseMemory.PhotoNameBenchmark.csproj" />
     <Project Path="tools/PurchaseMemory.ProductBackfill/PurchaseMemory.ProductBackfill.csproj" />
     <Project Path="tools/PurchaseMemory.ReceiptBenchmarks/PurchaseMemory.ReceiptBenchmarks.csproj" />

@@ -19,11 +19,12 @@ import { useCreateProductForBarcode, useLinkBarcode, useProductMedia, useRemembe
 import "./productScan.css";
 import { displayName, russianName } from "../products/productNameText";
 
-/* ---------- a known barcode ---------- */
+/* ---------- a known barcode (or a product picked after «Найти по фото») ---------- */
 
 export function FoundResult({ productId, code, locale, onOpenProduct, onScanAgain }: {
   productId: string;
-  code: string;
+  /** The scanned barcode; null when the product was found by photo or by name. */
+  code: string | null;
   locale: string;
   onOpenProduct: () => void;
   onScanAgain: () => void;
@@ -37,12 +38,12 @@ export function FoundResult({ productId, code, locale, onOpenProduct, onScanAgai
   const impressions = useQuery({ queryKey: [...impressionsQueryKey, "product", productId], queryFn: () => listProductImpressions(productId) });
   const media = useProductMedia(productId);
 
-  if (product.isPending) return <Searching code={code} />;
+  if (product.isPending) return <Searching code={code} label={code === null ? t("ui.loading") : undefined} />;
   if (product.isError || !product.data) {
     const gone = product.error instanceof ApiError && product.error.status === 404;
     return (
       <>
-        <Notice tone="danger" role="alert"><p>{gone ? t("productScan.productGone") : t("productScan.productLoadFailed")}</p></Notice>
+        <Notice tone="danger" role="alert"><p>{gone ? t(code === null ? "productScan.productGoneNoCode" : "productScan.productGone") : t("productScan.productLoadFailed")}</p></Notice>
         <ResultButtons onScanAgain={onScanAgain} />
       </>
     );
@@ -59,7 +60,7 @@ export function FoundResult({ productId, code, locale, onOpenProduct, onScanAgai
         <div>
           <h3>{displayName(detail)}</h3>
           {russianName(detail) && <p className="pm-product-name-ru" lang="ru">{russianName(detail)}</p>}
-          <p>{[detail.brand, formatBarcode(code)].filter(Boolean).join(" · ")}</p>
+          <p>{[detail.brand, code && formatBarcode(code)].filter(Boolean).join(" · ")}</p>
         </div>
       </div>
       {media.data?.avoid && <AvoidBanner avoid={media.data.avoid} locale={locale} />}
@@ -334,18 +335,23 @@ export function NotFoundResult({ code, locale, onLinked, onCreated, onScanAgain 
 /** After this long without an answer the lookup says the server may be waking up. */
 export const slowLookupMs = 3000;
 
-export function Searching({ code }: { code: string }) {
+/**
+ * The spinner of a lookup. `label` replaces «Ищу <code>…»; `slowAfterMs` is
+ * when the «server is waking up» note appears (a photo search takes a few
+ * seconds even on a warm server, so it waits longer).
+ */
+export function Searching({ code, label, slowAfterMs = slowLookupMs }: { code: string | null; label?: string; slowAfterMs?: number }) {
   const { t } = useTranslation();
   // Only a slow answer (cold start) deserves the explanation; a fast one just shows the spinner.
   const [slow, setSlow] = useState(false);
   useEffect(() => {
-    const timer = window.setTimeout(() => setSlow(true), slowLookupMs);
+    const timer = window.setTimeout(() => setSlow(true), slowAfterMs);
     return () => window.clearTimeout(timer);
-  }, []);
+  }, [slowAfterMs]);
   return (
     <div className="pm-scan-spin" role="status" aria-live="polite">
       <IonSpinner name="crescent" aria-hidden="true" />
-      <span>{t("productScan.searching", { code: formatBarcode(code) })}</span>
+      <span>{label ?? t("productScan.searching", { code: code ? formatBarcode(code) : "" })}</span>
       {slow && <span style={{ fontSize: 13 }}>{t("productScan.serverWaking")}</span>}
     </div>
   );

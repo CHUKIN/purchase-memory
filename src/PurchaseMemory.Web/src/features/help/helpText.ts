@@ -370,7 +370,8 @@ export const helpRu: HelpText = {
         "В магазине: на «Главной» нажмите «Сканировать штрихкод» под кнопкой чека (или значок штрихкода вверху вкладки «Товары») и наведите камеру на штрихкод. Результат выезжает шторкой над камерой; «Закрыть» или «Сканировать ещё» — и можно сканировать следующий.",
         "Знакомый товар: видны последняя покупка (дата, магазин, цена), как часто покупали, где было дешевле всего, ваша оценка и отметка «Больше не покупать». Если вы оценили товар «Не нравится», вверху красная строка «Вы отметили: не нравится». Дальше — «Открыть карточку товара» или «Сканировать ещё».",
         "Новый штрихкод: найдите свой товар по названию и нажмите «Привязать». Товара ещё нет — «Новый товар»: проверьте название (если код есть в базе Open Food Facts, название и бренд уже подставлены) и нажмите «Создать товар». Товар появится в «Товарах» без покупок, штрихкод привяжется к нему, и откроется его карточка. Или «Запомнить на потом» — ничего не создаётся, код просто запоминается; кнопка «Запомненные коды» внизу камеры ведёт к списку таких кодов.",
-        "«Больше не покупать»: включите переключатель в карточке товара. Отметка красная — и в карточке, и при скане."
+        "«Больше не покупать»: включите переключатель в карточке товара. Отметка красная — и в карточке, и при скане.",
+        "Нет штрихкода (овощи, фрукты, хлеб) — кнопка «Найти по фото» внизу камеры, если она включена (см. «Найти по фото»)."
       ],
       see: [
         "Фото, штрихкоды, отметки «Больше не покупать» и запомненные коды хранятся на сервере и общие для семьи: их видит и второй участник, они остаются при смене телефона и после «Выйти».",
@@ -389,6 +390,29 @@ export const helpRu: HelpText = {
         "Первый скан бывает долгим: загружается распознаватель штрихкодов, а сервер может просыпаться до минуты — если ответа нет несколько секунд, под «Ищу…» появится надпись «Сервер просыпается».",
         "«Нет ответа» после скана — сервер не ответил (нет интернета или он ещё просыпается): нажмите «Попробовать ещё раз». Без интернета скан не работает: знакомые товары и их фото хранятся на сервере.",
         "«Не удалось сохранить» — фото, штрихкод или отметка не дошли до сервера. Проверьте интернет и повторите."
+      ]
+    },
+    "find-by-photo": {
+      title: "Найти по фото",
+      summary: "Для товаров без штрихкода — овощей, фруктов, хлеба, выпечки — и для упаковок, у которых штрихкод не читается. Сфотографируйте товар, и приложение предложит до трёх похожих товаров из тех, что вы уже покупали. Это примерный поиск: какой товар правильный, решаете вы.",
+      steps: [
+        "На «Главной» нажмите «Сканировать штрихкод» (или значок штрихкода вверху вкладки «Товары»), затем внизу камеры — «Найти по фото». Откроется камера телефона: сфотографируйте один товар крупно, при хорошем свете.",
+        "Пока идёт поиск, видно «Ищу по фото среди ваших товаров…». Обычно это несколько секунд.",
+        "«Похоже на это»: до трёх ваших товаров, самый похожий первым. У каждого — название, бренд, насколько похоже («очень похоже», «похоже», «возможно») и когда покупали.",
+        "Нажмите «Это он» у нужного товара — откроется та же сводка, что и после скана штрихкода: последняя покупка, как часто покупали, где дешевле всего, ваша оценка. Дальше «Открыть карточку товара». «Назад к вариантам» возвращает к списку.",
+        "Нужного нет — «Нет в списке»: найдите товар по названию или создайте «Новый товар». «Сфотографировать ещё раз» — новое фото."
+      ],
+      see: [
+        "Поиск по фото примерный: AI сравнивает снимок с названиями ваших товаров, а не с их фото, и может ошибиться, особенно когда похожих товаров несколько (два сорта помидоров). Ничего не меняется, пока вы сами не выберете товар.",
+        "Ищет только среди товаров семьи, и не среди всех сразу: если товаров очень много, берутся около 300 последних купленных.",
+        "Кнопка видна, только если поиск по фото включён на сервере. Каждый поиск — платный запрос к AI (меньше цента).",
+        "Фото уменьшается до размера около 200 КБ, отправляется один раз и нигде не сохраняется."
+      ],
+      trouble: [
+        "Нет кнопки «Найти по фото» — поиск по фото выключен на сервере. Ищите товар по названию во вкладке «Товары».",
+        "«Среди ваших товаров похожего не нашлось» — такого товара ещё нет в покупках или фото неудачное. Сфотографируйте ещё раз крупнее или найдите товар по названию.",
+        "«Поиск по фото сейчас недоступен» или «Не получилось найти по фото» — AI или сервер не ответили. Нажмите «Попробовать ещё раз». Первый запрос после перерыва бывает долгим: сервер может просыпаться до минуты.",
+        "«Слишком много поисков по фото подряд» — подождите пару минут или найдите товар по названию."
       ]
     },
     categories: {
@@ -888,7 +912,8 @@ export const helpEn: HelpText = {
         "In the shop: on Home press “Scan barcode” under the receipt button (or the barcode icon at the top of the Products tab) and point the camera at the barcode. The result slides up as a sheet over the camera; “Close” or “Scan another” and you can scan the next one.",
         "A known product shows the last purchase (date, store, price), how often you bought it, where it was cheapest, your rating and the “Don't buy again” mark. If you rated it “Dislike”, a red line “You marked it: dislike” appears at the top. Then “Open product card” or “Scan another”.",
         "A new barcode: find your product by name and press “Link”. Not there yet — “New product”: check the name (if Open Food Facts knows the code, the name and brand are filled in) and press “Create product”. The product appears in “Products” with no purchases, the barcode is linked to it and its card opens. Or “Remember for later” — nothing is created, the code is just kept; the “Remembered codes” button under the camera leads to the list of such codes.",
-        "“Don't buy again”: turn on the switch on the product card. The mark is red on the card and in the scan result."
+        "“Don't buy again”: turn on the switch on the product card. The mark is red on the card and in the scan result.",
+        "No barcode (vegetables, fruit, bread) — the “Find by photo” button under the camera, when it is switched on (see “Find by photo”)."
       ],
       see: [
         "Photos, barcodes, “Don't buy again” marks and remembered codes are kept on the server and shared by the household: the other member sees them, and they stay after a phone change and after “Sign out”.",
@@ -907,6 +932,29 @@ export const helpEn: HelpText = {
         "The first scan can be slow: the barcode reader downloads, and the server may take up to a minute to wake up. If there is no answer for a few seconds, “The server is waking up” appears under “Looking up…”.",
         "“No answer” after a scan — the server did not answer (no internet, or it is still waking up): press “Try again”. Scanning needs the internet: known products and their photos are kept on the server.",
         "“Could not save” — a photo, barcode or mark did not reach the server. Check the connection and try again."
+      ]
+    },
+    "find-by-photo": {
+      title: "Find by photo",
+      summary: "For products without a barcode — vegetables, fruit, bread, pastries — and for packages whose barcode won't read. Take a photo and the app offers up to three similar products from those you have already bought. It is an approximate search: you decide which product is right.",
+      steps: [
+        "On Home press “Scan barcode” (or the barcode icon at the top of the Products tab), then “Find by photo” under the camera. The phone camera opens: take a close photo of one product in good light.",
+        "While it searches you see “Looking for it among your products…”. It usually takes a few seconds.",
+        "“Looks like this”: up to three of your products, the most similar first. Each shows its name, brand, how likely it is (“very likely”, “likely”, “maybe”) and when you bought it.",
+        "Press “That's it” on the right one — the same summary as after a barcode scan opens: last purchase, how often you bought it, where it was cheapest, your rating. Then “Open product card”. “Back to the options” returns to the list.",
+        "Not there — “Not in the list”: find the product by name or create a “New product”. “Take another photo” starts again."
+      ],
+      see: [
+        "Photo search is approximate: AI compares the photo with the names of your products, not with their photos, and can be wrong, especially when several products are alike (two kinds of tomatoes). Nothing changes until you pick a product yourself.",
+        "It searches only the household's products, and not all at once: with very many products, about the 300 bought most recently are used.",
+        "The button shows only when photo search is switched on on the server. Each search is a paid AI request (less than a cent).",
+        "The photo is shrunk to about 200 KB, sent once and not kept anywhere."
+      ],
+      trouble: [
+        "No “Find by photo” button — photo search is switched off on the server. Find the product by name in the Products tab.",
+        "“Nothing similar among your products” — the product is not in your purchases yet, or the photo is poor. Take a closer photo or find the product by name.",
+        "“Photo search is unavailable right now” or “Could not search by photo” — AI or the server did not answer. Press “Try again”. The first request after a pause can be slow: the server may take up to a minute to wake up.",
+        "“Too many photo searches in a row” — wait a couple of minutes or find the product by name."
       ]
     },
     categories: {

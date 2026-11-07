@@ -238,56 +238,23 @@ public static class ProductEndpoints
         IProductPhotoNamingService service,
         CancellationToken cancellationToken)
     {
-        if (!request.HasFormContentType)
+        var (bytes, problem) = await ReadOnePhotoAsync(request, cancellationToken);
+        if (problem is not null)
         {
-            return PhotoProblem(StatusCodes.Status400BadRequest, "photoMissing", "Send the photo as multipart/form-data in a field named photo.");
-        }
-
-        IFormCollection form;
-        try
-        {
-            form = await request.ReadFormAsync(cancellationToken);
-        }
-        catch (InvalidDataException)
-        {
-            return PhotoProblem(StatusCodes.Status413PayloadTooLarge, "photoTooLarge", "The photo is too large. Send a compressed JPEG.");
-        }
-
-        if (form.Files.Count != 1 || form.Files[0].Name != "photo")
-        {
-            return PhotoProblem(StatusCodes.Status400BadRequest, "photoMissing", "Attach exactly one file, named photo.");
-        }
-
-        var file = form.Files[0];
-        if (file.Length > ProductPhotoRules.MaximumBytes)
-        {
-            return PhotoProblem(StatusCodes.Status413PayloadTooLarge, "photoTooLarge", "The photo is too large. Send a compressed JPEG.");
-        }
-
-        byte[] bytes;
-        await using (var stream = file.OpenReadStream())
-        using (var buffer = new MemoryStream((int)file.Length))
-        {
-            await stream.CopyToAsync(buffer, cancellationToken);
-            bytes = buffer.ToArray();
+            return problem;
         }
 
         return await HandleAsync(async () =>
         {
             try
             {
-                var image = ProductPhotoRules.Check(bytes);
+                var image = ProductPhotoRules.Check(bytes!);
                 var result = await service.NameFromPhotoAsync(productId, image, AppUser.Actor(user), cancellationToken);
                 return Results.Ok(ProductPhotoNameResponse.From(result));
             }
             catch (InvalidProductPhotoException exception)
             {
-                return exception.Reason switch
-                {
-                    InvalidProductPhotoReason.TooLarge => PhotoProblem(StatusCodes.Status413PayloadTooLarge, "photoTooLarge", exception.Message),
-                    InvalidProductPhotoReason.NotAnImage => PhotoProblem(StatusCodes.Status415UnsupportedMediaType, "photoNotAnImage", exception.Message),
-                    _ => PhotoProblem(StatusCodes.Status400BadRequest, "photoMissing", exception.Message)
-                };
+                return InvalidPhotoProblem(exception);
             }
             catch (ProductPhotoNamingUnavailableException)
             {
@@ -300,7 +267,54 @@ public static class ProductEndpoints
         });
     }
 
-    private static IResult PhotoProblem(int statusCode, string code, string detail) =>
+    /// <summary>
+    /// The single multipart file «photo» of a photo endpoint, or the problem to
+    /// answer instead (missing, extra files, too large). The format is checked
+    /// later from the bytes by <see cref="ProductPhotoRules.Check"/>.
+    /// </summary>
+    internal static async Task<(byte[]? Bytes, IResult? Problem)> ReadOnePhotoAsync(HttpRequest request, CancellationToken cancellationToken)
+    {
+        if (!request.HasFormContentType)
+        {
+            return (null, PhotoProblem(StatusCodes.Status400BadRequest, "photoMissing", "Send the photo as multipart/form-data in a field named photo."));
+        }
+
+        IFormCollection form;
+        try
+        {
+            form = await request.ReadFormAsync(cancellationToken);
+        }
+        catch (InvalidDataException)
+        {
+            return (null, PhotoProblem(StatusCodes.Status413PayloadTooLarge, "photoTooLarge", "The photo is too large. Send a compressed JPEG."));
+        }
+
+        if (form.Files.Count != 1 || form.Files[0].Name != "photo")
+        {
+            return (null, PhotoProblem(StatusCodes.Status400BadRequest, "photoMissing", "Attach exactly one file, named photo."));
+        }
+
+        var file = form.Files[0];
+        if (file.Length > ProductPhotoRules.MaximumBytes)
+        {
+            return (null, PhotoProblem(StatusCodes.Status413PayloadTooLarge, "photoTooLarge", "The photo is too large. Send a compressed JPEG."));
+        }
+
+        await using var stream = file.OpenReadStream();
+        using var buffer = new MemoryStream((int)file.Length);
+        await stream.CopyToAsync(buffer, cancellationToken);
+        return (buffer.ToArray(), null);
+    }
+
+    internal static IResult InvalidPhotoProblem(InvalidProductPhotoException exception) =>
+        exception.Reason switch
+        {
+            InvalidProductPhotoReason.TooLarge => PhotoProblem(StatusCodes.Status413PayloadTooLarge, "photoTooLarge", exception.Message),
+            InvalidProductPhotoReason.NotAnImage => PhotoProblem(StatusCodes.Status415UnsupportedMediaType, "photoNotAnImage", exception.Message),
+            _ => PhotoProblem(StatusCodes.Status400BadRequest, "photoMissing", exception.Message)
+        };
+
+    internal static IResult PhotoProblem(int statusCode, string code, string detail) =>
         Results.Problem(
             detail: detail,
             statusCode: statusCode,

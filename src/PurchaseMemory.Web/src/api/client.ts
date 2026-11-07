@@ -2,6 +2,8 @@ import type {
   ProductNameLanguage,
   ProductNames,
   ProductPhotoNameResult,
+  PhotoSearchResult,
+  PhotoSearchStatus,
   BrandSummary,
   AnalyticsAnswer,
   BarcodeLookupResponse,
@@ -334,6 +336,20 @@ export function nameProductFromPhoto(productId: string, photo: Blob): Promise<Pr
   const form = new FormData();
   form.append("photo", photo, "photo.jpg");
   return request<ProductPhotoNameResult>(`/api/products/${encodeURIComponent(productId)}/name-from-photo`, { method: "POST", body: form });
+}
+
+/** Whether «Найти по фото» is switched on and configured on the server. Free. */
+export const getPhotoSearchStatus = () => request<PhotoSearchStatus>("/api/products/find-by-photo/status");
+
+/**
+ * «Найти по фото»: one compressed photo (multipart field «photo»), up to three
+ * of the household's products it most likely shows. 503 (`findByPhotoDisabled`
+ * or `findByPhotoUnavailable`), 429, 413 and 415 are expected answers.
+ */
+export function findProductsByPhoto(photo: Blob): Promise<PhotoSearchResult> {
+  const form = new FormData();
+  form.append("photo", photo, "photo.jpg");
+  return request<PhotoSearchResult>("/api/products/find-by-photo", { method: "POST", body: form });
 }
 
 /**
