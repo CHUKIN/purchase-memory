@@ -415,6 +415,31 @@ export const helpRu: HelpText = {
         "«Слишком много поисков по фото подряд» — подождите пару минут или найдите товар по названию."
       ]
     },
+    "haul-photo": {
+      title: "Сфотографировать покупки",
+      summary: "Одно фото всех покупок из чека, разложенных на столе, — и у товаров появляются их фото. AI находит товары на снимке и предлагает, какая это строка чека; вы подтверждаете, и вырезанные картинки сохраняются в карточки товаров.",
+      steps: [
+        "Откройте сохранённую покупку (вкладка «Покупки» → покупка) и нажмите «Сфотографировать покупки» под датой и суммой. Откроется камера телефона.",
+        "Разложите покупки на столе так, чтобы каждую было видно, и сфотографируйте сверху при хорошем свете. Чек на фото не нужен.",
+        "Пока идёт распознавание, видно «Ищу покупки на фото…». Большой стол — это до полуминуты.",
+        "Для каждого найденного товара видна его картинка и строка чека, которую предлагает AI (с пометкой «точно», «похоже» или «возможно»). «Верно» — подтвердить. Не та строка — выберите нужную в списке, это сразу подтверждает её. «Пропустить» — эту картинку не сохранять. «Изменить» возвращает выбор.",
+        "Нажмите «Сохранить фото (N)», где N — сколько картинок подтверждено. Покажется, сколько фото сохранено и что не получилось сохранить и почему."
+      ],
+      see: [
+        "Сохраняются только подтверждённые вами картинки — каждая как ещё одно фото товара этой строки. Если у товара фото ещё не было, новое станет главным; главное фото, которое уже есть, не меняется.",
+        "Если строку чека купили несколько раз (например, 3 йогурта), ей можно подтвердить столько же картинок.",
+        "Строку без товара выбрать нельзя: фото некуда сохранить. Если нажать «Сохранить фото» ещё раз с тем же снимком, копии не появятся.",
+        "Кнопка видна, только если функция включена на сервере. Каждое распознавание — один платный запрос к AI, около 3–5 центов; сохранение бесплатно.",
+        "Снимок уменьшается до 2000 точек по длинной стороне, без данных о месте съёмки. На сервере он не хранится: при сохранении приложение отправляет его ещё раз, и сервер вырезает подтверждённые картинки."
+      ],
+      trouble: [
+        "Нет кнопки «Сфотографировать покупки» — функция выключена на сервере. Фото можно добавить в карточке товара или в проверке строк («Сфотографировать товар»).",
+        "«На фото не нашлось покупок из этого чека» — разложите покупки свободнее, снимайте сверху и при хорошем свете, затем «Сфотографировать ещё раз».",
+        "«Распознавание покупок сейчас недоступно» или «Не получилось распознать» — AI или сервер не ответили. Нажмите «Попробовать ещё раз». Первый запрос после перерыва бывает долгим: сервер может просыпаться до минуты.",
+        "«Слишком много фото покупок подряд» — подождите несколько минут.",
+        "В итогах «у товара уже 20 фото» — удалите лишние фото в карточке товара и сохраните ещё раз."
+      ]
+    },
     categories: {
       title: "Категории и бренд",
       summary: "У каждого товара одна категория из двухуровневого дерева (группа → подкатегория) и бренд. Ваше решение всегда главнее подсказки AI.",
@@ -955,6 +980,31 @@ export const helpEn: HelpText = {
         "“Nothing similar among your products” — the product is not in your purchases yet, or the photo is poor. Take a closer photo or find the product by name.",
         "“Photo search is unavailable right now” or “Could not search by photo” — AI or the server did not answer. Press “Try again”. The first request after a pause can be slow: the server may take up to a minute to wake up.",
         "“Too many photo searches in a row” — wait a couple of minutes or find the product by name."
+      ]
+    },
+    "haul-photo": {
+      title: "Photograph the items",
+      summary: "One photo of everything from a receipt laid out on the table, and the products get their photos. AI finds the items on the photo and suggests which receipt line each one is; you confirm, and the cut-out pictures are saved to the product cards.",
+      steps: [
+        "Open a saved purchase (Purchases tab → a purchase) and press “Photograph the items” under the date and total. The phone camera opens.",
+        "Lay the items out on the table so each one can be seen and take the photo from above in good light. The receipt does not need to be in the photo.",
+        "While it works you see “Looking for the items on the photo…”. A big table can take up to half a minute.",
+        "Each item found shows its picture and the receipt line AI suggests (marked “sure”, “likely” or “maybe”). “Correct” confirms it. Wrong line — pick the right one in the list, which confirms it at once. “Skip” leaves that picture out. “Change” undoes the choice.",
+        "Press “Save photos (N)”, where N is how many pictures are confirmed. You then see how many photos were saved and what could not be saved and why."
+      ],
+      see: [
+        "Only the pictures you confirmed are saved, each as one more photo of its line's product. A product without photos gets the new one as its main photo; an existing main photo stays.",
+        "A line bought several times (say, 3 yogurts) can get that many pictures.",
+        "A line without a product cannot be picked: there is nowhere to save the photo. Pressing “Save photos” again with the same picture adds no copies.",
+        "The button shows only when the feature is switched on on the server. Each recognition is one paid AI request, about 3–5 cents; saving is free.",
+        "The photo is shrunk to 2000 px on the long side, without location data. The server does not keep it: when you save, the app sends it again and the server cuts out the confirmed pictures."
+      ],
+      trouble: [
+        "No “Photograph the items” button — the feature is switched off on the server. Photos can still be added on the product card or in the line review (“Take a product photo”).",
+        "“No items from this receipt were found on the photo” — spread the items out, shoot from above in good light, then “Take another photo”.",
+        "“Recognising the items is unavailable right now” or “Could not recognise the items” — AI or the server did not answer. Press “Try again”. The first request after a pause can be slow: the server may take up to a minute to wake up.",
+        "“Too many photos of items in a row” — wait a few minutes.",
+        "“The product already has 20 photos” in the summary — remove some photos on the product card and save again."
       ]
     },
     categories: {

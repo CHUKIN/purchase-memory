@@ -30,6 +30,18 @@ export const namingPhotoLimits = {
   fallbackQuality: 0.55
 } as const;
 
+/**
+ * «Сфотографировать покупки» sends one bigger copy (the server's limit is
+ * 1.5 MB): the whole table is on it and each item is cut out of it later, so
+ * it keeps up to 2000 px on the long side.
+ */
+export const haulPhotoLimits = {
+  maxSide: 2000,
+  quality: 0.82,
+  targetBytes: 1200 * 1024,
+  fallbackQuality: 0.6
+} as const;
+
 export async function compressPhoto(file: Blob): Promise<{ blob: Blob; width: number; height: number }> {
   return shrink(file, productPhotoLimits);
 }
@@ -37,6 +49,15 @@ export async function compressPhoto(file: Blob): Promise<{ blob: Blob; width: nu
 /** The copy sent to the server for «Название по фото»; never stored. */
 export async function photoForNaming(file: Blob): Promise<Blob> {
   return (await shrink(file, namingPhotoLimits)).blob;
+}
+
+/**
+ * The table photo for «Сфотографировать покупки», upright (the browser applies
+ * the EXIF rotation): the same bytes go to the server twice, and the boxes it
+ * returns are fractions of this picture.
+ */
+export async function photoForHaul(file: Blob): Promise<{ blob: Blob; width: number; height: number }> {
+  return shrink(file, haulPhotoLimits);
 }
 
 async function shrink(

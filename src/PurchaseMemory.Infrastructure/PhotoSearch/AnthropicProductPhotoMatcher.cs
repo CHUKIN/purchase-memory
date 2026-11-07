@@ -68,6 +68,13 @@ public sealed partial class AnthropicProductPhotoMatcher : IProductPhotoMatcher,
     /// <summary>Whether the cost of a call can be computed (the model is in the price list).</summary>
     public bool HasKnownPrice => AnthropicPricing.IsKnown(_options.Model);
 
+    /// <summary>The list price of a call with these token counts; null when the model has no known price.</summary>
+    public decimal? EstimateCostUsd(long inputTokens, long outputTokens) =>
+        AnthropicPricing.EstimateCostUsd(_options.Model, inputTokens, outputTokens);
+
+    /// <summary>The configured cap on output tokens (thinking included).</summary>
+    public int MaximumOutputTokens => _options.MaximumOutputTokens;
+
     public async Task<ProductPhotoMatchReading> MatchAsync(
         ProductPhotoImage image,
         IReadOnlyList<ProductPhotoCandidate> candidates,

@@ -19,12 +19,14 @@ using PurchaseMemory.Application.Products.PhotoNames;
 using PurchaseMemory.Application.Products.PhotoSearch;
 using PurchaseMemory.Application.Products.Tags;
 using PurchaseMemory.Application.Purchases;
+using PurchaseMemory.Application.Purchases.HaulPhoto;
 using PurchaseMemory.Application.Receipts;
 using PurchaseMemory.Application.Receipts.TextLocation;
 using PurchaseMemory.Application.ReviewQueue;
 using PurchaseMemory.Infrastructure;
 using PurchaseMemory.Infrastructure.Analytics;
 using PurchaseMemory.Infrastructure.Categorization;
+using PurchaseMemory.Infrastructure.HaulPhoto;
 using PurchaseMemory.Infrastructure.Images;
 using PurchaseMemory.Infrastructure.OpenFoodFacts;
 using PurchaseMemory.Infrastructure.Persistence;
@@ -100,6 +102,23 @@ builder.Services.AddSingleton<AnthropicProductPhotoMatcher>();
 builder.Services.AddSingleton<IProductPhotoMatcher>(serviceProvider =>
     serviceProvider.GetRequiredService<AnthropicProductPhotoMatcher>());
 builder.Services.AddScoped<IProductPhotoSearchService, ProductPhotoSearchService>();
+// «Сфотографировать покупки»: one table photo and the purchase's line names go
+// to Claude once; off unless HaulPhoto__Enabled is true. Nothing is stored
+// until the person confirms pairs, then only the crops, as product photos.
+builder.Services
+    .AddOptions<HaulPhotoOptions>()
+    .Bind(builder.Configuration.GetSection(HaulPhotoOptions.SectionName))
+    .ValidateOnStart();
+builder.Services.AddSingleton<
+    Microsoft.Extensions.Options.IValidateOptions<HaulPhotoOptions>,
+    HaulPhotoOptionsValidator>();
+builder.Services.AddSingleton<AnthropicHaulPhotoMatcher>();
+builder.Services.AddSingleton<IHaulPhotoMatcher>(serviceProvider =>
+    serviceProvider.GetRequiredService<AnthropicHaulPhotoMatcher>());
+builder.Services.AddSingleton<IHaulPhotoImageProcessor>(serviceProvider =>
+    new HaulPhotoImageProcessor(serviceProvider
+        .GetRequiredService<Microsoft.Extensions.Options.IOptions<ReceiptImageStorageOptions>>().Value.DisplayCopy.MaximumSourcePixels));
+builder.Services.AddScoped<IHaulPhotoService, HaulPhotoService>();
 builder.Services
     .AddOptions<ProductCategorizationOptions>()
     .Bind(builder.Configuration.GetSection(ProductCategorizationOptions.SectionName));
@@ -334,6 +353,7 @@ app.MapReceiptEndpoints();
 app.MapPurchaseEndpoints();
 app.MapProductEndpoints();
 app.MapProductPhotoSearchEndpoints();
+app.MapHaulPhotoEndpoints();
 app.MapCategoryEndpoints();
 app.MapTagEndpoints();
 app.MapAnalyticsEndpoints();

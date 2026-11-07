@@ -45,6 +45,7 @@ import { formatMoney } from "./money";
 import { ProductLinkNote, ProductLinkRows, productStatusText } from "./ProductLinkRows";
 import { PurchaseLineReview, type LineChange, type ReviewStart } from "../line-review/PurchaseLineReview";
 import { useApprovalSync, useLineApprovals } from "../line-review/useLineApprovals";
+import { HaulPhotoAction } from "./HaulPhoto";
 import { usePurchaseReceiptPhoto } from "./usePurchaseReceiptPhoto";
 import { useOpenLineReviewOnArrival } from "./openLineReview";
 
@@ -193,6 +194,8 @@ function PurchaseSummary({ purchase, back, onEdit }: { purchase: PurchaseDetail;
           </ItemLink>
         )}
       </IonList>
+
+      <HaulPhotoAction purchase={purchase} />
 
       {/* Only problems are shown; a clean purchase needs no «all fine» sentence. */}
       {purchase.issues.length > 0 && (

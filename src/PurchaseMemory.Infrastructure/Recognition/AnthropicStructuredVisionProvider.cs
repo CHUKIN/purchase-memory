@@ -230,7 +230,9 @@ internal static class AnthropicPricing
     private static readonly Dictionary<string, (decimal Input, decimal Output)> Prices =
         new(StringComparer.OrdinalIgnoreCase)
         {
-            ["claude-haiku-5-5"] = (0.10m, 0.50m)
+            ["claude-haiku-5-5"] = (0.10m, 0.50m),
+            ["claude-sonnet-5-5"] = (2.00m, 10.00m),
+            ["claude-opus-5-5"] = (4.00m, 20.00m)
         };
 
     public static bool IsKnown(string model) => Prices.ContainsKey(model);

@@ -234,14 +234,28 @@ public sealed record BenchmarkReport(IReadOnlyList<PhotoOutcome> Outcomes, Bench
 
 /// <summary>
 /// Sends the photos one by one and stops before a call could cross the
-/// budget. Before the first answer a call is assumed to cost
-/// <see cref="InitialCallEstimateUsd"/> (about 3× the computed Haiku price
-/// for 300 candidates); after it, the most expensive call so far. A failed
-/// call or one without usage is charged at that assumption.
+/// budget. Every call is assumed to cost the larger of
+/// <paramref name="worstCaseCallUsd"/> (all output tokens used and a
+/// generous input) and the most expensive call so far, so even the last call
+/// cannot overshoot. A failed call or one without usage is charged at that
+/// assumption.
 /// </summary>
-public sealed class FindByPhotoBenchmarkRunner(IProductPhotoMatcher matcher, decimal budgetUsd, Action<string>? progress = null)
+/// <param name="worstCaseCallUsd">The most one call can cost; see <see cref="WorstCaseCallUsd"/>.</param>
+public sealed class FindByPhotoBenchmarkRunner(
+    IProductPhotoMatcher matcher,
+    decimal budgetUsd,
+    decimal worstCaseCallUsd,
+    Action<string>? progress = null)
 {
-    public const decimal InitialCallEstimateUsd = 0.005m;
+    /// <summary>
+    /// Input tokens assumed for one call: the image (~1 050 at 1024 px), the
+    /// prompt (~450) and up to 300 candidates (~40 each), rounded well up.
+    /// </summary>
+    public const int ConservativeInputTokens = 20_000;
+
+    /// <summary>The worst case of one call from list prices per million tokens.</summary>
+    public static decimal WorstCaseCallUsd(decimal inputPerMillion, decimal outputPerMillion, int maximumOutputTokens) =>
+        decimal.Round((ConservativeInputTokens * inputPerMillion + maximumOutputTokens * outputPerMillion) / 1_000_000m, 6);
 
     /// <summary>
     /// USD per million tokens used when a call reports usage but no cost: above
@@ -284,7 +298,12 @@ public sealed class FindByPhotoBenchmarkRunner(IProductPhotoMatcher matcher, dec
             throw new InvalidOperationException("A positive budget is required.");
         }
 
-        var assumed = InitialCallEstimateUsd;
+        if (worstCaseCallUsd <= 0)
+        {
+            throw new InvalidOperationException("A positive worst-case call cost is required.");
+        }
+
+        var assumed = worstCaseCallUsd;
         var maxObserved = 0m;
         var spent = 0m;
         var stopped = false;
@@ -314,7 +333,7 @@ public sealed class FindByPhotoBenchmarkRunner(IProductPhotoMatcher matcher, dec
                 var charged = Charge(reading, assumed);
                 spent += charged;
                 maxObserved = Math.Max(maxObserved, charged);
-                assumed = maxObserved;
+                assumed = Math.Max(worstCaseCallUsd, maxObserved);
                 var matched = reading.Matches.Select(match => match.ProductId).ToList();
                 var (top1, top3) = Score(photo, matched);
                 outcomes.Add(new PhotoOutcome(photo.Label.File, photo.Label.ExpectsNone, matched,

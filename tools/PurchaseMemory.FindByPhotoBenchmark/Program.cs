@@ -96,7 +96,9 @@ if (!matcher.IsConfigured)
 }
 
 Console.WriteLine($"{photos.Count} photos, {candidates.Count} candidates, model {options.Model}, budget {arguments.BudgetUsd} USD");
-var report = await new FindByPhotoBenchmarkRunner(matcher, arguments.BudgetUsd, Console.WriteLine)
+var worstCase = matcher.EstimateCostUsd(FindByPhotoBenchmarkRunner.ConservativeInputTokens, matcher.MaximumOutputTokens)!.Value;
+Console.WriteLine($"Worst case per call {worstCase} USD");
+var report = await new FindByPhotoBenchmarkRunner(matcher, arguments.BudgetUsd, worstCase, Console.WriteLine)
     .RunAsync(photos, candidates, CancellationToken.None);
 
 var output = Path.GetFullPath(arguments.OutputPath);

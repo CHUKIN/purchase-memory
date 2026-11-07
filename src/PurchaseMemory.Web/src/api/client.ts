@@ -3,6 +3,10 @@ import type {
   ProductNames,
   ProductPhotoNameResult,
   PhotoSearchResult,
+  HaulPhotoPair,
+  HaulPhotoProposal,
+  HaulPhotoSaveResult,
+  HaulPhotoStatus,
   PhotoSearchStatus,
   BrandSummary,
   AnalyticsAnswer,
@@ -340,6 +344,32 @@ export function nameProductFromPhoto(productId: string, photo: Blob): Promise<Pr
 
 /** Whether «Найти по фото» is switched on and configured on the server. Free. */
 export const getPhotoSearchStatus = () => request<PhotoSearchStatus>("/api/products/find-by-photo/status");
+
+export const getHaulPhotoStatus = () => request<HaulPhotoStatus>("/api/purchases/haul-photo/status");
+
+/**
+ * «Сфотографировать покупки», step 1: one photo of the purchase's items
+ * (multipart field «photo») → a box and a proposed line per item. Nothing is
+ * stored. 503 (`haulPhotoDisabled` or `haulPhotoUnavailable`), 404, 429, 413
+ * and 415 are expected answers.
+ */
+export function proposeHaulPhoto(purchaseId: string, photo: Blob): Promise<HaulPhotoProposal> {
+  const form = new FormData();
+  form.append("photo", photo, "photo.jpg");
+  return request<HaulPhotoProposal>(`/api/purchases/${encodeURIComponent(purchaseId)}/haul-photo`, { method: "POST", body: form });
+}
+
+/**
+ * Step 2: the same photo again with the confirmed pairs; each crop becomes a
+ * photo of its line's product. Every pair gets its own outcome; repeating the
+ * request adds nothing twice.
+ */
+export function saveHaulPhoto(purchaseId: string, photo: Blob, pairs: HaulPhotoPair[]): Promise<HaulPhotoSaveResult> {
+  const form = new FormData();
+  form.append("photo", photo, "photo.jpg");
+  form.append("pairs", JSON.stringify(pairs));
+  return request<HaulPhotoSaveResult>(`/api/purchases/${encodeURIComponent(purchaseId)}/haul-photo/save`, { method: "POST", body: form });
+}
 
 /**
  * «Найти по фото»: one compressed photo (multipart field «photo»), up to three

@@ -274,9 +274,18 @@ public static class ProductEndpoints
     /// </summary>
     internal static async Task<(byte[]? Bytes, IResult? Problem)> ReadOnePhotoAsync(HttpRequest request, CancellationToken cancellationToken)
     {
+        var (bytes, _, problem) = await ReadOnePhotoWithFormAsync(request, cancellationToken);
+        return (bytes, problem);
+    }
+
+    /// <summary>The same as <see cref="ReadOnePhotoAsync"/>, also handing back the form for its other fields.</summary>
+    internal static async Task<(byte[]? Bytes, IFormCollection? Form, IResult? Problem)> ReadOnePhotoWithFormAsync(
+        HttpRequest request,
+        CancellationToken cancellationToken)
+    {
         if (!request.HasFormContentType)
         {
-            return (null, PhotoProblem(StatusCodes.Status400BadRequest, "photoMissing", "Send the photo as multipart/form-data in a field named photo."));
+            return (null, null, PhotoProblem(StatusCodes.Status400BadRequest, "photoMissing", "Send the photo as multipart/form-data in a field named photo."));
         }
 
         IFormCollection form;
@@ -286,24 +295,24 @@ public static class ProductEndpoints
         }
         catch (InvalidDataException)
         {
-            return (null, PhotoProblem(StatusCodes.Status413PayloadTooLarge, "photoTooLarge", "The photo is too large. Send a compressed JPEG."));
+            return (null, null, PhotoProblem(StatusCodes.Status413PayloadTooLarge, "photoTooLarge", "The photo is too large. Send a compressed JPEG."));
         }
 
         if (form.Files.Count != 1 || form.Files[0].Name != "photo")
         {
-            return (null, PhotoProblem(StatusCodes.Status400BadRequest, "photoMissing", "Attach exactly one file, named photo."));
+            return (null, null, PhotoProblem(StatusCodes.Status400BadRequest, "photoMissing", "Attach exactly one file, named photo."));
         }
 
         var file = form.Files[0];
         if (file.Length > ProductPhotoRules.MaximumBytes)
         {
-            return (null, PhotoProblem(StatusCodes.Status413PayloadTooLarge, "photoTooLarge", "The photo is too large. Send a compressed JPEG."));
+            return (null, null, PhotoProblem(StatusCodes.Status413PayloadTooLarge, "photoTooLarge", "The photo is too large. Send a compressed JPEG."));
         }
 
         await using var stream = file.OpenReadStream();
         using var buffer = new MemoryStream((int)file.Length);
         await stream.CopyToAsync(buffer, cancellationToken);
-        return (buffer.ToArray(), null);
+        return (buffer.ToArray(), form, null);
     }
 
     internal static IResult InvalidPhotoProblem(InvalidProductPhotoException exception) =>
