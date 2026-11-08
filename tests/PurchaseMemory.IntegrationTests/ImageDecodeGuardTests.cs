@@ -71,6 +71,22 @@ public sealed class ImageDecodeGuardTests
     }
 
     [Fact]
+    public void ABaselineJpegWhoseFirstScanMissesComponentsIsNotTreatedAsBaseline()
+    {
+        var baseline = TestImages.Jpeg(16, 16);
+        Assert.True(ReceiptImageCompressor.IsBaselineJpeg(baseline));
+
+        // libjpeg buffers the whole image when the first scan carries fewer
+        // components than the frame (non-interleaved), just like progressive.
+        var sos = baseline.AsSpan().IndexOf(new byte[] { 0xFF, 0xDA });
+        Assert.True(sos > 0);
+        var nonInterleaved = (byte[])baseline.Clone();
+        nonInterleaved[sos + 4] = 1;
+
+        Assert.False(ReceiptImageCompressor.IsBaselineJpeg(nonInterleaved));
+    }
+
+    [Fact]
     public void ANormalProgressivePhotoIsStillAccepted()
     {
         var photo = ProgressiveJpegFixtures.Phone();

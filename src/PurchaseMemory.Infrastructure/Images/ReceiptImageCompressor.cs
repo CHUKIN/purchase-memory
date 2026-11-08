@@ -131,11 +131,14 @@ public sealed class ReceiptImageCompressor(ReceiptDisplayCopyOptions options)
     }
 
     /// <summary>
-    /// True only when a strict walk of the segments reaches a baseline or
-    /// extended-sequential frame header (SOF0/SOF1) before the first scan.
-    /// Anything else (progressive, other frame types, stray bytes that libjpeg
-    /// would skip, truncation) returns false, so the caller charges the
-    /// progressive worst case: fail closed against parser differences.
+    /// True only when a strict walk of the segments finds a baseline or
+    /// extended-sequential frame (SOF0/SOF1) and the first scan carries all of
+    /// its components: the case where libjpeg decodes straight through without
+    /// full-size coefficient buffers (it buffers when the frame is progressive
+    /// or the first scan has fewer components than the frame). Anything else
+    /// (other frame types, non-interleaved scans, stray bytes that libjpeg would
+    /// skip, truncation) returns false, so the caller charges the worst case:
+    /// fail closed against parser differences.
     /// </summary>
     internal static bool IsBaselineJpeg(ReadOnlySpan<byte> jpeg)
     {
@@ -144,6 +147,7 @@ public sealed class ReceiptImageCompressor(ReceiptDisplayCopyOptions options)
             return false;
         }
 
+        var frameComponents = -1;
         var i = 2;
         while (i + 3 < jpeg.Length)
         {
@@ -159,24 +163,40 @@ public sealed class ReceiptImageCompressor(ReceiptDisplayCopyOptions options)
                 continue;
             }
 
-            if (marker is 0xC0 or 0xC1)
-            {
-                return true;
-            }
-
-            // Any other frame type, the first scan or the end image: not provably baseline.
-            if (marker is (>= 0xC2 and <= 0xCF and not 0xC4 and not 0xC8 and not 0xCC) or 0xDA or 0xD9)
-            {
-                return false;
-            }
-
-            if (marker is 0x01 or (>= 0xD0 and <= 0xD8))
+            if (marker is 0x01 or (>= 0xD0 and <= 0xD7))
             {
                 i += 2;
                 continue;
             }
 
-            i += 2 + ((jpeg[i + 2] << 8) | jpeg[i + 3]);
+            var length = (jpeg[i + 2] << 8) | jpeg[i + 3];
+            if (length < 2 || i + 2 + length > jpeg.Length)
+            {
+                return false;
+            }
+
+            if (marker is 0xC0 or 0xC1)
+            {
+                // SOF: length(2) precision(1) height(2) width(2) Nf(1).
+                if (frameComponents >= 0 || length < 8)
+                {
+                    return false;
+                }
+
+                frameComponents = jpeg[i + 9];
+            }
+            else if (marker == 0xDA)
+            {
+                // SOS: length(2) Ns(1). Interleaved single scan only.
+                return frameComponents > 0 && length >= 3 && jpeg[i + 4] == frameComponents;
+            }
+            else if (marker is (>= 0xC2 and <= 0xCF and not 0xC4 and not 0xC8 and not 0xCC) or 0xD8 or 0xD9)
+            {
+                // Any other frame type, a nested start or the end before the first scan.
+                return false;
+            }
+
+            i += 2 + length;
         }
 
         return false;
