@@ -39,18 +39,24 @@ public sealed partial class ProductPhotoStore : IProductPhotoStore
         ArgumentNullException.ThrowIfNull(logger);
         _storage = storage;
         _logger = logger;
-        var guard = options.Value.DisplayCopy.MaximumSourcePixels;
+        var limits = options.Value.DisplayCopy;
         _photo = new ReceiptImageCompressor(new ReceiptDisplayCopyOptions
         {
             MaximumLongSidePixels = PhotoLongSidePixels,
             JpegQuality = 82,
-            MaximumSourcePixels = guard
+            MaximumSourcePixels = limits.MaximumSourcePixels,
+            MaximumDecodePixels = limits.MaximumDecodePixels,
+            MaximumConcurrentDecodePixels = limits.MaximumConcurrentDecodePixels,
+            DecodeWaitSeconds = limits.DecodeWaitSeconds
         });
         _thumbnail = new ReceiptImageCompressor(new ReceiptDisplayCopyOptions
         {
             MaximumLongSidePixels = ThumbnailLongSidePixels,
             JpegQuality = 72,
-            MaximumSourcePixels = guard
+            MaximumSourcePixels = limits.MaximumSourcePixels,
+            MaximumDecodePixels = limits.MaximumDecodePixels,
+            MaximumConcurrentDecodePixels = limits.MaximumConcurrentDecodePixels,
+            DecodeWaitSeconds = limits.DecodeWaitSeconds
         });
     }
 
@@ -67,8 +73,10 @@ public sealed partial class ProductPhotoStore : IProductPhotoStore
         }
 
         var original = image.Content.ToArray();
-        var copy = _photo.TryCreate(original)
-            ?? throw new InvalidProductPhotoException(InvalidProductPhotoReason.NotAnImage, "The photo could not be read as an image.");
+        var copy = _photo.TryCreate(original, out var tooLarge)
+            ?? throw (tooLarge
+                ? new InvalidProductPhotoException(InvalidProductPhotoReason.TooLarge, "The photo is too large in pixels. Send a compressed JPEG.")
+                : new InvalidProductPhotoException(InvalidProductPhotoReason.NotAnImage, "The photo could not be read as an image."));
         // From the copy, not the original: it is already upright and small.
         var thumbnail = _thumbnail.TryCreate(copy.Content)
             ?? throw new InvalidProductPhotoException(InvalidProductPhotoReason.NotAnImage, "The photo could not be read as an image.");

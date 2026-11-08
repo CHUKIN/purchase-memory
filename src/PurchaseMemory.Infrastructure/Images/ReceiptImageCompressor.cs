@@ -16,9 +16,16 @@ public sealed class ReceiptImageCompressor(ReceiptDisplayCopyOptions options)
     /// Returns null when the bytes cannot be decoded or exceed the pixel guard;
     /// the caller then keeps serving the original.
     /// </summary>
-    public ReceiptDisplayCopy? TryCreate(byte[] original)
+    public ReceiptDisplayCopy? TryCreate(byte[] original) => TryCreate(original, out _);
+
+    /// <summary>
+    /// Same as <see cref="TryCreate(byte[])"/>; <paramref name="tooLarge"/> tells
+    /// "refused because of its pixel size" apart from "not an image".
+    /// </summary>
+    public ReceiptDisplayCopy? TryCreate(byte[] original, out bool tooLarge)
     {
         ArgumentNullException.ThrowIfNull(original);
+        tooLarge = false;
 
         using var data = SKData.CreateCopy(original);
         using var codec = SKCodec.Create(data);
@@ -32,6 +39,7 @@ public sealed class ReceiptImageCompressor(ReceiptDisplayCopyOptions options)
         if (sourceWidth <= 0 || sourceHeight <= 0
             || (long)sourceWidth * sourceHeight > options.MaximumSourcePixels)
         {
+            tooLarge = sourceWidth > 0 && sourceHeight > 0;
             return null;
         }
 
@@ -43,6 +51,40 @@ public sealed class ReceiptImageCompressor(ReceiptDisplayCopyOptions options)
         // source pixel; the final resize then only covers the remaining factor.
         var decodeSize = ChooseDecodeSize(codec, sourceWidth, sourceHeight, scale);
 
+        var width = Math.Max(1, (int)Math.Round(sourceWidth * scale));
+        var height = Math.Max(1, (int)Math.Round(sourceHeight * scale));
+        var needsResize = decodeSize.Width != width || decodeSize.Height != height;
+        var origin = codec.EncodedOrigin;
+        var swapsAxes = origin is SKEncodedOrigin.LeftTop or SKEncodedOrigin.RightTop
+            or SKEncodedOrigin.RightBottom or SKEncodedOrigin.LeftBottom;
+        var outputWidth = swapsAxes ? height : width;
+        var outputHeight = swapsAxes ? width : height;
+
+        // Footprint of the whole call in 4-byte pixel units, refused before allocating:
+        // the decoded bitmap, the resized one (if any) and the upright output, plus,
+        // for a progressive JPEG, the decoder's full-size coefficient buffers (kept
+        // whatever the output size: ~2 bytes x 3 components per source pixel = 1.5).
+        var footprint = (long)decodeSize.Width * decodeSize.Height
+            + (needsResize ? (long)width * height : 0)
+            + (long)outputWidth * outputHeight;
+        if (IsProgressiveJpeg(original))
+        {
+            footprint += (long)sourceWidth * sourceHeight * 3 / 2;
+        }
+
+        if (footprint > options.MaximumDecodePixels)
+        {
+            tooLarge = true;
+            return null;
+        }
+
+        using var lease = ImageDecodeGate.ForBudget(options.MaximumConcurrentDecodePixels)
+            .TryEnter(footprint, TimeSpan.FromSeconds(options.DecodeWaitSeconds));
+        if (lease is null)
+        {
+            return null;
+        }
+
         using var decoded = new SKBitmap(new SKImageInfo(
             decodeSize.Width, decodeSize.Height, SKColorType.Rgba8888, SKAlphaType.Premul));
         var result = codec.GetPixels(decoded.Info, decoded.GetPixels());
@@ -51,21 +93,14 @@ public sealed class ReceiptImageCompressor(ReceiptDisplayCopyOptions options)
             return null;
         }
 
-        var width = Math.Max(1, (int)Math.Round(sourceWidth * scale));
-        var height = Math.Max(1, (int)Math.Round(sourceHeight * scale));
-
-        using var resized = decodeSize.Width != width || decodeSize.Height != height
+        using var resized = needsResize
             ? decoded.Resize(
                 new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul),
                 new SKSamplingOptions(SKCubicResampler.Mitchell))
             : null;
         var source = resized ?? decoded;
-
-        var origin = codec.EncodedOrigin;
-        var swapsAxes = origin is SKEncodedOrigin.LeftTop or SKEncodedOrigin.RightTop
-            or SKEncodedOrigin.RightBottom or SKEncodedOrigin.LeftBottom;
-        var outputWidth = swapsAxes ? height : width;
-        var outputHeight = swapsAxes ? width : height;
+        // Immutable bitmaps are wrapped by SKImage.FromBitmap instead of copied.
+        source.SetImmutable();
 
         using var output = new SKBitmap(new SKImageInfo(
             outputWidth,
@@ -82,6 +117,8 @@ public sealed class ReceiptImageCompressor(ReceiptDisplayCopyOptions options)
             canvas.DrawImage(sourceImage, 0, 0, new SKSamplingOptions(SKFilterMode.Nearest));
         }
 
+        output.SetImmutable();
+
         using var image = SKImage.FromBitmap(output);
         using var encoded = image.Encode(SKEncodedImageFormat.Jpeg, options.JpegQuality);
         if (encoded is null)
@@ -90,6 +127,56 @@ public sealed class ReceiptImageCompressor(ReceiptDisplayCopyOptions options)
         }
 
         return new ReceiptDisplayCopy(encoded.ToArray(), outputWidth, outputHeight, decodeSize.Width, decodeSize.Height);
+    }
+
+    /// <summary>
+    /// True when the JPEG's frame header (before the first scan) is progressive
+    /// (SOF2, SOF6, SOF10). Such files make libjpeg allocate full-size coefficient
+    /// buffers even when decoding at 1/8 size.
+    /// </summary>
+    internal static bool IsProgressiveJpeg(ReadOnlySpan<byte> jpeg)
+    {
+        if (jpeg.Length < 4 || jpeg[0] != 0xFF || jpeg[1] != 0xD8)
+        {
+            return false;
+        }
+
+        var i = 2;
+        while (i + 3 < jpeg.Length)
+        {
+            if (jpeg[i] != 0xFF)
+            {
+                return false;
+            }
+
+            var marker = jpeg[i + 1];
+            if (marker == 0xFF)
+            {
+                i++;
+                continue;
+            }
+
+            if (marker is 0xC2 or 0xC6 or 0xCA)
+            {
+                return true;
+            }
+
+            // Other frame types and the first scan end the search.
+            if (marker is 0xC0 or 0xC1 or 0xC3 or 0xC5 or 0xC7 or 0xC9 or 0xCB or 0xCD or 0xCF or 0xDA or 0xD9)
+            {
+                return false;
+            }
+
+            if (marker is 0x01 or (>= 0xD0 and <= 0xD8))
+            {
+                i += 2;
+                continue;
+            }
+
+            i += 2 + ((jpeg[i + 2] << 8) | jpeg[i + 3]);
+        }
+
+        return false;
     }
 
     /// <summary>

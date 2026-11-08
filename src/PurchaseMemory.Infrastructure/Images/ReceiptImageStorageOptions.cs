@@ -36,8 +36,31 @@ public sealed class ReceiptDisplayCopyOptions
 
     public int JpegQuality { get; set; } = 82;
 
-    /// <summary>Decoding guard against decompression bombs (about 8 700 × 5 800).</summary>
+    /// <summary>
+    /// Declared size (read from the header, before any decode) above which an
+    /// image is refused. Generous because JPEG/WebP decode straight to a
+    /// fraction of the size; the real memory limit is <see cref="MaximumDecodePixels"/>.
+    /// </summary>
     public long MaximumSourcePixels { get; set; } = 50_000_000;
+
+    /// <summary>
+    /// Largest memory footprint of one image call, in 4-byte pixels (32 MP = 128 MB):
+    /// the decoded bitmap + the resized one + the output, plus, for a progressive
+    /// JPEG, 1.5 x the source pixels of coefficient buffers. A PNG cannot decode at
+    /// a reduced size, so a crafted 7000 x 7000 PNG is refused while a 16 MP one
+    /// passes. A 48 MP baseline JPEG decodes at 1/2 size and passes; a progressive
+    /// one passes up to roughly 14 MP of source.
+    /// </summary>
+    public long MaximumDecodePixels { get; set; } = 32_000_000;
+
+    /// <summary>
+    /// Pixels (footprints above) all calls of the process may hold at once: 40 MP =
+    /// 160 MB at 4 bytes per pixel. Parallel uploads queue behind it.
+    /// </summary>
+    public long MaximumConcurrentDecodePixels { get; set; } = 40_000_000;
+
+    /// <summary>How long an upload waits for the decode budget before giving up.</summary>
+    public int DecodeWaitSeconds { get; set; } = 30;
 }
 
 public sealed class S3StorageOptions
