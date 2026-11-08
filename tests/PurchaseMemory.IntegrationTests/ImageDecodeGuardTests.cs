@@ -87,6 +87,21 @@ public sealed class ImageDecodeGuardTests
     }
 
     [Fact]
+    public void AnInterlacedPngIsChargedForItsFullSizeRowBuffer()
+    {
+        Assert.True(ReceiptImageCompressor.IsNonInterlacedPng(TestImages.Png(16, 16)));
+        var plain = TestImages.PngDeclaring(TestImages.Png(16, 16), 3500, 3500);
+        var interlaced = TestImages.PngDeclaring(TestImages.Png(16, 16), 3500, 3500, interlaced: true);
+        Assert.False(ReceiptImageCompressor.IsNonInterlacedPng(interlaced));
+
+        new ReceiptImageCompressor(Defaults).TryCreate(plain, out var plainTooLarge);
+        Assert.False(plainTooLarge);
+
+        Assert.Null(new ReceiptImageCompressor(Defaults).TryCreate(interlaced, out var tooLarge));
+        Assert.True(tooLarge);
+    }
+
+    [Fact]
     public void ANormalProgressivePhotoIsStillAccepted()
     {
         var photo = ProgressiveJpegFixtures.Phone();

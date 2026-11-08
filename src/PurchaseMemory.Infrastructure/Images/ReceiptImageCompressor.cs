@@ -73,6 +73,14 @@ public sealed class ReceiptImageCompressor(ReceiptDisplayCopyOptions options)
             footprint += (long)sourceWidth * sourceHeight * 2;
         }
 
+        // Interlaced (Adam7) PNG: Skia keeps the whole image in its source row
+        // format (up to 8 bytes per pixel for 16-bit RGBA) on top of the bitmap.
+        // Measured: 4000 x 4000 16-bit interlaced +186 MB vs +64 MB plain.
+        if (codec.EncodedFormat == SKEncodedImageFormat.Png && !IsNonInterlacedPng(original))
+        {
+            footprint += (long)sourceWidth * sourceHeight * 2;
+        }
+
         if (footprint > options.MaximumDecodePixels)
         {
             tooLarge = true;
@@ -200,6 +208,21 @@ public sealed class ReceiptImageCompressor(ReceiptDisplayCopyOptions options)
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// True only for a PNG whose IHDR (always the first chunk) says "no
+    /// interlace". Anything unreadable counts as interlaced: fail closed.
+    /// </summary>
+    internal static bool IsNonInterlacedPng(ReadOnlySpan<byte> png)
+    {
+        ReadOnlySpan<byte> signature = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
+        ReadOnlySpan<byte> ihdr = "IHDR"u8;
+        return png.Length >= 29
+            && png[..8].SequenceEqual(signature)
+            && png[8] == 0 && png[9] == 0 && png[10] == 0 && png[11] == 13
+            && png.Slice(12, 4).SequenceEqual(ihdr)
+            && png[28] == 0;
     }
 
     /// <summary>

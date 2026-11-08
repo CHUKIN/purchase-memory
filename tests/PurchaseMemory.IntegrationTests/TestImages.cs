@@ -37,11 +37,12 @@ internal static class TestImages
     /// Rewrites the declared size in a PNG header (and its CRC): a tiny file that
     /// claims to be huge, like a decompression bomb. Nothing else is changed.
     /// </summary>
-    public static byte[] PngDeclaring(byte[] png, int width, int height)
+    public static byte[] PngDeclaring(byte[] png, int width, int height, bool interlaced = false)
     {
         var copy = (byte[])png.Clone();
         BinaryPrimitives.WriteUInt32BigEndian(copy.AsSpan(16), (uint)width);
         BinaryPrimitives.WriteUInt32BigEndian(copy.AsSpan(20), (uint)height);
+        copy[28] = interlaced ? (byte)1 : (byte)0;
         var crc = Crc32(copy.AsSpan(12, 17));
         BinaryPrimitives.WriteUInt32BigEndian(copy.AsSpan(29), crc);
         return copy;
