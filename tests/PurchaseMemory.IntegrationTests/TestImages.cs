@@ -33,6 +33,52 @@ internal static class TestImages
         return [.. jpeg[..2], .. segment, .. jpeg[2..]];
     }
 
+    /// <summary>
+    /// Rewrites the declared size in a PNG header (and its CRC): a tiny file that
+    /// claims to be huge, like a decompression bomb. Nothing else is changed.
+    /// </summary>
+    public static byte[] PngDeclaring(byte[] png, int width, int height)
+    {
+        var copy = (byte[])png.Clone();
+        BinaryPrimitives.WriteUInt32BigEndian(copy.AsSpan(16), (uint)width);
+        BinaryPrimitives.WriteUInt32BigEndian(copy.AsSpan(20), (uint)height);
+        var crc = Crc32(copy.AsSpan(12, 17));
+        BinaryPrimitives.WriteUInt32BigEndian(copy.AsSpan(29), crc);
+        return copy;
+    }
+
+    /// <summary>Rewrites the declared size in the JPEG's start-of-frame segment.</summary>
+    public static byte[] JpegDeclaring(byte[] jpeg, int width, int height)
+    {
+        var copy = (byte[])jpeg.Clone();
+        for (var i = 2; i < copy.Length - 9; i++)
+        {
+            if (copy[i] == 0xFF && copy[i + 1] is 0xC0 or 0xC2)
+            {
+                BinaryPrimitives.WriteUInt16BigEndian(copy.AsSpan(i + 5), (ushort)height);
+                BinaryPrimitives.WriteUInt16BigEndian(copy.AsSpan(i + 7), (ushort)width);
+                return copy;
+            }
+        }
+
+        throw new InvalidOperationException("No start-of-frame segment.");
+    }
+
+    private static uint Crc32(ReadOnlySpan<byte> data)
+    {
+        var crc = 0xFFFFFFFFu;
+        foreach (var value in data)
+        {
+            crc ^= value;
+            for (var bit = 0; bit < 8; bit++)
+            {
+                crc = (crc & 1) != 0 ? (crc >> 1) ^ 0xEDB88320u : crc >> 1;
+            }
+        }
+
+        return ~crc;
+    }
+
     public static SKBitmap Decode(byte[] bytes) =>
         SKBitmap.Decode(bytes) ?? throw new InvalidOperationException("Test image did not decode.");
 

@@ -1,3 +1,4 @@
+using PurchaseMemory.Application.Products.PhotoNames;
 using PurchaseMemory.Application.Purchases.HaulPhoto;
 using PurchaseMemory.Infrastructure.Images;
 using SkiaSharp;
@@ -33,23 +34,38 @@ public sealed class HaulPhotoImageProcessor : IHaulPhotoImageProcessor
     private readonly ReceiptImageCompressor _source;
     private readonly long _maximumSourcePixels;
 
+    private readonly ReceiptDisplayCopyOptions _limits;
+
     public HaulPhotoImageProcessor(long maximumSourcePixels = 50_000_000)
+        : this(new ReceiptDisplayCopyOptions { MaximumSourcePixels = maximumSourcePixels })
     {
+    }
+
+    public HaulPhotoImageProcessor(ReceiptDisplayCopyOptions limits)
+    {
+        ArgumentNullException.ThrowIfNull(limits);
+        _limits = limits;
+        var maximumSourcePixels = limits.MaximumSourcePixels;
         _maximumSourcePixels = maximumSourcePixels;
         _source = new ReceiptImageCompressor(new ReceiptDisplayCopyOptions
         {
             MaximumLongSidePixels = SourceLongSidePixels,
             JpegQuality = JpegQuality,
-            MaximumSourcePixels = maximumSourcePixels
+            MaximumSourcePixels = maximumSourcePixels,
+            MaximumDecodePixels = limits.MaximumDecodePixels,
+            MaximumConcurrentDecodePixels = limits.MaximumConcurrentDecodePixels,
+            DecodeWaitSeconds = limits.DecodeWaitSeconds
         });
     }
 
     public HaulPhotoImages? Prepare(ReadOnlyMemory<byte> upload)
     {
-        var source = _source.TryCreate(upload.ToArray());
+        var source = _source.TryCreate(upload.ToArray(), out var tooLarge);
         if (source is null)
         {
-            return null;
+            return tooLarge
+                ? throw new InvalidProductPhotoException(InvalidProductPhotoReason.TooLarge, "The photo is too large in pixels. Send a compressed JPEG.")
+                : null;
         }
 
         var modelLongSide = ModelLongSide(source.Width, source.Height);
@@ -57,7 +73,10 @@ public sealed class HaulPhotoImageProcessor : IHaulPhotoImageProcessor
         {
             MaximumLongSidePixels = modelLongSide,
             JpegQuality = 80,
-            MaximumSourcePixels = _maximumSourcePixels
+            MaximumSourcePixels = _maximumSourcePixels,
+            MaximumDecodePixels = _limits.MaximumDecodePixels,
+            MaximumConcurrentDecodePixels = _limits.MaximumConcurrentDecodePixels,
+            DecodeWaitSeconds = _limits.DecodeWaitSeconds
         }).TryCreate(source.Content);
         if (model is null)
         {

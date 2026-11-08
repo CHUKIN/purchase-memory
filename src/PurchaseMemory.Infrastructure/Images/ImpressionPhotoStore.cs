@@ -55,8 +55,10 @@ public sealed partial class ImpressionPhotoStore : IImpressionPhotoStore
             throw new InvalidDataException("Only JPEG, PNG and WebP photos are supported.");
         }
 
-        var copy = _compressor.TryCreate(bytes)
-            ?? throw new InvalidDataException("The photo could not be read as an image.");
+        var copy = _compressor.TryCreate(bytes, out var tooLarge)
+            ?? throw new InvalidDataException(tooLarge
+                ? "The photo is too large in pixels. Send a compressed JPEG."
+                : "The photo could not be read as an image.");
         var key = $"{KeyPrefix}/{impressionId:N}/photo.jpg";
         await _storage.WriteAsync(key, copy.Content, ReceiptImageCompressor.ContentType, cancellationToken);
         PhotoStored(_logger, impressionId, bytes.Length, copy.Content.Length, copy.Width, copy.Height);

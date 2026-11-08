@@ -117,7 +117,7 @@ builder.Services.AddSingleton<IHaulPhotoMatcher>(serviceProvider =>
     serviceProvider.GetRequiredService<AnthropicHaulPhotoMatcher>());
 builder.Services.AddSingleton<IHaulPhotoImageProcessor>(serviceProvider =>
     new HaulPhotoImageProcessor(serviceProvider
-        .GetRequiredService<Microsoft.Extensions.Options.IOptions<ReceiptImageStorageOptions>>().Value.DisplayCopy.MaximumSourcePixels));
+        .GetRequiredService<Microsoft.Extensions.Options.IOptions<ReceiptImageStorageOptions>>().Value.DisplayCopy));
 builder.Services.AddScoped<IHaulPhotoService, HaulPhotoService>();
 builder.Services
     .AddOptions<ProductCategorizationOptions>()

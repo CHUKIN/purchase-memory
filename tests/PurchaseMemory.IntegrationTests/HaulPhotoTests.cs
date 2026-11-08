@@ -131,6 +131,10 @@ public sealed class HaulPhotoTests
         Assert.Equal("photoNotAnImage", (await fake.Content.ReadFromJsonAsync<JsonElement>(Cancel)).GetProperty("code").GetString());
         Assert.Equal(HttpStatusCode.BadRequest, (await client.PostAsync(path, Form([]), Cancel)).StatusCode);
         Assert.Equal(HttpStatusCode.BadRequest, (await client.PostAsJsonAsync(path, new { photo = "base64" }, Cancel)).StatusCode);
+        // A tiny PNG declaring 7000 x 7000: refused from the header, no decode, no model call.
+        var bomb = await client.PostAsync(path, Form(ImageDecodeGuardTests.Bomb(7000)), Cancel);
+        Assert.Equal(HttpStatusCode.RequestEntityTooLarge, bomb.StatusCode);
+        Assert.Equal("photoTooLarge", (await bomb.Content.ReadFromJsonAsync<JsonElement>(Cancel)).GetProperty("code").GetString());
         Assert.Equal(0, matcher.Calls);
 
         // Saving checks its pairs field strictly as well.
