@@ -44,14 +44,15 @@ public sealed class ReceiptDisplayCopyOptions
     public long MaximumSourcePixels { get; set; } = 50_000_000;
 
     /// <summary>
-    /// Largest memory footprint of one image call, in 4-byte pixels (32 MP = 128 MB):
-    /// the decoded bitmap + the resized one + the output, plus, for a progressive
-    /// JPEG, 1.5 x the source pixels of coefficient buffers. A PNG cannot decode at
-    /// a reduced size, so a crafted 7000 x 7000 PNG is refused while a 16 MP one
-    /// passes. A 48 MP baseline JPEG decodes at 1/2 size and passes; a progressive
-    /// one passes up to roughly 14 MP of source.
+    /// Largest memory footprint of one image call, in 4-byte pixels (40 MP = 160 MB,
+    /// equal to the shared budget, so it never raises the process-wide total):
+    /// the decoded bitmap + the resized one + the output, plus, for any JPEG not
+    /// provably baseline, 2 x the source pixels of coefficient buffers. A PNG cannot
+    /// decode at a reduced size, so a crafted 7000 x 7000 PNG is refused while a
+    /// 16 MP one passes. A 48 MP baseline JPEG decodes at 1/2 size and passes; a
+    /// progressive one passes up to roughly 12 MP of source.
     /// </summary>
-    public long MaximumDecodePixels { get; set; } = 32_000_000;
+    public long MaximumDecodePixels { get; set; } = 40_000_000;
 
     /// <summary>
     /// Pixels (footprints above) all calls of the process may hold at once: 40 MP =

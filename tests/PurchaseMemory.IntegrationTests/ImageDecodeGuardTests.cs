@@ -47,8 +47,8 @@ public sealed class ImageDecodeGuardTests
     public void AProgressiveJpegBombIsChargedForItsFullSizeCoefficientBuffers(int width, int height)
     {
         var small = ProgressiveJpegFixtures.Small();
-        Assert.True(ReceiptImageCompressor.IsProgressiveJpeg(small));
-        Assert.False(ReceiptImageCompressor.IsProgressiveJpeg(TestImages.Jpeg(16, 16)));
+        Assert.False(ReceiptImageCompressor.IsBaselineJpeg(small));
+        Assert.True(ReceiptImageCompressor.IsBaselineJpeg(TestImages.Jpeg(16, 16)));
         var bomb = TestImages.JpegDeclaring(small, width, height);
 
         Assert.True(bomb.Length < 2000);
@@ -57,10 +57,24 @@ public sealed class ImageDecodeGuardTests
     }
 
     [Fact]
+    public void AStrayByteBeforeTheFrameHeaderDoesNotHideAProgressiveBomb()
+    {
+        var bomb = TestImages.JpegDeclaring(ProgressiveJpegFixtures.Small(), 8000, 6000);
+        // libjpeg skips garbage between segments; the scanner must not treat it as baseline.
+        var withStrayByte = new byte[bomb.Length + 1];
+        bomb.AsSpan(0, 2).CopyTo(withStrayByte);
+        withStrayByte[2] = 0x00;
+        bomb.AsSpan(2).CopyTo(withStrayByte.AsSpan(3));
+
+        Assert.False(ReceiptImageCompressor.IsBaselineJpeg(withStrayByte));
+        Assert.Null(new ReceiptImageCompressor(Defaults).TryCreate(withStrayByte));
+    }
+
+    [Fact]
     public void ANormalProgressivePhotoIsStillAccepted()
     {
         var photo = ProgressiveJpegFixtures.Phone();
-        Assert.True(ReceiptImageCompressor.IsProgressiveJpeg(photo));
+        Assert.False(ReceiptImageCompressor.IsBaselineJpeg(photo));
 
         var copy = new ReceiptImageCompressor(Defaults).TryCreate(photo, out var tooLarge);
 

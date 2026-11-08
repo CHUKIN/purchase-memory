@@ -62,14 +62,15 @@ public sealed class ReceiptImageCompressor(ReceiptDisplayCopyOptions options)
 
         // Footprint of the whole call in 4-byte pixel units, refused before allocating:
         // the decoded bitmap, the resized one (if any) and the upright output, plus,
-        // for a progressive JPEG, the decoder's full-size coefficient buffers (kept
-        // whatever the output size: ~2 bytes x 3 components per source pixel = 1.5).
+        // for a JPEG that may be progressive, the decoder's full-size coefficient
+        // buffers (kept whatever the output size: ~2 bytes x up to 4 components per
+        // source pixel = 2 units).
         var footprint = (long)decodeSize.Width * decodeSize.Height
             + (needsResize ? (long)width * height : 0)
             + (long)outputWidth * outputHeight;
-        if (IsProgressiveJpeg(original))
+        if (codec.EncodedFormat == SKEncodedImageFormat.Jpeg && !IsBaselineJpeg(original))
         {
-            footprint += (long)sourceWidth * sourceHeight * 3 / 2;
+            footprint += (long)sourceWidth * sourceHeight * 2;
         }
 
         if (footprint > options.MaximumDecodePixels)
@@ -130,11 +131,13 @@ public sealed class ReceiptImageCompressor(ReceiptDisplayCopyOptions options)
     }
 
     /// <summary>
-    /// True when the JPEG's frame header (before the first scan) is progressive
-    /// (SOF2, SOF6, SOF10). Such files make libjpeg allocate full-size coefficient
-    /// buffers even when decoding at 1/8 size.
+    /// True only when a strict walk of the segments reaches a baseline or
+    /// extended-sequential frame header (SOF0/SOF1) before the first scan.
+    /// Anything else (progressive, other frame types, stray bytes that libjpeg
+    /// would skip, truncation) returns false, so the caller charges the
+    /// progressive worst case: fail closed against parser differences.
     /// </summary>
-    internal static bool IsProgressiveJpeg(ReadOnlySpan<byte> jpeg)
+    internal static bool IsBaselineJpeg(ReadOnlySpan<byte> jpeg)
     {
         if (jpeg.Length < 4 || jpeg[0] != 0xFF || jpeg[1] != 0xD8)
         {
@@ -156,13 +159,13 @@ public sealed class ReceiptImageCompressor(ReceiptDisplayCopyOptions options)
                 continue;
             }
 
-            if (marker is 0xC2 or 0xC6 or 0xCA)
+            if (marker is 0xC0 or 0xC1)
             {
                 return true;
             }
 
-            // Other frame types and the first scan end the search.
-            if (marker is 0xC0 or 0xC1 or 0xC3 or 0xC5 or 0xC7 or 0xC9 or 0xCB or 0xCD or 0xCF or 0xDA or 0xD9)
+            // Any other frame type, the first scan or the end image: not provably baseline.
+            if (marker is (>= 0xC2 and <= 0xCF and not 0xC4 and not 0xC8 and not 0xCC) or 0xDA or 0xD9)
             {
                 return false;
             }
