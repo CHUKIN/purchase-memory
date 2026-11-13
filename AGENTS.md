@@ -37,11 +37,14 @@ the owner explicitly changes the process.
 
 Before planning a stage, check:
 
+- `ЧТО_ДАЛЬШЕ.md` — the live plan: standing owner decisions and open items;
+- `КОНТЕКСТ_ПРОЕКТА.md` — current architecture, decisions made and the map of
+  documents;
 - `ПРОДУКТОВАЯ_СЕССИЯ.md` — confirmed requirements and product boundaries;
 - `ДИЗАЙН_БРИФ_И_UI_СТЕК.md` — visual system and UI stages;
-- `РЕЗУЛЬТАТЫ_ТЕХНИЧЕСКОГО_ЯДРА.md` — proven capabilities and known limits;
-- `КОНТЕКСТ_ПРОЕКТА.md` — current architecture, decisions made and the map of
-  documents (plans `ПЛАН_*.md`, stage results `РЕЗУЛЬТАТЫ_*.md`);
+- `docs/results/РЕЗУЛЬТАТЫ_*.md` — results of the stage's area (read only the
+  ones the stage touches; `РЕЗУЛЬТАТЫ_ТЕХНИЧЕСКОГО_ЯДРА.md` — proven
+  capabilities and known limits);
 - the actual code and tests — documentation does not replace checking the
   implementation.
 
@@ -140,9 +143,16 @@ anything that touches prod only with the owner's consent.
 Independent stages may run in parallel in separate worktrees; the shared
 integration review and the full test set run once after merging.
 
-Deploy: several finished stages may be accumulated and deployed as a batch
-after `scripts/smoke-deploy.sh` (see `ЧТО_ДАЛЬШЕ.md`). A stage with a database
-migration is deployed on its own, with a prod database backup before it.
+Deploy: several finished stages may be accumulated and deployed as a batch. A
+stage with a database migration is deployed on its own, with a prod database
+backup (in-DB schema copy) before it. Until `scripts/smoke-deploy.sh` exists
+(candidate in `ЧТО_ДАЛЬШЕ.md`), the root agent deploys by hand: owner's yes →
+pre-deploy check → backup if there is a migration →
+`zsh -ic './scripts/publish-image.sh'` → Render deploy by the image digest
+(the `Digest:` line) → wait for live → smoke (/ 200, protected APIs 401
+without a token and with a forged one, latest migration present) → entry in
+`docs/ЖУРНАЛ_ВЫКЛАДОК.md`. Service ids and safe key use are in the root
+agent's memory, never in the repository.
 
 Pre-deploy security check (owner's decision 2026-11-05): the stage review
 checks protection by reading code and tests; real bypass attempts happen once
@@ -157,6 +167,24 @@ smoke check after deploy is enough.
 Stage result file — short: what was done, check numbers, limits, next step (no
 retelling of the code).
 
+## Documents (owner's decision 2026-11-13)
+
+- The repository root holds only live documents: `AGENTS.md`, `CLAUDE.md`,
+  `README.md`, `КОНТЕКСТ_ПРОЕКТА.md`, `ЧТО_ДАЛЬШЕ.md`, `ПРОДУКТОВАЯ_СЕССИЯ.md`,
+  `ДИЗАЙН_БРИФ_И_UI_СТЕК.md`, `ВОПРОСЫ_ДЛЯ_ОБСУЖДЕНИЯ.md` and plans that still
+  have open stages.
+- Stage results: `docs/results/РЕЗУЛЬТАТЫ_<STAGE>.md`. Deploys: one entry in
+  `docs/ЖУРНАЛ_ВЫКЛАДОК.md`. A plan with no open stages moves to
+  `docs/archive/`.
+- `ЧТО_ДАЛЬШЕ.md` holds only open items. When something is deployed or
+  dropped, remove its line there (the record lives in the deploy log and the
+  result file). Do not keep image hashes, test counts or review history in
+  the plan.
+- Documents are referred to by bare file name (also in code comments); do not
+  rename a result file after it is referenced.
+- An agent reads the plan, the context and the results of its own area, not
+  the whole `docs/results/` folder.
+
 ## Lessons from past stages
 
 - Accept changes to receipt recognition (prompts, schema, models, pipeline)
@@ -169,7 +197,18 @@ retelling of the code).
   with real bypass attempts (requests without a token, with a forged token,
   from the network/through a proxy), not only by reading code — once per
   batch, in the pre-deploy check.
-- Each stage's result is a file `РЕЗУЛЬТАТЫ_<STAGE>.md`.
+- Each stage's result is a file `docs/results/РЕЗУЛЬТАТЫ_<STAGE>.md`.
+- The shell may hold paid keys (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`,
+  `AZURE_DOCINTEL_KEY`). Run tests and the local API with them unset
+  (`env -u ANTHROPIC_API_KEY -u OPENAI_API_KEY -u AZURE_DOCINTEL_KEY …`), so a
+  test run can never make a paid call.
+- If the pre-deploy security agent cannot finish (stopped, blocked), do not
+  relaunch it the same way and do not skip the check: the root agent measures
+  the risky paths itself on temporary data and writes into the result file
+  what was exercised and what was not.
+- Anything that decodes an uploaded image goes through `ReceiptImageCompressor`
+  / `ImageDecodeGate` (memory is charged before decoding; the server has
+  512 MB). A new upload path needs a bomb test (tiny file, huge declared size).
 - Language (owner's decisions 2026-10-06 and 2026-11-05): agent instructions
   (`AGENTS.md`), plans (`ПЛАН_*.md`, `ЧТО_ДАЛЬШЕ.md`), result files and other
   working notes for agents are in short English. Messages to the owner in chat

@@ -12,7 +12,7 @@
 | 1. Общий receipt workflow | Завершён и проверен 31 июля 2026 | Provider-neutral Application workflow, общий prompt/schema/parser/validator, resolver, тонкий Ollama adapter и совместимый `IReceiptExtractor` facade |
 | 2. OpenAI provider | Завершён и проверен 31 июля 2026 | OpenAI .NET 2.8.0, Responses API image input, strict Structured Outputs, status/error mapping, совместимый facade и opt-in smoke tool |
 | 3. Ollama parity | Завершён и проверен 31 июля 2026 | Native API, общий workflow/schema, `/api/show` vision guard до изображения, 76/76 offline tests и реальные smoke-прогоны |
-| Проверка ядра | Завершена 31 июля 2026 | [`Результаты`](РЕЗУЛЬТАТЫ_ТЕХНИЧЕСКОГО_ЯДРА.md): upload → queue → Ollama → `ready` draft; без автоматического сохранения |
+| Проверка ядра | Завершена 31 июля 2026 | [`Результаты`](../results/РЕЗУЛЬТАТЫ_ТЕХНИЧЕСКОГО_ЯДРА.md): upload → queue → Ollama → `ready` draft; без автоматического сохранения |
 | Совместный продуктовый этап | Следующий | [`Дизайн и набор функций`](СОВМЕСТНЫЙ_ЭТАП_ДИЗАЙН_И_ФУНКЦИИ.md) |
 | 4–7 | Backlog | Перепланировать после совместного выбора сценариев, экранов и scope первого релиза |
 
