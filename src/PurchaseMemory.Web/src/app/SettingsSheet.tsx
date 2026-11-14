@@ -1,5 +1,5 @@
 import { IonActionSheet, IonItem, IonLabel, IonList, IonNote, IonSegment, IonSegmentButton } from "@ionic/react";
-import { CircleCheck, CircleHelp, LogOut, ScanText } from "lucide-react";
+import { CircleCheck, CircleHelp, ClipboardCheck, LogOut, ScanText } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { RecognitionStatus } from "../api/types";
@@ -39,6 +39,10 @@ export function SettingsSheet({ isOpen, onClose, recognition, recognitionFailed 
         <ItemLink to={helpPath()} onClick={onClose}>
           <CircleHelp slot="start" size={22} className="pm-row-icon" aria-hidden="true" />
           <IonLabel>{t("settings.help")}</IonLabel>
+        </ItemLink>
+        <ItemLink to="/test-checklist" onClick={onClose}>
+          <ClipboardCheck slot="start" size={22} className="pm-row-icon" aria-hidden="true" />
+          <IonLabel>{t("settings.testChecklist")}</IonLabel>
         </ItemLink>
       </IonList>
 

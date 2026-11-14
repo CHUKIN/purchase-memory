@@ -117,7 +117,8 @@ export const helpRu: HelpText = {
       ],
       see: [
         "Вход в браузере и вход в приложении на экране «Домой» — разные: если вы вошли в Safari или Chrome, в приложении всё равно нужно войти один раз.",
-        "Новая версия приложения подхватывается сама при следующем открытии."
+        "Новая версия приложения подхватывается сама при следующем открытии.",
+        "«Ещё» → «Что протестировать» — список того, что стоит проверить на телефоне. Отметки хранятся только на этом устройстве."
       ],
       trouble: [
         "Снова открылся экран входа — скорее всего, вы входили по ссылке из письма: она открылась в браузере. Войдите в приложении по коду.",
@@ -687,7 +688,8 @@ export const helpEn: HelpText = {
       ],
       see: [
         "Signing in in the browser and in the Home Screen app are separate: even if you signed in in Safari or Chrome, sign in once more inside the app.",
-        "A new version of the app is picked up automatically the next time you open it."
+        "A new version of the app is picked up automatically the next time you open it.",
+        "“More” → “What to test” holds a checklist of things to check on the phone. The ticks stay only on this device."
       ],
       trouble: [
         "The sign-in screen came back — most likely you used the link from the email, which opened in the browser. Sign in inside the app with the code.",

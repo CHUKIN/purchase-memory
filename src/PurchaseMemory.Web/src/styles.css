@@ -155,6 +155,11 @@ ion-buttons .pm-help-link { margin: 0; }
 .pm-text-action { display: inline-flex; align-items: center; min-height: 44px; color: var(--ion-color-primary); text-decoration: none; }
 .pm-text-action:focus-visible { outline: 2px solid var(--ion-color-primary); outline-offset: 2px; border-radius: 6px; }
 .pm-home-intro { margin: 0 20px 14px; color: var(--pm-muted); font-size: 15px; line-height: 1.4; }
+.pm-check-row { width: 100%; min-height: 44px; padding: 10px 0; }
+.pm-check-text { display: flex; flex-direction: column; gap: 2px; }
+.pm-check-title { font-weight: 600; }
+.pm-check-description { color: var(--pm-muted); font-size: 14px; line-height: 1.4; }
+.pm-check-reset { display: flex; justify-content: center; margin-bottom: 24px; }
 .pm-row-icon-warning { color: var(--pm-warning-text); }
 .pm-danger-icon { color: var(--ion-color-danger); }
 .pm-job-progress { margin-top: 8px; height: 3px; border-radius: 2px; }

@@ -67,6 +67,7 @@ describe("App", () => {
     fireEvent.click(await screen.findByRole("button", { name: "Ещё: подсказки, настройки, выход" }));
     const settings = screen.getByRole("dialog");
     expect(within(settings).getByRole("link", { name: /Подсказки/ })).toHaveAttribute("href", "/help");
+    expect(within(settings).getByRole("link", { name: /Что протестировать/ })).toHaveAttribute("href", "/test-checklist");
     expect(within(settings).getByRole("button", { name: "Дозаполнить названия и категории" })).toBeInTheDocument();
     expect(within(settings).queryByRole("tab", { name: "English" })).not.toBeInTheDocument();
     expect(within(settings).queryByText("Язык")).not.toBeInTheDocument();

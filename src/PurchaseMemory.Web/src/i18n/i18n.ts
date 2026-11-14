@@ -55,6 +55,7 @@ export const resources = {
         open: "Ещё: подсказки, настройки, выход",
         title: "Настройки",
         help: "Подсказки",
+        testChecklist: "Что протестировать",
         language: "Язык",
         recognition: "Распознавание чеков",
         account: "Учётная запись",
@@ -91,6 +92,85 @@ export const resources = {
         alreadyRunning: "Уже идёт, подождите.",
         tooOften: "Слишком часто. Подождите немного и попробуйте снова.",
         failed: "Не получилось запустить. Попробуйте позже.",
+      },
+      testChecklist: {
+        title: "Что протестировать",
+        intro: "Список того, что стоит попробовать на телефоне. Отмечайте галочкой, что проверили. Отметки хранятся только на этом телефоне.",
+        progress: "Отмечено {{done}} из {{total}}",
+        reset: "Сбросить отметки",
+        outro: "Если что-то не так — сделайте снимок экрана и напишите, что ожидали увидеть.",
+        groups: {
+          barcodes: "Штрихкоды и фото товаров",
+          receipt: "Чек с камеры",
+          details: "Мелочи на экране",
+          comfort: "Удобство"
+        },
+        items: {
+          scanHome: {
+            title: "Сканировать штрихкод с главной",
+            description: "Нажмите «Сканировать штрихкод» на главной. Камера должна открыться, код — прочитаться, а нужный товар — найтись."
+          },
+          scanProducts: {
+            title: "Сканировать штрихкод на вкладке «Товары»",
+            description: "То же самое, но с кнопки на вкладке «Товары»."
+          },
+          unknownCode: {
+            title: "Неизвестный штрихкод",
+            description: "Отсканируйте код товара, которого ещё нет. Должна появиться кнопка «Создать товар», а код — попасть в «Запомненные коды»."
+          },
+          productPhoto: {
+            title: "Фото товара с камеры",
+            description: "Откройте товар и добавьте фото с камеры телефона. Фото должно загрузиться, а его миниатюра — появиться в списке товаров и при выборе товара."
+          },
+          nameFromPhoto: {
+            title: "Название по первому фото",
+            description: "У товара без названия добавьте первое фото. Название должно подставиться само и быть похожим на правду."
+          },
+          shootReceipt: {
+            title: "Сфотографировать чек",
+            description: "Снимите чек камерой телефона и дождитесь распознавания. Обычное большое фото должно загрузиться без ошибки."
+          },
+          lineHighlight: {
+            title: "Подсветка строк на фото",
+            description: "Откройте проверку строк чека. Рамки должны лежать на своих строках, а не быть сдвинутыми или повёрнутыми. Попробуйте чек, снятый вертикально и горизонтально."
+          },
+          totalsDiscounts: {
+            title: "Суммы и скидки",
+            description: "Сравните итог и скидки с бумажным чеком."
+          },
+          dislikeWarning: {
+            title: "Предупреждение «не нравится»",
+            description: "У товара с отметкой «не нравится» должно быть видно красное предупреждение."
+          },
+          howOften: {
+            title: "Как часто покупали",
+            description: "В карточке товара есть строка «Как часто покупали»."
+          },
+          storeLogos: {
+            title: "Логотипы магазинов",
+            description: "В списке чеков у известных магазинов (Lidl, Carrefour, Rossmann, Żabka, Auchan, Pepco, E.Leclerc) виден логотип."
+          },
+          backfill: {
+            title: "Дозаполнить категории",
+            description: "В разделе «Ещё» есть кнопка «Дозаполнить названия и категории». Нажмите и посмотрите на результат."
+          },
+          serverWakes: {
+            title: "Сервер просыпается",
+            description: "Откройте приложение после долгого перерыва. Через несколько секунд должен появиться текст о том, что сервер просыпается."
+          },
+          fits: {
+            title: "Всё помещается",
+            description: "На всех экранах текст и кнопки помещаются по ширине, ничего не обрезано."
+          },
+          tapTargets: {
+            title: "Кнопки под палец",
+            description: "Кнопки нажимаются с первого раза. Если где-то приходится целиться — запомните, где."
+          },
+          backButton: {
+            title: "Кнопка «Назад»",
+            description: "Кнопка и жест «назад» возвращают туда, откуда вы пришли."
+          }
+        }
       },
       productScan: {
         homeScanButton: "Сканировать штрихкод",
@@ -1526,6 +1606,7 @@ export const resources = {
         open: "More: help, settings, sign out",
         title: "Settings",
         help: "Help",
+        testChecklist: "What to test",
         language: "Language",
         recognition: "Receipt recognition",
         account: "Account",
@@ -1556,6 +1637,85 @@ export const resources = {
         alreadyRunning: "Already running, please wait.",
         tooOften: "Too often. Wait a little and try again.",
         failed: "Could not start. Try again later.",
+      },
+      testChecklist: {
+        title: "What to test",
+        intro: "A list of things worth trying on your phone. Tick what you have checked. The ticks are kept only on this phone.",
+        progress: "Ticked {{done}} of {{total}}",
+        reset: "Clear ticks",
+        outro: "If something is wrong, take a screenshot and write what you expected to see.",
+        groups: {
+          barcodes: "Barcodes and product photos",
+          receipt: "Receipt from the camera",
+          details: "Small things on screen",
+          comfort: "Ease of use"
+        },
+        items: {
+          scanHome: {
+            title: "Scan a barcode from Home",
+            description: "Press “Scan barcode” on Home. The camera should open, the code should be read and the right product found."
+          },
+          scanProducts: {
+            title: "Scan a barcode on the “Products” tab",
+            description: "The same, but from the button on the “Products” tab."
+          },
+          unknownCode: {
+            title: "Unknown barcode",
+            description: "Scan the code of a product that is not there yet. A “Create product” button should appear, and the code should land in “Remembered codes”."
+          },
+          productPhoto: {
+            title: "Product photo from the camera",
+            description: "Open a product and add a photo from the phone camera. The photo should upload and its thumbnail should show in the product list and when picking a product."
+          },
+          nameFromPhoto: {
+            title: "Name from the first photo",
+            description: "Add the first photo to a product with no name. The name should fill in by itself and look right."
+          },
+          shootReceipt: {
+            title: "Photograph a receipt",
+            description: "Take a receipt with the phone camera and wait for recognition. An ordinary large photo should upload without an error."
+          },
+          lineHighlight: {
+            title: "Line highlights on the photo",
+            description: "Open the receipt line review. The frames should sit on their own lines, not shifted or rotated. Try a receipt shot upright and sideways."
+          },
+          totalsDiscounts: {
+            title: "Totals and discounts",
+            description: "Compare the total and discounts with the paper receipt."
+          },
+          dislikeWarning: {
+            title: "“Dislike” warning",
+            description: "A product marked “dislike” should show a red warning."
+          },
+          howOften: {
+            title: "How often bought",
+            description: "The product card has a “How often bought” line."
+          },
+          storeLogos: {
+            title: "Store logos",
+            description: "In the receipt list, well-known stores (Lidl, Carrefour, Rossmann, Żabka, Auchan, Pepco, E.Leclerc) show a logo."
+          },
+          backfill: {
+            title: "Fill in categories",
+            description: "“More” has a “Fill in names and categories” button. Press it and look at the result."
+          },
+          serverWakes: {
+            title: "Server waking up",
+            description: "Open the app after a long break. After a few seconds a text saying the server is waking up should appear."
+          },
+          fits: {
+            title: "Everything fits",
+            description: "On every screen the text and buttons fit the width, nothing is cut off."
+          },
+          tapTargets: {
+            title: "Buttons under the finger",
+            description: "Buttons work at the first tap. If you have to aim somewhere, remember where."
+          },
+          backButton: {
+            title: "“Back” button",
+            description: "The back button and the back gesture return you to where you came from."
+          }
+        }
       },
       productScan: {
         homeScanButton: "Scan barcode",
